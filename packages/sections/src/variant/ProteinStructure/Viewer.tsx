@@ -30,7 +30,6 @@ function Viewer({ row }) {
   const [hoveredAtom, setHoveredAtom] = useState(null);
   const [colorBy, setColorBy] = useState("confidence");
   const [pathogenicityScores, setPathogenicityScores] = useState(null);
-  const [needPathogenicityScores, setNeedPathogenicityScores] = useState(false);
   const viewerRef = useRef(null);
 
   const variantResidues = new Set(
@@ -106,44 +105,49 @@ function Viewer({ row }) {
 
   // fetch pathogenicity data
   useEffect(() => {
-    if (pathogenicityScores || !uniprotId || !needPathogenicityScores) return;
-    async function fetchPathogenicityScores() {
-      let response;
-      try {
-        // https://alphafold.ebi.ac.uk/files/AF-Q96S37-F1-aa-substitutions.csv
-        response = await fetch(
-          `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`
-        );
-        if (!response.ok) {
+    if (colorBy === "pathogenicity" && !pathogenicityScores && uniprotId) {
+      async function fetchPathogenicityScores() {
+        let response;
+        try {
+          // https://alphafold.ebi.ac.uk/files/AF-Q96S37-F1-aa-substitutions.csv
+          response = await fetch(
+            `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`
+          );
+          if (!response.ok) {
+            console.error(`Failed to fetch pathogenicity data`);
+            setPathogenicityScores("failed");
+            return;
+          }
+        } catch (error) {
           console.error(`Failed to fetch pathogenicity data`);
+          setPathogenicityScores("failed");
           return;
         }
-      } catch (error) {
-        console.error(`Failed to fetch pathogenicity data`);
-        return;
+        const csv = csvParse(await response.text());
+        const scores = [];
+        for (const [resi, group] of [
+          ...Map.groupBy(csv, row => row.protein_variant.match(/\d+/)[0]),
+        ]) {
+          scores[resi] = mean(group, d => d.am_pathogenicity);
+        }
+        setPathogenicityScores(scores);
       }
-      const csv = csvParse(await response.text());
-      const scores = [];
-      for (const [resi, group] of [
-        ...Map.groupBy(csv, row => row.protein_variant.match(/\d+/)[0]),
-      ]) {
-        scores[resi] = mean(group, d => d.am_pathogenicity);
-      }
-      window.scores = scores; // !! REMOVE GLOBAL !!
-      setPathogenicityScores(scores);
+      fetchPathogenicityScores();
     }
-    fetchPathogenicityScores();
-  }, [uniprotId, needPathogenicityScores]);
+  }, [colorBy, uniprotId]); // omit pathogenicityScores to avoid loop
 
   // change cartoon cartoon
   useEffect(() => {
-    if (!viewer || (colorBy === "pathogenicity" && !pathogenicityScores)) return;
+    if (
+      !viewer ||
+      (colorBy === "pathogenicity" && (!pathogenicityScores || pathogenicityScores === "failed"))
+    )
+      return;
     noHoverStyle({ viewer, variantResidues, colorBy, scores: pathogenicityScores });
     viewer.render();
-  }, [colorBy, pathogenicityScores]); // do not depend on viewer - avoids double render at start
+  }, [colorBy, pathogenicityScores]); // omit viewer to avoid double render at start
 
   function handleToggleColor(event) {
-    setNeedPathogenicityScores(true); // only fetch once so can always set to true
     setColorBy(event.target.value);
   }
 
@@ -198,6 +202,28 @@ function Viewer({ row }) {
             </Box>
           </Box>
         )}
+
+        {/* no pathogenicity data meesage */}
+        {colorBy === "pathogenicity" && pathogenicityScores === "failed" && (
+          <Typography
+            variant="body2"
+            component="div"
+            sx={{
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              position: "absolute",
+              zIndex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#f8f8f8",
+            }}
+          >
+            Pathogenicity data not available
+          </Typography>
+        )}
       </Box>
 
       <Box
@@ -249,6 +275,7 @@ function Viewer({ row }) {
                   typography: { variant: "body2" },
                 }}
                 sx={{
+                  marginRight: 0,
                   "& .MuiFormControlLabel-label": {
                     marginLeft: -0.7,
                   },
@@ -273,7 +300,7 @@ function Viewer({ row }) {
           </Typography>
           <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
         </Box> */}
-        <Box ml={3}>
+        <Box>
           {colorBy === "confidence" ? (
             <CompactAlphaFoldLegend showTitle={false} />
           ) : (

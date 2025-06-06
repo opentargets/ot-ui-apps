@@ -12,7 +12,7 @@ export default function CompactAlphaFoldLegend({ showTitle = true }) {
           <Box sx={{ display: "flex", gap: 0.4, alignItems: "end" }}>
             {alphaFoldConfidenceBands
               .map(({ color }) => (
-                <Box borderRadius="2px" width="11px" height="11px" bgcolor={color} />
+                <Box key={color} borderRadius="2px" width="11px" height="11px" bgcolor={color} />
               ))
               .reverse()}
           </Box>
