@@ -19,7 +19,7 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
       </strong>
       . Source{" "}
       <Link to="https://www.ensembl.org/info/docs/tools/vep/index.html" external>
-        VEP,{" "}
+        Ensembl VEP,{" "}
       </Link>
       <Link to="https://gnomad.broadinstitute.org/" external>
         gnomAD,{" "}
