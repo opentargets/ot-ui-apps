@@ -1,4 +1,4 @@
-import { CompactAlphaFoldLegend } from "ui";
+import { CompactAlphaFoldLegend, CompactAlphaFoldPathogenicityLegend } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
 import {
@@ -87,7 +87,7 @@ function Viewer({ row }) {
         // _viewer.setHoverable(...hoverArgs);
         _viewer?.setStyle({}, { hidden: true });
         noHoverStyle({ viewer: _viewer, variantResidues, colorBy });
-        _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
+        // _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
         _viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
         resetViewer(_viewer, variantResidues);
         _viewer.zoom(0.25);
@@ -209,26 +209,53 @@ function Viewer({ row }) {
         }}
       >
         <FormControl>
-          <FormLabel id="">Color by</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="confidence"
-            name="color-by-group"
-            value={colorBy}
-            onChange={handleToggleColor}
-          >
-            <FormControlLabel
-              value="confidence"
-              control={<Radio size="small" />}
-              label="Confidence"
-            />
-            <FormControlLabel
-              value="pathogenicity"
-              control={<Radio size="small" />}
-              label="Pathogenicity"
-            />
-          </RadioGroup>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <FormLabel
+              sx={{
+                "&.Mui-focused": {
+                  color: "text.primary",
+                },
+              }}
+            >
+              <Typography variant="body2">AlphaFold model colour</Typography>
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue="confidence"
+              name="color-by-group"
+              value={colorBy}
+              onChange={handleToggleColor}
+            >
+              <FormControlLabel
+                value="confidence"
+                control={<Radio size="small" />}
+                label="confidence"
+                slotProps={{
+                  typography: { variant: "body2" },
+                }}
+                sx={{
+                  mr: 2,
+                  "& .MuiFormControlLabel-label": {
+                    marginLeft: -0.7,
+                  },
+                }}
+              />
+              <FormControlLabel
+                value="pathogenicity"
+                control={<Radio size="small" />}
+                label="pathogenicity"
+                slotProps={{
+                  typography: { variant: "body2" },
+                }}
+                sx={{
+                  "& .MuiFormControlLabel-label": {
+                    marginLeft: -0.7,
+                  },
+                }}
+              />
+            </RadioGroup>
+          </Box>
         </FormControl>
       </Box>
 
@@ -240,14 +267,18 @@ function Viewer({ row }) {
           flexWrap: "wrap",
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75 }}>
+        {/* <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75 }}>
           <Typography variant="caption" lineHeight={1}>
             Reference amino acid
           </Typography>
           <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
-        </Box>
+        </Box> */}
         <Box ml={3}>
-          {/* {colorBy === "confidence" ? <CompactAlphaFoldLegend /> : <CompactPathogenicityLegend /> */}
+          {colorBy === "confidence" ? (
+            <CompactAlphaFoldLegend showTitle={false} />
+          ) : (
+            <CompactAlphaFoldPathogenicityLegend showTitle={false} />
+          )}
         </Box>
       </Box>
 
