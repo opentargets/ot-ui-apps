@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { alphaFoldConfidenceBands, alphaFoldPathogenicityColorScale } from "@ot/constants";
 
 export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
-  const barWidth = 340;
+  const barWidth = 330;
   const barHeight = 11;
 
   const stops = [];
@@ -16,7 +16,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
   const domain = alphaFoldPathogenicityColorScale.domain();
 
   const gradientId = "color-gradient";
-  const fontSize = 12;
+  const fontSize = 11.5;
   const textColor = "#5a5f5f";
 
   return (

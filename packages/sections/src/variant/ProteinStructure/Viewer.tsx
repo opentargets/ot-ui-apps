@@ -87,7 +87,7 @@ function Viewer({ row }) {
         // _viewer.setHoverable(...hoverArgs);
         _viewer?.setStyle({}, { hidden: true });
         noHoverStyle({ viewer: _viewer, variantResidues, colorBy });
-        // _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
+        _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
         _viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
         resetViewer(_viewer, variantResidues);
         _viewer.zoom(0.25);
