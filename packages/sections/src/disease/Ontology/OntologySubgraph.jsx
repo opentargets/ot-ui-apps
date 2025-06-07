@@ -1,7 +1,7 @@
-import { withContentRect } from "react-measure";
-import { line as d3Line, max, curveMonotoneX } from "d3";
-import { layeringLongestPath, decrossTwoLayer, coordCenter, sugiyama, dagStratify } from "d3-dag";
 import { makeStyles } from "@mui/styles";
+import { curveMonotoneX, line as d3Line, max } from "d3";
+import { coordCenter, dagStratify, decrossTwoLayer, layeringLongestPath, sugiyama } from "d3-dag";
+import { withContentRect } from "react-measure";
 import { Link } from "react-router-dom";
 import OntologyTooltip from "./OntologyTooltip";
 
@@ -11,114 +11,67 @@ const useStyles = makeStyles({
   },
 });
 
-function getAncestors(efoId, idToDisease) {
-  const ancestors = [{ ...idToDisease[efoId], nodeType: "anchor" }];
-  const queue = [efoId];
-  const visited = new Set([efoId]);
 
-  while (queue.length > 0) {
-    const id = queue.shift();
-    const node = idToDisease[id];
+const buildDag = (data) => [
+  {
+    id: data.id,
+    name: data.name,
+    parentIds: data.parents.map(parent => parent.id),
+    isTerapeuticArea: data.isTherapeuticArea,
+    nodeType: 'anchor',
+  },
+  ...data.children.map(child => ({
+    id: child.id,
+    name: child.name,
+    parentIds: [data.id],
+    isTerapeuticArea: data.isTherapeuticArea,
+    nodeType: 'child',
+  })),
+  ...data.resolvedAncestors.map(ancestor => ({
+    id: ancestor.id,
+    name: ancestor.name,
+    parentIds: ancestor.parents.map(parent => parent.id),
+    isTerapeuticArea: data.isTherapeuticArea,
+    nodeType: 'ancestor',
+  }))
+];
 
-    node.parentIds.forEach(parentId => {
-      if (!visited.has(parentId)) {
-        ancestors.push({ ...idToDisease[parentId], nodeType: "ancestor" });
-        queue.push(parentId);
-        visited.add(parentId);
-      }
-    });
-  }
-
-  return ancestors;
-}
-
-function buildDagData(efoId, efo, idToDisease) {
-  const dag = [];
-
-  if (!efo) return dag;
-
-  // find direct children of efoId
-  efo.forEach(disease => {
-    if (disease.parentIds.includes(efoId)) {
-      dag.push({
-        id: disease.id,
-        name: disease.name,
-        parentIds: [efoId],
-        nodeType: "child",
-      });
-    }
-  });
-
-  const ancestors = getAncestors(efoId, idToDisease); // find ancestors
-
-  ancestors.forEach(ancestor => {
-    dag.push(ancestor);
-  });
-
-  return dag;
-}
-
-const layering = layeringLongestPath();
-const decross = decrossTwoLayer();
-const coord = coordCenter();
-
-const helperLayout = sugiyama().layering(layering).decross(decross).coord(coord);
-
-function textWithEllipsis(text, threshold) {
-  return text.length <= threshold ? text : `${text.slice(0, threshold)}...`;
-}
-
-function getMaxLayerCount(dag) {
+const getMaxLayerCount = dag => {
   helperLayout(dag);
 
-  const counts = {};
-  let maxCount = Number.NEGATIVE_INFINITY;
+  const layerCounts = {};
 
-  dag.descendants().forEach(node => {
-    const { layer } = node;
+  const addToLayer = layer => layerCounts[layer] = (layerCounts[layer] || 0) + 1;
 
-    if (counts[layer]) {
-      counts[layer] += 1;
-    } else {
-      counts[layer] = 1;
-    }
+  dag.descendants().forEach(n => addToLayer(n['layer']));
+  dag.links().forEach(l => l.points.forEach((_, i) => addToLayer(l.source['layer'] + i + 1)));
 
-    if (counts[layer] > maxCount) {
-      maxCount = counts[layer];
-    }
-  });
-
-  dag.links().forEach(link => {
-    link.points.forEach((_, i) => {
-      const index = link.source.layer + i;
-      counts[index] += 1;
-      if (counts[index] > maxCount) {
-        maxCount = counts[index];
-      }
-    });
-  });
-
-  return maxCount;
+  return Math.max(...Object.values(layerCounts));
 }
+
+const textWithEllipsis = (text, threshold) =>
+  text.length <= threshold ? text : `${text.slice(0, threshold)}...`;
 
 const colorMap = {
   anchor: "#ff6350",
   ancestor: "#3489ca",
   child: "#85b8df",
 };
+const coord = coordCenter();
+const decross = decrossTwoLayer();
 const diameter = 12;
+const layering = layeringLongestPath();
+const helperLayout = sugiyama().layering(layering).decross(decross).coord(coord);
+const line = d3Line().curve(curveMonotoneX);
 const radius = diameter / 2;
 const yOffset = 100;
-const line = d3Line().curve(curveMonotoneX);
 
-function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRect }) {
+function OntologySubgraph({ name, data, measureRef, contentRect }) {
   const classes = useStyles();
-  const { width } = contentRect.bounds;
-  if (!efo) return null;
-  const dagData = buildDagData(efoId, efo, idToDisease);
+  const dagData = buildDag(data);
   const dag = dagStratify()(dagData);
-  const maxLayerCount = getMaxLayerCount(dag);
-  const height = maxLayerCount * 6;
+  const width = contentRect.bounds.width;
+  const height = getMaxLayerCount(dag) * 6;
   const layout = sugiyama()
     .layering(layering)
     .decross(decross)
@@ -128,14 +81,12 @@ function OntologySubgraph({ efoId, efo, name, idToDisease, measureRef, contentRe
       return [base, base];
     })
     .size([height, width]);
-
   layout(dag);
   const nodes = dag.descendants();
   const links = dag.links();
   const separation = width / (max(nodes, d => d.layer) + 1);
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
-
   line.x(d => d.y - xOffset).y(d => d.x);
 
   return (

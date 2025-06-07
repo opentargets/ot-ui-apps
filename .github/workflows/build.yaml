@@ -53,10 +53,6 @@ jobs:
           access_token_lifetime: 300s
       - uses: google-github-actions/setup-gcloud@v2
 
-      - name: copy disease ontology
-        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
-        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/disease.jsonl apps/platform/public/data/ontology/efo_json/diseases_efo.jsonl
-
       - name: copy croissant metadata
         if: ${{ env.DATA_RELEASE_LOCATION != '' }}
         run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/downloads.json apps/platform/public/data/downloads.json
