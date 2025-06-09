@@ -1,10 +1,10 @@
 import type { ReactElement, Dispatch } from "react";
 import { createContext, useContext, useReducer, useEffect, useMemo } from "react";
-import type {
+import {
   TABLE_PREFIX,
+  InteractorsSource,
   INTERACTORS_SOURCES,
   INTERACTORS_SOURCE_THRESHOLD,
-  InteractorsSource,
 } from "../associationsUtils";
 import useAotfContext from "../hooks/useAotfContext";
 
@@ -237,24 +237,26 @@ function handleSetInteractorsOn(focusState: FocusState, action: FocusAction): Fo
     element => element.table === table && element.row === row
   );
 
-  // Process existing elements
-  const updatedElements = focusState.map(element => {
+  // // Process existing elements
+  const updatedElements: FocusElement[] = focusState.reduce<FocusElement[]>((acc, element) => {
     if (element.table === table && element.row === row) {
-      // Update existing element
-      return {
+      acc.push({
         ...element,
         interactors: true,
-      };
-    } else if (element.table === table && element.section) {
-      // Update other elements in same table with sections
-      return {
+      });
+      return acc;
+    } else if (element.table === table && element.interactors && element.section) {
+      acc.push({
         ...element,
         interactors: false,
-      };
+      });
+      return acc;
+    } else if (element.table === table && element.interactors && !element.section) {
+      return acc;
     }
-    // Keep other elements unchanged
-    return element;
-  });
+    acc.push(element);
+    return acc;
+  }, []);
 
   // Add new element if it doesn't exist
   if (existingElementIndex === -1) {
@@ -439,6 +441,7 @@ function handleSetInteractorsOff(focusState: FocusState, action: FocusAction): F
  * Delegates to specialized handlers for complex state transformations
  */
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
+  console.log(action.type);
   switch (action.type) {
     case FocusActionType.SET_FOCUS_SECTION:
       return handleSetFocusSection(focusState, action);
@@ -513,7 +516,7 @@ export function AssociationsFocusProvider({ children }: { children: ReactElement
 
   useEffect(() => {
     console.log({ focusState });
-  });
+  }, [focusState]);
 
   return (
     <AssociationsFocusContext.Provider value={focusState}>
