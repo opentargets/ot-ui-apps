@@ -1,4 +1,8 @@
-import { getAlphaFoldConfidence, getAlphaFoldPathogenicityColor } from "@ot/constants";
+import {
+  alphaFoldPathogenicityColorScale,
+  getAlphaFoldConfidence,
+  getAlphaFoldPathogenicityColor,
+} from "@ot/constants";
 import { hsl } from "d3";
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
@@ -17,7 +21,7 @@ export function resetViewer(viewer, variantResidues, duration = 0) {
   viewer.zoomTo({ resi: [...variantResidues] }, duration);
 }
 
-export function onClickCapture(viewerRef) {
+export function onClickCapture(viewerRef, targetId) {
   if (!viewerRef.current) return;
 
   try {
@@ -48,7 +52,7 @@ export function onClickCapture(viewerRef) {
     // Create a temporary link and trigger download
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `${ensemblId}-molecular-structure.png`;
+    link.download = `${targetId}-molecular-structure.png`;
     link.click();
   } catch (error) {
     console.error("Error taking screenshot:", error);
@@ -71,12 +75,31 @@ function addVariantStyle(viewer, variantResidues, omitResi) {
   );
 }
 
-export function noHoverStyle({ viewer, variantResidues, colorBy, scores }) {
+export function noHoverStyle({
+  viewer,
+  variantResidues,
+  colorBy,
+  pathogenicityScores,
+  variantPathogenicityScore,
+}) {
   const colorfunc =
     colorBy === "confidence"
       ? a => getAlphaFoldConfidence(a, "color")
-      : a => getAlphaFoldPathogenicityColor(a, scores);
+      : a => getAlphaFoldPathogenicityColor(a, pathogenicityScores);
   viewer.addStyle({}, { cartoon: { colorfunc, arrows: true } });
+  const variantColor =
+    colorBy === "confidence" || typeof variantPathogenicityScore !== "number"
+      ? "#0d0"
+      : alphaFoldPathogenicityColorScale(variantPathogenicityScore);
+  if (viewer._variantSurfaceId) viewer.removeSurface(viewer._variantSurfaceId);
+  viewer._variantSurfaceId = viewer.addSurface(
+    "VDW",
+    { opacity: 1, color: variantColor },
+    { resi: [...variantResidues] },
+    undefined,
+    undefined,
+    () => {} // include surface callback so addSurface returns surface id synchronously
+  );
   // addVariantStyle(viewer, variantResidues);
 }
 

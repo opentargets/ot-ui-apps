@@ -30,6 +30,7 @@ function Viewer({ row }) {
   const [hoveredAtom, setHoveredAtom] = useState(null);
   const [colorBy, setColorBy] = useState("confidence");
   const [pathogenicityScores, setPathogenicityScores] = useState(null);
+  const [variantPathogenicityScore, setVariantPathogenicityScore] = useState(null);
   const viewerRef = useRef(null);
 
   const variantResidues = new Set(
@@ -85,9 +86,8 @@ function Viewer({ row }) {
         // };
         // _viewer.setHoverable(...hoverArgs);
         _viewer?.setStyle({}, { hidden: true });
+        _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
         noHoverStyle({ viewer: _viewer, variantResidues, colorBy });
-        _viewer.addSurface("VDW", { opacity: 0.2, opacity: 0.55, color: "#fff" }, {});
-        _viewer.addSurface("VDW", { opacity: 1, color: "#0d0" }, { resi: [...variantResidues] });
         resetViewer(_viewer, variantResidues);
         _viewer.zoom(0.25);
         _viewer.setZoomLimits(20, 500);
@@ -125,10 +125,20 @@ function Viewer({ row }) {
         }
         const csv = csvParse(await response.text());
         const scores = [];
+        const computeVariantScore =
+          row.referenceAminoAcid.length === 1 && row.alternateAminoAcid.length === 1;
         for (const [resi, group] of [
           ...Map.groupBy(csv, row => row.protein_variant.match(/\d+/)[0]),
         ]) {
-          scores[resi] = mean(group, d => d.am_pathogenicity);
+          if (computeVariantScore && Number(resi) === row.aminoAcidPosition) {
+            const alternateRow = group.find(
+              r => r.protein_variant.at(-1) === row.alternateAminoAcid
+            );
+            setVariantPathogenicityScore(
+              alternateRow ? Number(alternateRow.am_pathogenicity) : "na"
+            );
+          }
+          scores[resi] = mean(group, d => Number(d.am_pathogenicity));
         }
         setPathogenicityScores(scores);
       }
@@ -136,14 +146,20 @@ function Viewer({ row }) {
     }
   }, [colorBy, uniprotId]); // omit pathogenicityScores to avoid loop
 
-  // change cartoon cartoon
+  // change color
   useEffect(() => {
     if (
       !viewer ||
       (colorBy === "pathogenicity" && (!pathogenicityScores || pathogenicityScores === "failed"))
     )
       return;
-    noHoverStyle({ viewer, variantResidues, colorBy, scores: pathogenicityScores });
+    noHoverStyle({
+      viewer,
+      variantResidues,
+      colorBy,
+      pathogenicityScores,
+      variantPathogenicityScore,
+    });
     viewer.render();
   }, [colorBy, pathogenicityScores]); // omit viewer to avoid double render at start
 
@@ -173,7 +189,7 @@ function Viewer({ row }) {
           >
             <Button
               sx={{ display: "flex", gap: 1 }}
-              onClick={() => onClickCapture(viewerRef, state.data.id)}
+              onClick={() => onClickCapture(viewerRef, row.target.id)}
             >
               <FontAwesomeIcon icon={faCamera} /> Screenshot
             </Button>
@@ -294,12 +310,16 @@ function Viewer({ row }) {
           flexWrap: "wrap",
         }}
       >
-        {/* <Box sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75 }}>
-          <Typography variant="caption" lineHeight={1}>
-            Reference amino acid
-          </Typography>
-          <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
-        </Box> */}
+        {(colorBy === "confidence" || typeof variantPathogenicityScore !== "number") && (
+          <Box
+            sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75, pr: 3 }}
+          >
+            <Typography variant="caption" lineHeight={1}>
+              Reference amino acid{row.referenceAminoAcid.length > 1 ? "s" : ""}
+            </Typography>
+            <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
+          </Box>
+        )}
         <Box>
           {colorBy === "confidence" ? (
             <CompactAlphaFoldLegend showTitle={false} />
