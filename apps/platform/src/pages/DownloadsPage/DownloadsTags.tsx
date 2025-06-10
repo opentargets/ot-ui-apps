@@ -118,8 +118,9 @@ function DOITag() {
         entries={[{ name: PMID, url: epmcUrl(PMID) }]}
         customLabel={
           <Chip
+            component="span"
             label={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box component="span" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 {" "}
                 <FontAwesomeIcon icon={faFileLines} /> Cite Us
               </Box>
