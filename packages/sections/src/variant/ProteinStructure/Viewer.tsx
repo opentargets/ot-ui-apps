@@ -1,4 +1,4 @@
-import { CompactAlphaFoldLegend } from "ui";
+import { CompactAlphaFoldLegend, Tooltip } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
 import { Box, Typography, Button } from "@mui/material";
@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { resetViewer, onClickCapture, noHoverStyle, hoverManagerFactory } from "./ViewerHelpers";
+import InfoPopper from "./InfoPopper";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -63,7 +64,13 @@ function Viewer({ row }) {
           antialias: true,
           cartoonQuality: 10,
         });
-        window.viewer = viewer; // !! REMOVE !!
+        viewer.getCanvas().addEventListener(
+          "wheel",
+          event => {
+            if (!event.ctrlKey) event.stopImmediatePropagation();
+          },
+          true // use capture phase so fires before library handler
+        );
         const hoverDuration = 10;
         viewer.getCanvas().ondblclick = () => resetViewer(viewer, variantResidues, 200); // use ondblclick so replaces existing
         viewer.addModel(structureData, "cif");
@@ -95,7 +102,7 @@ function Viewer({ row }) {
     <Box ref={viewerRef} position="relative" width="100%">
       {/* container to insert viewer into */}
       <Box className="viewerContainer" position="relative" width="100%" height={320} mb={1}>
-        {/* screenshot button */}
+        {/* info and screenshot buttons */}
         {!messageText && (
           <Box
             sx={{
@@ -106,16 +113,26 @@ function Viewer({ row }) {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              background: "white",
               m: 1,
+              gap: 1,
             }}
           >
-            <Button
-              sx={{ display: "flex", gap: 1 }}
-              onClick={() => onClickCapture(viewerRef, state.data.id)}
-            >
-              <FontAwesomeIcon icon={faCamera} /> Screenshot
-            </Button>
+            <InfoPopper />
+            <Tooltip title="Screenshot" placement="top-start">
+              <Button
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  bgcolor: "white",
+                  "&:hover": {
+                    bgcolor: "#f8f8f8d8",
+                  },
+                }}
+                onClick={() => onClickCapture(viewerRef, row?.target.id)}
+              >
+                <FontAwesomeIcon icon={faCamera} />
+              </Button>
+            </Tooltip>
           </Box>
         )}
 

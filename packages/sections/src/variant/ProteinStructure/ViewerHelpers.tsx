@@ -17,7 +17,7 @@ export function resetViewer(viewer, variantResidues, duration = 0) {
   viewer.zoomTo({ resi: [...variantResidues] }, duration);
 }
 
-export function onClickCapture(viewerRef) {
+export function onClickCapture(viewerRef, targetId) {
   if (!viewerRef.current) return;
 
   try {
@@ -48,7 +48,7 @@ export function onClickCapture(viewerRef) {
     // Create a temporary link and trigger download
     const link = document.createElement("a");
     link.href = dataUrl;
-    link.download = `${ensemblId}-molecular-structure.png`;
+    link.download = `${targetId}-molecular-structure.png`;
     link.click();
   } catch (error) {
     console.error("Error taking screenshot:", error);
