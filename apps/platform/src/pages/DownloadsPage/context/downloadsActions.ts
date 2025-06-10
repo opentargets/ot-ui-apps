@@ -54,3 +54,10 @@ export function setLoading(loading: boolean): Action {
     loading,
   };
 }
+
+export function setError(error: string): Action {
+  return {
+    type: ActionType.SET_ERROR,
+    error,
+  };
+}

@@ -3,7 +3,6 @@ export interface Config {
   urlAiApi: string;
   profile: Record<string, unknown>;
   googleTagManagerID: string | null;
-  downloadsURL: string;
   geneticsPortalUrl: string;
   gitVersion: string;
 }

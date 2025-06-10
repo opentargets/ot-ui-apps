@@ -44,19 +44,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - uses: google-github-actions/auth@v2
-        with:
-          token_format: access_token
-          project_id: 'open-targets-eu-dev'
-          workload_identity_provider: projects/426265110888/locations/global/workloadIdentityPools/github-actions/providers/opentargets
-          service_account: github-actions@open-targets-eu-dev.iam.gserviceaccount.com
-          access_token_lifetime: 300s
-      - uses: google-github-actions/setup-gcloud@v2
-
-      - name: copy croissant metadata
-        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
-        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/downloads.json apps/platform/public/data/downloads.json
-
       - name: Build
         run: yarn build:platform
 

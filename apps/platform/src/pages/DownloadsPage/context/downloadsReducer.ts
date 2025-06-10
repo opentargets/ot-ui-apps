@@ -110,6 +110,14 @@ export function downloadsReducer(
       };
     }
 
+    case ActionType.SET_ERROR: {
+      return {
+        ...state,
+        loading: false,
+        downloadsData: initialState,
+      };
+    }
+
     default: {
       throw Error("Unknown action: " + action);
       return state;

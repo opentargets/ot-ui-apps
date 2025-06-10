@@ -7,7 +7,6 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       urlAiApi: "http://localhost:8081",
       profile: {},
       googleTagManagerID: null,
-      downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
     },
@@ -16,7 +15,6 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       urlAiApi: "https://ai.platform.opentargets.org",
       profile: {},
       googleTagManagerID: "GTM-XXXXX",
-      downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
     },
@@ -37,7 +35,6 @@ export const getConfig = (): Config => {
     gitVersion: window.gitVersion ?? ENV_GIT_VERSION ?? "",
     profile: window.configProfile ?? { isPartnerPreview: false },
     googleTagManagerID: window.configGoogleTagManagerID ?? null,
-    downloadsURL: window.configDownloadsURL ?? "/data/downloads.json",
     geneticsPortalUrl: window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
   };
 };
