@@ -61,32 +61,40 @@ export function onClickCapture(viewerRef, targetId) {
   }
 }
 
-function addVariantStyle(viewer, variantResidues, omitResi) {
-  let resis = [...variantResidues];
-  if (variantResidues.has(omitResi)) {
-    resis = resis.filter(atom => atom !== omitResi);
-  }
-  viewer.addStyle(
-    { resi: resis },
-    {
-      stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-      sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-    }
-  );
-}
+// function drawVariantBallAndStick(viewer, variantResidues, omitResi) {
+//   let resis = [...variantResidues];
+//   if (variantResidues.has(omitResi)) {
+//     resis = resis.filter(atom => atom !== omitResi);
+//   }
+//   viewer.addStyle(
+//     { resi: resis },
+//     {
+//       stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+//       sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+//     }
+//   );
+// }
 
-export function noHoverStyle({
-  viewer,
-  variantResidues,
-  colorBy,
-  pathogenicityScores,
-  variantPathogenicityScore,
-}) {
-  const colorfunc =
+export function drawCartoon({ viewer, colorBy, pathogenicityScores, highlightResi }) {
+  const basicColorfunc =
     colorBy === "confidence"
       ? a => getAlphaFoldConfidence(a, "color")
       : a => getAlphaFoldPathogenicityColor(a, pathogenicityScores);
+  const colorfunc = highlightResi
+    ? a => {
+        const color = basicColorfunc(a, "color");
+        return a.resi === highlightResi ? getHighlightColor(color) : color;
+      }
+    : basicColorfunc;
   viewer.addStyle({}, { cartoon: { colorfunc, arrows: true } });
+}
+
+export function drawVariantSurface({
+  viewer,
+  variantResidues,
+  colorBy,
+  variantPathogenicityScore,
+}) {
   const variantColor =
     colorBy === "confidence" || typeof variantPathogenicityScore !== "number"
       ? "#0d0"
@@ -100,50 +108,25 @@ export function noHoverStyle({
     undefined,
     () => {} // include surface callback so addSurface returns surface id synchronously
   );
-  // addVariantStyle(viewer, variantResidues);
 }
 
-// function hoverManagerFactory({ viewer, atomInfoRef }) {
-export function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom }) {
-  let currentResi = null;
-
-  function handleHover(atom) {
-    if (!atom || currentResi === atom.resi) return;
-    setHoveredAtom(atom);
-    const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
-    hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
-    const afColorLight = hslColor.toString();
-    viewer.setStyle(
-      // only need setStyle since doing cartoon - owise can use addStyle
-      {},
-      {
-        cartoon: {
-          colorfunc: a =>
-            a.resi === currentResi ? afColorLight : getAlphaFoldConfidence(a, "color"),
-          arrows: true,
-        },
-      }
-    );
-    addVariantStyle(viewer, variantResidues, atom.resi);
-    viewer.addStyle(
-      { resi: atom.resi },
-      {
-        stick: { color: afColorLight },
-        sphere: { radius: 0.4, color: afColorLight },
-      }
-    );
-    currentResi = atom.resi;
-    viewer.render();
-  }
-
-  function handleUnhover(atom) {
-    if (currentResi !== null) {
-      noHoverStyle(viewer, variantResidues);
-      currentResi = null;
-      viewer.render();
-      setHoveredAtom(null);
+export function drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores }) {
+  console.log(colorBy);
+  const color =
+    colorBy === "confidence"
+      ? getAlphaFoldConfidence(atom, "color")
+      : getAlphaFoldPathogenicityColor(atom, pathogenicityScores);
+  viewer.addStyle(
+    { resi: atom.resi }, // draw ball and stick for all atoms in same residue
+    {
+      stick: { color },
+      sphere: { radius: 0.4, color },
     }
-  }
+  );
+}
 
-  return [{}, true, handleHover, handleUnhover];
+function getHighlightColor(color: string) {
+  const hslColor = hsl(color);
+  hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
+  return hslColor.toString();
 }

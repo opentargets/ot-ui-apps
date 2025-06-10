@@ -15,7 +15,13 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
-import { resetViewer, onClickCapture, noHoverStyle, hoverManagerFactory } from "./ViewerHelpers";
+import {
+  resetViewer,
+  onClickCapture,
+  drawCartoon,
+  drawVariantSurface,
+  drawBallAndStick,
+} from "./ViewerHelpers";
 import { csvParse, mean } from "d3";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
@@ -32,6 +38,57 @@ function Viewer({ row }) {
   const [pathogenicityScores, setPathogenicityScores] = useState(null);
   const [variantPathogenicityScore, setVariantPathogenicityScore] = useState(null);
   const viewerRef = useRef(null);
+
+  function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom }) {
+    let currentResi = null;
+
+    function handleHover(atom) {
+      if (!atom || currentResi === atom.resi) return;
+      console.log(colorBy);
+      drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
+      // drawCartoon({});
+      // setHoveredAtom(atom);
+      // const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
+      // hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
+      // const afColorLight = hslColor.toString();
+      // viewer.setStyle(
+      //   // only need setStyle since doing cartoon - owise can use addStyle
+      //   {},
+      //   {
+      //     cartoon: {
+      //       colorfunc: a =>
+      //         a.resi === currentResi ? afColorLight : getAlphaFoldConfidence(a, "color"),
+      //       arrows: true,
+      //     },
+      //   }
+      // );
+      // addVariantStyle(viewer, variantResidues, atom.resi);
+      // viewer.addStyle(
+      //   { resi: atom.resi },
+      //   {
+      //     stick: { color: afColorLight },
+      //     sphere: { radius: 0.4, color: afColorLight },
+      //   }
+      // );
+      currentResi = atom.resi;
+      viewer.render();
+    }
+
+    function handleUnhover(atom) {
+      if (currentResi !== null) {
+        // noHoverCartoon({ viewer, variantResidues, colorBy });
+        // if (currentResi !== atom.resi)
+        viewer.setStyle({}, {});
+        drawCartoon({ viewer, colorBy, pathogenicityScores });
+        // drawVariantSurface({ viewer: _viewer, variantResidues, colorBy });
+        currentResi = null;
+        viewer.render();
+        // setHoveredAtom(null);
+      }
+    }
+
+    return [{}, true, handleHover, handleUnhover];
+  }
 
   const variantResidues = new Set(
     row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
@@ -75,19 +132,21 @@ function Viewer({ row }) {
           cartoonQuality: 10,
         });
         window.viewer = _viewer; // !! REMOVE !!
-        const hoverDuration = 10;
+        // const hoverDuration = 10;
         _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200); // use ondblclick so replaces existing
         _viewer.addModel(structureData, "cif");
-        _viewer.setHoverDuration(hoverDuration);
-        // const hoverArgs = hoverManagerFactory({ _viewer, variantResidues, setHoveredAtom });
-        // const handleUnhover = hoverArgs[3];
-        // _viewer.getCanvas().onmouseleave = () => {
-        //   setTimeout(handleUnhover, hoverDuration + 50);
-        // };
+        // _viewer.setHoverDuration(hoverDuration);
+
+        // const hoverArgs = hoverManagerFactory({ viewer: _viewer, variantResidues, setHoveredAtom });
+        // // const handleUnhover = hoverArgs[3];
+        // // _viewer.getCanvas().onmouseleave = () => {
+        // //   setTimeout(handleUnhover, hoverDuration + 50);
+        // // };
         // _viewer.setHoverable(...hoverArgs);
         _viewer?.setStyle({}, { hidden: true });
         _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
-        noHoverStyle({ viewer: _viewer, variantResidues, colorBy });
+        drawCartoon({ viewer: _viewer, colorBy });
+        drawVariantSurface({ viewer: _viewer, variantResidues, colorBy });
         resetViewer(_viewer, variantResidues);
         _viewer.zoom(0.25);
         _viewer.setZoomLimits(20, 500);
@@ -102,6 +161,21 @@ function Viewer({ row }) {
       _viewer?.clear();
     };
   }, []);
+
+  // REMOVE
+  useEffect(() => {
+    if (!viewer) return;
+    const hoverDuration = 10; // use ondblclick so replaces existing
+    viewer.setHoverDuration(hoverDuration);
+
+    const hoverArgs = hoverManagerFactory({ viewer, setHoveredAtom });
+    // const hoverArgs = hoverManagerFactory({ viewer, variantResidues, setHoveredAtom });
+    // const handleUnhover = hoverArgs[3];
+    // _viewer.getCanvas().onmouseleave = () => {
+    //   setTimeout(handleUnhover, hoverDuration + 50);
+    // };
+    viewer.setHoverable(...hoverArgs);
+  });
 
   // fetch pathogenicity data
   useEffect(() => {
@@ -153,13 +227,8 @@ function Viewer({ row }) {
       (colorBy === "pathogenicity" && (!pathogenicityScores || pathogenicityScores === "failed"))
     )
       return;
-    noHoverStyle({
-      viewer,
-      variantResidues,
-      colorBy,
-      pathogenicityScores,
-      variantPathogenicityScore,
-    });
+    drawCartoon({ viewer, colorBy, pathogenicityScores });
+    drawVariantSurface({ viewer, variantResidues, colorBy, variantPathogenicityScore });
     viewer.render();
   }, [colorBy, pathogenicityScores]); // omit viewer to avoid double render at start
 
