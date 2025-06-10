@@ -90,7 +90,27 @@ const defaultFocusElement: FocusElement = {
 const AssociationsFocusContext = createContext<FocusState>([]);
 const AssociationsFocusDispatchContext = createContext<Dispatch<FocusAction>>(() => undefined);
 
-// Helper functions
+// Helper functions for element manipulation
+function findElementIndex(state: FocusState, table: FocusElementTable, row: string): number {
+  return state.findIndex(element => element.table === table && element.row === row);
+}
+
+function isSameSection(current: [string, string] | null, target: [string, string]): boolean {
+  return current !== null && current[0] === target[0] && current[1] === target[1];
+}
+
+function updateElementAtIndex(
+  state: FocusState,
+  index: number,
+  updates: Partial<FocusElement>
+): FocusState {
+  return [...state.slice(0, index), { ...state[index], ...updates }, ...state.slice(index + 1)];
+}
+
+function removeElementAtIndex(state: FocusState, index: number): FocusState {
+  return [...state.slice(0, index), ...state.slice(index + 1)];
+}
+
 /**
  * Creates a new focus element with defaults overridden by provided params
  */
@@ -141,82 +161,63 @@ function getFocusElementState(
   return { sectionActive, rowActive, tableActive, interactorsActive, hasSectionActive };
 }
 
-// Reducer handlers for complex state transformations
-/**
- * Handles the action to set focus on a specific section
- * Can toggle sections on/off and resets other focus elements in the same table
- */
-function handleSetFocusSection(focusState: FocusState, action: FocusAction): FocusState {
-  if (action.type !== FocusActionType.SET_FOCUS_SECTION) return focusState;
+// Handlers for SET_FOCUS_SECTION
+function updateExistingElementSection(
+  state: FocusState,
+  elementIndex: number,
+  section: [string, string]
+): FocusState {
+  const element = state[elementIndex];
+  const isSameSectionActive = isSameSection(element.section, section);
 
-  const { table, row, section } = action.focus;
-  const matchingIndex = focusState.findIndex(
-    element => element.table === table && element.row === row
-  );
-
-  // Step 1: Process the target element
-  let updatedElements: FocusState = [];
-
-  if (matchingIndex !== -1) {
-    const element = focusState[matchingIndex];
-    const isSameSection =
-      element.section && element.section[0] === section[0] && element.section[1] === section[1];
-
-    if (isSameSection && element.interactors) {
-      // Close section if it's the same and interactors are active
-      updatedElements = [
-        ...focusState.slice(0, matchingIndex),
-        { ...element, section: null },
-        ...focusState.slice(matchingIndex + 1),
-      ];
-    } else if (isSameSection && !element.interactors) {
-      // Remove element if same section and interactors are off
-      updatedElements = [
-        ...focusState.slice(0, matchingIndex),
-        ...focusState.slice(matchingIndex + 1),
-      ];
-    } else {
-      // Update section for same row
-      updatedElements = [
-        ...focusState.slice(0, matchingIndex),
-        {
-          ...element,
-          interactorsRow: null,
-          interactorsSection: null,
-          section: section,
-        },
-        ...focusState.slice(matchingIndex + 1),
-      ];
-    }
-  } else {
-    // Create new element if it doesn't exist
-    updatedElements = [
-      ...focusState,
-      createFocusElement({
-        row,
-        table,
-        section,
-      }),
-    ];
+  if (isSameSectionActive && element.interactors) {
+    // Close section but keep element for interactors
+    return updateElementAtIndex(state, elementIndex, { section: null });
   }
 
-  // Step 2: Process other elements in the state
-  return updatedElements.filter(element => {
-    // Keep the element we just processed
-    if (element.table === table && element.row === row) {
+  if (isSameSectionActive && !element.interactors) {
+    // Remove element entirely
+    return removeElementAtIndex(state, elementIndex);
+  }
+
+  // Update to new section
+  return updateElementAtIndex(state, elementIndex, {
+    section,
+    interactorsRow: null,
+    interactorsSection: null,
+  });
+}
+
+function addNewElementWithSection(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string,
+  section: [string, string]
+): FocusState {
+  return [...state, createFocusElement({ table, row, section })];
+}
+
+function resetOtherElementsInTable(
+  state: FocusState,
+  table: FocusElementTable,
+  targetRow: string
+): FocusState {
+  return state.filter(element => {
+    // Keep the target element
+    if (element.table === table && element.row === targetRow) {
       return true;
     }
 
-    // Handle other elements in the same table
+    // Handle other elements in same table
     if (element.table === table) {
-      // Keep with reset states if it has interactors
       if (element.interactors) {
+        // Reset but keep element
         element.section = null;
         element.interactorsSection = null;
         element.interactorsRow = null;
         return true;
       }
-      // Remove if in same table with interactors off
+      // Remove if no interactors
       return false;
     }
 
@@ -225,108 +226,179 @@ function handleSetFocusSection(focusState: FocusState, action: FocusAction): Foc
   });
 }
 
-/**
- * Handles the action to turn on interactors for a specific row
- * Updates existing elements or creates a new one if needed
- */
+function handleSetFocusSection(focusState: FocusState, action: FocusAction): FocusState {
+  if (action.type !== FocusActionType.SET_FOCUS_SECTION) return focusState;
+
+  const { table, row, section } = action.focus;
+  const elementIndex = findElementIndex(focusState, table, row);
+
+  // Step 1: Update or create the target element
+  const updatedState =
+    elementIndex !== -1
+      ? updateExistingElementSection(focusState, elementIndex, section)
+      : addNewElementWithSection(focusState, table, row, section);
+
+  // Step 2: Reset other elements in the same table
+  return resetOtherElementsInTable(updatedState, table, row);
+}
+
+// Handlers for SET_INTERACTORS_ON
+function updateExistingElementInteractors(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string
+): FocusState {
+  return state.reduce<FocusElement[]>((acc, element) => {
+    if (element.table === table && element.row === row) {
+      // Turn on interactors for target element
+      acc.push({ ...element, interactors: true });
+    } else if (element.table === table && element.interactors && element.section) {
+      // Turn off interactors but keep section
+      acc.push({ ...element, interactors: false });
+    } else if (element.table === table && element.interactors && !element.section) {
+      // Remove elements with only interactors (no section)
+      return acc;
+    } else {
+      // Keep all other elements unchanged
+      acc.push(element);
+    }
+    return acc;
+  }, []);
+}
+
 function handleSetInteractorsOn(focusState: FocusState, action: FocusAction): FocusState {
   if (action.type !== FocusActionType.SET_INTERACTORS_ON) return focusState;
 
   const { table, row } = action.focus;
-  const existingElementIndex = focusState.findIndex(
-    element => element.table === table && element.row === row
-  );
+  const elementIndex = findElementIndex(focusState, table, row);
 
-  // // Process existing elements
-  const updatedElements: FocusElement[] = focusState.reduce<FocusElement[]>((acc, element) => {
-    if (element.table === table && element.row === row) {
-      acc.push({
-        ...element,
-        interactors: true,
-      });
-      return acc;
-    } else if (element.table === table && element.interactors && element.section) {
-      acc.push({
-        ...element,
-        interactors: false,
-      });
-      return acc;
-    } else if (element.table === table && element.interactors && !element.section) {
-      return acc;
-    }
-    acc.push(element);
-    return acc;
-  }, []);
+  const updatedElements = updateExistingElementInteractors(focusState, table, row);
 
   // Add new element if it doesn't exist
-  if (existingElementIndex === -1) {
-    return [
-      ...updatedElements,
-      createFocusElement({
-        row,
-        table,
-        interactors: true,
-      }),
-    ];
+  if (elementIndex === -1) {
+    return [...updatedElements, createFocusElement({ table, row, interactors: true })];
   }
 
   return updatedElements;
 }
 
-/**
- * Handles setting interactors section on a specific row
- * Toggles sections on/off and updates other elements in the same table
- */
+// Handlers for SET_INTERACTORS_OFF
+function removeElementsWithoutSections(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string
+): FocusState {
+  return state.filter(
+    element => !(element.table === table && element.row === row && element.section === null)
+  );
+}
+
+function updateElementsInteractorsOff(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string
+): FocusState {
+  return state.map(element => {
+    if (element.table === table && element.row === row) {
+      return {
+        ...element,
+        interactors: false,
+        interactorsSection: null,
+      };
+    }
+    return element;
+  });
+}
+
+function handleSetInteractorsOff(focusState: FocusState, action: FocusAction): FocusState {
+  if (action.type !== FocusActionType.SET_INTERACTORS_OFF) return focusState;
+
+  const { table, row } = action.focus;
+
+  // Remove elements with no section first
+  const filteredElements = removeElementsWithoutSections(focusState, table, row);
+
+  // Update existing elements
+  return updateElementsInteractorsOff(filteredElements, table, row);
+}
+
+// Handlers for SET_INTERACTORS_SECTION
+function shouldToggleInteractorsSection(
+  element: FocusElement,
+  interactorsRow: string,
+  section: [string, string]
+): boolean {
+  return (
+    element.interactorsRow === interactorsRow &&
+    element.interactorsSection !== null &&
+    element.interactorsSection[0] === section[0] &&
+    element.interactorsSection[1] === section[1]
+  );
+}
+
+function updateElementForInteractorsSection(
+  element: FocusElement,
+  interactorsRow: string,
+  section: [string, string]
+): FocusElement {
+  if (shouldToggleInteractorsSection(element, interactorsRow, section)) {
+    // Toggle off
+    return {
+      ...element,
+      interactorsRow: null,
+      interactorsSection: null,
+    };
+  }
+
+  // Set new section
+  return {
+    ...element,
+    interactorsRow,
+    interactorsSection: section,
+    section: null,
+  };
+}
+
 function handleSetInteractorsSection(focusState: FocusState, action: FocusAction): FocusState {
   if (action.type !== FocusActionType.SET_INTERACTORS_SECTION) return focusState;
 
   const { table, row, interactorsRow, section } = action.focus;
 
-  return focusState.map(element => {
-    // Active row
+  return focusState.reduce<FocusState>((acc, element) => {
     if (element.table === table && element.row === row) {
-      const isSameSection =
-        element.interactorsRow === interactorsRow &&
-        element.interactorsSection &&
-        section &&
-        element.interactorsSection[0] === section[0] &&
-        element.interactorsSection[1] === section[1];
-
-      // Toggle off if section already active
-      if (isSameSection) {
-        return {
-          ...element,
-          interactorsRow: null,
-          interactorsSection: null,
-        };
-      }
-
-      // Set section on element
-      return {
-        ...element,
-        interactorsRow,
-        interactorsSection: section,
-        section: null,
-      };
-    }
-
-    // Reset other elements in same table with interactors
-    if (element.table === table && element.interactors) {
-      return {
+      // Update target element
+      acc.push(updateElementForInteractorsSection(element, interactorsRow, section));
+    } else if (element.table === table && element.interactors) {
+      // Reset other interactors in same table
+      acc.push({
         ...element,
         interactorsRow: null,
         interactorsSection: null,
-      };
+      });
+    } else if (element.table === table && element.section) {
+      // Remove elements with only sections in same table
+      return acc;
+    } else {
+      // Keep other elements unchanged
+      acc.push(element);
     }
-
-    // Keep other elements unchanged
-    return element;
-  });
+    return acc;
+  }, []);
 }
 
-/**
- * Sets interactors source for a specific row
- */
+// Handlers for SET_INTERACTORS_SOURCE
+function updateElementInteractorsSource(
+  element: FocusElement,
+  source: InteractorsSource
+): FocusElement {
+  return {
+    ...element,
+    interactorsSection: null,
+    interactorsSource: source,
+    interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[source],
+  };
+}
+
 function handleSetInteractorsSource(focusState: FocusState, action: FocusAction): FocusState {
   if (action.type !== FocusActionType.SET_INTERACTORS_SOURCE) return focusState;
 
@@ -334,20 +406,20 @@ function handleSetInteractorsSource(focusState: FocusState, action: FocusAction)
 
   return focusState.map(element => {
     if (element.table === table && element.row === row) {
-      return {
-        ...element,
-        interactorsSection: null,
-        interactorsSource: source,
-        interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[source],
-      };
+      return updateElementInteractorsSource(element, source);
     }
     return element;
   });
 }
 
-/**
- * Sets interactors threshold for a specific row
- */
+// Handlers for SET_INTERACTORS_THRESHOLD
+function updateElementInteractorsThreshold(element: FocusElement, threshold: number): FocusElement {
+  return {
+    ...element,
+    interactorsThreshold: threshold,
+  };
+}
+
 function handleSetInteractorsThreshold(focusState: FocusState, action: FocusAction): FocusState {
   if (action.type !== FocusActionType.SET_INTERACTORS_THRESHOLD) return focusState;
 
@@ -355,54 +427,57 @@ function handleSetInteractorsThreshold(focusState: FocusState, action: FocusActi
 
   return focusState.map(element => {
     if (element.table === table && element.row === row) {
-      return {
-        ...element,
-        interactorsThreshold,
-      };
+      return updateElementInteractorsThreshold(element, interactorsThreshold);
     }
     return element;
   });
 }
 
-/**
- * Handles context menu focus setting
- */
+// Handlers for context menu actions
+function shouldAddContextMenuElement(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string
+): boolean {
+  const { rowActive } = getFocusElementState(state, { table, row, section: null });
+  return !rowActive;
+}
+
 function handleSetFocusContextMenu(focusState: FocusState, action: FocusAction): FocusState {
   if (action.type !== FocusActionType.SET_FOCUS_CONTEXT_MENU) return focusState;
 
   const { table, row } = action.focus;
-  const { rowActive } = getFocusElementState(focusState, { table, row, section: null });
 
   // Skip if row is already active
-  if (rowActive) {
+  if (!shouldAddContextMenuElement(focusState, table, row)) {
     return focusState;
   }
 
   // Add new element
-  return [
-    ...focusState,
-    createFocusElement({
-      row,
-      table,
-    }),
-  ];
+  return [...focusState, createFocusElement({ row, table })];
 }
 
-/**
- * Handles clearing context menu focus
- */
-function handleClearFocusContextMenu(focusState: FocusState, action: FocusAction): FocusState {
-  if (action.type !== FocusActionType.CLEAR_FOCUS_CONTEXT_MENU) return focusState;
-
-  const { table, row } = action.focus;
-  const { rowActive, hasSectionActive, interactorsActive } = getFocusElementState(focusState, {
+function shouldKeepContextMenuElement(
+  state: FocusState,
+  table: FocusElementTable,
+  row: string
+): boolean {
+  const { rowActive, hasSectionActive, interactorsActive } = getFocusElementState(state, {
     table,
     row,
     section: null,
   });
 
+  return rowActive && (hasSectionActive || interactorsActive);
+}
+
+function handleClearFocusContextMenu(focusState: FocusState, action: FocusAction): FocusState {
+  if (action.type !== FocusActionType.CLEAR_FOCUS_CONTEXT_MENU) return focusState;
+
+  const { table, row } = action.focus;
+
   // Keep if row has section or interactors active
-  if (rowActive && (hasSectionActive || interactorsActive)) {
+  if (shouldKeepContextMenuElement(focusState, table, row)) {
     return focusState;
   }
 
@@ -411,37 +486,10 @@ function handleClearFocusContextMenu(focusState: FocusState, action: FocusAction
 }
 
 /**
- * Handles the SET_INTERACTORS_OFF action
- */
-function handleSetInteractorsOff(focusState: FocusState, action: FocusAction): FocusState {
-  if (action.type !== FocusActionType.SET_INTERACTORS_OFF) return focusState;
-
-  const { table, row } = action.focus;
-
-  // Remove elements with no section
-  const filteredElements = focusState.filter(
-    element => !(element.table === table && element.row === row && element.section === null)
-  );
-
-  // Update existing elements
-  return filteredElements.map(element => {
-    if (element.table === table && element.row === row) {
-      return {
-        ...element,
-        interactors: false,
-        interactorsSection: null,
-      };
-    }
-    return element;
-  });
-}
-
-/**
  * Main reducer function for focus state
  * Delegates to specialized handlers for complex state transformations
  */
 function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
-  console.log(action.type);
   switch (action.type) {
     case FocusActionType.SET_FOCUS_SECTION:
       return handleSetFocusSection(focusState, action);
@@ -513,10 +561,6 @@ export function AssociationsFocusProvider({ children }: { children: ReactElement
   useEffect(() => {
     dispatch({ type: FocusActionType.RESET });
   }, [id]);
-
-  useEffect(() => {
-    console.log({ focusState });
-  }, [focusState]);
 
   return (
     <AssociationsFocusContext.Provider value={focusState}>
