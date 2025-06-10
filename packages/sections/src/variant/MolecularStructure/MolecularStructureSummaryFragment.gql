@@ -1,0 +1,6 @@
+fragment MolecularStructureSummaryFragment on Variant {
+  id
+  proteinCodingCoordinates {
+    count
+  }
+}

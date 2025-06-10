@@ -1,16 +1,16 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import PROTEIN_STRUCTURE_SUMMARY from "./ProteinStructureSummaryFragment.gql";
+import MOLECULAR_STRUCTURE_SUMMARY from "./MolecularStructureSummaryFragment.gql";
 
 function Summary() {
-  const request = usePlatformApi(PROTEIN_STRUCTURE_SUMMARY);
+  const request = usePlatformApi(MOLECULAR_STRUCTURE_SUMMARY);
 
   return <SummaryItem definition={definition} request={request} />;
 }
 
 Summary.fragments = {
-  ProteinStructureSummaryFragment: PROTEIN_STRUCTURE_SUMMARY,
+  MolecularStructureSummaryFragment: MOLECULAR_STRUCTURE_SUMMARY,
 };
 
 export default Summary;

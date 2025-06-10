@@ -101,7 +101,7 @@ function Viewer({ row }) {
   return (
     <Box ref={viewerRef} position="relative" width="100%">
       {/* container to insert viewer into */}
-      <Box className="viewerContainer" position="relative" width="100%" height={320} mb={1}>
+      <Box className="viewerContainer" position="relative" width="100%" height={340} mb={1}>
         {/* info and screenshot buttons */}
         {!messageText && (
           <Box
