@@ -2,11 +2,6 @@ name: Build images
 
 on:
   workflow_call:
-    inputs:
-      tag:
-        type: string
-        description: 'Tag to build against'
-        required: true
 
 jobs:
   build:
@@ -18,16 +13,15 @@ jobs:
       attestations: write
       id-token: write
     env:
-      TAG: ${{ inputs.tag }}
       REPO: ${{ github.event.repository.name }}
     steps:
       # prepare environment
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.TAG }}
+          ref: ${{ github.ref_name }}
       - name: Prepare environment
         run: |
-          TAG=$(echo $TAG | sed 's/^v//')
+          TAG=$(echo ${{ github.ref_name }} | sed 's/^v//')
           echo "TAG=$TAG" >> $GITHUB_ENV
           echo "The tag for this build is $TAG"
           echo "The repo name is: $REPO"

@@ -2,42 +2,22 @@ name: Build bundle
 
 on:
   workflow_call:
-    inputs:
-      tag:
-        type: string
-        description: 'Tag to build against'
-        required: true
-      data_release_location:
-        type: string
-        description: 'Location of the data release'
-        required: false
 
 jobs:
   bundle:
     name: Bundle 📦
     runs-on: ubuntu-22.04
-    env:
-      TAG: ${{ inputs.tag }}
-      DATA_RELEASE_LOCATION: ${{ inputs.data_release_location || '' }}
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.TAG }}
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 23
-
-      - name: Prepare environment
-        run: |
-          if [ -z "$DATA_RELEASE_LOCATION" ]; then
-            echo "Building $TAG with default data"
-          else
-            echo "Building $TAG with data from $DATA_RELEASE_LOCATION"
-          fi
 
       - uses: mskelton/setup-yarn@v3
 
