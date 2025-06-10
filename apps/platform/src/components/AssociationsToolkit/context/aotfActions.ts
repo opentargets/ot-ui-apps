@@ -14,13 +14,6 @@ export function resetPagination(): Action {
   };
 }
 
-export function setInteractors(id: RowInteractorsKey, source: string): Action {
-  return {
-    type: ActionType.SET_INTERACTORS,
-    payload: { id, source },
-  };
-}
-
 export function setDataSourceControl(
   id: string,
   weight: number,

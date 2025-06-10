@@ -29,7 +29,6 @@ import {
   FocusActionType,
   useAssociationsFocusDispatch,
 } from "../../context/AssociationsFocusContext";
-import { PrivateWrapper } from "ui";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {

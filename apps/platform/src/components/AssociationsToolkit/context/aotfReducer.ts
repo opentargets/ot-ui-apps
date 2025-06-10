@@ -70,25 +70,6 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         sorting: action.sorting,
       };
     }
-    case ActionType.SET_INTERACTORS: {
-      const currentInteractors = state.interactors;
-      if (typeof currentInteractors === "undefined" || !currentInteractors) return { ...state };
-      const payloadInteractor = action.payload;
-
-      // Todo: review
-      if (currentInteractors.has(payloadInteractor.id)) {
-        const row = currentInteractors.get(payloadInteractor.id);
-        row?.push(payloadInteractor.source);
-        currentInteractors.set(payloadInteractor.id, row);
-      }
-
-      currentInteractors.set(payloadInteractor.id, [payloadInteractor.source]);
-
-      return {
-        ...state,
-        interactors: currentInteractors,
-      };
-    }
     case ActionType.DATA_SOURCE_CONTROL: {
       const colUpdatedControls = { ...action.payload };
       const dataSourceControls = state.dataSourceControls.map(col => {
