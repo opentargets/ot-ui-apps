@@ -2,6 +2,16 @@ query PharmacogenomicsQuery($chemblId: String!) {
   drug(chemblId: $chemblId) {
     id
     pharmacogenomics {
+      variantAnnotation {
+        entity
+        effect
+        effectType
+        effectDescription
+        literature
+        directionality
+        baseAlleleOrGenotype
+        comparisonAlleleOrGenotype
+      }
       variantRsId
       genotypeId
       variantFunctionalConsequence {

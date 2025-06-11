@@ -57,6 +57,7 @@ export { default as OtInvalidResultFilters } from "./components/OtInvalidResultF
 export { default as OtCopyToClipboard } from "./components/OtCopyToClipboard";
 export { default as OtBtnGroup } from "./components/OtBtnGroup";
 export { default as CopyUrlButton } from "./components/CopyUrlButton";
+export { default as DirectionalityDrawer } from "./components/DirectionalityDrawer";
 
 export * as summaryUtils from "./components/Summary/utils";
 export * from "./components/Footer";

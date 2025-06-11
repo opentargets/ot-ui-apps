@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  OtTable,
+  DirectionalityDrawer,
+} from "ui";
 
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { definition } from ".";
@@ -189,6 +197,13 @@ function Body({ id: chemblId, label: name, entity }) {
       label: "Drug Response Category",
       renderCell: ({ pgxCategory }) => pgxCategory || naLabel,
       filterValue: ({ pgxCategory }) => pgxCategory,
+    },
+    {
+      id: "directionality",
+      label: "Directionality",
+      renderCell: ({ variantAnnotation }) => (
+        <DirectionalityDrawer variantAnnotation={variantAnnotation} caption="Directionality" />
+      ),
     },
     {
       id: "isDirectTarget",
