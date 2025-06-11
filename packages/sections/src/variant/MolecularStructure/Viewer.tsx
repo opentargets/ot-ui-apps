@@ -132,6 +132,13 @@ function Viewer({ row }) {
           antialias: true,
           cartoonQuality: 10,
         });
+        _viewer.getCanvas().addEventListener(
+          "wheel",
+          event => {
+            if (!event.ctrlKey) event.stopImmediatePropagation();
+          },
+          true // use capture phase so fires before library handler
+        );
         window.viewer = _viewer; // !! REMOVE !!
         // const hoverDuration = 10;
         _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200); // use ondblclick so replaces existing
