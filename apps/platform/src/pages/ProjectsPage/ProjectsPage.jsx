@@ -39,12 +39,27 @@ function ProjectPage() {
     { id: "project_lead", label: "Project Lead" },
     { id: "generates_data", label: "Generates Data" },
     {
-      id: "currently_integrates_in_PPP",
-      label: "Currently integrates into PPP",
-      renderCell: ({ currently_integrates_in_PPP }) => (
+      id: "currently_exclusive_to_PPP",
+      label: "Currently exclusive to PPP",
+      filterValue: ({ currently_exclusive_to_PPP }) => `${currently_exclusive_to_PPP}`,
+      sortable: true,
+      renderCell: ({ currently_exclusive_to_PPP }) => (
         <FontAwesomeIcon
           size="lg"
-          icon={CURRENTLY_INTEGRATES_IN_PPP[currently_integrates_in_PPP]}
+          icon={CURRENTLY_INTEGRATES_IN_PPP[currently_exclusive_to_PPP]}
+          className={classes.icon}
+        />
+      ),
+    },
+    {
+      id: "integrates_into_platform_and_PPP",
+      label: "Integrates into Platform and PPP",
+      filterValue: ({ integrates_into_platform_and_PPP }) => `${integrates_into_platform_and_PPP}`,
+      sortable: true,
+      renderCell: ({ integrates_into_platform_and_PPP }) => (
+        <FontAwesomeIcon
+          size="lg"
+          icon={CURRENTLY_INTEGRATES_IN_PPP[integrates_into_platform_and_PPP]}
           className={classes.icon}
         />
       ),
@@ -59,7 +74,7 @@ function ProjectPage() {
         diseaseMapping.forEach(disease => {
           if (disease && disease.disease_id) {
             ALL_AVATARS.push(
-              <Link to={`disease/${disease.disease_id}`} key={disease.disease_id}>
+              <Link to={`/disease/${disease.disease_id}`} key={disease.disease_id}>
                 <Chip
                   size="small"
                   label={disease.label || disease.disease_id}
@@ -108,7 +123,8 @@ function ProjectPage() {
             showGlobalFilter
             columns={columns}
             rows={projectsData}
-            rowsPerPageOptions={[30]}
+            sortBy="currently_exclusive_to_PPP"
+            order="desc"
           />
         </Box>
       </Paper>

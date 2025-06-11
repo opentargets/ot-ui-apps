@@ -3,12 +3,10 @@ import { Environment, Config } from "./types";
 export const getEnvironmentConfig = (env: Environment): Config => {
   const configs: Record<Environment, Config> = {
     development: {
-      urlApi: "http://localhost:8080fefwe",
+      urlApi: "http://localhost:8080",
       urlAiApi: "http://localhost:8081",
       profile: {},
       googleTagManagerID: null,
-      efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
-      downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
     },
@@ -17,8 +15,6 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       urlAiApi: "https://ai.platform.opentargets.org",
       profile: {},
       googleTagManagerID: "GTM-XXXXX",
-      efoURL: "/data/ontology/efo_json/diseases_efo.jsonl",
-      downloadsURL: "/data/downloads.json",
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
     },
@@ -39,8 +35,6 @@ export const getConfig = (): Config => {
     gitVersion: window.gitVersion ?? ENV_GIT_VERSION ?? "",
     profile: window.configProfile ?? { isPartnerPreview: false },
     googleTagManagerID: window.configGoogleTagManagerID ?? null,
-    efoURL: window.configEFOURL ?? "/data/ontology/efo_json/diseases_efo.jsonl",
-    downloadsURL: window.configDownloadsURL ?? "/data/downloads.json",
     geneticsPortalUrl: window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
   };
 };

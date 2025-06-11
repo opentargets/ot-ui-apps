@@ -1,4 +1,4 @@
-import { CompactAlphaFoldLegend, CompactAlphaFoldPathogenicityLegend } from "ui";
+import { CompactAlphaFoldLegend, CompactAlphaFoldPathogenicityLegend, Tooltip } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
 import { createViewer } from "3dmol";
 import {
@@ -23,6 +23,7 @@ import {
   drawBallAndStick,
 } from "./ViewerHelpers";
 import { csvParse, mean } from "d3";
+import InfoPopper from "./InfoPopper";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -252,16 +253,26 @@ function Viewer({ row }) {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              background: "white",
               m: 1,
+              gap: 1,
             }}
           >
-            <Button
-              sx={{ display: "flex", gap: 1 }}
-              onClick={() => onClickCapture(viewerRef, row.target.id)}
-            >
-              <FontAwesomeIcon icon={faCamera} /> Screenshot
-            </Button>
+            <InfoPopper />
+            <Tooltip title="Screenshot" placement="top-start">
+              <Button
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  bgcolor: "white",
+                  "&:hover": {
+                    bgcolor: "#f8f8f8d8",
+                  },
+                }}
+                onClick={() => onClickCapture(viewerRef, row?.target.id)}
+              >
+                <FontAwesomeIcon icon={faCamera} />
+              </Button>
+            </Tooltip>
           </Box>
         )}
 
