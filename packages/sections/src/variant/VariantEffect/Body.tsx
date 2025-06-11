@@ -23,9 +23,10 @@ const columns = [
         }
         showHelpIcon
       >
-        {method}
+        {VARIANT_EFFECT_METHODS[method].prettyName}
       </Tooltip>
     ),
+    exportValue: ({ method }) => VARIANT_EFFECT_METHODS[method].prettyName,
   },
   {
     id: "assessment",
@@ -71,7 +72,11 @@ function getSortedRows(request) {
   return request.data?.variant?.variantEffect
     ? [...request.data.variant.variantEffect]
         .filter(e => e.method !== null)
-        .sort((row1, row2) => row1.method.localeCompare(row2.method))
+        .sort((row1, row2) =>
+          VARIANT_EFFECT_METHODS[row1.method].prettyName.localeCompare(
+            VARIANT_EFFECT_METHODS[row2.method].prettyName
+          )
+        )
     : [];
 }
 
