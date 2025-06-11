@@ -250,7 +250,6 @@ function Viewer({ row }) {
               position: "absolute",
               zIndex: 1,
               display: "flex",
-              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
               m: 1,
