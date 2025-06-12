@@ -332,7 +332,9 @@ function renderTooltip(datum) {
             <Chip label="self" variant="outlined" size="small" />
           </Box>
         ) : (
-          <Link to={`/variant/${datum.variant.id}`}>{displayId}</Link>
+          <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
+            {displayId}
+          </Link>
         )}
       </ObsTooltipRow>
       <ObsTooltipRow label="Reported trait" valueWidth={valueMaxWidth} truncateValue>
@@ -344,7 +346,9 @@ function renderTooltip(datum) {
             {datum.study.diseases.map((d, i) => (
               <Fragment key={d.id}>
                 {i > 0 && ", "}
-                <Link to={`/disease/${d.id}`}>{d.name}</Link>
+                <Link asyncTooltip to={`/disease/${d.id}`}>
+                  {d.name}
+                </Link>
               </Fragment>
             ))}
           </>
@@ -353,7 +357,13 @@ function renderTooltip(datum) {
         )}
       </ObsTooltipRow>
       <ObsTooltipRow label="Study">
-        {datum.study ? <Link to={`/study/${datum.study.id}`}>{datum.study.id}</Link> : naLabel}
+        {datum.study ? (
+          <Link asyncTooltip to={`/study/${datum.study.id}`}>
+            {datum.study.id}
+          </Link>
+        ) : (
+          naLabel
+        )}
       </ObsTooltipRow>
       <ObsTooltipRow label="P-value">
         <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
@@ -384,7 +394,7 @@ function renderTooltip(datum) {
           <Box display="flex" gap={0.5}>
             Top:{" "}
             {datum.l2GPredictions?.rows?.[0]?.target ? (
-              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+              <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
                 {datum.l2GPredictions.rows[0].target.approvedSymbol}
               </Link>
             ) : (

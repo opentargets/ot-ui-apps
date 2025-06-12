@@ -1,5 +1,5 @@
 import { useTheme, Box, Skeleton } from "@mui/material";
-import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate, OtScoreLinearBar } from "ui";
+import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate } from "ui";
 import * as PlotLib from "@observablehq/plot";
 import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
 import { naLabel, credsetConfidenceMap } from "@ot/constants";
@@ -160,7 +160,7 @@ function renderTooltip(datum) {
         </Box>
       </ObsTooltipRow>
       <ObsTooltipRow label="Lead variant">
-        <Link to={`/variant/${datum.variant.id}`}>
+        <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
           <DisplayVariantId
             variantId={datum.variant.id}
             referenceAllele={datum.variant.referenceAllele}
@@ -195,7 +195,7 @@ function renderTooltip(datum) {
           <Box display="flex" gap={0.5}>
             Top:{" "}
             {datum.l2GPredictions?.rows?.[0]?.target ? (
-              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+              <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
                 {datum.l2GPredictions.rows[0].target.approvedSymbol}
               </Link>
             ) : (
