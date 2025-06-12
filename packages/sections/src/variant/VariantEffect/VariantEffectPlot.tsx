@@ -6,6 +6,7 @@ import { Box, Fade, Skeleton } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { DataDownloader } from "ui";
 import { VARIANT_EFFECT_METHODS } from "@ot/constants";
+import { useTheme } from "@mui/material/styles";
 
 const PRIORITISATION_COLORS = [
   rgb("#bc3a19"),
@@ -81,6 +82,7 @@ const getLicense = (method: string) => {
 
 function Plot({ data, width }) {
   const headerRef = useRef();
+  const theme = useTheme();
 
   useEffect(() => {
     if (data === undefined || width === null) return;
@@ -102,8 +104,8 @@ function Plot({ data, width }) {
         tickSize: 0,
         tickPadding: 18,
         tickFormat: d => getYLabel(d),
+        domain: data.map(d => d.method),
       },
-
       color: {
         legend: false,
         type: "linear",
@@ -115,6 +117,17 @@ function Plot({ data, width }) {
         fontSize: "15px",
       },
       marks: [
+        PlotLib.text(data, {
+          x: -1,
+          y: "method",
+          lineAnchor: "bottom",
+          textAnchor: "end",
+          text: row => "?",
+          fontSize: 13,
+          className: "y-label-tooltips",
+          dx: -11,
+          dy: -2,
+        }),
         PlotLib.ruleY(data, {
           x1: -0.99,
           x2: 0.99,
@@ -147,7 +160,7 @@ function Plot({ data, width }) {
             method: {
               value: ({ method }) => {
                 if (!method) return null;
-                return VARIANT_EFFECT_METHODS[method]?.methodName;
+                return VARIANT_EFFECT_METHODS[method]?.prettyName;
               },
               label: "Method:",
             },
@@ -175,7 +188,33 @@ function Plot({ data, width }) {
         }),
       ],
     });
+
     headerRef.current.append(chart);
+
+    for (const [index, tooltip] of chart.querySelectorAll(".y-label-tooltips text").entries()) {
+      let popup = null;
+      tooltip.style.cursor = "default";
+      tooltip.addEventListener("mouseenter", event => {
+        popup = document.createElement("div");
+        popup.classList.add("popup");
+        popup.textContent = VARIANT_EFFECT_METHODS[data[index].method].description;
+        popup.style.background = `${theme.palette.background.paper}`;
+        popup.style.border = `1px solid ${theme.palette.grey[300]}`;
+        popup.style.color = `${theme.palette.text.primary}`;
+        popup.style.fontSize = "12px";
+        popup.style.padding = "0.3rem 0.5rem";
+        popup.style.position = "absolute";
+        popup.style.maxWidth = "300px";
+        document.body.appendChild(popup); // append before use clientHeight
+        const bbox = event.currentTarget.getBoundingClientRect();
+        popup.style.left = bbox.left + window.scrollX - 110 + "px";
+        popup.style.top = bbox.top + window.scrollY - 12 - popup.clientHeight + "px";
+      });
+      tooltip.addEventListener("mouseleave", () => {
+        popup?.remove();
+        popup = null;
+      });
+    }
     return () => chart.remove();
   }, [data, width]);
 
