@@ -4,6 +4,16 @@ query PharmacogenomicsQuery($variantId: String!) {
     referenceAllele
     alternateAllele
     pharmacogenomics {
+      variantAnnotation {
+        entity
+        effect
+        effectType
+        effectDescription
+        literature
+        directionality
+        baseAlleleOrGenotype
+        comparisonAlleleOrGenotype
+      }
       genotypeId
       isDirectTarget
       target {
