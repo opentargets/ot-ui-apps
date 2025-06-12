@@ -1,5 +1,5 @@
 import { CompactAlphaFoldLegend, CompactAlphaFoldPathogenicityLegend, Tooltip } from "ui";
-import { getAlphaFoldConfidence } from "@ot/constants";
+import { getAlphaFoldConfidence, getAlphaFoldPathogenicity } from "@ot/constants";
 import { createViewer } from "3dmol";
 import {
   Box,
@@ -45,46 +45,19 @@ function Viewer({ row }) {
 
     function handleHover(atom) {
       if (!atom || currentResi === atom.resi) return;
-      console.log(colorBy);
       drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
-      // drawCartoon({});
-      // setHoveredAtom(atom);
-      // const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
-      // hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
-      // const afColorLight = hslColor.toString();
-      // viewer.setStyle(
-      //   // only need setStyle since doing cartoon - owise can use addStyle
-      //   {},
-      //   {
-      //     cartoon: {
-      //       colorfunc: a =>
-      //         a.resi === currentResi ? afColorLight : getAlphaFoldConfidence(a, "color"),
-      //       arrows: true,
-      //     },
-      //   }
-      // );
-      // addVariantStyle(viewer, variantResidues, atom.resi);
-      // viewer.addStyle(
-      //   { resi: atom.resi },
-      //   {
-      //     stick: { color: afColorLight },
-      //     sphere: { radius: 0.4, color: afColorLight },
-      //   }
-      // );
+      setHoveredAtom(atom);
       currentResi = atom.resi;
       viewer.render();
     }
 
     function handleUnhover(atom) {
       if (currentResi !== null) {
-        // noHoverCartoon({ viewer, variantResidues, colorBy });
-        // if (currentResi !== atom.resi)
         viewer.setStyle({}, {});
         drawCartoon({ viewer, colorBy, pathogenicityScores });
-        // drawVariantSurface({ viewer: _viewer, variantResidues, colorBy });
         currentResi = null;
         viewer.render();
-        // setHoveredAtom(null);
+        setHoveredAtom(null);
       }
     }
 
@@ -139,18 +112,8 @@ function Viewer({ row }) {
           },
           true // use capture phase so fires before library handler
         );
-        window.viewer = _viewer; // !! REMOVE !!
-        // const hoverDuration = 10;
         _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200); // use ondblclick so replaces existing
         _viewer.addModel(structureData, "cif");
-        // _viewer.setHoverDuration(hoverDuration);
-
-        // const hoverArgs = hoverManagerFactory({ viewer: _viewer, variantResidues, setHoveredAtom });
-        // // const handleUnhover = hoverArgs[3];
-        // // _viewer.getCanvas().onmouseleave = () => {
-        // //   setTimeout(handleUnhover, hoverDuration + 50);
-        // // };
-        // _viewer.setHoverable(...hoverArgs);
         _viewer?.setStyle({}, { hidden: true });
         _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
         drawCartoon({ viewer: _viewer, colorBy });
@@ -165,25 +128,10 @@ function Viewer({ row }) {
     }
     fetchStructure();
     return () => {
-      setHoveredAtom("");
+      setHoveredAtom(null);
       _viewer?.clear();
     };
   }, []);
-
-  // REMOVE
-  useEffect(() => {
-    if (!viewer) return;
-    const hoverDuration = 10; // use ondblclick so replaces existing
-    viewer.setHoverDuration(hoverDuration);
-
-    const hoverArgs = hoverManagerFactory({ viewer, setHoveredAtom });
-    // const hoverArgs = hoverManagerFactory({ viewer, variantResidues, setHoveredAtom });
-    // const handleUnhover = hoverArgs[3];
-    // _viewer.getCanvas().onmouseleave = () => {
-    //   setTimeout(handleUnhover, hoverDuration + 50);
-    // };
-    viewer.setHoverable(...hoverArgs);
-  });
 
   // fetch pathogenicity data
   useEffect(() => {
@@ -239,6 +187,20 @@ function Viewer({ row }) {
     drawVariantSurface({ viewer, variantResidues, colorBy, variantPathogenicityScore });
     viewer.render();
   }, [colorBy, pathogenicityScores]); // omit viewer to avoid double render at start
+
+  // set hover behavior
+  useEffect(() => {
+    if (!viewer) return;
+    const hoverDuration = 10;
+    viewer.setHoverDuration(hoverDuration);
+    const hoverArgs = hoverManagerFactory({ viewer, setHoveredAtom });
+    // const hoverArgs = hoverManagerFactory({ viewer, variantResidues, setHoveredAtom });
+    const handleUnhover = hoverArgs[3];
+    viewer.getCanvas().onmouseleave = () => {
+      setTimeout(handleUnhover, hoverDuration + 50);
+    };
+    viewer.setHoverable(...hoverArgs);
+  }, [viewer, colorBy, pathogenicityScores]);
 
   function handleToggleColor(event) {
     setColorBy(event.target.value);
@@ -299,7 +261,18 @@ function Viewer({ row }) {
                 {hoveredAtom.resn} {hoveredAtom.resi}
               </Typography>
               <Typography variant="caption" component="p" textAlign="right">
-                Confidence: {hoveredAtom.b} ({getAlphaFoldConfidence(hoveredAtom)})
+                {colorBy === "confidence"
+                  ? `Confidence: ${hoveredAtom.b} (${getAlphaFoldConfidence(
+                      hoveredAtom
+                    ).toLowerCase()})`
+                  : Array.isArray(pathogenicityScores)
+                  ? `Pathogenicity: ${pathogenicityScores[hoveredAtom.resi].toFixed(
+                      3
+                    )} (${getAlphaFoldPathogenicity(
+                      hoveredAtom,
+                      pathogenicityScores
+                    ).toLowerCase()})`
+                  : ""}
               </Typography>
             </Box>
           </Box>

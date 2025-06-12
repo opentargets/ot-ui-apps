@@ -35,6 +35,14 @@ export const alphaFoldPathogenicityBands = [
   { lowerLimit: 0, label: "Likely benign", sublabel: "score < 0.34", color: "rgb(61, 84, 147)" },
 ];
 
+export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") {
+  const score = scores[atom.resi];
+  for (const obj of alphaFoldPathogenicityBands) {
+    if (score > obj.lowerLimit) return obj[propertyName];
+  }
+  return alphaFoldPathogenicityBands[0][propertyName];
+}
+
 export const alphaFoldPathogenicityColorScale = scaleLinear()
   .domain([0, 0.34, 0.564, 1])
   .range(["rgb(61, 84, 147)", "rgb(168, 169, 173)", "rgb(168, 169, 173)", "rgb(203, 25, 25)"])

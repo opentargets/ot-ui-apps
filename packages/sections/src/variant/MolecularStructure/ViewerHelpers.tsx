@@ -111,7 +111,6 @@ export function drawVariantSurface({
 }
 
 export function drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores }) {
-  console.log(colorBy);
   const color =
     colorBy === "confidence"
       ? getAlphaFoldConfidence(atom, "color")
