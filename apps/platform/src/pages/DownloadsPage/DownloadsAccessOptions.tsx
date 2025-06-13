@@ -24,7 +24,7 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
   const containedInArray = Array.isArray(data.containedIn) ? data.containedIn : [data.containedIn];
 
   const getLink = loc => {
-    return `${locationUrl[loc]}/${columnId}`;
+    return `${locationUrl[loc]}${columnId}`;
   };
 
   const LOCATION_MAP: Record<string, singleBtnGroupObj> = {
@@ -77,12 +77,11 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
 }
 
 function HttpLocation({ link }: { link: string }) {
-  const httpLink = link.replace("ftp", "http");
   return (
     <Box sx={{ p: 2 }}>
-      <OtCodeBlock textToCopy={httpLink}>
-        <Link to={httpLink} external>
-          {httpLink}
+      <OtCodeBlock textToCopy={link}>
+        <Link to={link} external>
+          {link}
         </Link>
       </OtCodeBlock>
     </Box>

@@ -40,7 +40,7 @@ function ProjectPage() {
     { id: "generates_data", label: "Generates Data" },
     {
       id: "currently_exclusive_to_PPP",
-      label: "Currently exclusive to PPP",
+      label: "Integrated into PPP",
       filterValue: ({ currently_exclusive_to_PPP }) => `${currently_exclusive_to_PPP}`,
       sortable: true,
       renderCell: ({ currently_exclusive_to_PPP }) => (
@@ -53,7 +53,7 @@ function ProjectPage() {
     },
     {
       id: "integrates_into_platform_and_PPP",
-      label: "Integrates into Platform and PPP",
+      label: "Integrated into Public",
       filterValue: ({ integrates_into_platform_and_PPP }) => `${integrates_into_platform_and_PPP}`,
       sortable: true,
       renderCell: ({ integrates_into_platform_and_PPP }) => (
@@ -64,7 +64,7 @@ function ProjectPage() {
         />
       ),
     },
-    { id: "project_status", label: "Project Status" },
+    { id: "project_status", label: "Project Status", sortable: true },
     { id: "open_targets_therapeutic_area", label: "Therapeutic Area" },
     {
       id: "disease_mapping",

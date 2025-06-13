@@ -57,6 +57,7 @@ function OtTableSSP({
 }: OtTableSSPProps): ReactElement {
   const client = useApolloClient();
   const [state, dispatch] = useReducer(otTableReducer, "", createInitialState);
+  const memoizedVariables = useMemo(() => ({ ...variables }), [JSON.stringify(variables)]);
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -169,7 +170,7 @@ function OtTableSSP({
     dispatch(setLoading(true));
     getTableRows({
       query,
-      variables,
+      variables: memoizedVariables,
       cursor: state.cursor,
       size: pagination.pageSize,
       freeTextQuery: state.freeTextQuery,
@@ -191,7 +192,7 @@ function OtTableSSP({
     dispatch(setLoading(true));
     getTableRows({
       query,
-      variables,
+      variables: memoizedVariables,
       cursor: null,
       size: newPagination.pageSize,
       freeTextQuery,
@@ -220,18 +221,19 @@ function OtTableSSP({
    *********************************/
   const getWholeDataset = useCursorBatchDownloader(
     query,
-    { ...variables, freeTextQuery: state.freeTextQuery },
+    { variables: memoizedVariables, freeTextQuery: state.freeTextQuery },
     `data[${entity}][${sectionName}]`
   );
 
   useEffect(() => {
+    console.log(variables);
     const newPagination = {
       pageIndex: 0,
       pageSize: pagination.pageSize,
     };
     setTableData({ newPagination, freeTextQuery: state.freeTextQuery });
     enableRowSelection && setRowSelection({ 0: true });
-  }, [state.freeTextQuery]);
+  }, [state.freeTextQuery, memoizedVariables]);
 
   useEffect(() => {
     enableRowSelection && getSelectedRows(table.getSelectedRowModel().rows);
@@ -241,7 +243,7 @@ function OtTableSSP({
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
   }
 
-  const playgroundVariables = { ...variables, cursor: null, size: 10 };
+  const playgroundVariables = { variables: memoizedVariables, cursor: null, size: 10 };
 
   return (
     <div>
