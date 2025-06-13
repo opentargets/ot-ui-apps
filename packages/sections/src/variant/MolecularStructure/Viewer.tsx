@@ -1,5 +1,9 @@
 import { CompactAlphaFoldLegend, CompactAlphaFoldPathogenicityLegend, Tooltip } from "ui";
-import { getAlphaFoldConfidence, getAlphaFoldPathogenicity } from "@ot/constants";
+import {
+  getAlphaFoldConfidence,
+  getAlphaFoldPathogenicity,
+  alphaFoldPathogenicityColorScale,
+} from "@ot/constants";
 import { createViewer } from "3dmol";
 import {
   Box,
@@ -20,10 +24,12 @@ import {
   onClickCapture,
   drawCartoon,
   drawVariantSurface,
-  drawBallAndStick,
+  setVariantSurfaceColor,
+  setHoverBehavior,
 } from "./ViewerHelpers";
 import { csvParse, mean } from "d3";
 import InfoPopper from "./InfoPopper";
+import _ from "lodash";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -39,30 +45,6 @@ function Viewer({ row }) {
   const [pathogenicityScores, setPathogenicityScores] = useState(null);
   const [variantPathogenicityScore, setVariantPathogenicityScore] = useState(null);
   const viewerRef = useRef(null);
-
-  function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom }) {
-    let currentResi = null;
-
-    function handleHover(atom) {
-      if (!atom || currentResi === atom.resi) return;
-      drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
-      setHoveredAtom(atom);
-      currentResi = atom.resi;
-      viewer.render();
-    }
-
-    function handleUnhover(atom) {
-      if (currentResi !== null) {
-        viewer.setStyle({}, {});
-        drawCartoon({ viewer, colorBy, pathogenicityScores });
-        currentResi = null;
-        viewer.render();
-        setHoveredAtom(null);
-      }
-    }
-
-    return [{}, true, handleHover, handleUnhover];
-  }
 
   const variantResidues = new Set(
     row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
@@ -112,15 +94,21 @@ function Viewer({ row }) {
           },
           true // use capture phase so fires before library handler
         );
-        _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200); // use ondblclick so replaces existing
+        _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200);
         _viewer.addModel(structureData, "cif");
         _viewer?.setStyle({}, { hidden: true });
         _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
-        drawCartoon({ viewer: _viewer, colorBy });
-        drawVariantSurface({ viewer: _viewer, variantResidues, colorBy });
+        drawCartoon({ viewer: _viewer, colorBy, variantResidues });
+        drawVariantSurface({ viewer: _viewer, variantResidues, color: "#0d0" });
         resetViewer(_viewer, variantResidues);
         _viewer.zoom(0.25);
         _viewer.setZoomLimits(20, 500);
+        setHoverBehavior({
+          viewer: _viewer,
+          variantResidues,
+          setHoveredAtom,
+          colorBy,
+        });
         _viewer.render();
         setMessageText("");
         setViewer(_viewer);
@@ -139,7 +127,6 @@ function Viewer({ row }) {
       async function fetchPathogenicityScores() {
         let response;
         try {
-          // https://alphafold.ebi.ac.uk/files/AF-Q96S37-F1-aa-substitutions.csv
           response = await fetch(
             `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`
           );
@@ -183,24 +170,23 @@ function Viewer({ row }) {
       (colorBy === "pathogenicity" && (!pathogenicityScores || pathogenicityScores === "failed"))
     )
       return;
-    drawCartoon({ viewer, colorBy, pathogenicityScores });
-    drawVariantSurface({ viewer, variantResidues, colorBy, variantPathogenicityScore });
+    drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues });
+    setVariantSurfaceColor({
+      viewer,
+      color:
+        colorBy === "confidence" || !Array.isArray(pathogenicityScores)
+          ? "#0d0"
+          : alphaFoldPathogenicityColorScale(variantPathogenicityScore),
+    });
+    setHoverBehavior({
+      viewer,
+      variantResidues,
+      setHoveredAtom,
+      colorBy,
+      pathogenicityScores,
+    });
     viewer.render();
   }, [colorBy, pathogenicityScores]); // omit viewer to avoid double render at start
-
-  // set hover behavior
-  useEffect(() => {
-    if (!viewer) return;
-    const hoverDuration = 10;
-    viewer.setHoverDuration(hoverDuration);
-    const hoverArgs = hoverManagerFactory({ viewer, setHoveredAtom });
-    // const hoverArgs = hoverManagerFactory({ viewer, variantResidues, setHoveredAtom });
-    const handleUnhover = hoverArgs[3];
-    viewer.getCanvas().onmouseleave = () => {
-      setTimeout(handleUnhover, hoverDuration + 50);
-    };
-    viewer.setHoverable(...hoverArgs);
-  }, [viewer, colorBy, pathogenicityScores]);
 
   function handleToggleColor(event) {
     setColorBy(event.target.value);
@@ -246,36 +232,13 @@ function Viewer({ row }) {
 
         {/* atom info */}
         {hoveredAtom && (
-          <Box
-            position="absolute"
-            bottom={0}
-            right={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8c8"
-            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
-          >
-            <Box display="flex" flexDirection="column">
-              <Typography variant="caption" component="p" textAlign="right">
-                {hoveredAtom.resn} {hoveredAtom.resi}
-              </Typography>
-              <Typography variant="caption" component="p" textAlign="right">
-                {colorBy === "confidence"
-                  ? `Confidence: ${hoveredAtom.b} (${getAlphaFoldConfidence(
-                      hoveredAtom
-                    ).toLowerCase()})`
-                  : Array.isArray(pathogenicityScores)
-                  ? `Pathogenicity: ${pathogenicityScores[hoveredAtom.resi].toFixed(
-                      3
-                    )} (${getAlphaFoldPathogenicity(
-                      hoveredAtom,
-                      pathogenicityScores
-                    ).toLowerCase()})`
-                  : ""}
-              </Typography>
-            </Box>
-          </Box>
+          <AtomInfo
+            hoveredAtom={hoveredAtom}
+            colorBy={colorBy}
+            pathogenicityScores={pathogenicityScores}
+            variantPathogenicityScore={variantPathogenicityScore}
+            variantResidues={variantResidues}
+          />
         )}
 
         {/* no pathogenicity data meesage */}
@@ -409,6 +372,62 @@ function Viewer({ row }) {
           {messageText}
         </Typography>
       )}
+    </Box>
+  );
+}
+
+function AtomInfo({
+  hoveredAtom,
+  colorBy,
+  pathogenicityScores,
+  variantPathogenicityScore,
+  variantResidues,
+}) {
+  const onVariant = variantResidues.has(hoveredAtom.resi);
+
+  const averagePathoText = () =>
+    `${pathogenicityScores[hoveredAtom.resi].toFixed(3)} (${getAlphaFoldPathogenicity(
+      hoveredAtom,
+      pathogenicityScores
+    ).toLowerCase()})`;
+  const variantPathoText = () =>
+    `${variantPathogenicityScore.toFixed(3)} (${getAlphaFoldPathogenicity({ resi: 0 }, [
+      variantPathogenicityScore,
+    ]).toLowerCase()})`;
+
+  return (
+    <Box
+      position="absolute"
+      bottom={0}
+      right={0}
+      p="0.6rem 0.8rem"
+      zIndex={100}
+      bgcolor="#f8f8f8c8"
+      sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+      fontSize={14}
+    >
+      <Box display="flex" flexDirection="column">
+        <Typography variant="caption" component="p" textAlign="right">
+          {hoveredAtom.resn} {hoveredAtom.resi}
+        </Typography>
+        <Typography variant="caption" component="p" textAlign="right">
+          {colorBy === "confidence" ? (
+            `Confidence: ${hoveredAtom.b} (${getAlphaFoldConfidence(hoveredAtom).toLowerCase()})`
+          ) : !Array.isArray(pathogenicityScores) ? (
+            ""
+          ) : (
+            <>
+              Pathogenicity: {averagePathoText()}
+              {onVariant && (
+                <>
+                  <br />
+                  Variant Pathogenicity: {variantPathoText()}
+                </>
+              )}
+            </>
+          )}
+        </Typography>
+      </Box>
     </Box>
   );
 }

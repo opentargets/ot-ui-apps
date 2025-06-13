@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { alphaFoldConfidenceBands, alphaFoldPathogenicityColorScale } from "@ot/constants";
+import { alphaFoldPathogenicityColorScale } from "@ot/constants";
 
 export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
   const barWidth = 330;
@@ -61,6 +61,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
               <g transform={`translate(0, ${barHeight + 4})`}>
                 {["likely benign", "uncertain", "likely pathogenic"].map((label, i) => (
                   <text
+                    key={i}
                     x={((domain[i] + domain[i + 1]) * barWidth) / 2}
                     y={0}
                     fontSize={fontSize}

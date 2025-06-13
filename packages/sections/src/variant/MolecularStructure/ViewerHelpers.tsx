@@ -1,9 +1,4 @@
-import {
-  alphaFoldPathogenicityColorScale,
-  getAlphaFoldConfidence,
-  getAlphaFoldPathogenicityColor,
-} from "@ot/constants";
-import { hsl } from "d3";
+import { getAlphaFoldConfidence, getAlphaFoldPathogenicityColor } from "@ot/constants";
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
   let cx = 0,
@@ -61,53 +56,33 @@ export function onClickCapture(viewerRef, targetId) {
   }
 }
 
-// function drawVariantBallAndStick(viewer, variantResidues, omitResi) {
-//   let resis = [...variantResidues];
-//   if (variantResidues.has(omitResi)) {
-//     resis = resis.filter(atom => atom !== omitResi);
-//   }
-//   viewer.addStyle(
-//     { resi: resis },
-//     {
-//       stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-//       sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-//     }
-//   );
-// }
+export function drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues }) {
+  const colorfunc = !colorBy
+    ? () => "#ccc"
+    : colorBy === "confidence"
+    ? a => getAlphaFoldConfidence(a, "color")
+    : a => getAlphaFoldPathogenicityColor(a, pathogenicityScores);
+  viewer.setStyle({}, { cartoon: { colorfunc, opacity: 1, arrows: true } });
 
-export function drawCartoon({ viewer, colorBy, pathogenicityScores, highlightResi }) {
-  const basicColorfunc =
-    colorBy === "confidence"
-      ? a => getAlphaFoldConfidence(a, "color")
-      : a => getAlphaFoldPathogenicityColor(a, pathogenicityScores);
-  const colorfunc = highlightResi
-    ? a => {
-        const color = basicColorfunc(a, "color");
-        return a.resi === highlightResi ? getHighlightColor(color) : color;
-      }
-    : basicColorfunc;
-  viewer.addStyle({}, { cartoon: { colorfunc, arrows: true } });
+  // add clickspheres so surface seems hoverable
+  viewer.addStyle({ resi: [...variantResidues] }, { clicksphere: { radius: 1.5 } });
 }
 
-export function drawVariantSurface({
-  viewer,
-  variantResidues,
-  colorBy,
-  variantPathogenicityScore,
-}) {
-  const variantColor =
-    colorBy === "confidence" || typeof variantPathogenicityScore !== "number"
-      ? "#0d0"
-      : alphaFoldPathogenicityColorScale(variantPathogenicityScore);
+export function drawVariantSurface({ viewer, variantResidues, color }) {
   if (viewer._variantSurfaceId) viewer.removeSurface(viewer._variantSurfaceId);
   viewer._variantSurfaceId = viewer.addSurface(
     "VDW",
-    { opacity: 1, color: variantColor },
+    { opacity: 1, color },
     { resi: [...variantResidues] },
     undefined,
     undefined,
     () => {} // include surface callback so addSurface returns surface id synchronously
   );
+}
+
+export function setVariantSurfaceColor({ viewer, color }) {
+  if (viewer._variantSurfaceId == null) return;
+  viewer.setSurfaceMaterialStyle(viewer._variantSurfaceId, { color });
 }
 
 export function drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores }) {
@@ -124,8 +99,65 @@ export function drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores })
   );
 }
 
-function getHighlightColor(color: string) {
-  const hslColor = hsl(color);
-  hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
-  return hslColor.toString();
+export function hoverManagerFactory({
+  viewer,
+  variantResidues,
+  setHoveredAtom,
+  colorBy,
+  pathogenicityScores,
+}) {
+  let currentResi = null;
+
+  function handleHover(atom) {
+    if (!atom || currentResi === atom.resi) return;
+    if (variantResidues.has(atom.resi)) {
+      drawCartoon({ viewer, pathogenicityScores, variantResidues });
+      if (colorBy === "confidence") {
+        setVariantSurfaceColor({ viewer, color: getAlphaFoldConfidence(atom, "color") });
+      }
+    } else {
+      drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
+    }
+    currentResi = atom.resi;
+    setHoveredAtom(atom);
+    viewer.render();
+  }
+
+  function handleUnhover(atom) {
+    if (currentResi !== null) {
+      viewer.setStyle({}, {});
+      drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues });
+      if (colorBy === "confidence" && variantResidues.has(currentResi)) {
+        setVariantSurfaceColor({ viewer, color: "#0f0" });
+      }
+      currentResi = null;
+      viewer.render();
+      setHoveredAtom(null);
+    }
+  }
+
+  return [{}, true, handleHover, handleUnhover];
+}
+
+export function setHoverBehavior({
+  viewer,
+  variantResidues,
+  setHoveredAtom,
+  colorBy,
+  pathogenicityScores,
+}) {
+  const hoverDuration = 10;
+  viewer.setHoverDuration(hoverDuration);
+  const hoverArgs = hoverManagerFactory({
+    viewer,
+    variantResidues,
+    setHoveredAtom,
+    colorBy,
+    pathogenicityScores,
+  });
+  const handleUnhover = hoverArgs[3];
+  viewer.getCanvas().onmouseleave = () => {
+    setTimeout(handleUnhover, hoverDuration + 50);
+  };
+  viewer.setHoverable(...hoverArgs);
 }
