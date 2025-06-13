@@ -3,6 +3,8 @@ import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicity,
   alphaFoldPathogenicityColorScale,
+  aminoAcidLookup,
+  naLabel,
 } from "@ot/constants";
 import { createViewer } from "3dmol";
 import {
@@ -87,6 +89,18 @@ function Viewer({ row }) {
           antialias: true,
           cartoonQuality: 10,
         });
+        _viewer.addModel(structureData, "cif");
+
+        // variant's reference amino acid should match amino acid at same position in structure data
+        const structureReferenceAminoAcid = _viewer
+          .getModel()
+          .selectedAtoms()
+          .find(atom => atom.resi === row.aminoAcidPosition)?.resn;
+        if (aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid) {
+          setMessageText("AlphaFold structure not available");
+          return;
+        }
+
         _viewer.getCanvas().addEventListener(
           "wheel",
           event => {
@@ -95,7 +109,6 @@ function Viewer({ row }) {
           true // use capture phase so fires before library handler
         );
         _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200);
-        _viewer.addModel(structureData, "cif");
         _viewer?.setStyle({}, { hidden: true });
         _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
         drawCartoon({ viewer: _viewer, colorBy, variantResidues });
@@ -151,9 +164,9 @@ function Viewer({ row }) {
             const alternateRow = group.find(
               r => r.protein_variant.at(-1) === row.alternateAminoAcid
             );
-            setVariantPathogenicityScore(
-              alternateRow ? Number(alternateRow.am_pathogenicity) : "na"
-            );
+            if (alternateRow) {
+              setVariantPathogenicityScore(Number(alternateRow.am_pathogenicity));
+            }
           }
           scores[resi] = mean(group, d => Number(d.am_pathogenicity));
         }
@@ -174,7 +187,7 @@ function Viewer({ row }) {
     setVariantSurfaceColor({
       viewer,
       color:
-        colorBy === "confidence" || !Array.isArray(pathogenicityScores)
+        colorBy === "confidence" || variantPathogenicityScore === null
           ? "#0d0"
           : alphaFoldPathogenicityColorScale(variantPathogenicityScore),
     });
@@ -241,7 +254,7 @@ function Viewer({ row }) {
           />
         )}
 
-        {/* no pathogenicity data meesage */}
+        {/* no pathogenicity data message */}
         {colorBy === "pathogenicity" && pathogenicityScores === "failed" && (
           <Typography
             variant="body2"
@@ -332,7 +345,7 @@ function Viewer({ row }) {
           flexWrap: "wrap",
         }}
       >
-        {(colorBy === "confidence" || typeof variantPathogenicityScore !== "number") && (
+        {(colorBy === "confidence" || variantPathogenicityScore === null) && (
           <Box
             sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75, pr: 3 }}
           >
@@ -421,7 +434,8 @@ function AtomInfo({
               {onVariant && (
                 <>
                   <br />
-                  Variant Pathogenicity: {variantPathoText()}
+                  Variant Pathogenicity:{" "}
+                  {variantPathogenicityScore === null ? naLabel : variantPathoText()}
                 </>
               )}
             </>

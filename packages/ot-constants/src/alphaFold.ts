@@ -52,3 +52,26 @@ export const alphaFoldPathogenicityColorScale = scaleLinear()
 export function getAlphaFoldPathogenicityColor(atom, scores) {
   return alphaFoldPathogenicityColorScale(scores[atom.resi]);
 }
+
+export const aminoAcidLookup = {
+  G: "GLY",
+  A: "ALA",
+  V: "VAL",
+  L: "LEU",
+  I: "ILE",
+  T: "THR",
+  S: "SER",
+  M: "MET",
+  C: "CYS",
+  P: "PRO",
+  F: "PHE",
+  Y: "TYR",
+  W: "TRP",
+  H: "HIS",
+  K: "LYS",
+  R: "ARG",
+  D: "ASP",
+  E: "GLU",
+  N: "ASN",
+  Q: "GLN",
+};

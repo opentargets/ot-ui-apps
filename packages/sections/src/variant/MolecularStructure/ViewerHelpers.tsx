@@ -111,7 +111,7 @@ export function hoverManagerFactory({
   function handleHover(atom) {
     if (!atom || currentResi === atom.resi) return;
     if (variantResidues.has(atom.resi)) {
-      drawCartoon({ viewer, pathogenicityScores, variantResidues });
+      drawCartoon({ viewer, pathogenicityScores, variantResidues }); // make cartoon gray
       if (colorBy === "confidence") {
         setVariantSurfaceColor({ viewer, color: getAlphaFoldConfidence(atom, "color") });
       }
