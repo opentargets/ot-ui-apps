@@ -39,27 +39,27 @@ function ProjectPage() {
     { id: "project_lead", label: "Project Lead" },
     { id: "generates_data", label: "Generates Data" },
     {
-      id: "currently_exclusive_to_PPP",
+      id: "integrated_into_PPP",
       label: "Integrated into PPP",
-      filterValue: ({ currently_exclusive_to_PPP }) => `${currently_exclusive_to_PPP}`,
+      filterValue: ({ integrated_into_PPP }) => `${integrated_into_PPP}`,
       sortable: true,
-      renderCell: ({ currently_exclusive_to_PPP }) => (
+      renderCell: ({ integrated_into_PPP }) => (
         <FontAwesomeIcon
           size="lg"
-          icon={CURRENTLY_INTEGRATES_IN_PPP[currently_exclusive_to_PPP]}
+          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_PPP]}
           className={classes.icon}
         />
       ),
     },
     {
-      id: "integrates_into_platform_and_PPP",
+      id: "integrated_into_Public",
       label: "Integrated into Public",
-      filterValue: ({ integrates_into_platform_and_PPP }) => `${integrates_into_platform_and_PPP}`,
+      filterValue: ({ integrated_into_Public }) => `${integrated_into_Public}`,
       sortable: true,
-      renderCell: ({ integrates_into_platform_and_PPP }) => (
+      renderCell: ({ integrated_into_Public }) => (
         <FontAwesomeIcon
           size="lg"
-          icon={CURRENTLY_INTEGRATES_IN_PPP[integrates_into_platform_and_PPP]}
+          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_Public]}
           className={classes.icon}
         />
       ),
@@ -123,7 +123,7 @@ function ProjectPage() {
             showGlobalFilter
             columns={columns}
             rows={projectsData}
-            sortBy="currently_exclusive_to_PPP"
+            sortBy="integrated_into_PPP"
             order="desc"
           />
         </Box>
