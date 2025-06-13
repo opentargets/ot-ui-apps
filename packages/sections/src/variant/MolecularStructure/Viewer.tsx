@@ -277,6 +277,7 @@ function Viewer({ row }) {
         )}
       </Box>
 
+      {/* confidence-pathogenicity toggle buttons */}
       <Box
         sx={{
           display: "flex",
@@ -337,6 +338,42 @@ function Viewer({ row }) {
         </FormControl>
       </Box>
 
+      {/* explanatory text */}
+      {colorBy === "pathogenicity" && Array.isArray(pathogenicityScores) && (
+        <Box
+          component="table"
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            borderCollapse: "separate",
+            borderSpacing: "0",
+            mb: 0.2,
+          }}
+        >
+          <tbody>
+            <tr>
+              <Typography component="td" variant="caption" textAlign="right">
+                <strong>Backbone:</strong>
+              </Typography>
+              <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
+                mean pathogenicity over all possible amino acid substitutions
+              </Typography>
+            </tr>
+            {variantPathogenicityScore && (
+              <tr>
+                <Typography component="td" variant="caption" textAlign="right">
+                  <strong>Variant:</strong>
+                </Typography>
+                <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
+                  pathogenicity for the substitution corresponding to the variant
+                </Typography>
+              </tr>
+            )}
+          </tbody>
+        </Box>
+      )}
+
+      {/* legends */}
       <Box
         sx={{
           display: "flex",
@@ -356,7 +393,7 @@ function Viewer({ row }) {
           </Box>
         )}
         <Box>
-          {colorBy === "confidence" ? (
+          {colorBy === "confidence" || !Array.isArray(pathogenicityScores) ? (
             <CompactAlphaFoldLegend showTitle={false} />
           ) : (
             <CompactAlphaFoldPathogenicityLegend showTitle={false} />

@@ -87,10 +87,10 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
             </g>
           </svg>
         </Box>
-        <Typography variant="caption" mt={1}>
+        {/* <Typography variant="caption" mt={1}>
           The displayed colour for each residue is the average AlphaMissense pathogenicity score
           across all possible amino acid substitutions at that position.
-        </Typography>
+        </Typography> */}
       </Box>
     </Box>
   );
