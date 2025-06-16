@@ -31,7 +31,6 @@ import {
 } from "./ViewerHelpers";
 import { csvParse, mean } from "d3";
 import InfoPopper from "./InfoPopper";
-import _ from "lodash";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -209,7 +208,7 @@ function Viewer({ row }) {
     <Box ref={viewerRef} position="relative" width="100%">
       {/* container to insert viewer into */}
       <Box className="viewerContainer" position="relative" width="100%" height={350} mb={1}>
-        {/* screenshot button */}
+        {/* info and screenshot button */}
         {!messageText && (
           <Box
             sx={{
