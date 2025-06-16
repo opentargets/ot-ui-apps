@@ -45,7 +45,7 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
   const SCRIPT_MAP: Record<string, singleBtnGroupObj> = {
     rsync: {
       title: "Rsync",
-      component: <RsyncScript version={version} path={columnId} />,
+      component: <RsyncScript link={getLink("ftp-location")} version={version} path={columnId} />,
     },
     wget: {
       title: "Wget",
@@ -105,7 +105,8 @@ function FtpLocation({ link }: { link: string }) {
 }
 
 function WgetScript({ link }: { link: string }) {
-  const WgetCmd = `wget --recursive --no-parent --no-host-directories --cut-dirs 6 ${link} .`;
+  const ftpLink = link.replace("http", "ftp");
+  const WgetCmd = `wget --recursive --no-parent --no-host-directories --cut-dirs 6 ${ftpLink} .`;
 
   return (
     <Box sx={{ p: 2 }}>
@@ -114,8 +115,9 @@ function WgetScript({ link }: { link: string }) {
   );
 }
 
-function RsyncScript({ version, path }: { version: string; path: string }) {
-  const RsyncCmd = `rsync -rpltvz --delete rsync.ebi.ac.uk::pub/databases/opentargets/platform/${version}/output/${path} .`;
+function RsyncScript({ version, path, link }: { version: string; path: string; link: string }) {
+  const rsyncLink = link.replace("http://ftp.ebi.ac.uk/", "");
+  const RsyncCmd = `rsync -rpltvz --delete rsync.ebi.ac.uk::${rsyncLink} .`;
   return (
     <Box sx={{ p: 2 }}>
       <OtCodeBlock textToCopy={RsyncCmd}>{RsyncCmd}</OtCodeBlock>
