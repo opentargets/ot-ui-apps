@@ -110,14 +110,9 @@ export function hoverManagerFactory({
 
   function handleHover(atom) {
     if (!atom || currentResi === atom.resi) return;
-    if (variantResidues.has(atom.resi)) {
-      drawCartoon({ viewer, pathogenicityScores, variantResidues }); // make cartoon gray
-      if (colorBy === "confidence") {
-        setVariantSurfaceColor({ viewer, color: getAlphaFoldConfidence(atom, "color") });
-      }
-    } else {
-      drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
-    }
+    variantResidues.has(atom.resi)
+      ? drawCartoon({ viewer, pathogenicityScores, variantResidues }) // make cartoon gray
+      : drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
     currentResi = atom.resi;
     setHoveredAtom(atom);
     viewer.render();

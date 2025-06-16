@@ -467,7 +467,7 @@ function AtomInfo({
             ""
           ) : (
             <>
-              Pathogenicity: {averagePathoText()}
+              Mean pathogenicity: {averagePathoText()}
               {onVariant && (
                 <>
                   <br />
