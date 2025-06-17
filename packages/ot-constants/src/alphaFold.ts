@@ -46,27 +46,19 @@ export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") 
 export const PRIORITISATION_COLORS = [
   rgb("#2e5943"),
   rgb("#2f735f"),
-  // rgb("#528b78"),
-  // rgb("#78a290"),
-  // rgb("#9ebaa8"),
-  // rgb("#c5d2c1"),
   rgb("#eceada"),
   rgb("#eceada"),
-  // rgb("#e6ca9c"),
-  // rgb("#e3a772"),
-  // rgb("#e08145"),
   rgb("#d65a1f"),
-  // rgb("#bc3a19"),
   rgb("#a01813"),
 ];
-// export const alphaFoldPathogenicityColorScale = scaleQuantize().domain([0, 0.34, 0.564, 1]);
-// export const prioritizationScale = alphaFoldPathogenicityColorScale.range(PRIORITISATION_COLORS);
 
 export const alphaFoldPathogenicityColorScale = scaleLinear()
   .domain([0, 0.1, 0.34, 0.564, 0.8, 1])
   .range(PRIORITISATION_COLORS)
   .interpolate(interpolateLab)
   .clamp(true);
+// only some of the scale breakpoints are meaningful for the legend
+alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
 export function getAlphaFoldPathogenicityColor(atom, scores) {
   return alphaFoldPathogenicityColorScale(scores[atom.resi]);
