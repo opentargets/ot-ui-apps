@@ -267,7 +267,7 @@ function Body({ id, label, entity }) {
             loading={loading}
             columns={columns}
             dataDownloader
-            dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+            dataDownloaderFileStem={`europepmc-${ensgId}-${efoId}`}
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
             page={page}
