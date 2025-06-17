@@ -6,7 +6,6 @@ import {
   OtTable,
   ScientificNotation,
   ClinvarStars,
-  OtScoreLinearBar,
   Tooltip,
   Navigate,
   DisplayVariantId,
@@ -18,7 +17,6 @@ import { dataTypesMap, naLabel, sectionsBaseSizeQuery, credsetConfidenceMap } fr
 import { definition } from ".";
 import Description from "./Description";
 import GWAS_CREDIBLE_SETS_QUERY from "./sectionQuery.gql";
-import { Box } from "@mui/material";
 
 function getColumns(targetSymbol, targetId) {
   return [
@@ -223,7 +221,7 @@ function Body({ id, label, entity }) {
         <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`GWASassociations-${ensgId}-${efoId}`}
           order="desc"
           rows={request.data?.disease.gwasCredibleSets.rows}
           showGlobalFilter

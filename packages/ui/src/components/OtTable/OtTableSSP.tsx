@@ -221,12 +221,11 @@ function OtTableSSP({
    *********************************/
   const getWholeDataset = useCursorBatchDownloader(
     query,
-    { variables: memoizedVariables, freeTextQuery: state.freeTextQuery },
+    { ...memoizedVariables, freeTextQuery: state.freeTextQuery },
     `data[${entity}][${sectionName}]`
   );
 
   useEffect(() => {
-    console.log(variables);
     const newPagination = {
       pageIndex: 0,
       pageSize: pagination.pageSize,
