@@ -4,16 +4,6 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-  workflow_dispatch:
-    inputs:
-      tag:
-        type: string
-        description: 'Tag to build against'
-        required: true
-      data_release_location:
-        type: string
-        description: 'Location of the data release'
-        required: true
 
 jobs:
   ci:
@@ -22,15 +12,10 @@ jobs:
   build:
     uses: ./.github/workflows/build.yaml
     needs: ci
-    with:
-      tag: ${{ inputs.tag || github.ref_name }}
-      data_release_location: ${{ inputs.data_release_location || '' }}
 
   image:
     uses: ./.github/workflows/image.yaml
     needs: build
-    with:
-      tag: ${{ inputs.tag || github.ref_name }}
 
   release:
     name: Release 🚀
@@ -38,16 +23,10 @@ jobs:
     needs: build
     permissions:
       contents: write
-    env:
-      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.TAG }}
-      - name: Prepare release tag
-        run: |
-          TAG=$(echo $TAG | sed 's/^v//')
-          echo "TAG=$TAG" >> $GITHUB_ENV
+          ref: ${{ github.ref_name }}
       - uses: actions/download-artifact@v4
         with:
           name: bundle
@@ -59,8 +38,8 @@ jobs:
           gh release create
           --draft
           --repo ${{ github.repository }}
-          --title ${{ env.TAG }}
-          ${{ env.TAG }}
+          --title ${{ github.ref_name }}
+          ${{ github.ref_name }}
           bundle.tar.gz
         env:
           GH_TOKEN: ${{ github.token }}

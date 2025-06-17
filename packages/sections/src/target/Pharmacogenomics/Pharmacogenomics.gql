@@ -2,6 +2,16 @@ query PharmacogenomicsQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
     pharmacogenomics {
+      variantAnnotation {
+        entity
+        effect
+        effectType
+        effectDescription
+        literature
+        directionality
+        baseAlleleOrGenotype
+        comparisonAlleleOrGenotype
+      }
       variantRsId
       genotypeId
       variantFunctionalConsequence {

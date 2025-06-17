@@ -23,6 +23,9 @@ query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor
         diseaseFromSource
         variant {
           id
+          hgvsId
+          referenceAllele
+          alternateAllele
         }
         variantRsId
         studyId

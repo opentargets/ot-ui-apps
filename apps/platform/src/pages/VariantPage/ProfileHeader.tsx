@@ -37,7 +37,7 @@ function ProfileHeader() {
           value={data?.variant.alternateAllele}
         />
         <Typography variant="subtitle2" mt={1}>
-          Variant Effect Predictor (VEP)
+          Ensembl Variant Effect Predictor (Ensembl VEP)
         </Typography>
         <Field loading={loading} title="Most severe consequence">
           <Link

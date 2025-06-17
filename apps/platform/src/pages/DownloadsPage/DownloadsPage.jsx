@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useReducer } from "react";
-import { Box, Typography, Alert, Grid } from "@mui/material";
+import { useEffect, useReducer } from "react";
+import { gql, useQuery } from "@apollo/client";
+import { Alert, Box, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Link, OtInvalidResultFilters } from "ui";
 import { getConfig } from "@ot/config";
 import { v1 } from "uuid";
-import { Fragment } from "react/jsx-runtime";
 import DownloadsCard from "./DownloadsCard";
 import DownloadsFilter from "./DownloadsFilter";
 import DownloadsLoading from "./DownloadsLoading";
 import { createInitialState, downloadsReducer, initialState } from "./context/downloadsReducer";
-import { setDownloadsData } from "./context/downloadsActions";
+import { setDownloadsData, setError, setLoading } from "./context/downloadsActions";
 import { DownloadsContext } from "./context/DownloadsContext";
 import DownloadsTags from "./DownloadsTags";
 import { Route, Routes } from "react-router-dom";
@@ -23,23 +23,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+// QUERY
+const DOWNLOADS_QUERY = gql`
+  query DownloadsQuery {
+    meta {
+      downloads
+    }
+  }
+`;
+
 function DownloadsPage() {
+  const { data, loading, error } = useQuery(DOWNLOADS_QUERY);
   const [state, dispatch] = useReducer(downloadsReducer, initialState, createInitialState);
+  const classes = useStyles();
 
   useEffect(() => {
-    let isCurrent = true;
-    fetch(config.downloadsURL)
-      .then(res => res.json())
-      .then(data => {
-        if (isCurrent) dispatch(setDownloadsData(data));
-      });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
-  const classes = useStyles();
+    if (loading) {
+      dispatch(setLoading(true));
+    } else if (error) {
+      dispatch(setError(error));
+    } else if (data?.meta?.downloads) {
+      dispatch(setDownloadsData(JSON.parse(data.meta.downloads)));
+    }
+  }, [data, loading, error]);
 
   if (state.loading) return <DownloadsLoading />;
 

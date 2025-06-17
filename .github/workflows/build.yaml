@@ -2,64 +2,27 @@ name: Build bundle
 
 on:
   workflow_call:
-    inputs:
-      tag:
-        type: string
-        description: 'Tag to build against'
-        required: true
-      data_release_location:
-        type: string
-        description: 'Location of the data release'
-        required: false
 
 jobs:
   bundle:
     name: Bundle 📦
     runs-on: ubuntu-22.04
-    env:
-      TAG: ${{ inputs.tag }}
-      DATA_RELEASE_LOCATION: ${{ inputs.data_release_location || '' }}
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.TAG }}
+          ref: ${{ github.ref_name }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 23
 
-      - name: Prepare environment
-        run: |
-          if [ -z "$DATA_RELEASE_LOCATION" ]; then
-            echo "Building $TAG with default data"
-          else
-            echo "Building $TAG with data from $DATA_RELEASE_LOCATION"
-          fi
-
       - uses: mskelton/setup-yarn@v3
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - uses: google-github-actions/auth@v2
-        with:
-          token_format: access_token
-          project_id: 'open-targets-eu-dev'
-          workload_identity_provider: projects/426265110888/locations/global/workloadIdentityPools/github-actions/providers/opentargets
-          service_account: github-actions@open-targets-eu-dev.iam.gserviceaccount.com
-          access_token_lifetime: 300s
-      - uses: google-github-actions/setup-gcloud@v2
-
-      - name: copy disease ontology
-        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
-        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/disease.jsonl apps/platform/public/data/ontology/efo_json/diseases_efo.jsonl
-
-      - name: copy croissant metadata
-        if: ${{ env.DATA_RELEASE_LOCATION != '' }}
-        run: gsutil cp ${{ env.DATA_RELEASE_LOCATION }}/webapp/downloads.json apps/platform/public/data/downloads.json
 
       - name: Build
         run: yarn build:platform

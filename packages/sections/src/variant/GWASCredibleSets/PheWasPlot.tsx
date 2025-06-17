@@ -60,26 +60,26 @@ function PheWasPlot({
   const therapeuticPriorities = {
     EFO_0001444: { name: "measurement", rank: 1 },
     MONDO_0045024: { name: "cancer or benign tumor", rank: 2 },
-    OTAR_0000018: { name: "genetic, familial or congenital disease", rank: 3 },
+    OTAR_0000018: { name: "genetic, familial or congenital", rank: 3 },
     EFO_0005741: { name: "infectious disease", rank: 4 },
     OTAR_0000009: { name: "injury, poisoning or complication", rank: 5 },
-    OTAR_0000014: { name: "pregnancy or perinatal disease", rank: 6 },
-    MONDO_0024458: { name: "disorder of visual system", rank: 7 },
-    EFO_0000319: { name: "cardiovascular disease", rank: 8 },
-    EFO_0009605: { name: "pancreas disease", rank: 9 },
-    EFO_0010282: { name: "gastrointestinal disease", rank: 10 },
-    OTAR_0000017: { name: "reproductive system or breast disease", rank: 11 },
-    EFO_0010285: { name: "integumentary system disease", rank: 12 },
-    EFO_0001379: { name: "endocrine system disease", rank: 13 },
-    OTAR_0000010: { name: "respiratory or thoracic disease", rank: 14 },
-    EFO_0009690: { name: "urinary system disease", rank: 15 },
-    OTAR_0000006: { name: "musculoskeletal or connective tissue disease", rank: 16 },
+    OTAR_0000014: { name: "pregnancy or perinatal", rank: 6 },
+    MONDO_0024458: { name: "visual system", rank: 7 },
+    EFO_0000319: { name: "cardiovascular", rank: 8 },
+    EFO_0009605: { name: "pancreas", rank: 9 },
+    EFO_0010282: { name: "gastrointestinal", rank: 10 },
+    OTAR_0000017: { name: "reproductive system or breast", rank: 11 },
+    EFO_0010285: { name: "integumentary system", rank: 12 },
+    EFO_0001379: { name: "endocrine system", rank: 13 },
+    OTAR_0000010: { name: "respiratory or thoracic", rank: 14 },
+    EFO_0009690: { name: "urinary system", rank: 15 },
+    OTAR_0000006: { name: "musculoskeletal or connective ...", rank: 16 },
     MONDO_0021205: { name: "disorder of ear", rank: 17 },
-    EFO_0000540: { name: "immune system disease", rank: 18 },
-    EFO_0005803: { name: "hematologic disease", rank: 19 },
-    EFO_0000618: { name: "nervous system disease", rank: 20 },
-    MONDO_0002025: { name: "psychiatric disorder", rank: 21 },
-    OTAR_0000020: { name: "nutritional or metabolic disease", rank: 22 },
+    EFO_0000540: { name: "immune system", rank: 18 },
+    EFO_0005803: { name: "hematologic", rank: 19 },
+    EFO_0000618: { name: "nervous system", rank: 20 },
+    MONDO_0002025: { name: "psychiatric", rank: 21 },
+    OTAR_0000020: { name: "nutritional or metabolic", rank: 22 },
     GO_0008150: { name: "biological process", rank: 23 },
     EFO_0000651: { name: "phenotype", rank: 24 },
     EFO_0002571: { name: "medical procedure", rank: 25 },
@@ -332,7 +332,9 @@ function renderTooltip(datum) {
             <Chip label="self" variant="outlined" size="small" />
           </Box>
         ) : (
-          <Link to={`/variant/${datum.variant.id}`}>{displayId}</Link>
+          <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
+            {displayId}
+          </Link>
         )}
       </ObsTooltipRow>
       <ObsTooltipRow label="Reported trait" valueWidth={valueMaxWidth} truncateValue>
@@ -344,7 +346,9 @@ function renderTooltip(datum) {
             {datum.study.diseases.map((d, i) => (
               <Fragment key={d.id}>
                 {i > 0 && ", "}
-                <Link to={`/disease/${d.id}`}>{d.name}</Link>
+                <Link asyncTooltip to={`/disease/${d.id}`}>
+                  {d.name}
+                </Link>
               </Fragment>
             ))}
           </>
@@ -353,7 +357,13 @@ function renderTooltip(datum) {
         )}
       </ObsTooltipRow>
       <ObsTooltipRow label="Study">
-        {datum.study ? <Link to={`/study/${datum.study.id}`}>{datum.study.id}</Link> : naLabel}
+        {datum.study ? (
+          <Link asyncTooltip to={`/study/${datum.study.id}`}>
+            {datum.study.id}
+          </Link>
+        ) : (
+          naLabel
+        )}
       </ObsTooltipRow>
       <ObsTooltipRow label="P-value">
         <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
@@ -384,7 +394,7 @@ function renderTooltip(datum) {
           <Box display="flex" gap={0.5}>
             Top:{" "}
             {datum.l2GPredictions?.rows?.[0]?.target ? (
-              <Link to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+              <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
                 {datum.l2GPredictions.rows[0].target.approvedSymbol}
               </Link>
             ) : (

@@ -1,7 +1,7 @@
-const id = "protein_structure";
+const id = "molecular_structure";
 export const definition = {
   id,
-  name: "Protein Structure",
-  shortName: "PS",
+  name: "Molecular Structure",
+  shortName: "MS",
   hasData: data => data.proteinCodingCoordinates.count > 0,
 };

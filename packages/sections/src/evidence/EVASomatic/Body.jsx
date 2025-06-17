@@ -10,6 +10,7 @@ import {
   ClinvarStars,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  DisplayVariantId,
   OtTableSSP,
 } from "ui";
 import { epmcUrl, sentenceCase } from "@ot/utils";
@@ -62,16 +63,20 @@ const getColumns = label => [
     id: "variantId",
     label: "Variant",
     enableHiding: false,
-    renderCell: ({ variant: { id: variantId } }) =>
-      variantId ? (
-        <>
-          {variantId.substring(0, 20)}
-          {variantId.length > 20 ? "\u2026" : ""}
-        </>
-      ) : (
-        naLabel
-      ),
-    filterValue: ({ variant: { id: variantId } }) => `${variantId}`,
+    renderCell: ({ variant }) => {
+      if (!variant) return naLabel;
+      const { id: variantId, referenceAllele, alternateAllele } = variant;
+      return (
+        <Link asyncTooltip to={`/variant/${variantId}`}>
+          <DisplayVariantId
+            variantId={variantId}
+            referenceAllele={referenceAllele}
+            alternateAllele={alternateAllele}
+            expand={false}
+          />
+        </Link>
+      );
+    },
   },
   {
     id: "variantRsId",

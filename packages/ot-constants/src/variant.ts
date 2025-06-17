@@ -99,8 +99,8 @@ const VARIANT_EFFECT_METHODS: Record<string, VariantEffectMethod> = {
     docsUrl: "https://platform-docs.opentargets.org/variant#variant-effect",
   },
   VEP: {
-    methodName: "VEP",
-    prettyName: "VEP",
+    methodName: "Ensembl VEP",
+    prettyName: "Ensembl VEP",
     description:
       "Pathogenicity score derived from the most severe consequence term provided by Ensembl VEP.",
     docsUrl: "https://platform-docs.opentargets.org/variant#variant-effect",

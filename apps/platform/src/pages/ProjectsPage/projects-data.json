@@ -4,12 +4,13 @@
     "project_name": "Keratinocytes",
     "project_lead": "Phil Jones",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      { "label": "Psoriasis", "disease_id": "EFO_0000676" },
-      { "label": "Atopic Eczema", "disease_id": "EFO_0000274" }
+      { "label": "", "disease_id": "EFO_0000676" },
+      { "label": "Psoriasis", "disease_id": "EFO_0000274" }
     ]
   },
   {
@@ -17,12 +18,13 @@
     "project_name": "iPSC neuron CRISPR",
     "project_lead": "Rick Livesey",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" },
-      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
+      { "label": "", "disease_id": "MONDO_0004975" },
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0005180" }
     ]
   },
   {
@@ -30,22 +32,27 @@
     "project_name": "Stress Response Modulators in iNeurons",
     "project_lead": "Manos Metzakopian / Andrew Bassett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [{ "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }]
+    "disease_mapping": [
+      { "label": "", "disease_id": "MONDO_0004975" },
+      { "label": "Alzheimer disease", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR2059",
     "project_name": "Open Targets Validation Lab (Experimental Platform Pilot)",
-    "project_lead": "Panos Zalmas/ Mathew Garnett",
+    "project_lead": "Panos Zalmas / Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" },
-      { "label": "breast carcinoma", "disease_id": "EFO_0000305" }
+      { "label": "", "disease_id": "EFO_1001951" },
+      { "label": "colorectal carcinoma", "disease_id": "EFO_0000305" }
     ]
   },
   {
@@ -53,12 +60,13 @@
     "project_name": "iFuncOnc",
     "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": [
-      { "label": "Colorectal cancer", "disease_id": "MONDO_0005575" },
-      { "label": "Cutaneous melanoma", "disease_id": "EFO_0000389" }
+      { "label": "", "disease_id": "MONDO_0005575" },
+      { "label": "Colorectal cancer", "disease_id": "EFO_0000389" }
     ]
   },
   {
@@ -66,30 +74,36 @@
     "project_name": "ENCORE",
     "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": [{ "label": "colorectal carcinoma", "disease_id": "EFO_1001951" }]
+    "disease_mapping": [
+      { "label": "", "disease_id": "EFO_1001951" },
+      { "label": "colorectal carcinoma", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR2072",
     "project_name": "DNA Damage",
     "project_lead": "Gabriel Balmus",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976" },
-      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
+      { "label": "", "disease_id": "MONDO_0004976" },
+      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004975" }
     ]
   },
   {
     "otar_code": "OTAR2075",
     "project_name": "Integration of Loss-of-Function variants into Open Targets Genetics",
-    "project_lead": "Maya Ghoussaini/ Gosia Trynka",
+    "project_lead": "Maya Ghoussaini / Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -99,27 +113,36 @@
     "project_name": "PD CRISPR",
     "project_lead": "Manos Metzakopian",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [{ "label": "Parkinson disease", "disease_id": "MONDO_0005180" }]
+    "disease_mapping": [
+      { "label": "", "disease_id": "MONDO_0005180" },
+      { "label": "Parkinson disease", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR2052",
     "project_name": "Identification and Validation of Novel Pain Targets",
     "project_lead": "Manos Metzakopian / Andrew Bassett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "Y",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": [{ "label": "Pain", "disease_id": "EFO_0003843" }]
+    "disease_mapping": [
+      { "label": "", "disease_id": "EFO_0003843" },
+      { "label": "Pain", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR034",
     "project_name": "Genetics Core",
-    "project_lead": "Yakov T.",
+    "project_lead": "Yakov Tsepilov",
     "generates_data": "Genetics/ Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -129,7 +152,8 @@
     "project_name": "Tractability",
     "project_lead": "Andrew Leach",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -139,7 +163,8 @@
     "project_name": "GWAS Catalog",
     "project_lead": "Laura Harris / Helen Parkinson",
     "generates_data": "Genetics evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -149,7 +174,8 @@
     "project_name": "Enhanced Molecular and Clinical Data",
     "project_lead": "Andrew Leach",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -159,7 +185,8 @@
     "project_name": "Protein Function",
     "project_lead": "Maria Martin",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -169,7 +196,8 @@
     "project_name": "T Cell Survival and Function",
     "project_lead": "Dave Adams",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -179,7 +207,8 @@
     "project_name": "NASH",
     "project_lead": "Ludovic Vallier",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": []
@@ -189,7 +218,8 @@
     "project_name": "100 Chromatin-Related Disorders",
     "project_lead": "Matt Hurles",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -199,7 +229,8 @@
     "project_name": "Prediction of Oncology Targets and in Silico Drug Prescriptions",
     "project_lead": "Francesco Iorio",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -209,7 +240,8 @@
     "project_name": "Literature",
     "project_lead": "Jo McIntyre",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -219,17 +251,22 @@
     "project_name": "IBD eQTL Mapping and Database",
     "project_lead": "Carl Anderson",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
-    "disease_mapping": []
+    "disease_mapping": [
+      { "label": "", "disease_id": "EFO_0003767" },
+      { "label": "inflammatory bowel disease ", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR2058",
     "project_name": "IBD Functional Characterisation",
     "project_lead": "Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -239,7 +276,8 @@
     "project_name": "NSCLC (Deciphering myeloid landscape of non-small cell lung cancer)",
     "project_lead": "Ana Cvejic",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -249,7 +287,8 @@
     "project_name": "Immune Variants and T-Cell Function",
     "project_lead": "Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -259,7 +298,8 @@
     "project_name": "SLE eQTL Map",
     "project_lead": "Emma Davenport",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -269,17 +309,22 @@
     "project_name": "Neuroinflammation",
     "project_lead": "Andrew Bassett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": []
+    "disease_mapping": [
+      { "label": "", "disease_id": "MONDO_0004975" },
+      { "label": "alzheimer disease", "disease_id": "" }
+    ]
   },
   {
     "otar_code": "OTAR2066",
     "project_name": "Context Specific Networks",
     "project_lead": "Pedro Beltrao",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -289,7 +334,8 @@
     "project_name": "Cell Type Deconvolution",
     "project_lead": "Irene Papatheodorou",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -299,7 +345,8 @@
     "project_name": "Target Safety",
     "project_lead": "Andrew Leach",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -309,7 +356,8 @@
     "project_name": "Genetic Dose-Response Modelling",
     "project_lead": "Gosia Trynka",
     "generates_data": "Platform / GP evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -319,7 +367,8 @@
     "project_name": "IO Target ID",
     "project_lead": "Moritz Gerstung",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -329,7 +378,8 @@
     "project_name": "NeuroID",
     "project_lead": "Andrew Bassett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -339,7 +389,8 @@
     "project_name": "NeuroFlux",
     "project_lead": "Rick Livesey",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -349,7 +400,8 @@
     "project_name": "Phenotypic mapping of gene functions in immune cells",
     "project_lead": "Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -359,7 +411,8 @@
     "project_name": "Expanding the eQTL Catalogue: new single-cell datasets and improved interpretation of splicing QTLs",
     "project_lead": "Kaur Alasoo",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -369,7 +422,8 @@
     "project_name": "Target Engine",
     "project_lead": "Ian Dunham",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -377,9 +431,10 @@
   {
     "otar_code": "OTAR2079",
     "project_name": "Saturation Genome Editing in Immune Genes",
-    "project_lead": "Gosia Trynka/ Dave Adams",
+    "project_lead": "Gosia Trynka / Dave Adams",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -389,7 +444,8 @@
     "project_name": "Natural Killer cell evasion and exhaustion mediators",
     "project_lead": "Annie Speak",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -399,7 +455,8 @@
     "project_name": "Sequence Variation, Protein Structure and Function",
     "project_lead": "Pedro Beltrao",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -409,7 +466,8 @@
     "project_name": "Project Symphony",
     "project_lead": "Dave Adams / Wolfgang Huber",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -419,7 +477,8 @@
     "project_name": "Project BOND",
     "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -429,7 +488,8 @@
     "project_name": "Decoding molecular and cellular resolution of skin inflammation",
     "project_lead": "Muzlifah Haniffa",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -439,7 +499,8 @@
     "project_name": "IMMERSE",
     "project_lead": "Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -449,7 +510,8 @@
     "project_name": "Splicing Target Prioritisation",
     "project_lead": "Kaur Alasoo / Ben Lehner",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -459,7 +521,8 @@
     "project_name": "Automating Knowledge Management",
     "project_lead": "Barbara Z / Melissa H / Ellen MD / Sebastian L",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -469,7 +532,8 @@
     "project_name": "Perturbation Catalogue",
     "project_lead": "Leopold Parts / Peter Harrison",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -479,7 +543,8 @@
     "project_name": "Drug2Cell",
     "project_lead": "Mohammad Lotfollahi",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -489,7 +554,8 @@
     "project_name": "Proteomics",
     "project_lead": "Juan Antonia Vizcaino",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -499,7 +565,8 @@
     "project_name": "Immuno-Oncology Target Identification in Rectal Cancer using Multi-Omics",
     "project_lead": "Ana Cvejic / Peter Campbell",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -509,7 +576,8 @@
     "project_name": "Open-IBD",
     "project_lead": "Carl Anderson / Chris Lamb",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -519,7 +587,8 @@
     "project_name": "NeuroPro",
     "project_lead": "Gosia Trynka / Lewis Evans",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -529,9 +598,10 @@
     "project_name": "NeuroImmune",
     "project_lead": "Andrew Bassett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease, Immunology and Inflammation",
+    "open_targets_therapeutic_area": "Neurodegenerative Disease , Immunology and Inflammation",
     "disease_mapping": []
   },
   {
@@ -539,7 +609,8 @@
     "project_name": "Rare and Common Diseases",
     "project_lead": "Helen Parkinson",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -549,7 +620,8 @@
     "project_name": "Pathways (Reactome)",
     "project_lead": "Henning Hermjakob",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -559,7 +631,8 @@
     "project_name": "Cancer Mutations (COSMIC)",
     "project_lead": "Simon Forbes",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -569,7 +642,8 @@
     "project_name": "Known Drug Targets (ChEMBL)",
     "project_lead": "Andrew Leach",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -579,7 +653,8 @@
     "project_name": "GWAS Database",
     "project_lead": "Helen Parkinson",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -589,7 +664,8 @@
     "project_name": "Expression (Atlas)",
     "project_lead": "Irene Papatheodorou",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -599,7 +675,8 @@
     "project_name": "Protein Knowledge (UniProt)",
     "project_lead": "Maria Martin / Sandra Orchard",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -609,7 +686,8 @@
     "project_name": "Variation Database (EVA)",
     "project_lead": "Thomas Keane",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -619,7 +697,8 @@
     "project_name": "Melanoma NGS",
     "project_lead": "Moritz Gerstung",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -629,7 +708,8 @@
     "project_name": "1000 cell line RNA-seq",
     "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -639,7 +719,8 @@
     "project_name": "CRISPR Cas9 Target ID",
     "project_lead": "Mathew Garnett",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -649,7 +730,8 @@
     "project_name": "Cancer Functional Genomics",
     "project_lead": "Julio Saez-Rodriguez",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -659,7 +741,8 @@
     "project_name": "IBD Ontology",
     "project_lead": "Helen Parkinson",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -669,7 +752,8 @@
     "project_name": "Epigenomics of GSK Cell Lines",
     "project_lead": "Bill Cairns",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": []
@@ -679,7 +763,8 @@
     "project_name": "Influential Variants",
     "project_lead": "Ewan Birney",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": []
@@ -689,7 +774,8 @@
     "project_name": "Metabolite GWAS",
     "project_lead": "Nicole Soranzo",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": []
@@ -699,7 +785,8 @@
     "project_name": "Statistical Integration",
     "project_lead": "Oli Stegle",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -709,7 +796,8 @@
     "project_name": "Regulatory Elements (POSTGAP)",
     "project_lead": "Daniel Zerbino",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -719,7 +807,8 @@
     "project_name": "Literature",
     "project_lead": "Jo McEntyre",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -729,7 +818,8 @@
     "project_name": "MacroScreen",
     "project_lead": "Dan Gaffney",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -739,7 +829,8 @@
     "project_name": "TargetID Asthma",
     "project_lead": "Sarah Teichmann",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -749,7 +840,8 @@
     "project_name": "Bronchiectasis",
     "project_lead": "David Michalovich",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": []
@@ -759,7 +851,8 @@
     "project_name": "NK Cell Receptors",
     "project_lead": "Dave Adams",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -769,7 +862,8 @@
     "project_name": "Dendritic Cell Screen",
     "project_lead": "Dan Gaffney",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -779,7 +873,8 @@
     "project_name": "AD PD GWAS fine map",
     "project_lead": "Andrew Bassett / Jeremy Schwartzentruber",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -789,7 +884,8 @@
     "project_name": "AD mutations single cell profiles",
     "project_lead": "Martin Hemberg",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -799,7 +895,8 @@
     "project_name": "Profiling iPSC neurons",
     "project_lead": "Dan Gaffney",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -809,7 +906,8 @@
     "project_name": "Cyto Immunogenomics",
     "project_lead": "Gosia Trynka",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
@@ -819,7 +917,8 @@
     "project_name": "CELLector",
     "project_lead": "Francesco Iorio",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": []
@@ -829,7 +928,8 @@
     "project_name": "Expression Atlas",
     "project_lead": "Irene Papatheodorou",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -839,7 +939,8 @@
     "project_name": "Networks",
     "project_lead": "Pedro B, Pablo P & Sandra O",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -849,7 +950,8 @@
     "project_name": "Enteric Neurons",
     "project_lead": "Manos Metzakopian",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": []
@@ -859,7 +961,8 @@
     "project_name": "eQTL Resources",
     "project_lead": "Daniel Zerbino",
     "generates_data": "Platform evidence",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "Y",
+    "integrated_into_Public": "Y",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []
@@ -869,7 +972,8 @@
     "project_name": "Genome Screen Database",
     "project_lead": "Peter Harrison",
     "generates_data": "Yes",
-    "currently_integrates_in_PPP": "N",
+    "integrated_into_PPP": "N",
+    "integrated_into_Public": "N",
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Informatics",
     "disease_mapping": []

@@ -23,7 +23,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
   // this can be probably be rewritten differently, but that's a wider scope than the MUI migration we're currently doing
   const [request, setRequest] = {
     summary: [requestSummary, setRequestSummary],
-    atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
+    // atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
     gtex: [requestGtex, setRequestGtex],
   }[tab];
 
@@ -65,11 +65,11 @@ function Section({ id: ensgId, label: symbol, entity }) {
         <>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab value="summary" label="Summary" />
-            <Tab value="atlas" label="Experiments (Expression Atlas)" />
+            {/* <Tab value="atlas" label="Experiments (Expression Atlas)" /> */}
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
           {tab === "summary" && <SummaryTab symbol={symbol} data={request.data} />}
-          {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />}
+          {/* {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />} */}
           {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </>
       )}

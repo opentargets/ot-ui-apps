@@ -1,4 +1,4 @@
-query ProteinStructureQuery($variantId: String!) {
+query MolecularStructureQuery($variantId: String!) {
   variant(variantId: $variantId) {
     id
     referenceAllele
@@ -15,6 +15,7 @@ query ProteinStructureQuery($variantId: String!) {
           approvedSymbol
         }
         referenceAminoAcid
+        alternateAminoAcid
         aminoAcidPosition
       }
     }

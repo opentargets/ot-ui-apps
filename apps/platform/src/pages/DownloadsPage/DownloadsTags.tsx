@@ -1,8 +1,8 @@
+import FileSaver from "file-saver";
 import { Box, Chip, Divider, Popover } from "@mui/material";
 import { DownloadsContext } from "./context/DownloadsContext";
 import { useContext, useState } from "react";
 import { Link, PublicationsDrawer } from "ui";
-import { getConfig } from "@ot/config";
 import { styled } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAlignLeft, faFileLines, faTableList } from "@fortawesome/free-solid-svg-icons";
@@ -35,7 +35,11 @@ function DownloadsTags() {
 
 function LibrariesTag() {
   const { state } = useContext(DownloadsContext);
-  const config = getConfig();
+  const saveMetadata = () => {
+    const blobOptions = { type: "application/json;charset=utf-8" };
+    const blob = new Blob([JSON.stringify(state.downloadsData, null, 2)], blobOptions);
+    FileSaver.saveAs(blob, "croissant.json");
+  };
 
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -51,10 +55,7 @@ function LibrariesTag() {
             </Link>
             {/* <Divider /> */}
             <Box sx={{ pt: 1 }}>
-              <DownloadsLink href={config.downloadsURL} target="_blank" download>
-                {" "}
-                Download Croissant metadata
-              </DownloadsLink>
+              <Link onClick={saveMetadata}> Download Croissant metadata</Link>
             </Box>
           </Box>
         }
@@ -117,8 +118,9 @@ function DOITag() {
         entries={[{ name: PMID, url: epmcUrl(PMID) }]}
         customLabel={
           <Chip
+            component="span"
             label={
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box component="span" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 {" "}
                 <FontAwesomeIcon icon={faFileLines} /> Cite Us
               </Box>
