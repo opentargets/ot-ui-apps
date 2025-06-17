@@ -7,7 +7,7 @@ export default function CompactAlphaFoldPathogenicityLegend({ showTitle = true }
   const barHeight = 11;
 
   const stops = [];
-  for (let t = 0; t <= 1.005; t += 0.01) {
+  for (let t = -1; t <= 1.005; t += 0.01) {
     stops.push({
       offset: `${t * 100}%`,
       color: alphaFoldPathogenicityColorScale(t),

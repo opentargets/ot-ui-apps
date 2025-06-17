@@ -1,4 +1,4 @@
-import { scaleLinear, interpolateLab, rgb, scaleQuantize } from "d3";
+import { scaleLinear, interpolateLab, rgb, scaleLinear, range } from "d3";
 
 export const alphaFoldConfidenceBands = [
   { lowerLimit: 90, label: "Very high", sublabel: "90 > pLDDT", color: "rgb(0, 83, 214)" },
@@ -43,22 +43,48 @@ export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") 
   return alphaFoldPathogenicityBands[0][propertyName];
 }
 
-export const PRIORITISATION_COLORS = [
-  rgb("#2e5943"),
-  rgb("#2f735f"),
-  rgb("#eceada"),
-  rgb("#eceada"),
+// export const PRIORITISATION_COLORS = [
+//   rgb("#2e5943"),
+//   rgb("#2f735f"),
+//   rgb("#eceada"),
+//   rgb("#eceada"),
+//   rgb("#d65a1f"),
+//   rgb("#a01813"),
+// ];
+
+const PRIORITISATION_COLORS = [
+  rgb("#bc3a19"),
   rgb("#d65a1f"),
-  rgb("#a01813"),
+  rgb("#e08145"),
+  rgb("#e3a772"),
+  rgb("#e6ca9c"),
+  rgb("#eceada"),
+  rgb("#c5d2c1"),
+  rgb("#9ebaa8"),
+  rgb("#78a290"),
+  rgb("#528b78"),
+  rgb("#2f735f"),
 ];
 
-export const alphaFoldPathogenicityColorScale = scaleLinear()
-  .domain([0, 0.1, 0.34, 0.564, 0.8, 1])
-  .range(PRIORITISATION_COLORS)
+export const normalisePathogenicity = scaleLinear([0, 0.06, 0.77, 1], [-1, -0.25, 0.25, 1]);
+
+const normalisedPathogenicityToColor = scaleLinear()
+  .domain([-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1])
+  .range([...PRIORITISATION_COLORS].reverse())
   .interpolate(interpolateLab)
   .clamp(true);
-// only some of the scale breakpoints are meaningful for the legend
-alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
+
+export function alphaFoldPathogenicityColorScale(score) {
+  return normalisedPathogenicityToColor(normalisePathogenicity(score));
+}
+
+// export const alphaFoldPathogenicityColorScale = scaleLinear()
+//   .domain([0, 0.1, 0.34, 0.564, 0.8, 1])
+//   .range(PRIORITISATION_COLORS)
+//   .interpolate(interpolateLab)
+//   .clamp(true);
+// // only some of the scale breakpoints are meaningful for the legend
+// alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
 export function getAlphaFoldPathogenicityColor(atom, scores) {
   return alphaFoldPathogenicityColorScale(scores[atom.resi]);
