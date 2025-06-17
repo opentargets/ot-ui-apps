@@ -1,4 +1,4 @@
-import { scaleLinear, interpolateLab } from "d3";
+import { scaleLinear, interpolateLab, rgb, scaleQuantize } from "d3";
 
 export const alphaFoldConfidenceBands = [
   { lowerLimit: 90, label: "Very high", sublabel: "90 > pLDDT", color: "rgb(0, 83, 214)" },
@@ -43,9 +43,28 @@ export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") 
   return alphaFoldPathogenicityBands[0][propertyName];
 }
 
+export const PRIORITISATION_COLORS = [
+  rgb("#2e5943"),
+  rgb("#2f735f"),
+  // rgb("#528b78"),
+  // rgb("#78a290"),
+  // rgb("#9ebaa8"),
+  // rgb("#c5d2c1"),
+  rgb("#eceada"),
+  rgb("#eceada"),
+  // rgb("#e6ca9c"),
+  // rgb("#e3a772"),
+  // rgb("#e08145"),
+  rgb("#d65a1f"),
+  // rgb("#bc3a19"),
+  rgb("#a01813"),
+];
+// export const alphaFoldPathogenicityColorScale = scaleQuantize().domain([0, 0.34, 0.564, 1]);
+// export const prioritizationScale = alphaFoldPathogenicityColorScale.range(PRIORITISATION_COLORS);
+
 export const alphaFoldPathogenicityColorScale = scaleLinear()
-  .domain([0, 0.34, 0.564, 1])
-  .range(["rgb(61, 84, 147)", "rgb(168, 169, 173)", "rgb(168, 169, 173)", "rgb(203, 25, 25)"])
+  .domain([0, 0.1, 0.34, 0.564, 0.8, 1])
+  .range(PRIORITISATION_COLORS)
   .interpolate(interpolateLab)
   .clamp(true);
 

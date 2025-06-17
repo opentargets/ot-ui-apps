@@ -20,7 +20,7 @@ import {
 
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import {
   resetViewer,
   onClickCapture,
@@ -31,6 +31,7 @@ import {
 } from "./ViewerHelpers";
 import { csvParse, mean } from "d3";
 import InfoPopper from "./InfoPopper";
+import { grey } from "@mui/material/colors";
 
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
 const alphaFoldStructureSuffix = "-model_v4.cif";
@@ -253,6 +254,10 @@ function Viewer({ row }) {
           />
         )}
 
+        {colorBy === "pathogenicity" && variantPathogenicityScore === null && (
+          <NoVariantPathogenicityScore />
+        )}
+
         {/* no pathogenicity data message */}
         {colorBy === "pathogenicity" && pathogenicityScores === "failed" && (
           <Typography
@@ -276,151 +281,196 @@ function Viewer({ row }) {
         )}
       </Box>
 
-      {/* confidence-pathogenicity toggle buttons */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "end",
-          alignItems: "center",
-          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "start",
+          flexDirection: { xs: "column", lg: "row" },
         }}
       >
-        <FormControl>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <FormLabel
-              sx={{
-                "&.Mui-focused": {
-                  color: "text.primary",
-                },
-              }}
-            >
-              <Typography variant="body2">AlphaFold model colour</Typography>
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-radio-buttons-group-label"
-              defaultValue="confidence"
-              name="color-by-group"
-              value={colorBy}
-              onChange={handleToggleColor}
-            >
-              <FormControlLabel
-                value="confidence"
-                control={<Radio size="small" />}
-                label="confidence"
-                slotProps={{
-                  typography: { variant: "body2" },
-                }}
-                sx={{
-                  mr: 2,
-                  "& .MuiFormControlLabel-label": {
-                    marginLeft: -0.7,
-                  },
-                }}
-              />
-              <FormControlLabel
-                value="pathogenicity"
-                control={<Radio size="small" />}
-                label="pathogenicity"
-                slotProps={{
-                  typography: { variant: "body2" },
-                }}
-                sx={{
-                  marginRight: 0,
-                  "& .MuiFormControlLabel-label": {
-                    marginLeft: -0.7,
-                  },
-                }}
-              />
-            </RadioGroup>
-          </Box>
-        </FormControl>
-      </Box>
-
-      {/* explanatory text */}
-      {colorBy === "pathogenicity" && Array.isArray(pathogenicityScores) && (
+        {/* confidence-pathogenicity toggle buttons */}
         <Box
-          component="table"
           sx={{
             display: "flex",
             justifyContent: "end",
-            borderCollapse: "separate",
-            borderSpacing: "0",
-            mb: 0.2,
+            alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
-          <tbody>
-            <tr>
-              <Typography component="td" variant="caption" textAlign="right">
-                <strong>Backbone:</strong>
-              </Typography>
-              <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
-                mean pathogenicity over all possible amino acid substitutions
-              </Typography>
-            </tr>
-            {variantPathogenicityScore && (
-              <tr>
-                <Typography component="td" variant="caption" textAlign="right">
-                  <strong>Variant:</strong>
-                </Typography>
-                <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
-                  pathogenicity for the substitution corresponding to the variant
-                </Typography>
-              </tr>
-            )}
-          </tbody>
+          <FormControl>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, ml: 1 }}>
+              <FormLabel
+                sx={{
+                  "&.Mui-focused": {
+                    color: "text.primary",
+                  },
+                }}
+              >
+                <Typography variant="subtitle2">AlphaFold model colour:</Typography>
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-radio-buttons-group-label"
+                defaultValue="confidence"
+                name="color-by-group"
+                value={colorBy}
+                onChange={handleToggleColor}
+              >
+                <FormControlLabel
+                  value="confidence"
+                  control={<Radio size="small" />}
+                  label="confidence"
+                  slotProps={{
+                    typography: { variant: "body2" },
+                  }}
+                  sx={{
+                    mr: 2,
+                    "& .MuiFormControlLabel-label": {
+                      marginLeft: -0.7,
+                    },
+                  }}
+                />
+                <FormControlLabel
+                  value="pathogenicity"
+                  control={<Radio size="small" />}
+                  label="pathogenicity"
+                  slotProps={{
+                    typography: { variant: "body2" },
+                  }}
+                  sx={{
+                    marginRight: 0,
+                    "& .MuiFormControlLabel-label": {
+                      marginLeft: -0.7,
+                    },
+                  }}
+                />
+              </RadioGroup>
+            </Box>
+          </FormControl>
         </Box>
-      )}
 
-      {/* legends */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "end",
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
-        {(colorBy === "confidence" || variantPathogenicityScore === null) && (
-          <Box
-            sx={{ display: "flex", justifyContent: "end", alignItems: "center", gap: 0.75, pr: 3 }}
-          >
-            <Typography variant="caption" lineHeight={1}>
-              Reference amino acid{row.referenceAminoAcid.length > 1 ? "s" : ""}
-            </Typography>
-            <Box sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }} />
-          </Box>
-        )}
         <Box>
-          {colorBy === "confidence" || !Array.isArray(pathogenicityScores) ? (
-            <CompactAlphaFoldLegend showTitle={false} />
-          ) : (
-            <CompactAlphaFoldPathogenicityLegend showTitle={false} />
+          {/* explanatory text */}
+          {colorBy === "pathogenicity" && Array.isArray(pathogenicityScores) && (
+            <Box
+              component="table"
+              sx={{
+                display: "flex",
+                justifyContent: "end",
+                ml: { xs: 1, lg: 0 },
+                borderCollapse: "separate",
+                borderSpacing: "0",
+                mb: 0.2,
+              }}
+            >
+              <tbody>
+                <tr>
+                  <Typography component="td" variant="caption" textAlign="right">
+                    <strong>Backbone:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
+                    mean AlphaMissense pathogenicity over all possible amino acid substitutions
+                  </Typography>
+                </tr>
+                {variantPathogenicityScore && (
+                  <tr>
+                    <Typography component="td" variant="caption" textAlign="right">
+                      <strong>Variant:</strong>
+                    </Typography>
+                    <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
+                      AlphaMissense pathogenicity for the substitution corresponding to the variant
+                    </Typography>
+                  </tr>
+                )}
+              </tbody>
+            </Box>
+          )}
+
+          {/* legends */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+              flexWrap: "wrap",
+              ml: { xs: 1, lg: 0 },
+            }}
+          >
+            {(colorBy === "confidence" || variantPathogenicityScore === null) && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "end",
+                  alignItems: "center",
+                  gap: 0.75,
+                  pr: 3,
+                }}
+              >
+                <Typography variant="caption" lineHeight={1}>
+                  Reference amino acid{row.referenceAminoAcid.length > 1 ? "s" : ""}
+                </Typography>
+                <Box
+                  sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }}
+                />
+              </Box>
+            )}
+            <Box>
+              {colorBy === "confidence" || !Array.isArray(pathogenicityScores) ? (
+                <CompactAlphaFoldLegend showTitle={false} />
+              ) : (
+                <CompactAlphaFoldPathogenicityLegend showTitle={false} />
+              )}
+            </Box>
+          </Box>
+
+          {/* message text */}
+          {messageText && (
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                position: "absolute",
+                zIndex: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#f8f8f8",
+              }}
+            >
+              {messageText}
+            </Typography>
           )}
         </Box>
       </Box>
+    </Box>
+  );
+}
 
-      {/* message text */}
-      {messageText && (
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            position: "absolute",
-            zIndex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#f8f8f8",
-          }}
-        >
-          {messageText}
-        </Typography>
-      )}
+function NoVariantPathogenicityScore() {
+  return (
+    <Box
+      bgcolor="#fff"
+      zIndex={100}
+      fontSize={14}
+      sx={{
+        position: "absolute",
+        left: "8px",
+        top: "8px",
+        px: 2,
+        py: 1,
+        border: 1,
+        borderColor: grey[200],
+      }}
+    >
+      <Box sx={{ display: "flex", gap: 1, alignItems: "baseline" }}>
+        <FontAwesomeIcon icon={faTriangleExclamation} />
+        <Typography variant="body2">No variant pathogenicity score</Typography>
+      </Box>
     </Box>
   );
 }
