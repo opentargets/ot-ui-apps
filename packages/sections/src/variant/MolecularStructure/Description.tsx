@@ -32,7 +32,11 @@ function Description({
       <Link external to={`https://alphafold.ebi.ac.uk/entry/${uniprotAccession}`}>
         AlphafoldDB
       </Link>{" "}
-      and <Link to="/">Open Targets</Link>.
+      and{" "}
+      <Link external to="https://platform-docs.opentargets.org/variant">
+        Open Targets
+      </Link>
+      .
     </>
   );
 }

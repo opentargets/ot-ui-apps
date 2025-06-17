@@ -1,5 +1,4 @@
-import { getAlphaFoldConfidence } from "@ot/constants";
-import { hsl } from "d3";
+import { getAlphaFoldConfidence, getAlphaFoldPathogenicityColor } from "@ot/constants";
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
   let cx = 0,
@@ -57,69 +56,75 @@ export function onClickCapture(viewerRef, targetId) {
   }
 }
 
-function addVariantStyle(viewer, variantResidues, omitResi) {
-  let resis = [...variantResidues];
-  if (variantResidues.has(omitResi)) {
-    resis = resis.filter(atom => atom !== omitResi);
-  }
+export function drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues }) {
+  const colorfunc = !colorBy
+    ? () => "#ccc"
+    : colorBy === "confidence"
+    ? a => getAlphaFoldConfidence(a, "color")
+    : a => getAlphaFoldPathogenicityColor(a, pathogenicityScores);
+  viewer.setStyle({}, { cartoon: { colorfunc, opacity: 1, arrows: true } });
+
+  // add clickspheres so surface seems hoverable
+  viewer.addStyle({ resi: [...variantResidues] }, { clicksphere: { radius: 1.5 } });
+}
+
+export function drawVariantSurface({ viewer, variantResidues, color }) {
+  if (viewer._variantSurfaceId) viewer.removeSurface(viewer._variantSurfaceId);
+  viewer._variantSurfaceId = viewer.addSurface(
+    "VDW",
+    { opacity: 1, color },
+    { resi: [...variantResidues] },
+    undefined,
+    undefined,
+    () => {} // include surface callback so addSurface returns surface id synchronously
+  );
+}
+
+export function setVariantSurfaceColor({ viewer, color }) {
+  if (viewer._variantSurfaceId == null) return;
+  viewer.setSurfaceMaterialStyle(viewer._variantSurfaceId, { color });
+}
+
+export function drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores }) {
+  const color =
+    colorBy === "confidence"
+      ? getAlphaFoldConfidence(atom, "color")
+      : getAlphaFoldPathogenicityColor(atom, pathogenicityScores);
   viewer.addStyle(
-    { resi: resis },
+    { resi: atom.resi }, // draw ball and stick for all atoms in same residue
     {
-      stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-      sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
+      stick: { color },
+      sphere: { radius: 0.4, color },
     }
   );
 }
 
-export function noHoverStyle(viewer, variantResidues) {
-  viewer.setStyle(
-    {},
-    {
-      cartoon: {
-        colorfunc: a => getAlphaFoldConfidence(a, "color"),
-        arrows: true,
-      },
-    }
-  );
-  addVariantStyle(viewer, variantResidues);
-}
-
-// function hoverManagerFactory({ viewer, atomInfoRef }) {
-export function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom }) {
+export function hoverManagerFactory({
+  viewer,
+  variantResidues,
+  setHoveredAtom,
+  colorBy,
+  pathogenicityScores,
+}) {
   let currentResi = null;
 
   function handleHover(atom) {
     if (!atom || currentResi === atom.resi) return;
-    setHoveredAtom(atom);
-    const hslColor = hsl(getAlphaFoldConfidence(atom, "color"));
-    hslColor.l += hslColor.l > 0.6 ? 0.1 : 0.2;
-    const afColorLight = hslColor.toString();
-    viewer.setStyle(
-      // only need setStyle since doing cartoon - owise can use addStyle
-      {},
-      {
-        cartoon: {
-          colorfunc: a =>
-            a.resi === currentResi ? afColorLight : getAlphaFoldConfidence(a, "color"),
-          arrows: true,
-        },
-      }
-    );
-    addVariantStyle(viewer, variantResidues, atom.resi);
-    viewer.addStyle(
-      { resi: atom.resi },
-      {
-        stick: { color: afColorLight },
-        sphere: { radius: 0.4, color: afColorLight },
-      }
-    );
+    variantResidues.has(atom.resi)
+      ? drawCartoon({ viewer, pathogenicityScores, variantResidues }) // make cartoon gray
+      : drawBallAndStick({ viewer, atom, colorBy, pathogenicityScores });
     currentResi = atom.resi;
+    setHoveredAtom(atom);
     viewer.render();
   }
 
   function handleUnhover(atom) {
     if (currentResi !== null) {
-      noHoverStyle(viewer, variantResidues);
+      viewer.setStyle({}, {});
+      drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues });
+      if (colorBy === "confidence" && variantResidues.has(currentResi)) {
+        setVariantSurfaceColor({ viewer, color: "#0f0" });
+      }
       currentResi = null;
       viewer.render();
       setHoveredAtom(null);
@@ -127,4 +132,27 @@ export function hoverManagerFactory({ viewer, variantResidues, setHoveredAtom })
   }
 
   return [{}, true, handleHover, handleUnhover];
+}
+
+export function setHoverBehavior({
+  viewer,
+  variantResidues,
+  setHoveredAtom,
+  colorBy,
+  pathogenicityScores,
+}) {
+  const hoverDuration = 10;
+  viewer.setHoverDuration(hoverDuration);
+  const hoverArgs = hoverManagerFactory({
+    viewer,
+    variantResidues,
+    setHoveredAtom,
+    colorBy,
+    pathogenicityScores,
+  });
+  const handleUnhover = hoverArgs[3];
+  viewer.getCanvas().onmouseleave = () => {
+    setTimeout(handleUnhover, hoverDuration + 50);
+  };
+  viewer.setHoverable(...hoverArgs);
 }

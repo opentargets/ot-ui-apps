@@ -15,6 +15,7 @@ query MolecularStructureQuery($variantId: String!) {
           approvedSymbol
         }
         referenceAminoAcid
+        alternateAminoAcid
         aminoAcidPosition
       }
     }
