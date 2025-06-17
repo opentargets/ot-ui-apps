@@ -13,7 +13,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
     });
   }
 
-  const domain = alphaFoldPathogenicityColorScale.domain();
+  const primaryDomain = alphaFoldPathogenicityColorScale._primaryDomain;
 
   const gradientId = "color-gradient";
   const fontSize = 11.5;
@@ -44,7 +44,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                 stroke="none"
               />
               <g transform={`translate(0, ${barHeight + 20})`}>
-                {domain.map((t, i) => (
+                {primaryDomain.map((t, i) => (
                   <text
                     key={i}
                     x={t * barWidth}
@@ -62,7 +62,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                 {["likely benign", "uncertain", "likely pathogenic"].map((label, i) => (
                   <text
                     key={i}
-                    x={((domain[i] + domain[i + 1]) * barWidth) / 2}
+                    x={((primaryDomain[i] + primaryDomain[i + 1]) * barWidth) / 2}
                     y={0}
                     fontSize={fontSize}
                     fill={textColor}
@@ -73,7 +73,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                   </text>
                 ))}
               </g>
-              {domain.map((t, i) => (
+              {primaryDomain.map((t, i) => (
                 <line
                   key={i}
                   x1={t * barWidth}
@@ -87,10 +87,6 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
             </g>
           </svg>
         </Box>
-        {/* <Typography variant="caption" mt={1}>
-          The displayed colour for each residue is the average AlphaMissense pathogenicity score
-          across all possible amino acid substitutions at that position.
-        </Typography> */}
       </Box>
     </Box>
   );
