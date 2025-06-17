@@ -6,9 +6,9 @@ import {
   SummaryContainer,
   summaryUtils,
   SectionLoader,
+  PrivateWrapper,
 } from "ui";
 
-import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
 import TractabilitySummary from "sections/src/target/Tractability/Summary";
 import SafetySummary from "sections/src/target/Safety/Summary";
@@ -26,12 +26,10 @@ import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary"
 import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
 import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
 import BibliographySummary from "sections/src/target/Bibliography/Summary";
+import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
-const OverlappingVariantsSection = lazy(() =>
-  import("sections/src/target/OverlappingVariants/Body")
-);
 const KnownDrugsSection = lazy(() => import("sections/src/target/KnownDrugs/Body"));
 const TractabilitySection = lazy(() => import("sections/src/target/Tractability/Body"));
 const SafetySection = lazy(() => import("sections/src/target/Safety/Body"));
@@ -55,9 +53,11 @@ const SubcellularLocationSection = lazy(() =>
   import("sections/src/target/SubcellularLocation/Body")
 );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
+const OverlappingVariantsSection = lazy(() =>
+  import("sections/src/target/OverlappingVariants/Body")
+);
 
 const summaries = [
-  OverlappingVariantsSummary,
   KnownDrugsSummary,
   TractabilitySummary,
   SafetySummary,
@@ -75,6 +75,7 @@ const summaries = [
   ComparativeGenomicsSummary,
   SubcellularLocationSummary,
   BibliographySummary,
+  OverlappingVariantsSummary,
 ];
 
 const TARGET = "target";
@@ -96,8 +97,7 @@ function Profile({ ensgId, symbol }) {
     <PlatformApiProvider entity={TARGET} query={TARGET_PROFILE_QUERY} variables={{ ensgId }}>
       <ProfileHeader />
       <SummaryContainer>
-        <OverlappingVariantsSummary />
-        {/* <KnownDrugsSummary />
+        <KnownDrugsSummary />
         <TractabilitySummary />
         <SafetySummary />
         <PharmacogenomicsSummary />
@@ -113,14 +113,14 @@ function Profile({ ensgId, symbol }) {
         <CancerHallmarksSummary />
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
-        <BibliographySummary /> */}
+        <BibliographySummary />
+        <PrivateWrapper>
+          <OverlappingVariantsSummary />
+        </PrivateWrapper>
       </SummaryContainer>
 
       <SectionContainer>
         <Suspense fallback={<SectionLoader />}>
-          <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        {/* <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -170,7 +170,12 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense> */}
+        </Suspense>
+        <PrivateWrapper>
+          <Suspense fallback={<SectionLoader />}>
+            <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+        </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>
   );
