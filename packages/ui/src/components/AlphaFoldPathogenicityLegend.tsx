@@ -52,7 +52,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                     fontSize={fontSize}
                     fill={textColor}
                     textAnchor="middle"
-                    alignmentBaseline="hanging"
+                    dominantBaseline="hanging"
                   >
                     {t}
                   </text>
@@ -67,7 +67,7 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                     fontSize={fontSize}
                     fill={textColor}
                     textAnchor="middle"
-                    alignmentBaseline="hanging"
+                    dominantBaseline="hanging"
                   >
                     {label}
                   </text>
