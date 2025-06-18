@@ -203,6 +203,7 @@ function ChartControls({ data, query, variables, columns }) {
       }}
     >
       <DataDownloader
+        fileStem={`gwas-credible-sets-variant`}
         btnLabel="Export"
         rows={data}
         query={query}

@@ -161,6 +161,7 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
             sortBy="nSamples"
             order="desc"
             dataDownloader
+            dataDownloaderFileStem={`${studyId}-shared-trait-studies`}
             query={SHARED_TRAIT_STUDIES_QUERY.loc.source.body}
             variables={variables}
           />

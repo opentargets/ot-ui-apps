@@ -113,6 +113,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         <OtTable
           dataDownloader
           columns={getColumns(ensemblId, symbol)}
+          dataDownloaderFileStem={`${ensemblId}-genetic-constraint-${entity}`}
           rows={request.data?.target.geneticConstraint}
           query={GENETIC_CONSTRAINT.loc.source.body}
           variables={variables}

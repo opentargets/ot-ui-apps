@@ -297,6 +297,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${ensemblId}-pharmacogenomics-${entity}`}
           sortBy="evidenceLevel"
           columns={columns}
           rows={request.data?.target.pharmacogenomics}

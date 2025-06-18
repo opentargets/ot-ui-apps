@@ -331,7 +331,7 @@ function Body({ id, label, entity }) {
           columns={columns}
           dataDownloader
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem="chembl-evidence"
+          dataDownloaderFileStem={`chembl-evidence-${id}`}
           entity={entity}
           sectionName="chembl"
           showGlobalFilter={false}

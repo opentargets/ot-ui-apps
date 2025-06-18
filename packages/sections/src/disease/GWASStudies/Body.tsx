@@ -128,6 +128,7 @@ function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
           sortBy="nSamples"
           order="desc"
           dataDownloader
+          dataDownloaderFileStem={`${efoId}-gwas-studies`}
           loading={request.loading}
           query={GWAS_STUDIES_BODY_QUERY.loc.source.body}
           variables={variables}

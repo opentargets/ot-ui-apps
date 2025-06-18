@@ -251,6 +251,7 @@ function Body({ id, entity }: BodyProps) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${id}-pharmacogenetics-variant`}
           sortBy="evidenceLevel"
           columns={columns}
           rows={request.data?.variant.pharmacogenomics}

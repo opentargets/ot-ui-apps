@@ -161,6 +161,7 @@ function Body({ id: ensemblId, label: symbol, entity, viewMode = VIEW_MODES.defa
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${ensemblId}-comparative-genomics-${entity}`}
           columns={columns}
           rows={request.data?.target.homologues}
           query={COMP_GENOMICS_QUERY.loc.source.body}

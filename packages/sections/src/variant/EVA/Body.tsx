@@ -181,6 +181,7 @@ function Body({ id, entity }: BodyProps) {
       renderBody={() => (
         <OtTable
           dataDownloader
+          dataDownloaderFileStem={`${id}-clinvar-variant`}
           showGlobalFilter
           columns={columns}
           loading={request.loading}

@@ -107,6 +107,7 @@ export function Body({ id, entity }: BodyProps) {
         return (
           <OtTable
             dataDownloader
+            dataDownloaderFileStem={`${id}-uniprot-variants`}
             showGlobalFilter
             columns={columns}
             loading={request.loading}

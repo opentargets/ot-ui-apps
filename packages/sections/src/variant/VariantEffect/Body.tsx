@@ -119,6 +119,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
             columns={columns}
             rows={rows}
             dataDownloader
+            dataDownloaderFileStem={`${id}-variant-effect`}
             query={VARIANT_EFFECT_QUERY.loc.source.body}
             variables={variables}
             loading={request.loading}

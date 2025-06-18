@@ -94,6 +94,7 @@ function ChartControls({ data, query, variables, columns }) {
     >
       <DataDownloader
         btnLabel="Export"
+        fileStem={`comparative-genomics-plot`}
         rows={data}
         query={query}
         variables={variables}

@@ -280,6 +280,7 @@ function Body({ id, entity }: BodyProps): ReactNode {
         return (
           <OtTable
             dataDownloader
+            dataDownloaderFileStem={`${id}-qtl-credible-sets-variant`}
             showGlobalFilter
             sortBy="pValue"
             columns={getColumns({
