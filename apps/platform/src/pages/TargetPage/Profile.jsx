@@ -107,6 +107,9 @@ function Profile({ ensgId, symbol }) {
         <SubcellularLocationSummary />
         <GeneOntologySummary />
         <GeneticConstraintSummary />
+        <PrivateWrapper>
+          <OverlappingVariantsSummary />
+        </PrivateWrapper>
         <MolecularStructureSummary />
         <MolecularInteractionsSummary />
         <PathwaysSummary />
@@ -114,9 +117,6 @@ function Profile({ ensgId, symbol }) {
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
         <BibliographySummary />
-        <PrivateWrapper>
-          <OverlappingVariantsSummary />
-        </PrivateWrapper>
       </SummaryContainer>
 
       <SectionContainer>
@@ -150,6 +150,11 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
+        <PrivateWrapper>
+          <Suspense fallback={<SectionLoader />}>
+            <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+        </PrivateWrapper>
         <Suspense fallback={<SectionLoader />}>
           <MolecularStructureSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
@@ -171,11 +176,6 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
-        <PrivateWrapper>
-          <Suspense fallback={<SectionLoader />}>
-            <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
-          </Suspense>
-        </PrivateWrapper>
       </SectionContainer>
     </PlatformApiProvider>
   );
