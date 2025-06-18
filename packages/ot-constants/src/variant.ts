@@ -1,3 +1,55 @@
+interface VariantConsequence {
+  id: string;
+  label: string;
+  proteinCoding: boolean;
+}
+
+export const VARIANT_CONSEQUENCES: VariantConsequence[] = [
+  { id: "SO:0001580", label: "coding_sequence_variant", proteinCoding: false },
+  { id: "SO:0001632", label: "downstream_gene_variant", proteinCoding: false },
+  { id: "SO:0001589", label: "frameshift_variant", proteinCoding: true },
+  { id: "SO:0001626", label: "incomplete_terminal_codon_variant", proteinCoding: false },
+  { id: "SO:0001822", label: "inframe_deletion", proteinCoding: true },
+  { id: "SO:0001821", label: "inframe_insertion", proteinCoding: true },
+  { id: "SO:0001060", label: "intergenic_variant", proteinCoding: false },
+  { id: "SO:0001627", label: "intron_variant", proteinCoding: true },
+  { id: "SO:0001620", label: "mature_miRNA_variant", proteinCoding: false },
+  { id: "SO:0001583", label: "missense_variant", proteinCoding: true },
+  { id: "SO:0001792", label: "non_coding_transcript_exon_variant", proteinCoding: false },
+  { id: "SO:0001619", label: "non_coding_transcript_variant", proteinCoding: false },
+  { id: "SO:0001818", label: "protein_altering_variant", proteinCoding: true },
+  { id: "SO:0001574", label: "splice_acceptor_variant", proteinCoding: true },
+  { id: "SO:0002170", label: "splice_donor_region_variant", proteinCoding: true },
+  { id: "SO:0001575", label: "splice_donor_variant", proteinCoding: true },
+  { id: "SO:0001787", label: "splice_donor_5th_base_variant", proteinCoding: true },
+  { id: "SO:0002169", label: "splice_polypyrimidine_tract_variant", proteinCoding: false },
+  { id: "SO:0001630", label: "splice_region_variant", proteinCoding: true },
+  { id: "SO:0002012", label: "start_lost", proteinCoding: true },
+  { id: "SO:0002019", label: "start_retained_variant", proteinCoding: true },
+  { id: "SO:0001587", label: "stop_gained", proteinCoding: true },
+  { id: "SO:0001578", label: "stop_lost", proteinCoding: true },
+  { id: "SO:0001567", label: "stop_retained_variant", proteinCoding: true },
+  { id: "SO:0001819", label: "synonymous_variant", proteinCoding: false },
+  { id: "SO:0001893", label: "transcript_ablation", proteinCoding: false },
+  { id: "SO:0001631", label: "upstream_gene_variant", proteinCoding: false },
+  { id: "SO:0001624", label: "3_prime_UTR_variant", proteinCoding: false },
+  { id: "SO:0001623", label: "5_prime_UTR_variant", proteinCoding: false },
+];
+
+interface DataSource {
+  datasourceId: string;
+  datasourceNiceName: string;
+}
+
+export const DATASOURCES: DataSource[] = [
+  { datasourceId: "eva", datasourceNiceName: "ClinVar" },
+  { datasourceId: "eva_somatic", datasourceNiceName: "ClinVar-somatic" },
+  { datasourceId: "gwas_credible_sets", datasourceNiceName: "GWAS credible sets" },
+  { datasourceId: "mol_qtl", datasourceNiceName: "molQTL" },
+  { datasourceId: "pharmgkb", datasourceNiceName: "pharmgkb" },
+  { datasourceId: "uniprot_variants", datasourceNiceName: "UniProt Variants" },
+];
+
 interface VariantEffectMethod {
   methodName: string;
   prettyName: string;

@@ -6,6 +6,7 @@ import {
   SummaryContainer,
   summaryUtils,
   SectionLoader,
+  PrivateWrapper,
 } from "ui";
 
 import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
@@ -25,6 +26,7 @@ import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary"
 import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
 import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
 import BibliographySummary from "sections/src/target/Bibliography/Summary";
+import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -51,6 +53,9 @@ const SubcellularLocationSection = lazy(() =>
   import("sections/src/target/SubcellularLocation/Body")
 );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
+const OverlappingVariantsSection = lazy(() =>
+  import("sections/src/target/OverlappingVariants/Body")
+);
 
 const summaries = [
   KnownDrugsSummary,
@@ -70,6 +75,7 @@ const summaries = [
   ComparativeGenomicsSummary,
   SubcellularLocationSummary,
   BibliographySummary,
+  OverlappingVariantsSummary,
 ];
 
 const TARGET = "target";
@@ -101,6 +107,9 @@ function Profile({ ensgId, symbol }) {
         <SubcellularLocationSummary />
         <GeneOntologySummary />
         <GeneticConstraintSummary />
+        <PrivateWrapper>
+          <OverlappingVariantsSummary />
+        </PrivateWrapper>
         <MolecularStructureSummary />
         <MolecularInteractionsSummary />
         <PathwaysSummary />
@@ -141,6 +150,11 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
+        <PrivateWrapper>
+          <Suspense fallback={<SectionLoader />}>
+            <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+        </PrivateWrapper>
         <Suspense fallback={<SectionLoader />}>
           <MolecularStructureSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
