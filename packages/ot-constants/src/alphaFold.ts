@@ -43,15 +43,6 @@ export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") 
   return alphaFoldPathogenicityBands[0][propertyName];
 }
 
-// export const PRIORITISATION_COLORS = [
-//   rgb("#2e5943"),
-//   rgb("#2f735f"),
-//   rgb("#eceada"),
-//   rgb("#eceada"),
-//   rgb("#d65a1f"),
-//   rgb("#a01813"),
-// ];
-
 const PRIORITISATION_COLORS = [
   rgb("#bc3a19"),
   rgb("#d65a1f"),
@@ -78,13 +69,7 @@ export function alphaFoldPathogenicityColorScale(score) {
   return normalisedPathogenicityToColor(normalisePathogenicity(score));
 }
 
-// export const alphaFoldPathogenicityColorScale = scaleLinear()
-//   .domain([0, 0.1, 0.34, 0.564, 0.8, 1])
-//   .range(PRIORITISATION_COLORS)
-//   .interpolate(interpolateLab)
-//   .clamp(true);
-// // only some of the scale breakpoints are meaningful for the legend
-// alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
+// window.alphaFoldPathogenicityColorScale = alphaFoldPathogenicityColorScale;
 
 export function getAlphaFoldPathogenicityColor(atom, scores) {
   return alphaFoldPathogenicityColorScale(scores[atom.resi]);
