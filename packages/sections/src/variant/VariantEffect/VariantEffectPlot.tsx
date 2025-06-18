@@ -58,6 +58,7 @@ function ChartControls({ data, query, variables, columns }) {
         query={query}
         variables={variables}
         columns={columns}
+        fileStem={`variant-effect-plot`}
       />
     </Box>
   );

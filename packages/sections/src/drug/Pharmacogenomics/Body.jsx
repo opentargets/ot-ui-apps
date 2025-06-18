@@ -289,6 +289,7 @@ function Body({ id: chemblId, label: name, entity }) {
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${chemblId}-pharmacogenomics`}
           columns={columns}
           rows={request.data?.drug.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}

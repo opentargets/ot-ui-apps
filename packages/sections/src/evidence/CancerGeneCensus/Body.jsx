@@ -169,6 +169,7 @@ function Body({ id, label, entity }) {
             <OtTable
               columns={columns}
               dataDownloader
+              dataDownloaderFileStem={`cancer-gene-census-${ensgId}-${efoId}`}
               order="asc"
               rows={request.data?.disease.cancerGeneCensusSummary.rows}
               showGlobalFilter

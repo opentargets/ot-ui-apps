@@ -172,6 +172,7 @@ export function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.uniprotVariantsSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`UniProt-variants-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={UNIPROT_VARIANTS_QUERY.loc.source.body}

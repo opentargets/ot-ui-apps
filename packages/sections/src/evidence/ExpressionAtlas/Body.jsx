@@ -124,6 +124,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.expressionAtlasSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`expression-atlas-${ensgId}-${efoId}`}
             showGlobalFilter
             sortBy="resourceScore"
             order="asc"

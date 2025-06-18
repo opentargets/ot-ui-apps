@@ -152,6 +152,7 @@ function Body({ id, entity }: BodyProps) {
       renderBody={() => (
         <OtTable
           dataDownloader
+          dataDownloaderFileStem={`${id}-qtl-credible-sets-studies`}
           showGlobalFilter
           sortBy="pValue"
           columns={columns}

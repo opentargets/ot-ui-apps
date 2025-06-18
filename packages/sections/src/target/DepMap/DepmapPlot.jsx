@@ -45,6 +45,7 @@ function ChartControls({ data, query, variables }) {
         rows={data}
         query={query}
         variables={variables}
+        fileStem={`cancer-depmap-target`}
         columns={[
           { exportValue: row => row.depmapId, id: "depmapId" },
           { exportValue: row => row.cellLineName, id: "cellLineName" },

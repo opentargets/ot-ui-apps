@@ -339,6 +339,7 @@ function Body({ id, entity }: BodyProps) {
           <>
             <OtTable
               dataDownloader
+              dataDownloaderFileStem={`${id}-gwas-credible-sets-variant`}
               showGlobalFilter
               sortBy="l2gScore"
               order="desc"

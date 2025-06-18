@@ -54,6 +54,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${ensemblId}-pathway-${entity}`}
           columns={getColumns(symbol)}
           rows={request.data?.target.pathways}
           rowsPerPageOptions={defaultRowsPerPageOptions}
