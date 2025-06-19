@@ -192,11 +192,6 @@ const themeOptions: ThemeOptions = {
         disableRipple: true,
       },
     },
-    MuiChip: {
-      defaultProps: {
-        disableRipple: true,
-      },
-    },
   },
 };
 
