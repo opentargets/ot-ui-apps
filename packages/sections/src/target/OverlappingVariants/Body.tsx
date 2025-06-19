@@ -9,7 +9,17 @@ import Table from "./Table";
 import { Box } from "@mui/material";
 import { table5HChunkSize } from "@ot/constants";
 
-function Body({ id: ensemblId, label: symbol, entity }) {
+export interface OverlappingVariantsWidgetProps {
+  id: string;
+  label: string;
+  entity: string;
+}
+
+function OverlappingVariantsWidget({
+  id: ensemblId,
+  label: symbol,
+  entity,
+}: OverlappingVariantsWidgetProps) {
   const variables = { ensemblId, size: table5HChunkSize, index: 0 };
 
   const request = useBatchQuery({
@@ -49,4 +59,4 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   );
 }
 
-export default Body;
+export default OverlappingVariantsWidget;
