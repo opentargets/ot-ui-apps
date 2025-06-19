@@ -1,5 +1,4 @@
-import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
+import { SectionItem, useBatchQuery } from "ui";
 import Description from "./Description";
 import { definition } from ".";
 import OVERLAPPING_VARIANTS_QUERY from "./OverlappingVariantsQuery.gql";
@@ -8,13 +7,16 @@ import Viewer from "./Viewer";
 import Filters from "./Filters";
 import Table from "./Table";
 import { Box } from "@mui/material";
+import { table5HChunkSize } from "@ot/constants";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
-  // const [molViewer, setMolViewer] = useState(null);
+  const variables = { ensemblId, size: table5HChunkSize, index: 0 };
 
-  const variables = { ensemblId };
-  const request = useQuery(OVERLAPPING_VARIANTS_QUERY, {
+  const request = useBatchQuery({
+    query: OVERLAPPING_VARIANTS_QUERY,
     variables,
+    dataPath: "target.proteinCodingCoordinates",
+    size: table5HChunkSize,
   });
 
   return (

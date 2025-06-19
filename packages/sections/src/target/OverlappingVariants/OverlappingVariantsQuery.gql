@@ -1,7 +1,7 @@
-query OverlappingVariantsQuery($ensemblId: String!) {
+query OverlappingVariantsQuery($ensemblId: String!, $size: Int!, $index: Int!) {
   target(ensemblId: $ensemblId) {
     id
-    proteinCodingCoordinates(page: { size: 3000, index: 0 }) {
+    proteinCodingCoordinates(page: { size: $size, index: $index }) {
       count
       rows {
         datasources {
