@@ -141,7 +141,7 @@ export function setHoverBehavior({
   colorBy,
   pathogenicityScores,
 }) {
-  const hoverDuration = 10;
+  const hoverDuration = 50;
   viewer.setHoverDuration(hoverDuration);
   const hoverArgs = hoverManagerFactory({
     viewer,
