@@ -120,7 +120,7 @@ function Profile({ ensgId, symbol }) {
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -149,7 +149,7 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
+        </Suspense> */}
         <PrivateWrapper>
           <Suspense fallback={<SectionLoader />}>
             <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
@@ -158,7 +158,7 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <MolecularStructureSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <MolecularInteractionsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -175,7 +175,7 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
+        </Suspense> */}
       </SectionContainer>
     </PlatformApiProvider>
   );
