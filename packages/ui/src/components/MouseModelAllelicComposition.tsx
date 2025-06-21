@@ -1,6 +1,15 @@
 import { Typography } from "@mui/material";
+import { ReactNode } from "react";
 
-function MouseModelAllelicComposition({ allelicComposition, geneticBackground }) {
+type MouseModelAllelicCompositionProps = {
+  allelicComposition: string;
+  geneticBackground: string;
+};
+
+function MouseModelAllelicComposition({
+  allelicComposition,
+  geneticBackground,
+}: MouseModelAllelicCompositionProps): ReactNode {
   const regex = /(.*)<(.*)>\/([^<]*)<?([^>]*)?>?/;
   const match = regex.exec(allelicComposition);
   return (
