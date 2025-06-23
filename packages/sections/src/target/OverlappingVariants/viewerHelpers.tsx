@@ -1,9 +1,5 @@
 import { getAlphaFoldConfidence } from "@ot/constants";
 
-// function clearStructureInfo() {
-//   structureInfoRef.current?.querySelectorAll("span")?.forEach(span => (span.textContent = ""));
-// }
-
 // function resetViewer(viewer, duration = 0) {
 //   viewer.zoomTo({}, duration);
 //   viewer.zoom(10);
@@ -49,18 +45,6 @@ export function onClickCapture(viewerRef, ensemblId) {
   }
 }
 
-// function addVariantStyle(viewer, variantResidues) {
-//   for (const resis of variantResidues) {
-//     viewer.addStyle(
-//       { resi: [...resis] },
-//       {
-//         stick: { radius: 0.2, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-//         sphere: { radius: 0.4, colorfunc: a => getAlphaFoldConfidence(a, "color") },
-//       }
-//     );
-//   }
-// }
-
 export function setNoHoverStyle(viewer) {
   viewer.setStyle(
     {},
@@ -75,19 +59,18 @@ export function setNoHoverStyle(viewer) {
   // addVariantStyle(viewer);
 }
 
-export function highlightVariants(viewer, filteredRows, setStartPosition) {
+export function highlightVariants({ viewer, filteredRows, setStartPosition, setHoverInfo }) {
   for (const [resi, shape] of viewer.__highlightedResis__) {
     viewer.removeShape(shape);
     viewer.__highlightedResis__.delete(resi);
   }
-  // viewer.removeAllShapes();
   // !! CAN PROBABLY AVOID DOING THIS EVERY TIME
   const variantsByStartingPosition = Map.groupBy(filteredRows, row => row.aminoAcidPosition);
   for (const [startPosition, rows] of variantsByStartingPosition) {
     // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
     const carbonAtoms = viewer.__atomsByResi__.get(startPosition).filter(atom => atom.elem === "C");
     // const sphereAtom = middleElement(carbonAtoms);
-    const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+    const sphereAtom = carbonAtoms[0];
     let hoverSphere;
     viewer.__highlightedResis__.set(
       startPosition,
@@ -110,10 +93,12 @@ export function highlightVariants(viewer, filteredRows, setStartPosition) {
             },
           });
           viewer.render();
+          setHoverInfo({ startPosition, rows });
         },
         unhover_callback: () => {
           viewer.removeShape(hoverSphere);
           viewer.render();
+          setHoverInfo(null);
         },
       })
     );
@@ -121,7 +106,7 @@ export function highlightVariants(viewer, filteredRows, setStartPosition) {
   viewer.render();
 }
 
-export function highlightVariantFromTable(viewer, row) {
+export function highlightVariantFromTable({ viewer, row }) {
   if (!viewer) return;
   if (viewer.__extraHighlightedResi__) {
     viewer.removeShape(viewer.__extraHighlightedResi__);
@@ -131,7 +116,7 @@ export function highlightVariantFromTable(viewer, row) {
     const startPosition = row.aminoAcidPosition;
     const carbonAtoms = viewer.__atomsByResi__.get(startPosition).filter(atom => atom.elem === "C");
     // const sphereAtom = middleElement(carbonAtoms);
-    const sphereAtom = carbonAtoms[0]; // !! WHY IS FIRST CARBON NEARER CARTOON THAN MIDDLE CARBON?
+    const sphereAtom = carbonAtoms[0];
     viewer.__extraHighlightedResi__ = viewer.addSphere({
       center: { x: sphereAtom.x, y: sphereAtom.y, z: sphereAtom.z },
       radius: 1.6,

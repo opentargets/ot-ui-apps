@@ -34,6 +34,14 @@ function InfoPopper() {
               <tbody>
                 <tr>
                   <Typography component="td" variant="caption">
+                    <strong>Filter:</strong>
+                  </Typography>
+                  <Typography component="td" variant="caption">
+                    Click sphere
+                  </Typography>
+                </tr>
+                <tr>
+                  <Typography component="td" variant="caption">
                     <strong>Rotate:</strong>
                   </Typography>
                   <Typography component="td" variant="caption">

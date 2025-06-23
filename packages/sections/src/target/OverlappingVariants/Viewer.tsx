@@ -20,7 +20,7 @@ export default function Viewer({ id: ensemblId }) {
 
   const [messageText, setMessageText] = useState("Loading structure ...");
   const [structureData, setStructureData] = useState(null);
-  const [atomInfo, setAtomInfo] = useState(null);
+  const [hoverInfo, setHoverInfo] = useState(null);
 
   const { state, filteredRows } = useStateValue();
   const { setStartPosition, setUniprotId } = useActions();
@@ -74,33 +74,16 @@ export default function Viewer({ id: ensemblId }) {
           },
           true // use capture phase so fires before library handler
         );
-        // viewerRef.current.__viewer__ = viewer;
         const hoverDuration = 10;
         // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.addModel(structureData, "cif");
         viewer.setHoverDuration(hoverDuration);
-        // const hoverArgs = hoverManagerFactory({ viewer, atomInfoRef });
-        // const hideAtomInfo = hoverArgs[3];
-        // viewer.getCanvas().onmouseleave = () => {
-        //   setTimeout(hideAtomInfo, hoverDuration + 50);
-        // };
-        // viewer.setHoverable(...hoverArgs);
         setNoHoverStyle(viewer);
-        // viewer.addSurface(
-        //   "VDW",
-        //   {
-        //     opacity: 1,
-        //     opacity: 0.65,
-        //     color: "#fff",
-        //     // color: {'prop': 'b', map:elementColors.greenCarbon}
-        //   },
-        //   {}
-        // );
         const viewerAtoms = viewer.getModel().selectedAtoms();
         viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
         viewer.__highlightedResis__ = new Map();
         viewer.__extraHighlightedResi__ = null;
-        highlightVariants(viewer, filteredRows);
+        highlightVariants({ viewer, filteredRows, setStartPosition, setHoverInfo });
         // resetViewer(viewer);
         // viewer.zoom(0.2);
         viewer.render();
@@ -108,7 +91,6 @@ export default function Viewer({ id: ensemblId }) {
       }
       setupViewer();
       return () => {
-        // hideAtomInfo();
         viewer?.clear();
       };
     }
@@ -118,75 +100,60 @@ export default function Viewer({ id: ensemblId }) {
   // highlight variants
   useEffect(() => {
     if (state.viewer) {
-      highlightVariants(state.viewer, filteredRows, setStartPosition);
+      highlightVariants({ viewer: state.viewer, filteredRows, setStartPosition, setHoverInfo });
     }
   }, [state.viewer, filteredRows]);
 
   // (un)highlight variant corresponding to (un)hovered
   useEffect(() => {
-    highlightVariantFromTable(state.viewer, state.hoveredRow.at(-1));
+    highlightVariantFromTable({ viewer: state.viewer, row: state.hoveredRow.at(-1) });
   }, [state.viewer, state.hoveredRow]);
 
   return (
     <Box ref={viewerRef} position="relative" width="100%">
-      {!messageText && (
-        <Box
-          sx={{
-            top: 0,
-            right: 0,
-            position: "absolute",
-            zIndex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            m: 1,
-            gap: 1,
-          }}
-        >
-          <InfoPopper />
-          <Tooltip title="Screenshot" placement="top-start">
-            <Button
-              sx={{
-                display: "flex",
-                gap: 1,
-                bgcolor: "white",
-                "&:hover": {
-                  bgcolor: "#f8f8f8d8",
-                },
-              }}
-              onClick={() => onClickCapture(viewerRef, ensemblId)}
-            >
-              <FontAwesomeIcon icon={faCamera} />
-            </Button>
-          </Tooltip>
-        </Box>
-      )}
       <Box
         className="viewerContainer"
         position="relative"
         width="100%"
         height={viewerHeight}
         mb={1}
-      />
-      <CompactAlphaFoldLegend />
-      {atomInfo && (
-        <Box
-          position="absolute"
-          bottom={0}
-          right={0}
-          p="0.6rem 0.8rem"
-          zIndex={10}
-          bgcolor="#f8f8f8c8"
-          sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-          fontSize={14}
-        >
-          <Box display="flex" flexDirection="column">
-            {JSON.stringify(atomInfo)}
-            {/* <Typography variant="caption" component="p" textAlign="right" />
-            <Typography variant="caption" component="p" textAlign="right" /> */}
+      >
+        {!messageText && (
+          <Box
+            sx={{
+              top: 0,
+              right: 0,
+              position: "absolute",
+              zIndex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              m: 1,
+              gap: 1,
+            }}
+          >
+            <InfoPopper />
+            <Tooltip title="Screenshot" placement="top-start">
+              <Button
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  bgcolor: "white",
+                  "&:hover": {
+                    bgcolor: "#f8f8f8d8",
+                  },
+                }}
+                onClick={() => onClickCapture(viewerRef, ensemblId)}
+              >
+                <FontAwesomeIcon icon={faCamera} />
+              </Button>
+            </Tooltip>
           </Box>
-        </Box>
-      )}
+        )}
+        {hoverInfo && <HoverBox hoverInfo={hoverInfo} />}
+      </Box>
+
+      <CompactAlphaFoldLegend />
       {messageText && (
         <Typography
           variant="body2"
@@ -207,6 +174,45 @@ export default function Viewer({ id: ensemblId }) {
           {messageText}
         </Typography>
       )}
+    </Box>
+  );
+}
+function HoverBox({ hoverInfo }) {
+  return (
+    <Box
+      position="absolute"
+      bottom={0}
+      right={0}
+      p="0.6rem 0.8rem"
+      zIndex={100}
+      bgcolor="#f8f8f8c8"
+      sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+      fontSize={14}
+    >
+      <Box display="flex" flexDirection="column">
+        <Typography variant="caption" component="p" textAlign="right">
+          Start Position: {hoverInfo.startPosition}
+          <br />
+          Variants: {hoverInfo.rows.length}
+          <br />
+          <Box
+            sx={{
+              maxWidth: "240px",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Change:{" "}
+            {hoverInfo.rows.map(
+              (row, index) =>
+                `${index > 0 ? ", " : ""}${row.referenceAminoAcid}${row.aminoAcidPosition}${
+                  row.alternateAminoAcid
+                }`
+            )}
+          </Box>
+        </Typography>
+      </Box>
     </Box>
   );
 }
