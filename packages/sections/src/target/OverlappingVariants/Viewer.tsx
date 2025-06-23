@@ -66,6 +66,13 @@ export default function Viewer() {
         });
         window.viewer = viewer; // !! REMOVE !!
         setViewer(viewer);
+        viewer.getCanvas().addEventListener(
+          "wheel",
+          event => {
+            if (!event.ctrlKey) event.stopImmediatePropagation();
+          },
+          true // use capture phase so fires before library handler
+        );
         // viewerRef.current.__viewer__ = viewer;
         const hoverDuration = 10;
         // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
