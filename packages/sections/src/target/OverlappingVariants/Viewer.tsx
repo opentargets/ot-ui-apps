@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { createViewer } from "3dmol";
 import { useStateValue, useActions } from "./Context";
 import { useState, useEffect, useRef } from "react";
-import { CompactAlphaFoldLegend } from "ui";
+import { CompactAlphaFoldLegend, Tooltip } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -10,9 +10,10 @@ import {
   highlightVariants,
   highlightVariantFromTable,
   onClickCapture,
-} from "./viewerHandlers";
+} from "./viewerHelpers";
+import InfoPopper from "./InfoPopper";
 
-export default function Viewer() {
+export default function Viewer({ id: ensemblId }) {
   const viewerHeight = "480px";
 
   const viewerRef = useRef(null);
@@ -138,16 +139,26 @@ export default function Viewer() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            background: "white",
             m: 1,
+            gap: 1,
           }}
         >
-          <Button
-            sx={{ display: "flex", gap: 1 }}
-            onClick={() => onClickCapture(viewerRef, state.data.id)}
-          >
-            <FontAwesomeIcon icon={faCamera} /> Screenshot
-          </Button>
+          <InfoPopper />
+          <Tooltip title="Screenshot" placement="top-start">
+            <Button
+              sx={{
+                display: "flex",
+                gap: 1,
+                bgcolor: "white",
+                "&:hover": {
+                  bgcolor: "#f8f8f8d8",
+                },
+              }}
+              onClick={() => onClickCapture(viewerRef, ensemblId)}
+            >
+              <FontAwesomeIcon icon={faCamera} />
+            </Button>
+          </Tooltip>
         </Box>
       )}
       <Box

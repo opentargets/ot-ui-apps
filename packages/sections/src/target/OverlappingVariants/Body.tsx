@@ -49,7 +49,7 @@ function OverlappingVariantsWidget({
                 <Table />
               </Box>
               <Box width="40%">
-                <Viewer />
+                <Viewer ensemblId={ensemblId} />
               </Box>
             </Box>
           </StateProvider>
