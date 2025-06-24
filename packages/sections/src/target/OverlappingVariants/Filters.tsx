@@ -2,6 +2,7 @@ import { useStateValue, useActions } from "./Context";
 import { Autocomplete, Box, TextField, Slider, Typography } from "@mui/material";
 import { VARIANT_CONSEQUENCES, DATASOURCES } from "@ot/constants";
 import { useState, useEffect } from "react";
+import { FacetsSelect } from "ui";
 
 function VariantFilter() {
   const { state } = useStateValue();
@@ -144,12 +145,28 @@ function StartPositionFilter() {
   );
 }
 
+function TherapeuticAreas() {
+  return (
+    <FacetsSelect
+      id="id"
+      hideLegend
+      hideActive
+      entityToGet="disease"
+      // parentState={}
+      onFacetSelect={newState => {
+        console.log(newState);
+      }}
+    />
+  );
+}
+
 function Filters() {
   return (
     <Box display="flex" gap={2}>
       <VariantFilter />
       <ConsequenceFilter />
       <EvidenceFilter />
+      <TherapeuticAreas />
       <StartPositionFilter />
     </Box>
   );
