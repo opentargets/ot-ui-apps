@@ -36,8 +36,6 @@ function getFilteredRows(data, state) {
       continue;
     }
     if (
-      // no need to check valid start position since alphaFold info only has a reference
-      // amino acid at valid indices
       state.alphaFoldInfo &&
       row.referenceAminoAcid[0] !== "-" &&
       aminoAcidLookup[row.referenceAminoAcid[0]] !==
