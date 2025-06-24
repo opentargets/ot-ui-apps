@@ -1,7 +1,6 @@
 import { useStateValue, useActions } from "./Context";
 import { Autocomplete, Box, TextField, Slider, Typography } from "@mui/material";
 import { VARIANT_CONSEQUENCES, DATASOURCES } from "@ot/constants";
-import { useState, useEffect } from "react";
 
 function VariantFilter() {
   const { state } = useStateValue();
@@ -67,36 +66,13 @@ function EvidenceFilter() {
 }
 
 function StartPositionFilter() {
-  const { state } = useStateValue();
-  const [structureLength, setStructureLength] = useState(null);
-
-  // fetch structure length
-  useEffect(() => {
-    async function fetchStructureLength() {
-      if (!state.uniprotId) return;
-      let response;
-      try {
-        response = await fetch(
-          `https://rest.uniprot.org/uniprotkb/${state.uniprotId}.json?fields=sequence`
-        );
-        if (!response.ok) {
-          console.error(`Failed to fetch protein length`);
-          return;
-        }
-      } catch (error) {
-        console.error(error.message);
-        return;
-      }
-      const json = await response.json();
-      setStructureLength(json.sequence.length);
-    }
-    fetchStructureLength();
-  }, [state.uniprotId]);
-
-  const { setStartPosition } = useActions();
   const {
-    state: { data, filters },
+    state: { data, filters, alphaFoldInfo },
   } = useStateValue();
+  const { setStartPosition } = useActions();
+
+  const structureLength = alphaFoldInfo?.indexExtent?.[1];
+  if (!structureLength) return null;
 
   function handleChange(event, value) {
     setStartPosition({ min: value[0], max: value[1] });
@@ -104,12 +80,9 @@ function StartPositionFilter() {
 
   const min = 0;
   const max = structureLength;
-
   const marks = data.proteinCodingCoordinates.rows.map(row => ({
     value: row.aminoAcidPosition,
   }));
-
-  if (!structureLength) return null;
 
   return (
     <Box sx={{ width: 340 }}>

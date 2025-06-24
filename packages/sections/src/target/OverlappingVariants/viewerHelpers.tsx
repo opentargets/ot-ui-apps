@@ -67,8 +67,14 @@ export function highlightVariants({ viewer, filteredRows, setStartPosition, setH
   // !! CAN PROBABLY AVOID DOING THIS EVERY TIME
   const variantsByStartingPosition = Map.groupBy(filteredRows, row => row.aminoAcidPosition);
   for (const [startPosition, rows] of variantsByStartingPosition) {
-    // viewer.addSurface("VDW", { opacity: 0.65, color: "#f00" }, { resi: [...resis] });
-    const carbonAtoms = viewer.__atomsByResi__.get(startPosition).filter(atom => atom.elem === "C");
+    const carbonAtoms = viewer.__atomsByResi__
+      .get(startPosition)
+      ?.filter(atom => atom.elem === "C");
+    if (!carbonAtoms) {
+      // due to startingPosition greater than structure length
+      // !! REMOVE CHECK ONCE DATA FIXED OR ONCE ALWAYS HAVE STRUCTURE LENGTH WHEN FILTERING ROWS
+      continue;
+    }
     // const sphereAtom = middleElement(carbonAtoms);
     const sphereAtom = carbonAtoms[0];
     let hoverSphere;

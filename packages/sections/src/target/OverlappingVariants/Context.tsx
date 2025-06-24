@@ -4,6 +4,7 @@
 import { useMemo } from "react";
 import { createContext, useContext, useReducer, ReactNode } from "react";
 import { reducer, getInitialState, actions } from "./Reducer";
+import { aminoAcidLookup } from "@ot/constants";
 // import { useQuery } from "@apollo/client";
 
 // !! NEED TO CREATE STATE AND DISPATCH TYPES ??
@@ -34,8 +35,25 @@ function getFilteredRows(data, state) {
     if (row.datasources.length === 0) {
       continue;
     }
-    if (row.aminoAcidPosition < startPosition.min || row.aminoAcidPosition > startPosition.max)
+    if (
+      // no need to check valid start position since alphaFold info only has a reference
+      // amino acid at valid indices
+      state.alphaFoldInfo &&
+      row.referenceAminoAcid[0] !== "-" &&
+      aminoAcidLookup[row.referenceAminoAcid[0]] !==
+        state.alphaFoldInfo.referenceAminoAcids.get(row.aminoAcidPosition)
+    ) {
       continue;
+    }
+    if (
+      row.aminoAcidPosition < startPosition.min ||
+      row.aminoAcidPosition >
+        (Number.isFinite(startPosition.max)
+          ? startPosition.max
+          : state.alphaFoldInfo?.indexExtent[1] ?? Infinity)
+    ) {
+      continue;
+    }
     if (
       variantText &&
       !variantTextRegexp.test(
@@ -75,7 +93,7 @@ export function StateProvider({ children, data, query, variables }: ProviderProp
 
   const filteredRows = useMemo(() => {
     return getFilteredRows(data, state);
-  }, [state.filters]);
+  }, [state.filters, state.alphaFoldInfo]);
 
   return (
     <StateContext.Provider value={{ state, filteredRows }}>

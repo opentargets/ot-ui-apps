@@ -10,6 +10,7 @@ export enum ActionType {
   SET_START_POSITION = "SET_START_POSITION",
   SET_HOVERED_ROW = "SET_HOVERED_ROW",
   SET_UNHOVERED_ROW = "SET_UNHOVERED_ROW",
+  SET_ALPHAFOLD_INFO = "SET_ALPHAFOLD_INFO",
 }
 export interface State {
   viewer: any;
@@ -19,6 +20,7 @@ export interface State {
   variables: any;
   filters: any;
   hoveredRow: any;
+  alphaFoldInfo: null | { indexExtent: number[]; referenceAminoAcids: any };
 }
 export interface Action {
   type: ActionType;
@@ -89,6 +91,9 @@ export function reducer(state: State = initialState, action: Action): State {
     case ActionType.SET_UNHOVERED_ROW:
       return { ...state, hoveredRow: state.hoveredRow.slice(1) };
 
+    case ActionType.SET_ALPHAFOLD_INFO:
+      return { ...state, alphaFoldInfo: action.alphaFoldInfo };
+
     default:
       throw Error("Unknown action: " + action.type);
   }
@@ -138,5 +143,13 @@ export const actions = {
 
   setUnhoveredRow: (): Action => ({
     type: ActionType.SET_UNHOVERED_ROW,
+  }),
+
+  setAlphaFoldInfo: (alphaFoldInfo: {
+    indexExtent: number[];
+    referenceAminoAcids: any;
+  }): Action => ({
+    type: ActionType.SET_ALPHAFOLD_INFO,
+    alphaFoldInfo,
   }),
 };

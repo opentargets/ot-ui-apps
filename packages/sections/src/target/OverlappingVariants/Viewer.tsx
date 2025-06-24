@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { createViewer } from "3dmol";
 import { useStateValue, useActions } from "./Context";
 import { useState, useEffect, useRef } from "react";
+import { extent } from "d3";
 import { CompactAlphaFoldLegend, Tooltip } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
@@ -23,7 +24,7 @@ export default function Viewer({ id: ensemblId }) {
   const [hoverInfo, setHoverInfo] = useState(null);
 
   const { state, filteredRows } = useStateValue();
-  const { setStartPosition, setUniprotId } = useActions();
+  const { setStartPosition, setUniprotId, setAlphaFoldInfo } = useActions();
   const { setViewer } = useActions();
 
   // fetch structure data
@@ -74,15 +75,21 @@ export default function Viewer({ id: ensemblId }) {
           },
           true // use capture phase so fires before library handler
         );
-        const hoverDuration = 10;
-        // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
+        const hoverDuration = 50;
         viewer.addModel(structureData, "cif");
+        // viewer.getCanvas().ondblclick = () => resetViewer(viewer, 200); // use ondblclick so replaces existing
         viewer.setHoverDuration(hoverDuration);
         setNoHoverStyle(viewer);
         const viewerAtoms = viewer.getModel().selectedAtoms();
         viewer.__atomsByResi__ = Map.groupBy(viewerAtoms, atom => atom.resi);
         viewer.__highlightedResis__ = new Map();
         viewer.__extraHighlightedResi__ = null;
+        setAlphaFoldInfo({
+          indexExtent: extent(viewer.getModel().selectedAtoms(), d => d.resi),
+          referenceAminoAcids: new Map(
+            [...viewer.__atomsByResi__].map(([index, atoms]) => [index, atoms[0].resn])
+          ),
+        });
         highlightVariants({ viewer, filteredRows, setStartPosition, setHoverInfo });
         // resetViewer(viewer);
         // viewer.zoom(0.2);
@@ -177,6 +184,7 @@ export default function Viewer({ id: ensemblId }) {
     </Box>
   );
 }
+
 function HoverBox({ hoverInfo }) {
   return (
     <Box
@@ -196,7 +204,9 @@ function HoverBox({ hoverInfo }) {
           Variants: {hoverInfo.rows.length}
           <br />
           <Box
+            component="span"
             sx={{
+              display: "inline-block",
               maxWidth: "240px",
               overflow: "hidden",
               whiteSpace: "nowrap",
