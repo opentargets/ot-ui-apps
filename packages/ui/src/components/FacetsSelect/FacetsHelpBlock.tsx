@@ -1,6 +1,6 @@
 import { ReactElement, useState } from "react";
 import { Box, Collapse } from "@mui/material";
-import { useAotfContext } from "../AssociationsToolkit";
+
 import { ENTITY } from "./facetsTypes";
 import { Link } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,11 +11,11 @@ const EXAMPLE = {
   [ENTITY.TARGET]: "Enzyme",
 };
 
-function FacetsSuggestion(): ReactElement {
-  const { entityToGet } = useAotfContext();
+function FacetsHelpBlock({ entityToGet }: { entityToGet: ENTITY }): ReactElement {
+
   const [open, setOpen] = useState(false);
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center", my: 1 }}>
       <Box sx={{ typography: "caption" }}>
         <Box>
           <Box component="span" sx={{ cursor: "pointer" }} onClick={() => setOpen(!open)}>
@@ -53,4 +53,4 @@ function FacetsSuggestion(): ReactElement {
     </Box>
   );
 }
-export default FacetsSuggestion;
+export default FacetsHelpBlock;
