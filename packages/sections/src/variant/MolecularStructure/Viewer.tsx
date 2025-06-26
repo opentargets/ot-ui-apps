@@ -96,7 +96,10 @@ function Viewer({ row }) {
           .getModel()
           .selectedAtoms()
           .find(atom => atom.resi === row.aminoAcidPosition)?.resn;
-        if (aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid) {
+        if (
+          row.referenceAminoAcid[0] !== "-" &&
+          aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid
+        ) {
           setMessageText("AlphaFold structure not available");
           return;
         }
