@@ -6,7 +6,7 @@ import {
   aminoAcidLookup,
   naLabel,
 } from "@ot/constants";
-import { createViewer } from "3dmol";
+import { createViewer, Vector2 } from "3dmol";
 import {
   Box,
   Typography,
@@ -111,6 +111,22 @@ function Viewer({ row }) {
         _viewer.getCanvas().ondblclick = () => resetViewer(_viewer, variantResidues, 200);
         _viewer?.setStyle({}, { hidden: true });
         _viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {});
+        _viewer.addLabel(
+          " variant ",
+          {
+            alignment: "center",
+            screenOffset: new Vector2(30, -30),
+            backgroundColor: "#fff",
+            backgroundOpacity: 0.9,
+            borderColor: "#999",
+            borderThickness: 1.5,
+            font: "'Inter', sans-serif",
+            fontColor: "#444",
+            fontSize: 12.5,
+            inFront: true,
+          },
+          { resi: [...variantResidues][0] }
+        );
         drawCartoon({ viewer: _viewer, colorBy, variantResidues });
         drawVariantSurface({ viewer: _viewer, variantResidues, color: "#0d0" });
         resetViewer(_viewer, variantResidues);
