@@ -2,5 +2,8 @@ fragment MolecularStructureSummaryFragment on Variant {
   id
   proteinCodingCoordinates {
     count
+    rows {
+      referenceAminoAcid
+    }
   }
 }
