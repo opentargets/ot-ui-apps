@@ -110,7 +110,8 @@ function OtTable({
   const loadingCells = getLoadingCells(mappedColumns);
   const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
 
-  const tableData = useMemo(() => (loading ? loadingRows : rows), [loading, rows]);
+  const memoizedRows = useMemo(() => [...rows], [JSON.stringify(rows)]);
+  const tableData = useMemo(() => (loading ? loadingRows : rows), [loading, memoizedRows]);
   const tableColumns = useMemo(() => (loading ? loadingCells : mappedColumns), [loading]);
 
   function getCellData(cell: Record<string, unknown>): ReactNode {
@@ -188,7 +189,7 @@ function OtTable({
           {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
-              rows={rows}
+              rows={memoizedRows}
               fileStem={dataDownloaderFileStem}
               query={query}
               variables={variables}
