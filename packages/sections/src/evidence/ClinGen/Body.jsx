@@ -115,6 +115,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.clingenSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`clingen-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CLINGEN_QUERY.loc.source.body}
