@@ -9,8 +9,6 @@ declare global {
     configOTAiApi?: string;
     configProfile?: Record<string, unknown>;
     configGoogleTagManagerID?: string;
-    configEFOURL?: string;
-    configDownloadsURL?: string;
     configGeneticsPortalUrl?: string;
     gitVersion?: string;
   }

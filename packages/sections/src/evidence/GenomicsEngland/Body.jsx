@@ -183,7 +183,7 @@ export function Body({ id, label, entity }) {
         <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`GEL-PanelApp-${ensgId}-${efoId}`}
           order="desc"
           rows={request.data?.disease.genomicsEngland.rows}
           showGlobalFilter

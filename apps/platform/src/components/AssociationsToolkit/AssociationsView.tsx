@@ -1,4 +1,4 @@
-import FacetsSearch from "../Facets/FacetsSearch";
+import FacetsSearch from "./components/FacetsSearch";
 import ExportMenu from "./components/ExportMenu";
 import {
   TableAssociations,

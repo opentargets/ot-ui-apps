@@ -1,4 +1,4 @@
-name: Development build
+name: Publish release
 
 on:
   push:
@@ -23,13 +23,10 @@ jobs:
     needs: build
     permissions:
       contents: write
-    env:
-      TAG: ${{ github.ref_name }}
     steps:
-      - name: Prepare tag
-        run: |
-          TAG=$(echo $TAG | sed 's/^v//')
-          echo "TAG=$TAG" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/download-artifact@v4
         with:
           name: bundle

@@ -132,13 +132,12 @@ function DownloadsFilterLoading() {
 }
 
 function DownloadsTagsLoading() {
-  const chipsArray = new Array(5).fill(0);
+  const chipsArray = new Array(4).fill(0);
   return (
     <Box sx={{ display: "flex", gap: 3, my: 1, flexWrap: "wrap" }}>
       {chipsArray.map(e => (
         <Box key={v1()} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Skeleton height={35} width={80} />
-          <Skeleton width={70} height={50} sx={{ borderRadius: 10 }} />
+          <Skeleton width={80} height={50} sx={{ borderRadius: 10 }} />
         </Box>
       ))}
     </Box>
@@ -154,6 +153,9 @@ function DownloadsHeaderLoading() {
       <Typography variant="body1">
         <Skeleton />
         <Skeleton />
+        <Skeleton sx={{ display: { xs: "block", md: "none" } }} />
+        <Skeleton sx={{ display: { xs: "block", lg: "none" } }} />
+        <Skeleton sx={{ display: { xs: "block", xl: "none" } }} />
       </Typography>
     </Box>
   );

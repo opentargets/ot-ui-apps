@@ -99,6 +99,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.uniprotLiteratureSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`UniProtLiterature-${ensgId}-${efoId}`}
             showGlobalFilter
             query={UNIPROT_LITERATURE_QUERY.loc.source.body}
             variables={variables}

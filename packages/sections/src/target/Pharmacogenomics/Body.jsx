@@ -1,7 +1,15 @@
 import { useQuery } from "@apollo/client";
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
-import { SectionItem, Link, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
+import {
+  SectionItem,
+  Link,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  OtTable,
+  DirectionalityDrawer,
+} from "ui";
 
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { naLabel, PHARM_GKB_COLOR, variantConsequenceSource } from "@ot/constants";
@@ -194,6 +202,13 @@ function getColumns(classes) {
       filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
+      id: "directionality",
+      label: "Directionality",
+      renderCell: ({ variantAnnotation }) => (
+        <DirectionalityDrawer variantAnnotation={variantAnnotation} caption="Directionality" />
+      ),
+    },
+    {
       id: "isDirectTarget",
       label: "Direct Drug Target",
       renderCell: ({ isDirectTarget }) => {
@@ -282,6 +297,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${ensemblId}-pharmacogenomics-${entity}`}
           sortBy="evidenceLevel"
           columns={columns}
           rows={request.data?.target.pharmacogenomics}

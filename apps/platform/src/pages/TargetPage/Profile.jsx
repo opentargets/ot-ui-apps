@@ -6,6 +6,7 @@ import {
   SummaryContainer,
   summaryUtils,
   SectionLoader,
+  PrivateWrapper,
 } from "ui";
 
 import KnownDrugsSummary from "sections/src/target/KnownDrugs/Summary";
@@ -17,7 +18,7 @@ import BaselineExpressionSummary from "sections/src/target/Expression/Summary";
 import DepMapSummary from "sections/src/target/DepMap/Summary";
 import GeneOntologySummary from "sections/src/target/GeneOntology/Summary";
 import GeneticConstraintSummary from "sections/src/target/GeneticConstraint/Summary";
-import ProtVistaSummary from "sections/src/target/ProtVista/Summary";
+import MolecularStructureSummary from "sections/src/target/MolecularStructure/Summary";
 import MolecularInteractionsSummary from "sections/src/target/MolecularInteractions/Summary";
 import PathwaysSummary from "sections/src/target/Pathways/Summary";
 import CancerHallmarksSummary from "sections/src/target/CancerHallmarks/Summary";
@@ -25,6 +26,7 @@ import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary"
 import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
 import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
 import BibliographySummary from "sections/src/target/Bibliography/Summary";
+// import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -37,7 +39,7 @@ const BaselineExpressionSection = lazy(() => import("sections/src/target/Express
 const DepMapSection = lazy(() => import("sections/src/target/DepMap/Body"));
 const GeneOntologySection = lazy(() => import("sections/src/target/GeneOntology/Body"));
 const GeneticConstraintSection = lazy(() => import("sections/src/target/GeneticConstraint/Body"));
-const ProtVistaSection = lazy(() => import("sections/src/target/ProtVista/Body"));
+const MolecularStructureSection = lazy(() => import("sections/src/target/MolecularStructure/Body"));
 const MolecularInteractionsSection = lazy(() =>
   import("sections/src/target/MolecularInteractions/Body")
 );
@@ -51,6 +53,9 @@ const SubcellularLocationSection = lazy(() =>
   import("sections/src/target/SubcellularLocation/Body")
 );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
+// const OverlappingVariantsSection = lazy(() =>
+//   import("sections/src/target/OverlappingVariants/Body")
+// );
 
 const summaries = [
   KnownDrugsSummary,
@@ -62,7 +67,7 @@ const summaries = [
   DepMapSummary,
   GeneOntologySummary,
   GeneticConstraintSummary,
-  ProtVistaSummary,
+  MolecularStructureSummary,
   MolecularInteractionsSummary,
   PathwaysSummary,
   CancerHallmarksSummary,
@@ -70,6 +75,7 @@ const summaries = [
   ComparativeGenomicsSummary,
   SubcellularLocationSummary,
   BibliographySummary,
+  // OverlappingVariantsSummary,
 ];
 
 const TARGET = "target";
@@ -101,7 +107,10 @@ function Profile({ ensgId, symbol }) {
         <SubcellularLocationSummary />
         <GeneOntologySummary />
         <GeneticConstraintSummary />
-        <ProtVistaSummary />
+        {/* <PrivateWrapper>
+          <OverlappingVariantsSummary />
+        </PrivateWrapper> */}
+        <MolecularStructureSummary />
         <MolecularInteractionsSummary />
         <PathwaysSummary />
         <CancerHallmarksSummary />
@@ -141,8 +150,13 @@ function Profile({ ensgId, symbol }) {
         <Suspense fallback={<SectionLoader />}>
           <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
+        {/* <PrivateWrapper>
+          <Suspense fallback={<SectionLoader />}>
+            <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
+          </Suspense>
+        </PrivateWrapper> */}
         <Suspense fallback={<SectionLoader />}>
-          <ProtVistaSection id={ensgId} label={symbol} entity={TARGET} />
+          <MolecularStructureSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <MolecularInteractionsSection id={ensgId} label={symbol} entity={TARGET} />

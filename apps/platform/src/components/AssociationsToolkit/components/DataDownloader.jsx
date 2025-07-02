@@ -30,7 +30,7 @@ import { styled } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
+import { CopyUrlButton, useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import { getConfig } from "@ot/config";
 import useAotfContext from "../hooks/useAotfContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
@@ -42,8 +42,6 @@ import {
   createBlob,
   getFilteredColumnArray,
 } from "@ot/utils";
-
-import CopyUrlButton from "./CopyUrlButton";
 
 const config = getConfig();
 
@@ -312,7 +310,8 @@ function DataDownloader() {
         }}
       >
         <DialogTitle sx={{ display: "flex", justifyContent: "space-between" }}>
-          Export: {fileStem} data <CopyUrlButton />
+          Export: {fileStem} data{" "}
+          <CopyUrlButton tooltipTitle="Copy URL. Data sources controls not included" />
         </DialogTitle>
         <DialogContent>
           <Typography

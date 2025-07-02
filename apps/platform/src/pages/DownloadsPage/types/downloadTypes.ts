@@ -8,6 +8,7 @@ export type DownloadsState = {
   allUniqueCategories: Array<string>;
   selectedFilters: Array<string>;
   downloadsData: Record<string, unknown> | null;
+  locationURLs: Record<string, string>;
 };
 
 /*****************
@@ -23,6 +24,7 @@ export enum ActionType {
   SET_SCHEMA_DATA = "SET_SCHEMA_DATA",
   SET_ACTIVE_FILTER = "SET_ACTIVE_FILTER",
   SET_DOWNLOADS_DATA = "SET_DOWNLOADS_DATA",
+  SET_ERROR = "SET_ERROR",
 }
 
 export type Action =
@@ -33,4 +35,5 @@ export type Action =
   | { type: ActionType.SET_CATEGORIES; allUniqueCategories: Array<string> }
   | { type: ActionType.TEXT_SEARCH; freeQueryText: string }
   | { type: ActionType.SET_DATA; rows: Array<Record<string, unknown>> }
-  | { type: ActionType.SET_LOADING; loading: boolean };
+  | { type: ActionType.SET_LOADING; loading: boolean }
+  | { type: ActionType.SET_ERROR; error: string };

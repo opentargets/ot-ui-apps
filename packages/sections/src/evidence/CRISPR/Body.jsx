@@ -72,6 +72,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.crisprSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`crispr-evidence-${ensgId}-${efoId}`}
             showGlobalFilter
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}

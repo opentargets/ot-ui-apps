@@ -209,6 +209,7 @@ export const addCategoriesToData = data => {
 
   data.map(item => {
     const categories = item.description.match(/\[(.*?)\]/);
+    item.categories = [];
     if (categories) {
       item.categories = [...categories[1].split(", ")];
       item.description = item.description.replace(categories[0], "");
@@ -272,8 +273,28 @@ export function filterDownloadCardsForFilter(values, data) {
   return filteredValues;
 }
 
-// export const getCategoryFromRow = desc => {
-//   const categories = desc.match(/\[(.*?)\]/);
-//   if (categories) return categories[1].split(",");
-//   return;
-// };
+/****************************************************************************************************
+ * GOES THROUGH FILE OBJECT TYPE IN DATA AND GET THE LOCATION URL ASSOCIATED TO THEM                *
+ * @param                                                                                           *
+ *  data : Record<string,unknown>                                                                   *
+ * @return                                                                                          *
+ *  locationObj : Record<string, string>                                                            *
+ * @example:                                                                                        *
+ *  @input                                                                                          *
+ *  data: { "distribution": [{                                                                      *
+ *         "@type": "cr:FileObject",                                                                *
+ *         "@id": "ftp-location",                                                                   *
+ *         "contentUrl": "ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/25.06/output", }]} *
+ * @output: {                                                                                       *
+ * "ftp-location": "ftp://ftp.ebi.ac.uk/pub/databases/opentargets/platform/25.06/output"}           *
+ ***************************************************************************************************/
+
+export function getAllLocationUrl(data) {
+  if (!data) return "";
+  const locationObj = {};
+  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
+  locationArray.map(e => {
+    locationObj[e["@id"]] = e.contentUrl;
+  });
+  return locationObj;
+}

@@ -170,6 +170,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.reactomeSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`reactome-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             fixed

@@ -187,6 +187,11 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiRadio: {
+      defaultProps: {
+        disableRipple: true,
+      },
+    },
   },
 };
 

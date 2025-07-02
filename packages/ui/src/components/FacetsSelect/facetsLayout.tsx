@@ -1,6 +1,6 @@
-import { Autocomplete, Popper, Select, styled } from "@mui/material";
+import { Autocomplete, Popper, Select as MuiSlect, styled } from "@mui/material";
 
-export const FacetsSelect = styled(Select)(({ theme }) => ({
+export const Select = styled(MuiSlect)(({ theme }) => ({
   minWidth: "150px",
   maxWidth: "150px",
   background: `${theme.palette.grey[200]}`,

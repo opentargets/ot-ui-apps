@@ -157,6 +157,7 @@ function Section({ id, label: symbol, entity }) {
           <OtTable
             showGlobalFilter
             dataDownloader
+            dataDownloaderFileStem={`${id}-gene-ontology-${entity}`}
             columns={columns}
             rows={rows}
             rowsPerPageOptions={defaultRowsPerPageOptions}

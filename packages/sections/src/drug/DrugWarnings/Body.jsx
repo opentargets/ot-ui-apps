@@ -88,6 +88,7 @@ function Body({ id: chemblId, label: name, entity }) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${chemblId}-drug-warning`}
           columns={columns}
           rows={request.data?.drug.drugWarnings}
           query={DRUG_WARNINGS_QUERY.loc.source.body}

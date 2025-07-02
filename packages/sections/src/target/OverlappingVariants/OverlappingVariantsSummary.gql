@@ -1,0 +1,5 @@
+fragment OverlappingVariantsSummaryFragment on Target {
+  proteinCodingCoordinates {
+    count
+  }
+}

@@ -160,6 +160,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${ensemblId}-safety-${entity}`}
           columns={getColumns(classes)}
           rows={request.data?.target.safetyLiabilities}
           rowsPerPageOptions={defaultRowsPerPageOptions}

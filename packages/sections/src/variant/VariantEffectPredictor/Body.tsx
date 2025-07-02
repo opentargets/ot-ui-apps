@@ -205,6 +205,7 @@ export function Body({ id, entity }: BodyProps) {
             columns={columns}
             rows={sortedRows}
             dataDownloader
+            dataDownloaderFileStem={`${id}-variant-effect-predictor`}
             query={VARIANT_EFFECT_PREDICTOR_QUERY.loc.source.body}
             variables={variables}
             loading={request.loading}

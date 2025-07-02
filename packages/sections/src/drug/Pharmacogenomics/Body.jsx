@@ -1,7 +1,15 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, LabelChip, PublicationsDrawer, OtTable } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  OtTable,
+  DirectionalityDrawer,
+} from "ui";
 
 import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { definition } from ".";
@@ -191,6 +199,13 @@ function Body({ id: chemblId, label: name, entity }) {
       filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
+      id: "directionality",
+      label: "Directionality",
+      renderCell: ({ variantAnnotation }) => (
+        <DirectionalityDrawer variantAnnotation={variantAnnotation} caption="Directionality" />
+      ),
+    },
+    {
       id: "isDirectTarget",
       label: "Direct Drug Target",
       renderCell: ({ isDirectTarget }) => {
@@ -274,6 +289,7 @@ function Body({ id: chemblId, label: name, entity }) {
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${chemblId}-pharmacogenomics`}
           columns={columns}
           rows={request.data?.drug.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}

@@ -115,6 +115,7 @@ function Body({ id, label, entity }) {
             columns={columns}
             rows={request.data?.disease.cancerBiomarkersSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`cancer-biomarker-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CANCER_BIOMARKERS_EVIDENCE_QUERY.loc.source.body}

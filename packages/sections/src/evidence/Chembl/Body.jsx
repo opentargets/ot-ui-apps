@@ -41,16 +41,52 @@ const exportColumns = [
     exportValue: row => row.disease.name,
   },
   {
-    label: "targets",
-    exportValue: row => row.target,
+    label: "targetId",
+    exportValue: row => row.target.id,
   },
   {
-    label: "drug",
-    exportValue: row => row.drug,
+    label: "targetApprovedSymbol",
+    exportValue: row => row.target.approvedSymbol,
   },
   {
-    label: "mechanismofAction",
-    exportValue: row => row.drug.mechanismsOfAction,
+    label: "drugId",
+    exportValue: row => row.drug.id,
+  },
+  {
+    label: "drugType",
+    exportValue: row => row.drug.drugType,
+  },
+  {
+    label: "mechanismsOfAction",
+    exportValue: ({ target, drug }) => {
+      const mechanismsOfAction = drug.mechanismsOfAction || {};
+      const { rows = [] } = mechanismsOfAction;
+
+      let anchorMa = null;
+
+      const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
+        if (anchorMa === null) {
+          let isAssociated = false;
+          for (let i = 0; i < targets.length; i++) {
+            if (targets[i].id === target.id) {
+              anchorMa = mechanismOfAction;
+              isAssociated = true;
+              break;
+            }
+          }
+
+          if (!isAssociated) {
+            acc.add(mechanismOfAction);
+          }
+        } else {
+          acc.add(mechanismOfAction);
+        }
+
+        return acc;
+      }, new Set());
+
+      return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
+    },
   },
   {
     label: "clinicalPhase",
@@ -295,7 +331,7 @@ function Body({ id, label, entity }) {
           columns={columns}
           dataDownloader
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem="chembl-evidence"
+          dataDownloaderFileStem={`chembl-evidence-${id}`}
           entity={entity}
           sectionName="chembl"
           showGlobalFilter={false}

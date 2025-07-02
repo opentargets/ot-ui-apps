@@ -87,7 +87,7 @@ function Body({ id, label, entity }) {
         <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`progeny-${ensgId}-${efoId}`}
           order="asc"
           rows={request.data?.disease.progeny.rows}
           showGlobalFilter

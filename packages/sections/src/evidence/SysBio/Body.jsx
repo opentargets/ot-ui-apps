@@ -84,7 +84,7 @@ function Body({ id, label, entity }) {
         <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`sys-bio-${ensgId}-${efoId}`}
           rows={request.data?.disease.sysBio.rows}
           showGlobalFilter
           query={SYSBIO_QUERY.loc.source.body}

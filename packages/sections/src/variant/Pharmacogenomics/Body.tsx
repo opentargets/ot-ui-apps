@@ -5,7 +5,7 @@ import PHARMACOGENOMICS_QUERY from "./PharmacogenomicsQuery.gql";
 import { Fragment } from "react";
 import classNames from "classnames";
 import { makeStyles } from "@mui/styles";
-import { Link, Tooltip, PublicationsDrawer, OtTable, SectionItem } from "ui";
+import { Link, Tooltip, PublicationsDrawer, OtTable, SectionItem, DirectionalityDrawer } from "ui";
 import { epmcUrl } from "@ot/utils";
 import { naLabel, PHARM_GKB_COLOR } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -157,6 +157,13 @@ function Body({ id, entity }: BodyProps) {
       filterValue: ({ target }) => target.approvedSymbol,
     },
     {
+      id: "directionality",
+      label: "Directionality",
+      renderCell: ({ variantAnnotation }) => (
+        <DirectionalityDrawer variantAnnotation={variantAnnotation} caption="Directionality" />
+      ),
+    },
+    {
       id: "isDirectTarget",
       label: "Direct drug target",
       renderCell: ({ isDirectTarget }) => {
@@ -244,6 +251,7 @@ function Body({ id, entity }: BodyProps) {
         <OtTable
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${id}-pharmacogenetics-variant`}
           sortBy="evidenceLevel"
           columns={columns}
           rows={request.data?.variant.pharmacogenomics}

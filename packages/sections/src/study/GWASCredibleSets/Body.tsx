@@ -219,6 +219,7 @@ function Body({ id, entity }: BodyProps): ReactElement {
           </Box>
           <OtTable
             dataDownloader
+            dataDownloaderFileStem={`${id}-gwas-credible-sets-studies`}
             showGlobalFilter
             sortBy="pValue"
             loading={request.loading}

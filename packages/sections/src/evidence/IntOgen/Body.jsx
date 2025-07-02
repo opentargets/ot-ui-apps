@@ -185,7 +185,7 @@ function Body({ id, label, entity }) {
             <OtTable
               columns={columns}
               dataDownloader
-              dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+              dataDownloaderFileStem={`intOGen-${ensgId}-${efoId}`}
               order="asc"
               rows={request.data?.disease.intOgen.rows}
               sortBy="resourceScore"
