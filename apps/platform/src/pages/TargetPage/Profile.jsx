@@ -26,7 +26,7 @@ import MousePhenotypesSummary from "sections/src/target/MousePhenotypes/Summary"
 import ComparativeGenomicsSummary from "sections/src/target/ComparativeGenomics/Summary";
 import SubcellularLocationSummary from "sections/src/target/SubcellularLocation/Summary";
 import BibliographySummary from "sections/src/target/Bibliography/Summary";
-// import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
+import OverlappingVariantsSummary from "sections/src/target/OverlappingVariants/Summary";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -53,9 +53,9 @@ const SubcellularLocationSection = lazy(() =>
   import("sections/src/target/SubcellularLocation/Body")
 );
 const BibliographySection = lazy(() => import("sections/src/target/Bibliography/Body"));
-// const OverlappingVariantsSection = lazy(() =>
-//   import("sections/src/target/OverlappingVariants/Body")
-// );
+const OverlappingVariantsSection = lazy(() =>
+  import("sections/src/target/OverlappingVariants/Body")
+);
 
 const summaries = [
   KnownDrugsSummary,
@@ -75,7 +75,7 @@ const summaries = [
   ComparativeGenomicsSummary,
   SubcellularLocationSummary,
   BibliographySummary,
-  // OverlappingVariantsSummary,
+  OverlappingVariantsSummary,
 ];
 
 const TARGET = "target";
@@ -97,7 +97,7 @@ function Profile({ ensgId, symbol }) {
     <PlatformApiProvider entity={TARGET} query={TARGET_PROFILE_QUERY} variables={{ ensgId }}>
       <ProfileHeader />
       <SummaryContainer>
-        <KnownDrugsSummary />
+        {/* <KnownDrugsSummary />
         <TractabilitySummary />
         <SafetySummary />
         <PharmacogenomicsSummary />
@@ -106,21 +106,21 @@ function Profile({ ensgId, symbol }) {
         <DepMapSummary />
         <SubcellularLocationSummary />
         <GeneOntologySummary />
-        <GeneticConstraintSummary />
-        {/* <PrivateWrapper>
+        <GeneticConstraintSummary /> */}
+        <PrivateWrapper>
           <OverlappingVariantsSummary />
-        </PrivateWrapper> */}
-        <MolecularStructureSummary />
+        </PrivateWrapper>
+        {/* <MolecularStructureSummary />
         <MolecularInteractionsSummary />
         <PathwaysSummary />
         <CancerHallmarksSummary />
         <MousePhenotypesSummary />
         <ComparativeGenomicsSummary />
-        <BibliographySummary />
+        <BibliographySummary /> */}
       </SummaryContainer>
 
       <SectionContainer>
-        <Suspense fallback={<SectionLoader />}>
+        {/* <Suspense fallback={<SectionLoader />}>
           <KnownDrugsSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -149,13 +149,13 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <GeneticConstraintSection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
-        {/* <PrivateWrapper>
+        </Suspense> */}
+        <PrivateWrapper>
           <Suspense fallback={<SectionLoader />}>
             <OverlappingVariantsSection id={ensgId} label={symbol} entity={TARGET} />
           </Suspense>
-        </PrivateWrapper> */}
-        <Suspense fallback={<SectionLoader />}>
+        </PrivateWrapper>
+        {/* <Suspense fallback={<SectionLoader />}>
           <MolecularStructureSection id={ensgId} label={symbol} entity={TARGET} />
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
@@ -175,7 +175,7 @@ function Profile({ ensgId, symbol }) {
         </Suspense>
         <Suspense fallback={<SectionLoader />}>
           <BibliographySection id={ensgId} label={symbol} entity={TARGET} />
-        </Suspense>
+        </Suspense> */}
       </SectionContainer>
     </PlatformApiProvider>
   );
