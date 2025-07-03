@@ -28,7 +28,12 @@ function App(): ReactElement {
         searchQuery={SEARCH_QUERY}
         searchPlaceholder="Search for a target, drug, disease, or phenotype..."
       >
-        <Router>
+        <Router
+          future={{
+            v7_relativeSplatPath: true,
+            v7_startTransition: true,
+          }}
+        >
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
