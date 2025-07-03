@@ -30,30 +30,54 @@ The `info` property can be used for any additional data that is needed to displa
 
 ## Viewer Provider
 
-The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass data, the initial state and a reducer function - which implement valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
+The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass the initial state and a reducer function - which implements valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
+
+Props:
 
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `reducer` | `() => void` | `function` | |
+| `reducer` | | `function` | |
 
-Any component inside a `<ViewerProvider>` can import the following from XXXX:
+Any component inside a `<ViewerProvider>` can import the following from the provider file:
 
 - `useViewerState`: get the state object.
 - `useViewerDispatch`: dispatch an action (to the reducer) to change the state object.
 
-## Structure
+**Note**: The dispatch function can be used from e.g. a click handler attached to the viewer. However, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
 
-Any structure or part of a structure shown in the viewer is described by an object:
+## Appearance
 
-```js
-{
-  selection = {},  // 3dMol atom selection - all atoms by default
-  style,           // 3dMol style spec
-  show,            // 'hover' or a boolean-valued callback that uses viewer state
-  deps = [],       // state properties that the show callback depends on
-}
-```
+An 'appearance' object is a description of what to show in the viewer and how:
+
+| Property | Default | Type | Description |
+|----------|---------|------|-------------|
+| `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and should return a selection spec. |
+| `style` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a style spec. |
+| `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
+| `onApply` | | `function` | Called whenever the appearance is applied. Passed array of selected atom objects and the dispatch function. |
+| `when` | `"change"` | `string` | Default change means appearance applied when dependencies change. Use `"hover"` to apply appeance on hover and `"click"` to apply on click. |
+| `dep` | `[]` | `string[]` | Names of state properties `selection` or `style` callbacks depend on. If an empty array, the appearance is applied every state change. |
+
+Properties only used if `when` is `"hover"`:
+
+| Property | Default | Type | Description |
+|----------|---------|------|-------------|
+| `styleUnhover` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a style spec. |
+| `addStyleUnhover` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
+| `onApplyUnhover` | | `function` | Called whenever the appearance is applied. Passed array of selected atom objects and the dispatch function. |
+
+After a state change:
+
+1. Everything is hidden.
+2. Then appearances with an empty `dep` array are applied (in the original order).
+3. Then appearances where at least one of the dependencies have changed are applied (in original order).
+
+Setting **click** behavior is similar to the above, just supply an `onClick` function rather than `onChange`.
+
+To set **hover** behavior, provide a pair of functions: `onHover` and `onUnhover`.
+
+**Note**: There is no need to list dependencies for hover and click appearances.
 
 ## Shapes
 
@@ -69,12 +93,13 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 ## Viewer Props
 
 | Prop | Default | Type | Description |
-|-------|---------|------|-------------|
+|-------|---------|------|------------|
 | `data` |  | `array` | See [Data](#data). |
-| `onViewer` |  | `function` | Called immediately after the 3dMol viewer is created. Passed the viewer and `setMessage` function. |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer, data array and `setMessage` function |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event, viewer, data and `setMessage` function. |
-| `zoomLimits` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. | 
+| `appearance` |  | `appearance[]` | See [Appearance](#appearance). |
+| `initialMessage` | `"Loading structure ..."` | `string`, `component` | Initial message shown over the viewer. |
+| `zoomLimits` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
 
 Example use cases for `onData`:
 

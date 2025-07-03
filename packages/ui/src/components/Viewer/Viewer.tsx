@@ -2,12 +2,44 @@
 
 // !!!!! ADD PROP TYPES !!!!!
 
-import { useEffect } from "react";
-import { useViewerState } from "./ViewerProvider"
+import { useEffect, useRef   } from "react";
+import { useViewerState } from "./ViewerProvider";
 
-export default function Viewer({ data, onViewer, onData, onDblClick }) {
+const hoverDuration = 50;
+
+export default function Viewer({ data, onData, onDblClick, appearance = [], initialMessage = "Loading structure ...", setZoomLimits }) {
   
-  const [message, setMessage] = useState("Loading structure ...");
+  const [message, setMessage] = useState(initialMessage);
+  const [viewer, setViewer] = useState(null);
+  const viewerState = useViewerState();
+
+
+!!!!! NOW: UPDATE BELOW TO MATCH CHANGES TO APPEARANCE OBJECT !!!!!
+
+  const simpleAppearance = [];
+  const depAppearance = [];
+  const hoverAppearance = [];
+  const clickAppearance = [];
+  for (const a of appearance) {
+    if (a.onHover) hoverAppearance.push(a);
+    else if (a.onClick) clickAppearance.push(a);
+    else if (a.dep) depAppearance.push(a);
+    else simpleAppearance.push(a);
+  }
+
+  function applyAppearance({ selection, style, addStyle }) {
+    if (typeof style === "function") style = style(viewerState);
+    if (typeof selection === "function") selection = selection(viewerState);
+    viewer[addStyle ? 'addStyle' : 'setStyle'](selection, style);
+  }
+
+  function addHoverAppearance(XXXX) {
+
+  }
+
+  function addClickAppearance(XXXX) {
+
+  }
 
   // create viewer
   useEffect(() => {
@@ -34,16 +66,47 @@ export default function Viewer({ data, onViewer, onData, onDblClick }) {
         onDblClick(event, _viewer, data, setMessage); 
       }
     }
-    onViewer?.(_viewer, setMessage);
+    _viewer.setHoverDuration(hoverDuration);
+    setViewer(_viewer);
 
-    // load viewer
-    const models = data.map({ structureData } => _viewer.addModel(structureData, "cif"));
+    // load data into viewer
+    const models = data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
     onData?.(_viewer, data, setMessage);
 
-    !!! HERE !!!!!!!!!!!!!!!!!!!!!!!!
+    return () => _viewer.clear();
+
+  }, []);
+
+  // initialise/update viewer appearance based on state
+  const prevValues = useRef({});
+  useEffect(() => {
+    if (!viewer) return;
+    
+    // hide everything
+    _viewer?.setStyle({}, { hidden: true });
+
+    // apply appearances with no dependencies
+    for (const a of simpleAppearance) {
+      a
+    }
+    const changed = new Set();
+    for (const key of Object.keys(viewerState)) {
+      viewerState[key] !== prevValues.current[key];
+      changed.add(key);
+    }
+    for (const a of appearance) {
+      if ()
+    }
 
 
-        _viewer?.setStyle({}, { hidden: true });
+      if (newValue !== oldValue && effects[key]) {
+        appearance[key](newValue);
+      }
+      prevValues.current[key] = newValue;
+    }
+  }, [viewer, viewerState, appearance]);
+
+
        
 
         setHoverBehavior({
@@ -54,18 +117,10 @@ export default function Viewer({ data, onViewer, onData, onDblClick }) {
         });
         _viewer.render();
         setMessage("");
-        setViewer(_viewer);
+
       }
     }
 
-    return () => {
-      setHoveredAtom(null);
-      _viewer?.clear();
-    };
-  }, []);
 
-
-  - ADD USEEFFECT TO UPDATE BASED ON STATE - AS WELL AS 
-    STATE VARIABLE(S) TO STORE OLD VALUES OF STATE.
 
   - ADD HTML FROM OTHER VIEWERS
