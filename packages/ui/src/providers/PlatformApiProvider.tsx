@@ -3,7 +3,6 @@ import { useQuery, DocumentNode, QueryResult } from "@apollo/client";
 
 interface PlatformApiContextValue {
   entity: string;
-  lsSectionsField: string;
   loading: boolean;
   error?: any;
   data?: any;
@@ -15,7 +14,6 @@ const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(un
 
 interface PlatformApiProviderProps {
   entity: string;
-  lsSectionsField: string;
   query: DocumentNode;
   variables?: Record<string, any>;
   children: ReactNode;
@@ -23,20 +21,30 @@ interface PlatformApiProviderProps {
 
 function PlatformApiProvider({
   entity,
-  lsSectionsField,
   query,
   variables,
   children,
 }: PlatformApiProviderProps) {
   const request: QueryResult = useQuery(query, { variables });
 
+  const { loading, error, data, refetch, fetchMore } = request;
+
   const platformApiValue = useMemo(
-    () => ({ ...request, entity, lsSectionsField }),
-    [request, entity, lsSectionsField]
+    () => ({ 
+      loading, 
+      error, 
+      data, 
+      refetch, 
+      fetchMore, 
+      entity 
+    }),
+    [loading, error, data, refetch, fetchMore, entity]
   );
 
   return (
-    <PlatformApiContext.Provider value={platformApiValue}>{children}</PlatformApiContext.Provider>
+    <PlatformApiContext.Provider value={platformApiValue}>
+      {children}
+    </PlatformApiContext.Provider>
   );
 }
 
