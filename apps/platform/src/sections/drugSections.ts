@@ -1,5 +1,4 @@
-
-import { Drug } from 'sections';
+import { Drug } from "sections";
 
 export const drugWidgets = new Map([
   [Drug.Indications.definition.id, Drug.Indications.getBodyComponent],
@@ -10,13 +9,3 @@ export const drugWidgets = new Map([
   [Drug.MechanismsOfAction.definition.id, Drug.MechanismsOfAction.getBodyComponent],
   [Drug.Pharmacogenomics.definition.id, Drug.Pharmacogenomics.getBodyComponent],
 ]);
-
-export const drugWidgetsSummaries = [
-  Drug.Indications.Summary,
-  Drug.KnownDrugs.Summary,
-  Drug.DrugWarnings.Summary,
-  Drug.AdverseEvents.Summary,
-  Drug.Bibliography.Summary,
-  Drug.MechanismsOfAction.Summary,
-  Drug.Pharmacogenomics.Summary,
-];
