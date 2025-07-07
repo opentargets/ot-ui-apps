@@ -1,14 +1,10 @@
 import { lazy } from "react";
-import { isPrivateDiseaseSection } from "@ot/constants";
-
-const id = "otProjects";
 
 export const definition = {
-  id,
-  name: "Open Targets Projects",
-  shortName: "OP",
-  hasData: data => data.otarProjects?.length > 0,
-  isPrivate: isPrivateDiseaseSection(id),
+  id: "phenotypes",
+  name: "Clinical signs and symptoms",
+  shortName: "CS",
+  hasData: (data: any) => (data.phenotypes?.count || 0) > 0,
 };
 
 // Components

@@ -1,10 +1,10 @@
 import { lazy } from "react";
 
 export const definition = {
-  id: "phenotypes",
-  name: "Clinical signs and symptoms",
-  shortName: "CS",
-  hasData: data => (data.phenotypes?.count || 0) > 0,
+  id: "knownDrugs",
+  name: "Known Drugs",
+  shortName: "KD",
+  hasData: (data: any) => data.knownDrugs?.count > 0 || data.knownDrugs.freeTextQuery || false,
 };
 
 // Components

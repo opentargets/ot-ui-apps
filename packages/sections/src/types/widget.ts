@@ -10,6 +10,7 @@ export interface Widget {
     name: string;
     shortName: string;
     hasData: (data: any) => boolean | undefined;
+    isPrivate?: boolean;
   };
   Summary: ComponentType<any>;
   getBodyComponent: () => ComponentType<any>;
@@ -24,6 +25,7 @@ export interface WidgetDefinition {
   name: string;
   shortName: string;
   hasData: (data: any) => boolean | undefined;
+  isPrivate: boolean;
 }
 
 /**

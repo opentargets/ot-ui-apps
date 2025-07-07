@@ -1,10 +1,10 @@
 import { lazy } from "react";
 
 export const definition = {
-  id: "ontology",
-  name: "Ontology",
-  shortName: "O",
-  hasData: data => data.id,
+  id: "bibliography",
+  name: "Bibliography",
+  shortName: "B",
+  hasData: (data: any) => data.literatureOcurrences?.filteredCount > 0,
 };
 
 // Components

@@ -1,10 +1,14 @@
 import { lazy } from "react";
+import { isPrivateDiseaseSection } from "@ot/constants";
+
+const id = "otProjects";
 
 export const definition = {
-  id: "bibliography",
-  name: "Bibliography",
-  shortName: "B",
-  hasData: data => data.literatureOcurrences?.filteredCount > 0,
+  id,
+  name: "Open Targets Projects",
+  shortName: "OP",
+  hasData: (data: any) => data.otarProjects?.length > 0,
+  isPrivate: isPrivateDiseaseSection(id),
 };
 
 // Components

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Skeleton } from "@mui/material";
 import { Widget } from "sections";
+import usePermissions from "../../hooks/usePermissions";
 
 type SectionsRendererProps = {
   id: string;
@@ -11,27 +12,27 @@ type SectionsRendererProps = {
   skeletonWidth?: string;
 };
 
-function SectionsRenderer({ 
-  id, 
-  label, 
-  entity, 
-  widgets, 
-  skeletonHeight = 85, 
-  skeletonWidth = "100%" 
+function SectionsRenderer({
+  id,
+  label,
+  entity,
+  widgets,
+  skeletonHeight = 85,
+  skeletonWidth = "100%",
 }: SectionsRendererProps) {
+  const { isPartnerPreview } = usePermissions();
   return (
     <>
-      {widgets.map((widget) => {
+      {widgets.map(widget => {
         const Body = widget.getBodyComponent();
+        const isPrivate = widget.definition.isPrivate;
+        if (isPrivate && !isPartnerPreview) {
+          return null;
+        }
         return (
-          <Suspense 
-            key={widget.definition.id} 
-            fallback={
-              <Skeleton 
-                height={skeletonHeight} 
-                sx={{ width: skeletonWidth }} 
-              />
-            }
+          <Suspense
+            key={widget.definition.id}
+            fallback={<Skeleton height={skeletonHeight} sx={{ width: skeletonWidth }} />}
           >
             <Body id={id} label={label} entity={entity} />
           </Suspense>
@@ -41,4 +42,4 @@ function SectionsRenderer({
   );
 }
 
-export default SectionsRenderer; 
+export default SectionsRenderer;
