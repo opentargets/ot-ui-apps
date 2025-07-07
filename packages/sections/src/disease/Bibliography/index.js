@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 export const definition = {
   id: "bibliography",
   name: "Bibliography",
@@ -5,5 +7,7 @@ export const definition = {
   hasData: data => data.literatureOcurrences?.filteredCount > 0,
 };
 
+// Components
 export { default as Summary } from "./Summary";
-export { default as Body } from "./Body";
+// Export a lazy loader function instead of the actual component
+export const getBodyComponent = () => lazy(() => import("./Body"));

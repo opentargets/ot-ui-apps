@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 export const definition = {
   id: "knownDrugs",
   name: "Known Drugs",
@@ -5,5 +7,7 @@ export const definition = {
   hasData: data => data.knownDrugs?.count > 0 || data.knownDrugs.freeTextQuery || false,
 };
 
-// export { default as Summary } from './Summary';
-export { default as Body } from "./Body";
+// Components
+export { default as Summary } from "./Summary";
+// Export a lazy loader function instead of the actual component
+export const getBodyComponent = () => lazy(() => import("./Body"));
