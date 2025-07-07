@@ -95,3 +95,4 @@ export { default as usePermissions } from "./hooks/usePermissions";
 export { default as useDebounce } from "./hooks/useDebounce";
 
 export { default as BrokenSearchIcon } from "./components/icons/BrokenSearchIcon";
+export { default as FromGeneticsModal } from "./components/FromGeneticsModal";
