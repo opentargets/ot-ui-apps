@@ -304,12 +304,20 @@ export const VIEW = {
   table: "Table",
 };
 
-export const getStudyTypeDisplay = studyType => {
-  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+export const getStudyTypeDisplay = (studyType: string | null | undefined): string | null | undefined => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, (match: string) => match.toUpperCase());
   return studyType;
 };
 
-export const getStudyItemMetaData = ({ studyType, credibleSetsCount, nSamples }) => {
+export const getStudyItemMetaData = ({
+  studyType,
+  credibleSetsCount,
+  nSamples
+}: {
+  studyType?: string;
+  credibleSetsCount: number;
+  nSamples: number;
+}) => {
   let metaData = "";
   if (studyType) metaData += `Study type: ${getStudyTypeDisplay(studyType)}`;
   if (credibleSetsCount > -1)
@@ -319,16 +327,20 @@ export const getStudyItemMetaData = ({ studyType, credibleSetsCount, nSamples })
   return metaData;
 };
 
-export const getGenomicLocation = genomicLocation => {
+export const getGenomicLocation = (genomicLocation: {
+  chromosome?: string;
+  start?: number;
+  end?: number;
+  strand?: number;
+} | null | undefined) => {
   /****
    * TODO: add GRCh38 to this function
    * check all the locations we are using this
    * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
    * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
    ****/
-  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
-    Math.sign(genomicLocation?.strand) === 1 ? "+" : "-"
-  }`;
+  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${Math.sign(genomicLocation?.strand) === 1 ? "+" : "-"
+    }`;
 };
 export * from "./dataTypes";
 export * from "./types/response";
@@ -337,3 +349,4 @@ export * from "./partnerPreviewUtils";
 export * from "./particlesBackground";
 export * from "./variant";
 export * from "./alphaFold";
+export * from "./graphql-types";
