@@ -80,7 +80,7 @@ const FromGeneticsModal = () => {
         <Box sx={{ mt: 4, mb: 2 }}>
           <Typography variant="body2">
             Need help? Check our{" "}
-            <Link newTab external to="https://docs.opentargets.org">
+            <Link newTab external to="https://platform-docs.opentargets.org/">
               documentation
             </Link>{" "}
             or visit the{" "}
