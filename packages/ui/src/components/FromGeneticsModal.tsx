@@ -50,7 +50,7 @@ const FromGeneticsModal = () => {
           color="secondary.main"
           fontWeight={500}
         >
-          Welcome to the upgraded Open Targets Platform!
+          Welcome to the merged Open Targets Platform!
         </Typography>
         <Typography variant="body2">
           Open Targets Genetics has been integrated into the Open Targets Platform to create a
@@ -61,10 +61,9 @@ const FromGeneticsModal = () => {
           <Typography variant="body2">
             <ul style={{ listStyleType: "disc", paddingLeft: 20 }}>
               <li>
-                Updated genetic analyses with improved quality control and ancestry-specific
-                fine-mapping
+                Updated genetic analyses with improved quality control and ancestry-specific fine
+                mapping
               </li>
-              <li>20% more direct gene-disease associations from GWAS credible sets</li>
               <li>
                 Enhanced Locus-to-Gene model with better performance and feature interpretation
               </li>
@@ -74,8 +73,8 @@ const FromGeneticsModal = () => {
         </Box>
         <Box sx={{ mt: 2 }}>
           <Typography variant="body2">
-            <b>Please note:</b> Some analyses like V2G are no longer available, and we now only
-            include variants with phenotypic information.
+            <b>Please note:</b> We have made some changes to the way we process and present our
+            genetic analyses.
           </Typography>
         </Box>
         <Box sx={{ mt: 4, mb: 2 }}>
