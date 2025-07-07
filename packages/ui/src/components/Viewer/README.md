@@ -26,7 +26,7 @@ The array should contain a single element unless multiple structures are being s
 
 **Note**: The viewer component does not fetch data.
 
-The `info` property can be used for any additional data that is needed to display the structure as desired. Callback functions used to determine the behavior of the viewer will have access to this extra data.
+The `info` property can be used for any additional data that is needed to display the structure as desired. Callback functions used to determine what is shown in the viewer have access to this extra information.
 
 ## Viewer Provider
 
@@ -44,45 +44,47 @@ Any component inside a `<ViewerProvider>` can import the following from the prov
 - `useViewerState`: get the state object.
 - `useViewerDispatch`: dispatch an action (to the reducer) to change the state object.
 
-**Note**: The dispatch function can be used from e.g. a click handler attached to the viewer. However, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
+While the dispatch function can be used from e.g. a click handler attached to the viewer, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
 
 ## Appearance
 
-An 'appearance' object is a description of what to show in the viewer and how:
+An `appearance` object is a description of what to show in the viewer and how:
 
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
-| `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and should return a selection spec. |
-| `style` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a style spec. |
+| `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
+| `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
-| `onApply` | | `function` | Called whenever the appearance is applied. Passed array of selected atom objects and the dispatch function. |
-| `when` | `"change"` | `string` | Default change means appearance applied when dependencies change. Use `"hover"` to apply appeance on hover and `"click"` to apply on click. |
-| `dep` | `[]` | `string[]` | Names of state properties `selection` or `style` callbacks depend on. If an empty array, the appearance is applied every state change. |
+| `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
-Properties only used if `when` is `"hover"`:
+
+After a change in any of the  state change, everything is hidden then appearances are applied in the original order.
+
+### Click and Hover
+
+An `eventAppearance` object describes a change due to a click or hover event: 
 
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
-| `styleUnhover` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a style spec. |
-| `addStyleUnhover` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
-| `onApplyUnhover` | | `function` | Called whenever the appearance is applied. Passed array of selected atom objects and the dispatch function. |
+| `eventSelection` | `{}` | 3dMol `AtomSelectionSpec` | Selects atoms that listen for the event - whereas the `selection` property selects atoms whose appearance is changed by the event. |
+| `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and the atom that heard the event; should return a `AtomSelectionSpec`. |
+| `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and the atom that heard the event; should return a `AtomStyleSpec`. |
+| `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
+| `onApply` | | `function` | Called after the appearance is applied - i.e. a click or hover event. Passed the state and the atom that heard the event. |
 
-After a state change:
+And for hover events only: 
 
-1. Everything is hidden.
-2. Then appearances with an empty `dep` array are applied (in the original order).
-3. Then appearances where at least one of the dependencies have changed are applied (in original order).
-
-Setting **click** behavior is similar to the above, just supply an `onClick` function rather than `onChange`.
-
-To set **hover** behavior, provide a pair of functions: `onHover` and `onUnhover`.
-
-**Note**: There is no need to list dependencies for hover and click appearances.
+| Property | Default | Type | Description |
+|----------|---------|------|-------------|
+| `unhoveSelection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | As `selection` but selects atoms whose appearance change on unhover. Defaults to `selection`. |
+| `unhoverStyle` | `{}` | 3dMol `AtomStyleSpec`, function | As `style` but applied to atoms selected by `unhoverSelection`. |
+| `onUnapply` | | `function` | As `onApply` but applied after an unhover event. |
 
 ## Shapes
 
 Showing surfaces, spheres etc, is very similar to showing structures.
 
+- HAVE AN UPDATEDEPS PROP TO ALLOW MANAGING SHAPES WITHOUT REDRAWING STRUCTURE
 - DO IN DETAIL ONCE HAVE STRUCTURES WORKING
 - SLIGHTLY FIDDLY SINCE MAY NEED TO TRACK EXISTING SHAPES TO REMOVE ONLY IF REQD
 
@@ -94,12 +96,18 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 
 | Prop | Default | Type | Description |
 |-------|---------|------|------------|
+| `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer, data array and `setMessage` function |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event, viewer, data and `setMessage` function. |
-| `appearance` |  | `appearance[]` | See [Appearance](#appearance). |
+| `dep` | | `string[]` | List of 'dependencies' - i.e. state properties. Changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
+| `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
+| `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
+| `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `initialMessage` | `"Loading structure ..."` | `string`, `component` | Initial message shown over the viewer. |
-| `zoomLimits` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
+| `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
+
+**Note**: A state property may directly affect appearance without needing to trigger a redraw. For example, a property that controls which parts of the structure are highlighted with spheres based on a filter. Such properties should not be included in `dep`.
 
 Example use cases for `onData`:
 
