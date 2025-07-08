@@ -30,21 +30,25 @@ The `info` property can be used for any additional data that is needed to displa
 
 ## Viewer Provider
 
-The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass the initial state and a reducer function - which implements valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
+The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass the initial state and a an `actions` object the specifies the valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
 
 Props:
 
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `reducer` | | `function` | |
+| `actions` | | `{}` | Each key-value is an action name and a function that takes the current state along with an optional 'update' argument (typically a new value for a state property) and retuns a new state object. |
 
 Any component inside a `<ViewerProvider>` can import the following from the provider file:
 
 - `useViewerState`: get the state object.
-- `useViewerDispatch`: dispatch an action (to the reducer) to change the state object.
+- `useViewerActions`: an object with the same shape as the `actions` object but where each function only takes the update argument.
 
-While the dispatch function can be used from e.g. a click handler attached to the viewer, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
+While actions can be used from e.g. a click handler attached to the viewer, most uses of actions come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
+
+### Derived State
+
+There is no built-in mechanism to handle derived state. For example, where we have the 'full data' and current filter settings and want to compute the filtered rows (the derived value) from these. For now, make a derived value a state property and update it whenever the relevant 'genuine' state properties change. To avoid repeated code in the actions functions, write helper functions to compute derived states and ensure they are visible where the action functions are defined. 
 
 ## Appearance
 
@@ -56,7 +60,6 @@ An `appearance` object is a description of what to show in the viewer and how:
 | `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
-
 
 After a change in any of the  state change, everything is hidden then appearances are applied in the original order.
 
@@ -106,6 +109,10 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `initialMessage` | `"Loading structure ..."` | `string`, `component` | Initial message shown over the viewer. |
 | `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
+| `usage` |  | `object` | Label-value pairs to populate the usage instructions popup. |
+| `topLeft` |  | `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `bottomRight` |  | `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `screenshotId` | `""` | `string` | ID to include in screenshot file name. |
 
 **Note**: A state property may directly affect appearance without needing to trigger a redraw. For example, a property that controls which parts of the structure are highlighted with spheres based on a filter. Such properties should not be included in `dep`.
 
