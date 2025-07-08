@@ -1,9 +1,16 @@
-const id = "molecular_structure";
+import { lazy } from "react";
+import { Variant } from "@ot/constants";
+
 export const definition = {
-  id,
+  id: "molecular_structure",
   name: "Molecular Structure",
   shortName: "MS",
-  hasData: data =>
-    data.proteinCodingCoordinates.count > 0 &&
-    data.proteinCodingCoordinates.rows[0].referenceAminoAcid[0] !== "-",
+  hasData: (data: Variant) =>
+    (data.proteinCodingCoordinates?.count || 0) > 0 &&
+    data.proteinCodingCoordinates?.rows?.[0]?.referenceAminoAcid !== "-",
 };
+
+// Components
+export { default as Summary } from "./Summary";
+// Export a lazy loader function instead of the actual component
+export const getBodyComponent = () => lazy(() => import("./Body"));

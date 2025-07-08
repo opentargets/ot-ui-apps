@@ -1,12 +1,19 @@
-const id = "uniprot_variants";
+import { lazy } from "react";
+import { Variant } from "@ot/constants";
+
 export const definition = {
-  id,
+  id: "uniprot_variants",
   name: "UniProt variants",
   shortName: "UV",
-  hasData: data => {
+  hasData: (data: Variant) => {
     return (
-      data?.uniProtEvidences?.count > 0 || // summary
-      data?.evidences?.count > 0
-    ); // section
+      // @ts-expect-error TODO: fix this
+      (data.uniProtEvidences?.count || 0) > 0 // section
+    );
   },
 };
+
+// Components
+export { default as Summary } from "./Summary";
+// Export a lazy loader function instead of the actual component
+export const getBodyComponent = () => lazy(() => import("./Body"));
