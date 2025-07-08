@@ -344,9 +344,9 @@ export const getGenomicLocation = (genomicLocation: {
 };
 export * from "./dataTypes";
 export * from "./types/response";
+export * from "./types/graphql-types";
 export * from "./searchSuggestions";
 export * from "./partnerPreviewUtils";
+export * from "./alphaFold";
 export * from "./particlesBackground";
 export * from "./variant";
-export * from "./alphaFold";
-export * from "./graphql-types";

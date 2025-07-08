@@ -48,7 +48,7 @@ const dataTypes = [
   },
 ];
 
-const dataTypesMap = dataTypes.reduce((acc, dataType) => {
+const dataTypesMap = dataTypes.reduce((acc: Record<string, string>, dataType) => {
   acc[dataType.id] = dataType.label;
   return acc;
 }, {});

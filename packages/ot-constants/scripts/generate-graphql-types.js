@@ -290,8 +290,8 @@ async function generateGraphQLTypes() {
       }
     });
 
-    // Write the generated types to a file
-    const outputPath = path.join(__dirname, "..", "src", "graphql-types.ts");
+    // Write the generated types to a file in the types folder
+    const outputPath = path.join(__dirname, "..", "src", "types", "graphql-types.ts");
     fs.writeFileSync(outputPath, generatedCode);
 
     console.log(`✅ GraphQL types generated successfully at: ${outputPath}`);
