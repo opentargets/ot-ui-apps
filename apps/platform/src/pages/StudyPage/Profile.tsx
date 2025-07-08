@@ -45,14 +45,14 @@ const STUDY_PROFILE_QUERY = gql`
 
 type ProfileProps = {
   studyId: string;
-  studyCategory: string;
+  studyType: string;
   diseases: {
     id: string;
     name: string;
   }[];
 };
 
-function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
+function Profile({ studyId, studyType, diseases }: ProfileProps) {
   const diseaseIds = diseases?.map(d => d.id) || [];
 
   return (

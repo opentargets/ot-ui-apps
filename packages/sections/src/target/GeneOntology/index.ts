@@ -10,5 +10,5 @@ export const definition = {
 
 // Components
 export { default as Summary } from "./Summary";
-// Export a lazy loader function instead of the actual component
+
 export const getBodyComponent = () => lazy(() => import("./Body")); 
