@@ -6,25 +6,23 @@ import {
   DisplayVariantId,
   OtTable,
   useBatchQuery,
+  SectionLoader,
 } from "ui";
-import { naLabel, initialResponse, table5HChunkSize } from "@ot/constants";
+import { naLabel, table5HChunkSize } from "@ot/constants";
 import { definition } from ".";
 import Description from "./Description";
 import VARIANTS_QUERY from "./VariantsQuery.gql";
 import { mantissaExponentComparator, variantComparator, identifiersOrgLink } from "@ot/utils";
-import { useEffect, useState } from "react";
 
 type getColumnsType = {
   leadVariantId: string;
-  leadReferenceAllele: string;
-  leadAlternateAllele: string;
 };
 
 function formatVariantConsequenceLabel(label) {
   return label.replace(/_/g, " ");
 }
 
-function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }: getColumnsType) {
+function getColumns({ leadVariantId }: getColumnsType) {
   return [
     {
       id: "variant.id",
@@ -111,13 +109,13 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
       label: "LD (r²)",
       filterValue: false,
       numeric: true,
-      tooltip: (
+      tooltip: ({ variant }) => (
         <>
           Linkage disequilibrium with the lead variant (
           <DisplayVariantId
             variantId={leadVariantId}
-            referenceAllele={leadReferenceAllele}
-            alternateAllele={leadAlternateAllele}
+            referenceAllele={variant?.leadReferenceAllele}
+            alternateAllele={variant?.leadAlternateAllele}
             expand={false}
           />
           )
@@ -187,22 +185,14 @@ function getColumns({ leadVariantId, leadReferenceAllele, leadAlternateAllele }:
 }
 
 type BodyProps = {
-  studyLocusId: string;
+  id: string;
   leadVariantId: string;
-  leadReferenceAllele: string;
-  leadAlternateAllele: string;
   entity: string;
 };
 
-function Body({
-  studyLocusId,
-  leadVariantId,
-  leadReferenceAllele,
-  leadAlternateAllele,
-  entity,
-}: BodyProps) {
+function Body({ id, leadVariantId, entity }: BodyProps) {
   const variables = {
-    studyLocusId: studyLocusId,
+    studyLocusId: id,
     size: table5HChunkSize,
     index: 0,
   };
@@ -214,10 +204,10 @@ function Body({
     size: table5HChunkSize,
   });
 
+  if (request.loading) return <SectionLoader />;
+
   const columns = getColumns({
     leadVariantId,
-    leadReferenceAllele,
-    leadAlternateAllele,
   });
 
   return (
@@ -233,7 +223,7 @@ function Body({
           <OtTable
             showGlobalFilter
             dataDownloader
-            dataDownloaderFileStem={`${studyLocusId}-credibleset`}
+            dataDownloaderFileStem={`${id}-credibleset`}
             sortBy="posteriorProbability"
             order="desc"
             columns={columns}

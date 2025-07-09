@@ -238,9 +238,9 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ studyLocusId, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps) {
   const variables = {
-    studyLocusId: studyLocusId,
+    studyLocusId: id,
     size: table5HChunkSize,
     index: 0,
   };
@@ -265,7 +265,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
           <OtTable
             dataDownloader
             showGlobalFilter
-            dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
+            dataDownloaderFileStem={`${id}-credibleSets`}
             sortBy="pValue"
             order="asc"
             columns={columns}
