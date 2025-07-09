@@ -1,12 +1,10 @@
 import { lazy } from "react";
-import { TargetData } from "../../types/target";
 
-const id = "protein_coding_variants";
 export const definition = {
-  id,
-  name: "Protein Coding Variants",
-  shortName: "PC",
-  hasData: (data: TargetData) => (data.proteinCodingCoordinates?.count || 0) > 0,
+  id: "phenotypes",
+  name: "Clinical signs and symptoms",
+  shortName: "CS",
+  hasData: (data: any) => (data.phenotypes?.count || 0) > 0,
 };
 
 // Components

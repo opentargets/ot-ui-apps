@@ -135,7 +135,6 @@ function Profile({ ensgId, efoId, symbol, name }) {
 
   return (
     <PlatformApiProvider
-      lsSectionsField={EVIDENCE}
       entity={DISEASE}
       query={EVIDENCE_PROFILE_QUERY}
       variables={{ ensgId, efoId }}

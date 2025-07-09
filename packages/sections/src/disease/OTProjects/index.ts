@@ -1,12 +1,14 @@
 import { lazy } from "react";
-import { TargetData } from "../../types/target";
+import { isPrivateDiseaseSection } from "@ot/constants";
 
-const id = "protein_coding_variants";
+const id = "otProjects";
+
 export const definition = {
   id,
-  name: "Protein Coding Variants",
-  shortName: "PC",
-  hasData: (data: TargetData) => (data.proteinCodingCoordinates?.count || 0) > 0,
+  name: "Open Targets Projects",
+  shortName: "OP",
+  hasData: (data: any) => data.otarProjects?.length > 0,
+  isPrivate: isPrivateDiseaseSection(id),
 };
 
 // Components
