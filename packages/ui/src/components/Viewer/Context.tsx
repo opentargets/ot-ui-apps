@@ -3,15 +3,8 @@ import { useReducer } from "react";
 const StateContext = createContext({});
 const DispatchContext = createContext({});
 
-export function ViewerProvider({ children, initialState, actions }) {
+export function ViewerProvider({ children, initialState, reducer }) {
   const [viewerState, dispatch] = useReducer(reducer, initialState);
-
-  function reducer(state, { type, value }) {
-    if (!actions[type]) {
-      throw Error("invalid action");
-    }
-    return actions[type](state, value);
-  }
 
   return (
     <StateContext.Provider value={{ viewerState }}>
@@ -28,17 +21,10 @@ export function useViewerState() {
   return context;
 }
 
-export function useViewerActions() {
+export function useViewerDispatch() {
   const context = useContext(DispatchContext);
   if (context === undefined) {
-    throw new Error("useStateActions must be used within a ViewerProvider");
+    throw new Error("useViewerDispatch must be used within a ViewerProvider");
   }
-  const wrappedActions = {};
-
-  // !!!! HERE !!!! - BUT DON'T KNOW ACTIONS HERE - WILL NEED TO USE FACTORY FUNCTION
-
-  for (const type of Object.keys(actions)) {
-    wrappedActions[type] = value => context({ type, value });
-  }
-  return wrappedActions;
+  return context;
 }

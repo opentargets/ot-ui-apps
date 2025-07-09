@@ -30,25 +30,25 @@ The `info` property can be used for any additional data that is needed to displa
 
 ## Viewer Provider
 
-The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass the initial state and a an `actions` object the specifies the valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
+The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pass the initial state and a reducer function that specifies the valid state changes. Since the provider controls all the state variables that can affect the viewer's appearance, any components that can change these values should also be inside the provider - e.g. radio buttons for coloring on AlphaFold confidence or pathogenicity.
 
 Props:
 
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `actions` | | `{}` | Each key-value is an action name and a function that takes the current state along with an optional 'update' argument (typically a new value for a state property) and retuns a new state object. |
+| `reducer` | | | A reducer function describing valid state changes. Passed the state and an action object and should return a new state object. |
 
 Any component inside a `<ViewerProvider>` can import the following from the provider file:
 
 - `useViewerState`: get the state object.
-- `useViewerActions`: an object with the same shape as the `actions` object but where each function only takes the update argument.
+- `useViewerDispatch`: dispatch function for changing state - passed an action object.
 
-While actions can be used from e.g. a click handler attached to the viewer, most uses of actions come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
+While the dispatch function can be used from e.g. a click handler attached to the viewer, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
 
 ### Derived State
 
-There is no built-in mechanism to handle derived state. For example, where we have the 'full data' and current filter settings and want to compute the filtered rows (the derived value) from these. For now, make a derived value a state property and update it whenever the relevant 'genuine' state properties change. To avoid repeated code in the actions functions, write helper functions to compute derived states and ensure they are visible where the action functions are defined. 
+There is no built-in mechanism to handle derived state. For example, where we have the 'full data' and current filter settings and want to compute the filtered rows (the derived value) from these. For now, make a derived value a state property and update it whenever the relevant 'genuine' state properties change. 
 
 ## Appearance
 
