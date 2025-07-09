@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "lint": "eslint \"**/*.ts\""
+    "lint": "eslint \"**/*.ts\"",
+    "generate-graphql-types": "node scripts/generate-graphql-types.js"
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
