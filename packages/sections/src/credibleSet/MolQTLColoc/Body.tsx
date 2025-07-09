@@ -248,7 +248,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
   const request = useBatchQuery({
     query: MOLQTL_COLOC_QUERY,
     variables,
-    dataPath: "credibleSet.colocalisation",
+    dataPath: "credibleSet.molqtlcolocalisation",
     size: table5HChunkSize,
   });
 
@@ -270,7 +270,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.colocalisation.rows}
+            rows={request.data?.credibleSet.molqtlcolocalisation.rows}
             query={MOLQTL_COLOC_QUERY.loc.source.body}
             variables={variables}
           />
