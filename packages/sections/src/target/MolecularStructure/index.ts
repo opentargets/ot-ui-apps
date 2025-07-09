@@ -1,4 +1,4 @@
-wimport { lazy } from "react";
+import { lazy } from "react";
 import { TargetData } from "../../types/target";
 
 export const definition = {

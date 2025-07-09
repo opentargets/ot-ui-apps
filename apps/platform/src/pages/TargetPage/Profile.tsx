@@ -7,7 +7,6 @@ import {
   SectionsRenderer,
   SummaryRenderer,
 } from "ui";
-
 import { Target, Widget } from "sections";
 
 import ProfileHeader from "./ProfileHeader";

@@ -4,8 +4,8 @@ import usePermissions from "../../hooks/usePermissions";
 import SectionLoader from "./SectionLoader";
 
 type SectionsRendererProps = {
-  id: string;
-  label: string;
+  id: string | { ensgId: string; efoId: string };
+  label: string | { symbol: string; name: string };
   entity: string;
   widgets: Widget[];
 };
