@@ -1,4 +1,4 @@
-import { lazy } from "react";
+wimport { lazy } from "react";
 import { TargetData } from "../../types/target";
 
 export const definition = {
@@ -12,5 +12,4 @@ export const definition = {
 
 // Components
 export { default as Summary } from "./Summary";
-
 export const getBodyComponent = () => lazy(() => import("./Body")); 

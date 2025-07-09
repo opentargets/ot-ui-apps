@@ -30,8 +30,6 @@ const credibleSetProfileWidgetsSummaries = Array.from(credibleSetProfileWidgets.
 type ProfileProps = {
   studyLocusId: string;
   variantId: string;
-  referenceAllele: string;
-  alternateAllele: string;
 };
 
 const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
