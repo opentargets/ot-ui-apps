@@ -85,8 +85,8 @@ export function Body({ id, entity }: BodyProps) {
   });
 
   const getTargetFromSourceId = useCallback(() => {
-    if (request.data?.variant.evidences.rows.length > 0)
-      return request.data?.variant.evidences.rows[0].targetFromSourceId;
+    if (request.data?.variant.uniProtEvidences.rows.length > 0)
+      return request.data?.variant.uniProtEvidences.rows[0].targetFromSourceId;
     return null;
   }, [request]);
 
@@ -111,7 +111,7 @@ export function Body({ id, entity }: BodyProps) {
             showGlobalFilter
             columns={columns}
             loading={request.loading}
-            rows={request.data?.variant.evidences.rows}
+            rows={request.data?.variant.uniProtEvidences.rows}
             query={UNIPROT_VARIANTS_QUERY.loc.source.body}
             variables={variables}
           />

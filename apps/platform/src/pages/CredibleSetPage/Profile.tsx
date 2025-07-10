@@ -1,56 +1,58 @@
-import { Suspense, lazy } from "react";
 import { gql } from "@apollo/client";
 import {
   PlatformApiProvider,
   SectionContainer,
   SummaryContainer,
-  SectionLoader,
   summaryUtils,
+  SummaryRenderer,
+  SectionsRenderer,
+  SectionLoader,
 } from "ui";
 
-import VariantsSummary from "sections/src/credibleSet/Variants/Summary";
-import GWASColocSummary from "sections/src/credibleSet/GWASColoc/Summary";
-import GWASMolQTLSummary from "sections/src/credibleSet/MolQTLColoc/Summary";
-import Locus2GeneSummary from "sections/src/credibleSet/Locus2Gene/Summary";
-
 import ProfileHeader from "./ProfileHeader";
-
-const MolQTLColocSection = lazy(() => import("sections/src/credibleSet/MolQTLColoc/Body"));
-const VariantsSection = lazy(() => import("sections/src/credibleSet/Variants/Body"));
-const GWASColocSection = lazy(() => import("sections/src/credibleSet/GWASColoc/Body"));
-const Locus2GeneSection = lazy(() => import("sections/src/credibleSet/Locus2Gene/Body"));
+import { CredibleSet, Widget } from "sections";
+import { Suspense } from "react";
 
 const CREDIBLE_SET = "credibleSet";
 
-function Profile({
-  studyLocusId,
-  variantId,
-  referenceAllele,
-  alternateAllele,
-  loading,
-}: ProfileProps) {
-  const summaries = [VariantsSummary, Locus2GeneSummary, GWASColocSummary, GWASMolQTLSummary];
+const credibleSetProfileWidgets = new Map<string, Widget>([
+  [CredibleSet.Locus2Gene.definition.id, CredibleSet.Locus2Gene],
+  [CredibleSet.GWASColoc.definition.id, CredibleSet.GWASColoc],
+  [CredibleSet.MolQTLColoc.definition.id, CredibleSet.MolQTLColoc],
+]);
 
-  const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
-    summaries,
-    "CredibleSet",
-    "CredibleSetProfileSummaryFragment"
-  );
+const CREDIBLE_SET_WIDGETS = Array.from(credibleSetProfileWidgets.values());
 
-  const CREDIBLE_SET_PROFILE_QUERY = gql`
-    query CredibleSetProfileQuery($studyLocusId: String!, $variantIds: [String!]!) {
-      credibleSet(studyLocusId: $studyLocusId) {
-        studyLocusId
-        ...CredibleSetProfileHeaderFragment
-        ...CredibleSetProfileSummaryFragment
-      }
+const credibleSetProfileWidgetsSummaries = Array.from(credibleSetProfileWidgets.values()).map(
+  widget => widget.Summary
+);
+
+type ProfileProps = {
+  studyLocusId: string;
+  variantId: string;
+};
+
+const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
+  credibleSetProfileWidgetsSummaries,
+  "CredibleSet",
+  "CredibleSetProfileSummaryFragment"
+);
+
+const CREDIBLE_SET_PROFILE_QUERY = gql`
+  query CredibleSetProfileQuery($studyLocusId: String!, $variantIds: [String!]!) {
+    credibleSet(studyLocusId: $studyLocusId) {
+      studyLocusId
+      ...CredibleSetProfileHeaderFragment
+      ...CredibleSetProfileSummaryFragment
     }
-    ${ProfileHeader.fragments.profileHeader}
-    ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
-  `;
+  }
+  ${ProfileHeader.fragments.profileHeader}
+  ${CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT}
+`;
 
-  if (loading) return <></>;
+const VariantsSection = CredibleSet.Variants.getBodyComponent();
 
+function Profile({ studyLocusId, variantId }: ProfileProps) {
   return (
     <PlatformApiProvider
       entity={CREDIBLE_SET}
@@ -60,33 +62,22 @@ function Profile({
       <ProfileHeader />
 
       <SummaryContainer>
-        <VariantsSummary />
-        <Locus2GeneSummary />
-        <GWASColocSummary />
-        <GWASMolQTLSummary />
+        {/* TODO: remove this once we have a proper variants section. look at the parent prop */}
+        <CredibleSet.Variants.Summary />
+        <SummaryRenderer widgets={CREDIBLE_SET_WIDGETS} />
       </SummaryContainer>
 
       <SectionContainer>
+        {/* TODO: remove this once we have a proper variants section. look at the parent prop */}
         <Suspense fallback={<SectionLoader />}>
-          <VariantsSection
-            studyLocusId={studyLocusId}
-            leadVariantId={variantId}
-            leadReferenceAllele={referenceAllele}
-            leadAlternateAllele={alternateAllele}
-            entity={CREDIBLE_SET}
-          />
+          <VariantsSection id={studyLocusId} leadVariantId={variantId} entity={CREDIBLE_SET} />
         </Suspense>
-        <Suspense fallback={<SectionLoader />}>
-          <Locus2GeneSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <GWASColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
-          <MolQTLColocSection studyLocusId={studyLocusId} entity={CREDIBLE_SET} />
-        </Suspense>
+        <SectionsRenderer
+          id={studyLocusId}
+          label={CREDIBLE_SET}
+          entity={CREDIBLE_SET}
+          widgets={CREDIBLE_SET_WIDGETS}
+        />
       </SectionContainer>
     </PlatformApiProvider>
   );

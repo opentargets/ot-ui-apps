@@ -6,13 +6,13 @@ import LOCUS2GENE_QUERY from "./Locus2GeneQuery.gql";
 import Description from "./Description";
 
 type BodyProps = {
-  studyLocusId: string;
+  id: string;
   entity: string;
 };
 
-function Body({ studyLocusId, entity }: BodyProps): ReactNode {
+function Body({ id, entity }: BodyProps): ReactNode {
   const variables = {
-    studyLocusId: studyLocusId,
+    studyLocusId: id,
   };
 
   const request = useQuery(LOCUS2GENE_QUERY, {
@@ -28,7 +28,7 @@ function Body({ studyLocusId, entity }: BodyProps): ReactNode {
       renderBody={() => (
         <HeatmapTable
           loading={request.loading}
-          data={request.data?.credibleSet.l2GPredictions}
+          data={request.data?.credibleSet?.l2GPredictions}
           query={LOCUS2GENE_QUERY.loc.source.body}
           variables={variables}
         />

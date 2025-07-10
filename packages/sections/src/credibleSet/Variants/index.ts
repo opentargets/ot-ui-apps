@@ -1,7 +1,12 @@
-const id = "variants";
+import { lazy } from "react";
+import { CredibleSet } from "@ot/constants";
+
 export const definition = {
-  id,
+  id: "variants",
   name: "Credible Set Variants",
   shortName: "VA",
-  hasData: data => data?.locus.count > 0 || data?.locusSize.count > 0,
+  hasData: (data: CredibleSet) => (data.locus?.count || 0) > 0,
 };
+
+export { default as Summary } from "./Summary";
+export const getBodyComponent = () => lazy(() => import("./Body"));

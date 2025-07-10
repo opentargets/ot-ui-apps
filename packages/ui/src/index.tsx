@@ -5,6 +5,7 @@ export { default as OtLongText } from "./components/OtLongText";
 export { default as LongList } from "./components/LongList";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
+export { default as SummaryRenderer } from "./components/Summary/SummaryRenderer";
 export { default as Tooltip } from "./components/Tooltip";
 export { default as ObsPlot } from "./components/ObsPlot/ObsPlot";
 export { default as ObsChart } from "./components/ObsPlot/ObsChart";
@@ -96,3 +97,4 @@ export { default as usePermissions } from "./hooks/usePermissions";
 export { default as useDebounce } from "./hooks/useDebounce";
 
 export { default as BrokenSearchIcon } from "./components/icons/BrokenSearchIcon";
+export { default as FromGeneticsModal } from "./components/FromGeneticsModal";

@@ -1,22 +1,22 @@
-import { lazy } from "react";
+import { Target } from "sections";
 
 const targetSections = new Map([
-  ["tractability", lazy(() => import("sections/src/target/Tractability/Body"))],
-  ["knownDrugs", lazy(() => import("sections/src/target/KnownDrugs/Body"))],
-  ["safety", lazy(() => import("sections/src/target/Safety/Body"))],
-  ["expressions", lazy(() => import("sections/src/target/Expression/Body"))],
-  ["depMapEssentiality", lazy(() => import("sections/src/target/DepMap/Body"))],
-  ["geneOntology", lazy(() => import("sections/src/target/GeneOntology/Body"))],
-  ["molecularStructure", lazy(() => import("sections/src/target/MolecularStructure/Body"))],
-  ["pathways", lazy(() => import("sections/src/target/Pathways/Body"))],
-  ["bibliography", lazy(() => import("sections/src/target/Bibliography/Body"))],
-  ["subcellularLocation", lazy(() => import("sections/src/target/SubcellularLocation/Body"))],
-  ["chemicalProbes", lazy(() => import("sections/src/target/ChemicalProbes/Body"))],
-  ["cancerHallmarks", lazy(() => import("sections/src/target/CancerHallmarks/Body"))],
-  ["geneticConstraint", lazy(() => import("sections/src/target/GeneticConstraint/Body"))],
-  ["interactions", lazy(() => import("sections/src/target/MolecularInteractions/Body"))],
-  ["mousePhenotypes", lazy(() => import("sections/src/target/MousePhenotypes/Body"))],
-  ["compGenomics", lazy(() => import("sections/src/target/ComparativeGenomics/Body"))],
+  ["tractability", Target.Tractability.getBodyComponent()],
+  ["knownDrugs", Target.KnownDrugs.getBodyComponent()],
+  ["safety", Target.Safety.getBodyComponent()],
+  ["expressions", Target.Expression.getBodyComponent()],
+  ["depMapEssentiality", Target.DepMap.getBodyComponent()],
+  ["geneOntology", Target.GeneOntology.getBodyComponent()],
+  ["molecularStructure", Target.MolecularStructure.getBodyComponent()],
+  ["pathways", Target.Pathways.getBodyComponent()],
+  ["bibliography", Target.Bibliography.getBodyComponent()],
+  ["subcellularLocation", Target.SubcellularLocation.getBodyComponent()],
+  ["chemicalProbes", Target.ChemicalProbes.getBodyComponent()],
+  ["cancerHallmarks", Target.CancerHallmarks.getBodyComponent()],
+  ["geneticConstraint", Target.GeneticConstraint.getBodyComponent()],
+  ["interactions", Target.MolecularInteractions.getBodyComponent()],
+  ["mousePhenotypes", Target.MousePhenotypes.getBodyComponent()],
+  ["compGenomics", Target.ComparativeGenomics.getBodyComponent()],
 ]);
 
 export default targetSections;

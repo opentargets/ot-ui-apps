@@ -1,7 +1,12 @@
-const id = "locus2gene";
+import { lazy } from "react";
+import { CredibleSet } from "@ot/constants";
+
 export const definition = {
-  id,
+  id: "locus2gene",
   name: "Locus to Gene",
   shortName: "LG",
-  hasData: data => data?.l2GPredictions?.count > 0,
+  hasData: (data: CredibleSet) => (data.l2GPredictions?.count || 0) > 0,
 };
+
+export { default as Summary } from "./Summary";
+export const getBodyComponent = () => lazy(() => import("./Body"));

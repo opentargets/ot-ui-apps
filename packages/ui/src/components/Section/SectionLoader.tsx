@@ -2,7 +2,7 @@ import { Box, Card, CardContent, Divider, Grid, Skeleton } from "@mui/material";
 import { v1 } from "uuid";
 
 type SectionContainerLoaderProps = {
-  sectionsCount: number;
+  sectionsCount?: number;
 };
 
 function SectionLoader({ sectionsCount = 1 }: SectionContainerLoaderProps) {
