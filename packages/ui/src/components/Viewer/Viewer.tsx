@@ -27,7 +27,6 @@ export default function Viewer({
   zoomLimit = [20, 500],
   screenshotId = "",
 }) {
-  
   const [viewer, setViewer] = useState(null);
   const viewerState = useViewerState();
 
@@ -35,7 +34,7 @@ export default function Viewer({
     const value = appearance[propertyName];
     return typeof value === "function" ? value(...args) : value ?? {};
   }
-  
+
   function applyAppearance(
     appearance,
     atom = null, // only non-null for click/hover-triggered appearance changes
@@ -69,23 +68,19 @@ export default function Viewer({
     );
     if (onDblClick) {
       _viewer.getCanvas().ondblclick = event => {
-        onDblClick(event, _viewer, viewerState); 
-      }
+        onDblClick(event, _viewer, viewerState);
+      };
     }
     _viewer.setHoverDuration(hoverDuration);
     setViewer(_viewer);
 
     // click behavior
     for (const [index, appearance] of clickAppearance.entries()) {
-      _viewer.setClickable(
-        appearance.eventSelection,
-        true,
-        atom => {
-          applyAppearance(appearance, atom);
-          appearance.onApply?.(viewerState, atom);
-          if (index === clickAppearance.length - 1) _viewer.render();
-        }
-      );
+      _viewer.setClickable(appearance.eventSelection, true, atom => {
+        applyAppearance(appearance, atom);
+        appearance.onApply?.(viewerState, atom);
+        if (index === clickAppearance.length - 1) _viewer.render();
+      });
     }
 
     // hover behavior
@@ -97,7 +92,7 @@ export default function Viewer({
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
           if (index === hoverAppearance.length - 1) _viewer.render();
-        }
+        },
         atom => {
           applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle");
           appearance.onUnapply?.(viewerState, atom);
@@ -117,7 +112,7 @@ export default function Viewer({
   const prevDepValues = useRef({});
   useEffect(() => {
     if (!viewer) return;
-    
+
     // hide everything
     _viewer?.setStyle({}, { hidden: true });
 
@@ -140,12 +135,10 @@ export default function Viewer({
       }
     }
     viewer.render();
-
   }, [viewer, viewerState]);
 
   return (
     <Box ref={viewerRef} position="relative" width="100%" height={height}>
-
       {/* info and screenshot button */}
       <Box
         sx={{
@@ -160,10 +153,9 @@ export default function Viewer({
           gap: 1,
         }}
       >
-
         {/* usage popup button */}
         {usage && <Usage instructions={usage} />}
-        
+
         {/* screenshot button */}
         <Tooltip title="Screenshot" placement="top-start">
           <Button
@@ -213,7 +205,6 @@ export default function Viewer({
           {bottomRight}
         </Box>
       )}
-
     </Box>
   );
 }
