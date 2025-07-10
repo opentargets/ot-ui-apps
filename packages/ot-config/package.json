@@ -5,7 +5,12 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "lint": "eslint \"**/*.ts\""
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check --formatter-enabled=true .",
+    "check:fix": "biome check --formatter-enabled=true --write ."
   },
   "devDependencies": {
     "@types/node": "^18.0.0",

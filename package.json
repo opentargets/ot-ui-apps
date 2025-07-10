@@ -19,23 +19,19 @@
     "build:platform": "turbo run build --filter=platform",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
-    "lint": "turbo run lint",
-    "lint:platform": "turbo run lint --filter=platform",
-    "format": "turbo run prettier:all",
-    "format:check": "turbo run prettier:check",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check --formatter-enabled=true .",
+    "check:fix": "biome check --formatter-enabled=true --write .",
     "prepare": "husky install"
   },
   "devDependencies": {
-    "eslint": "7.32.0",
-    "eslint-config-custom": "*",
+    "@biomejs/biome": "1.9.4",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
-    "prettier": "^2.5.1",
     "turbo": "^2.4.2"
   },
-  "packageManager": "yarn@1.22.18",
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": "eslint --cache --fix",
-    "*.{ts,tsx,js,jsx,md}": "prettier --write"
-  }
+  "packageManager": "yarn@1.22.18"
 }
