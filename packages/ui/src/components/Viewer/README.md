@@ -26,7 +26,7 @@ The array should contain a single element unless multiple structures are being s
 
 **Note**: The viewer component does not fetch data.
 
-The `info` property can be used for any additional data that is needed to display the structure as desired. Callback functions used to determine what is shown in the viewer have access to this extra information.
+The `info` property can be used for any additional data that is needed to display the structure as desired.
 
 ## Viewer Provider
 
@@ -37,9 +37,9 @@ Props:
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `reducer` | | | A reducer function describing valid state changes. Passed the state and an action object and should return a new state object. |
+| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object and should return a new state object. |
 
-Any component inside a `<ViewerProvider>` can import the following from the provider file:
+Any component inside a `<ViewerProvider>` can import the following (from the same `Context` file as the provider comes from):
 
 - `useViewerState`: get the state object.
 - `useViewerDispatch`: dispatch function for changing state - passed an action object.
@@ -48,7 +48,7 @@ While the dispatch function can be used from e.g. a click handler attached to th
 
 ### Derived State
 
-There is no built-in mechanism to handle derived state. For example, where we have the 'full data' and current filter settings and want to compute the filtered rows (the derived value) from these. For now, make a derived value a state property and update it whenever the relevant 'genuine' state properties change. 
+There is no built-in mechanism to handle derived state. For example, where the state includes the data and filter settings and we want to compute the filtered data (the derived value). For now, make a derived value a state property and update it when any of the the relevant 'genuine' state properties change. 
 
 ## Appearance
 
@@ -58,10 +58,10 @@ An `appearance` object is a description of what to show in the viewer and how:
 |----------|---------|------|-------------|
 | `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
 | `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
-| `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
+| `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
-After a change in any of the  state change, everything is hidden then appearances are applied in the original order.
+After a change in state, everything is hidden then appearances are applied in the original order.
 
 ### Click and Hover
 
@@ -72,7 +72,7 @@ An `eventAppearance` object describes a change due to a click or hover event:
 | `eventSelection` | `{}` | 3dMol `AtomSelectionSpec` | Selects atoms that listen for the event - whereas the `selection` property selects atoms whose appearance is changed by the event. |
 | `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and the atom that heard the event; should return a `AtomSelectionSpec`. |
 | `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and the atom that heard the event; should return a `AtomStyleSpec`. |
-| `addStyle` | `false` | `boolean` | If `true`, uses 3dMol's `addStyle` rather than `setStyle`. |
+| `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied - i.e. a click or hover event. Passed the state and the atom that heard the event. |
 
 And for hover events only: 
@@ -101,17 +101,16 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 |-------|---------|------|------------|
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
-| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer, data array and `setMessage` function |
-| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event, viewer, data and `setMessage` function. |
-| `dep` | | `string[]` | List of 'dependencies' - i.e. state properties. Changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
+| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer and viewer state. |
+| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event and viewer state. |
+| `dep` | | `string[]` | List of state properties that are 'dependencies' - changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `initialMessage` | `"Loading structure ..."` | `string`, `component` | Initial message shown over the viewer. |
-| `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
 | `usage` |  | `object` | Label-value pairs to populate the usage instructions popup. |
-| `topLeft` |  | `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
-| `bottomRight` |  | `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `topLeft` |  | `string`, `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `bottomRight` |  | `string`, `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
 | `screenshotId` | `""` | `string` | ID to include in screenshot file name. |
 
 **Note**: A state property may directly affect appearance without needing to trigger a redraw. For example, a property that controls which parts of the structure are highlighted with spheres based on a filter. Such properties should not be included in `dep`.
@@ -125,3 +124,8 @@ Example use cases for `onData`:
 - Writing to the `info` property of an element of the data array.
 
 - Initilising the zoom, drag and rotation of the viewer.
+
+## Notes
+
+- We often show a message over the viewer such as "Loading Structure ...". There is no built-in message functionality in the viewer since we may want the message to cover related content such as legends - particularly if the message may not be cleared due to e.g. unavailability of data at runtime. To implement a message, include a appropriate component (e.g. an absolutely positioned box over all relevant content) and conditionally render the message versus the viewer and associated content based on a state property such as `message`.
+

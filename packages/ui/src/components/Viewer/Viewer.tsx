@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef   } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createViewer } from "3dmol";
-import { Box, Typography, Button } from "@mui/material";
-import { useViewerState } from "./ViewerProvider";
+import { Box, Button } from "@mui/material";
+import { useViewerState } from "./Context";
 import Usage from "./Usage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
@@ -18,31 +18,27 @@ export default function Viewer({
   onData,
   onDblClick,
   dep = [],
-  drawAapearance = [],
+  drawAppearance = [],
   clickAppearance = [],
   hoverAppearance = [],
-  initialMessage = "Loading structure ...",
-  zoomLimit,
   usage,
   topLeft,
   bottomRight,
+  zoomLimit = [20, 500],
   screenshotId = "",
 }) {
   
-  const [message, setMessage] = useState(initialMessage);
   const [viewer, setViewer] = useState(null);
   const viewerState = useViewerState();
-  const viewerDispatch = useViewerDispatch();
 
   function resolveProperty(appearance, propertyName, ...args) {
     const value = appearance[propertyName];
     return typeof value === "function" ? value(...args) : value ?? {};
   }
-
-  // atom only used for click/hover-triggered appearance changes 
+  
   function applyAppearance(
     appearance,
-    atom = null,
+    atom = null, // only non-null for click/hover-triggered appearance changes
     selection = "selection",
     style = "style"
   ) {
@@ -54,10 +50,7 @@ export default function Viewer({
 
   // create viewer
   useEffect(() => {
-    if (!data) {
-      setMessage("No data");
-      return;
-    }
+    if (!data) return;
 
     // create viewer and add basic functionality
     const _viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
@@ -76,44 +69,46 @@ export default function Viewer({
     );
     if (onDblClick) {
       _viewer.getCanvas().ondblclick = event => {
-        onDblClick(event, _viewer, data, setMessage); 
+        onDblClick(event, _viewer, viewerState); 
       }
     }
     _viewer.setHoverDuration(hoverDuration);
     setViewer(_viewer);
 
     // click behavior
-    for (const appearance of clickAppearance) {
+    for (const [index, appearance] of clickAppearance.entries()) {
       _viewer.setClickable(
         appearance.eventSelection,
         true,
         atom => {
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
+          if (index === clickAppearance.length - 1) _viewer.render();
         }
       );
     }
 
     // hover behavior
-    for (const appearance of hoverAppearance) {
+    for (const appearance of hoverAppearance.entries()) {
       _viewer.setHoverable(
         appearance.eventSelection,
         true,
         atom => {
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
-
+          if (index === hoverAppearance.length - 1) _viewer.render();
         }
         atom => {
           applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle");
           appearance.onUnapply?.(viewerState, atom);
+          if (index === hoverAppearance.length - 1) _viewer.render();
         }
       );
     }
 
     // load data into viewer
-    const models = data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-    onData?.(_viewer, data, setMessage);
+    data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
+    onData?.(_viewer, viewerState);
 
     return () => _viewer.clear();
   }, []);
@@ -139,7 +134,7 @@ export default function Viewer({
     }
 
     // apply appearances
-    for (const appearance of drawAapearance) {
+    for (const appearance of drawAppearance) {
       if (!appearance.use || appearance.use(viewerState)) {
         applyAppearance(appearance);
       }
@@ -149,101 +144,74 @@ export default function Viewer({
   }, [viewer, viewerState]);
 
   return (
-    <Box ref={viewerRef} position="relative" width="100%">
-      {/* container to insert viewer into */}
-      <Box className="viewerContainer" position="relative" width="100%" height={height}>
-        {/* info and screenshot button */}
-        {!message && (
-          <Box
+    <Box ref={viewerRef} position="relative" width="100%" height={height}>
+
+      {/* info and screenshot button */}
+      <Box
+        sx={{
+          top: 0,
+          right: 0,
+          position: "absolute",
+          zIndex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          m: 1,
+          gap: 1,
+        }}
+      >
+
+        {/* usage popup button */}
+        {usage && <Usage instructions={usage} />}
+        
+        {/* screenshot button */}
+        <Tooltip title="Screenshot" placement="top-start">
+          <Button
             sx={{
-              top: 0,
-              right: 0,
-              position: "absolute",
-              zIndex: 1,
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              m: 1,
               gap: 1,
+              bgcolor: "white",
+              "&:hover": {
+                bgcolor: "#f8f8f8d8",
+              },
             }}
+            onClick={() => onClickCapture(viewerRef, screenshotId)}
           >
-
-            {/* usage popup button */}
-            {usage && <Usage instructions={usage} />}
-            
-            {/* screenshot button */}
-            <Tooltip title="Screenshot" placement="top-start">
-              <Button
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  bgcolor: "white",
-                  "&:hover": {
-                    bgcolor: "#f8f8f8d8",
-                  },
-                }}
-                onClick={() => onClickCapture(viewerRef, screenshotId)}
-              >
-                <FontAwesomeIcon icon={faCamera} />
-              </Button>
-            </Tooltip>
-          </Box>
-        )}
-
-        {/* top-left info box */}
-        {topLeft && (
-          <Box
-            position="absolute"
-            top={0}
-            left={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8c8"
-            sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
-          >
-            {topLeft}
-          </Box>
-        )}
-
-        {/* bottom-right info box */}
-        {bottomRight && (
-          <Box
-            position="absolute"
-            bottom={0}
-            right={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8c8"
-            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
-          >
-            {bottomRight}
-          </Box>
-        )}
-
+            <FontAwesomeIcon icon={faCamera} />
+          </Button>
+        </Tooltip>
       </Box>
 
-      {/* message */}
-      {message && (
-        <Typography
-          variant="body2"
-          component="div"
-          sx={{
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            position: "absolute",
-            zIndex: 1,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#f8f8f8",
-          }}
+      {/* top-left info box */}
+      {topLeft && (
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          p="0.6rem 0.8rem"
+          zIndex={100}
+          bgcolor="#f8f8f8c8"
+          sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
+          fontSize={14}
         >
-          {message}
-        </Typography>
+          {topLeft}
+        </Box>
+      )}
+
+      {/* bottom-right info box */}
+      {bottomRight && (
+        <Box
+          position="absolute"
+          bottom={0}
+          right={0}
+          p="0.6rem 0.8rem"
+          zIndex={100}
+          bgcolor="#f8f8f8c8"
+          sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+          fontSize={14}
+        >
+          {bottomRight}
+        </Box>
       )}
 
     </Box>
