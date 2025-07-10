@@ -6,7 +6,8 @@ export const definition = {
   name: "Shared Trait Studies",
   shortName: "ST",
   hasData: (data: Study) => {
-    return (data.credibleSets?.count || 0) > 1;
+    // @ts-expect-error TODO: check this
+    return data?.sharedTraitStudies?.count > 1 || data?.count > 1;
   },
 };
 
