@@ -238,9 +238,9 @@ type BodyProps = {
   entity: string;
 };
 
-function Body({ studyLocusId, entity }: BodyProps) {
+function Body({ id, entity }: BodyProps) {
   const variables = {
-    studyLocusId: studyLocusId,
+    studyLocusId: id,
     size: table5HChunkSize,
     index: 0,
   };
@@ -248,7 +248,7 @@ function Body({ studyLocusId, entity }: BodyProps) {
   const request = useBatchQuery({
     query: MOLQTL_COLOC_QUERY,
     variables,
-    dataPath: "credibleSet.colocalisation",
+    dataPath: "credibleSet.molqtlcolocalisation",
     size: table5HChunkSize,
   });
 
@@ -265,12 +265,12 @@ function Body({ studyLocusId, entity }: BodyProps) {
           <OtTable
             dataDownloader
             showGlobalFilter
-            dataDownloaderFileStem={`${studyLocusId}-credibleSets`}
+            dataDownloaderFileStem={`${id}-credibleSets`}
             sortBy="pValue"
             order="asc"
             columns={columns}
             loading={request.loading}
-            rows={request.data?.credibleSet.colocalisation.rows}
+            rows={request.data?.credibleSet.molqtlcolocalisation.rows}
             query={MOLQTL_COLOC_QUERY.loc.source.body}
             variables={variables}
           />

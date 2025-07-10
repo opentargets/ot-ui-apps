@@ -134,13 +134,13 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
   const request = useBatchQuery({
     query: SHARED_TRAIT_STUDIES_QUERY,
     variables,
-    dataPath: "studies",
+    dataPath: "sharedTraitStudies",
     size: table5HChunkSize,
   });
 
   const columns = getColumns(diseaseIds);
 
-  const rows = request.data?.studies?.rows?.filter(row => {
+  const rows = request.data?.sharedTraitStudies?.rows?.filter(row => {
     return row.id !== studyId;
   });
 
@@ -148,7 +148,7 @@ export function Body({ studyId, diseaseIds }: BodyProps): ReactElement {
     <SectionItem
       definition={definition}
       request={request}
-      entity={"studies"}
+      entity={"sharedTraitStudies"}
       showContentLoading
       loadingMessage="Loading data. This may take some time..."
       renderDescription={() => <Description studyId={studyId} />}

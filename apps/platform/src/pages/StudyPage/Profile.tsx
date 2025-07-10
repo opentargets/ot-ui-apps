@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { gql } from "@apollo/client";
 import {
   PlatformApiProvider,
@@ -7,20 +7,14 @@ import {
   SectionLoader,
   summaryUtils,
 } from "ui";
-
-import SharedTraitStudiesSummary from "sections/src/study/SharedTraitStudies/Summary";
-import GWASCredidbleSetsSummary from "sections/src/study/GWASCredibleSets/Summary";
-import QTLCredibleSetsSummary from "sections/src/study/QTLCredibleSets/Summary";
-
+import { Study } from "sections";
 import ProfileHeader from "./StudyProfileHeader";
 
-const SharedTraitStudiesSection = lazy(() => import("sections/src/study/SharedTraitStudies/Body"));
-const GWASCredibleSetsSection = lazy(() => import("sections/src/study/GWASCredibleSets/Body"));
-const QTLCredibleSetsSection = lazy(() => import("sections/src/study/QTLCredibleSets/Body"));
+const SharedTraitStudiesSection = Study.SharedTraitStudies.getBodyComponent();
+const GWASCredibleSetsSection = Study.GWASCredibleSets.getBodyComponent();
+const QTLCredibleSetsSection = Study.QTLCredibleSets.getBodyComponent();
 
-// no SharedTraitStudiesSummary as we add section to the query below directly
-// (the summary cannot be written as a fragment as it gets further studies)
-const summaries = [GWASCredidbleSetsSummary, QTLCredibleSetsSummary];
+const summaries = [Study.GWASCredibleSets.Summary, Study.QTLCredibleSets.Summary];
 
 const STUDY = "study";
 const STUDY_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
@@ -35,6 +29,7 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileHeaderFragment
       ...StudyProfileSummaryFragment
     }
+    # TODO: remove this once we have a proper shared trait studies section
     sharedTraitStudies: studies(diseaseIds: $diseaseIds, page: { size: 2, index: 0 }) {
       count
     }
@@ -45,14 +40,14 @@ const STUDY_PROFILE_QUERY = gql`
 
 type ProfileProps = {
   studyId: string;
-  studyCategory: string;
+  studyType: string;
   diseases: {
     id: string;
     name: string;
   }[];
 };
 
-function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
+function Profile({ studyId, studyType, diseases }: ProfileProps) {
   const diseaseIds = diseases?.map(d => d.id) || [];
 
   return (
@@ -67,13 +62,14 @@ function Profile({ studyId, studyType, projectId, diseases }: ProfileProps) {
       <ProfileHeader />
 
       <SummaryContainer>
+        {/* TODO: remove this, check the studyType property */}
         {studyType === "gwas" && (
           <>
-            <GWASCredidbleSetsSummary />
-            <SharedTraitStudiesSummary />
+            <Study.GWASCredibleSets.Summary />
+            <Study.SharedTraitStudies.Summary />
           </>
         )}
-        {studyType !== "gwas" && <QTLCredibleSetsSummary />}
+        {studyType !== "gwas" && <Study.QTLCredibleSets.Summary />}
       </SummaryContainer>
 
       <SectionContainer>

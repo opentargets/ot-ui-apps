@@ -185,7 +185,7 @@ function Body({ id, entity }: BodyProps) {
           showGlobalFilter
           columns={columns}
           loading={request.loading}
-          rows={request.data?.variant.evidences.rows}
+          rows={request.data?.variant.evaEvidences.rows}
           query={EVA_QUERY.loc.source.body}
           variables={variables}
         />

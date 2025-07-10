@@ -1,7 +1,12 @@
-const id = "gwas_credible_sets";
+import { lazy } from "react";
+import { Study } from "@ot/constants";
+
 export const definition = {
-  id,
+  id: "gwas_credible_sets",
   name: "GWAS Credible Sets",
   shortName: "GW",
-  hasData: data => data?.gwasCredibleSets?.count > 0 || data?.credibleSets?.count > 0,
+  hasData: (data: Study) => (data.credibleSets?.count || 0) > 0,
 };
+
+export { default as Summary } from "./Summary";
+export const getBodyComponent = () => lazy(() => import("./Body"));
