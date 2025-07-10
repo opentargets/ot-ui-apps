@@ -3,15 +3,13 @@ import { SectionItem } from "ui";
 import { Box, Grid } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
-import VIEWER_TEST_QUERY from "./ViewerTest.gql";
-import Viewer from "ui";
+import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
+import Viewer from "ui";  !!! NOT LOADING !!!!!!!!!!!!!!!!!!!!!!!!!
 import { ViewerProvider } from "ui/src/components/Viewer/Context";
-
-const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   [structureData, setStructureData] = useState(null);
-  
+
   const variables = { ensemblId };
   const request = useQuery(VIEWER_TEST_QUERY, {
     variables,
@@ -55,13 +53,14 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             // }}
           >
             <Box>
-              {structureData
-                ? <Viewer 
-                    data={[{ structureData, info: {} }]}
-                    appearance={[{ style: {'cartoon': {'color':'spectrum'}} }]}
-                  />
-                : "NO STRUCTURE DATA!!!"
-              />}
+              {structureData ? (
+                <Viewer
+                  data={[{ structureData, info: {} }]}
+                  appearance={[{ style: { cartoon: { color: "spectrum" } } }]}
+                />
+              ) : (
+                "NO STRUCTURE DATA!!!"
+              )}
             </Box>
           </ViewerProvider>
         );
