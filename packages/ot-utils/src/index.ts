@@ -1,5 +1,6 @@
 export * from "./searchSuggestions";
 export * from "./downloads";
+export * from "./fetch";
 export * from "./interactors";
 export * from "./global";
 export * from "./urls";

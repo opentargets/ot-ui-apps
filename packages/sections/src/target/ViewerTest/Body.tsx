@@ -8,6 +8,7 @@ import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
 import { Viewer } from "ui";
 import { ViewerProvider } from "ui/src/components/Viewer/Context";
 import { getUniprotIds } from "@ot/utils";
+import { alphaFoldCifUrl, safeFetch } from "@ot/utils";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
   const [structureData, setStructureData] = useState(null);
@@ -25,14 +26,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
   useEffect(() => {
     const fetchStructure = async () => {
       if (!uniprotId) return;
-      const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
-      let response;
-      try {
-        response = await fetch(pdbUri);
-      } catch (error) {}
-      if (response.ok) {
-        setStructureData(await response.text());
-      }
+      const [cifData, error] = await safeFetch(alphaFoldCifUrl(uniprotId), "text");
+      cifData ? setStructureData(cifData) : console.log(error);
     };
     fetchStructure();
   }, [uniprotId]);
@@ -56,6 +51,17 @@ function Body({ id: ensemblId, label: symbol, entity }) {
                 <Viewer
                   data={[{ structureData, info: {} }]}
                   drawAppearance={[{ style: { cartoon: { color: "spectrum" } } }]}
+                  hoverAppearance={[
+                    {
+                      eventSelection: {},
+                      selection: (state, atom) => ({ resi: atom.resi }),
+                      style: { stick: {}, sphere: { radius: 0.6 } },
+                      addStyle: true,
+                      unhoverSelection: (state, atom) => ({ resi: atom.resi }),
+                      unhoverStyle: { stick: { hidden: true }, sphere: { hidden: true } },
+                      unhoverAddStyle: true,
+                    },
+                  ]}
                 />
               ) : (
                 "NO STRUCTURE DATA!!!"

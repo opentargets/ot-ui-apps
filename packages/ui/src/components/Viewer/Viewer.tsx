@@ -21,7 +21,7 @@ export default function Viewer({
   drawAppearance = [],
   clickAppearance = [],
   hoverAppearance = [],
-  usage,
+  usage = {},
   topLeft,
   bottomRight,
   zoomLimit = [20, 500],
@@ -41,9 +41,10 @@ export default function Viewer({
     appearance,
     atom = null, // only non-null for click/hover-triggered appearance changes
     selection = "selection",
-    style = "style"
+    style = "style",
+    addStyle = "addStyle"
   ) {
-    viewer[appearance.addStyle ? "addStyle" : "setStyle"](
+    viewer[appearance[addStyle] ? "addStyle" : "setStyle"](
       resolveProperty(appearance, selection, viewerState, atom),
       resolveProperty(appearance, style, viewerState, atom)
     );
@@ -74,43 +75,49 @@ export default function Viewer({
         };
       }
       _viewer.setHoverDuration(hoverDuration);
-      setViewer(_viewer);
-
-      // click behavior
-      for (const [index, appearance] of clickAppearance.entries()) {
-        _viewer.setClickable(appearance.eventSelection, true, atom => {
-          applyAppearance(appearance, atom);
-          appearance.onApply?.(viewerState, atom);
-          if (index === clickAppearance.length - 1) _viewer.render();
-        });
-      }
-
-      // hover behavior
-      for (const appearance of hoverAppearance.entries()) {
-        _viewer.setHoverable(
-          appearance.eventSelection,
-          true,
-          atom => {
-            applyAppearance(appearance, atom);
-            appearance.onApply?.(viewerState, atom);
-            if (index === hoverAppearance.length - 1) _viewer.render();
-          },
-          atom => {
-            applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle");
-            appearance.onUnapply?.(viewerState, atom);
-            if (index === hoverAppearance.length - 1) _viewer.render();
-          }
-        );
-      }
 
       // load data into viewer`
       data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-      window.viewer = _viewer; // !! REMOVE !!
       onData?.(_viewer, viewerState);
+
+      setViewer(_viewer);
+      window.viewer = _viewer; // !! REMOVE !!
     }
 
     return () => _viewer.clear();
   }, []);
+
+  // click, hover and unhover behavior
+  useEffect(() => {
+    if (!viewer) return;
+
+    // click behavior
+    for (const [index, appearance] of clickAppearance.entries()) {
+      viewer.setClickable(appearance.eventSelection, true, atom => {
+        applyAppearance(appearance, atom);
+        appearance.onApply?.(viewerState, atom);
+        if (index === clickAppearance.length - 1) viewer.render();
+      });
+    }
+
+    // hover behavior
+    for (const [index, appearance] of hoverAppearance.entries()) {
+      viewer.setHoverable(
+        appearance.eventSelection,
+        true,
+        atom => {
+          applyAppearance(appearance, atom);
+          appearance.onApply?.(viewerState, atom);
+          if (index === hoverAppearance.length - 1) viewer.render();
+        },
+        atom => {
+          applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
+          appearance.unhoverOnApply?.(viewerState, atom);
+          if (index === hoverAppearance.length - 1) viewer.render();
+        }
+      );
+    }
+  }, [viewer]);
 
   // draw/redraw
   const prevDepValues = useRef({});
@@ -158,7 +165,7 @@ export default function Viewer({
         }}
       >
         {/* usage popup button */}
-        {usage && <Usage instructions={usage} />}
+        <Usage instructions={usage} />
 
         {/* screenshot button */}
         <Tooltip title="Screenshot" placement="top-start">

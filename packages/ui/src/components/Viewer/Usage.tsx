@@ -25,6 +25,12 @@ function Usage({ instructions }) {
 
   const tooltipOpen = isClicked || isHovered;
 
+  const baseInstructions = {
+    Rotate: "Drag",
+    Move: "Ctrl + Drag",
+    Zoom: "Ctrl + Scroll",
+  };
+
   return (
     <div>
       <Tooltip
@@ -34,7 +40,7 @@ function Usage({ instructions }) {
           <Box onClick={handleClick} sx={{ cursor: "pointer" }}>
             <table style={{ borderSpacing: "0.3rem 0" }}>
               <tbody>
-                {Object.entries(instructions).map(([label, text]) => (
+                {Object.entries({ ...baseInstructions, ...instructions }).map(([label, text]) => (
                   <tr key={label}>
                     <Typography component="td" variant="caption">
                       <strong>{label}:</strong>

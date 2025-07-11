@@ -81,7 +81,8 @@ And for hover events only:
 |----------|---------|------|-------------|
 | `unhoveSelection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | As `selection` but selects atoms whose appearance change on unhover. Defaults to `selection`. |
 | `unhoverStyle` | `{}` | 3dMol `AtomStyleSpec`, function | As `style` but applied to atoms selected by `unhoverSelection`. |
-| `onUnapply` | | `function` | As `onApply` but applied after an unhover event. |
+| `unhoverAddStyle` | `false` | `boolean` | As `addSsyle` but applied to atoms selected by `unhoverSelection`. |
+| `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
 
 ## Shapes
 
@@ -107,7 +108,7 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `usage` |  | `object` | Label-value pairs to populate the usage instructions popup. |
+| `usage` | `{}` | `object` | Label-value pairs to add to the usage instructions popup. |
 | `topLeft` |  | `string`, `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
 | `bottomRight` |  | `string`, `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
 | `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
