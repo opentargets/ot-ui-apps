@@ -1,22 +1,22 @@
-import { useState, useEffect } from "react";
-import {
-  Box,
-  IconButton,
-  Drawer,
-  Typography,
-  Paper,
-  CircularProgress,
-  ButtonBase,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Box,
+  ButtonBase,
+  CircularProgress,
+  Drawer,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { naLabel } from "@ot/constants";
 import { europePmcSearchPOSTQuery } from "@ot/utils";
-import PublicationWrapper from "./PublicationWrapper";
+import { useEffect, useState } from "react";
 import OtTable from "../OtTable/OtTable";
+import PublicationWrapper from "./PublicationWrapper";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -67,7 +67,7 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-const listComponentStyles = makeStyles(theme => ({
+const listComponentStyles = makeStyles((theme) => ({
   loader: {
     display: "flex",
     justifyContent: "center",
@@ -97,8 +97,8 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
       body: formBody,
     };
     fetch(baseUrl, requestOptions)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setLoading(false);
         setPublications(data.resultList.result);
       });
@@ -122,7 +122,7 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
       </Box>
     );
 
-  const parsedPublications = publications.map(pub => {
+  const parsedPublications = publications.map((pub) => {
     const row = {};
     row.europePmcId = pub.id;
     row.pmcId = pub.pmcid;
@@ -143,7 +143,7 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
     {
       id: "publications",
       label: " ",
-      renderCell: publication => {
+      renderCell: (publication) => {
         const {
           europePmcId,
           title,
@@ -177,7 +177,7 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
           />
         );
       },
-      filterValue: row =>
+      filterValue: (row) =>
         `${row.journal.journal?.title} ${row?.title} ${row?.year}
         ${row.authors
           .reduce((acc, author) => {
@@ -209,13 +209,13 @@ function PublicationsDrawer({
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
-  const entriesIds = entries.map(entry => entry.name);
+  const entriesIds = entries.map((entry) => entry.name);
 
   if (entries.length === 0) {
     return naLabel;
   }
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }

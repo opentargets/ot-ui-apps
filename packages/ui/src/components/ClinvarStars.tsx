@@ -1,14 +1,14 @@
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { makeStyles } from "@mui/styles";
 
 type ClinvarStarsProps = {
   num: number;
   length?: number;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   star: {
     color: theme.palette.primary.main,
   },

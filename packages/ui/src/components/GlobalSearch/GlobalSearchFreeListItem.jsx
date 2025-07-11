@@ -1,9 +1,9 @@
-import { useCallback, useContext } from "react";
 import { Box, Typography, styled } from "@mui/material";
+import { useCallback, useContext } from "react";
 
-import { SearchContext, SearchInputContext } from "./SearchContext";
-import ArrowTurnDownLeft from "../icons/ArrowTurnDownLeft";
 import useListOption from "../../hooks/useListOption";
+import ArrowTurnDownLeft from "../icons/ArrowTurnDownLeft";
+import { SearchContext, SearchInputContext } from "./SearchContext";
 
 const FreeSearchListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -46,7 +46,7 @@ function GlobalSearchFreeListItem() {
   };
 
   const handleItemClick = useCallback(
-    item => {
+    (item) => {
       setOpen(false);
       openListItem(item, filterState);
     },

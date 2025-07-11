@@ -5,15 +5,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ButtonBase, Divider, Drawer, IconButton, Paper, Typography } from "@mui/material";
-import { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import { naLabel } from "@ot/constants";
+import { useState } from "react";
 import { v1 } from "uuid";
 import Link from "./Link";
 import OtTable from "./OtTable/OtTable";
 import Tooltip from "./Tooltip";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -107,14 +107,14 @@ export function DirectionalityList({ variantAnnotation }) {
               mr: 1,
               mt: "2px",
               alignItems: "center",
-              background: theme => theme.palette.grey[200],
+              background: (theme) => theme.palette.grey[200],
               borderRadius: 4,
               // minWidth: "40px",
               maxWidth: "40px",
               height: "min-content",
             }}
           >
-            <Tooltip title={getTooltipTitle(directionality)} style={{ background: `red` }}>
+            <Tooltip title={getTooltipTitle(directionality)} style={{ background: "red" }}>
               <FontAwesomeIcon
                 className={directionality === "increased" ? classes.blue : classes.grey}
                 icon={LABEL.increased.icon}

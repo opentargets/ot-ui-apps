@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 
 const useStyles = makeStyles(() => ({
   ellipseContainer: {

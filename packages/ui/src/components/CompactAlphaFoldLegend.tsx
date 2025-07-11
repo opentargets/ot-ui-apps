@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { alphaFoldConfidenceBands } from "@ot/constants";
-import { DetailPopover, AlphaFoldLegend } from "ui";
+import { AlphaFoldLegend, DetailPopover } from "ui";
 
 export default function CompactAlphaFoldLegend({ showTitle = true }) {
   return (
