@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "bugs": {
     "url": "https://github.com/opentargets/ot-ui-apps/issues",
     "email": "support@targetvalidation.org"
