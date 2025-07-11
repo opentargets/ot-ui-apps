@@ -1,13 +1,13 @@
-import { Grid, Typography } from "@mui/material";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-import Link from "./Link";
 import { EmailLink } from "./EmailLink";
+import Link from "./Link";
 
-import PrivateWrapper from "./PrivateWrapper";
 import { useConfigContext } from "../providers/ConfigurationProvider";
+import PrivateWrapper from "./PrivateWrapper";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
@@ -80,7 +80,7 @@ type FooterSocialProps = {
 };
 const FooterSocial = ({ social }: FooterSocialProps) => {
   const classes = useSocialLinkStyle();
-  const socialsWithIcons = social.filter(s => s.icon);
+  const socialsWithIcons = social.filter((s) => s.icon);
   return (
     <>
       <FooterSectionHeading>Follow us</FooterSectionHeading>
@@ -122,9 +122,8 @@ const FooterSection = ({ heading, links, social, children }: FooterSectionProps)
                 <FooterLink label={link.label} url={link.url} icon={link.icon} />
               </PrivateWrapper>
             );
-          } else {
-            return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
           }
+          return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
         })}
       </Grid>
 
@@ -172,7 +171,7 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
           external
           footer
           className={classes.link}
-          ariaLabel={`Read more about creative commons license on this link`}
+          ariaLabel={"Read more about creative commons license on this link"}
         >
           CC0 1.0
           <img

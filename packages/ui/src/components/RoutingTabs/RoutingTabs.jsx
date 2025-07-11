@@ -1,6 +1,6 @@
-import { Suspense, Children, cloneElement } from "react";
-import { generatePath, Route, Routes, useNavigate, useMatch } from "react-router-dom";
-import { Tabs, Box } from "@mui/material";
+import { Box, Tabs } from "@mui/material";
+import { Children, Suspense, cloneElement } from "react";
+import { Route, Routes, generatePath, useMatch, useNavigate } from "react-router-dom";
 import { v1 } from "uuid";
 import LoadingBackdrop from "../LoadingBackdrop";
 
@@ -9,7 +9,7 @@ function RoutingTabs({ children }) {
   const history = useNavigate();
   const routes = [];
 
-  const preparedChildren = Children.map(children, child => {
+  const preparedChildren = Children.map(children, (child) => {
     // Prepares routes for the tabs.
     if (child.props.component) {
       routes.push({

@@ -1,6 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
-export const tableStyles = makeStyles(theme => ({
+export const tableStyles = makeStyles((theme) => ({
   cell: {
     "&:first-child": {
       paddingLeft: "1rem",

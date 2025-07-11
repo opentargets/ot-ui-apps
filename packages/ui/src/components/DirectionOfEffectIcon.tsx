@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowTrendDown,
   faArrowTrendUp,
@@ -6,11 +5,12 @@ import {
   faQuestion,
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
-import { makeStyles } from "@mui/styles";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Divider, Tooltip } from "@mui/material";
-import { ReactNode } from "react";
+import { makeStyles } from "@mui/styles";
+import type { ReactNode } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   colorBlue: {
     color: theme.palette.primary.main,
   },
@@ -73,7 +73,7 @@ function DirectionOfEffectIcon({
             display: "flex",
             justifyContent: "space-around",
             alignItems: "center",
-            background: theme => theme.palette.grey[200],
+            background: (theme) => theme.palette.grey[200],
             borderRadius: 4,
           }}
         >

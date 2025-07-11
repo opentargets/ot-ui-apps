@@ -1,22 +1,22 @@
-import { ReactElement, useEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   Divider,
   Skeleton,
-  styled,
   Tooltip,
+  type TooltipProps,
+  styled,
   tooltipClasses,
-  TooltipProps,
 } from "@mui/material";
-import { useLazyQuery } from "@apollo/client";
+import { naLabel } from "@ot/constants";
+import { type ReactElement, useEffect, useState } from "react";
 import {
   getEntityDescription,
   getEntityIcon,
   getEntityQuery,
   getQueryVariables,
 } from "./utils/asyncTooltipUtil";
-import { naLabel } from "@ot/constants";
 
 import StudyPublication from "../StudyPublication";
 
@@ -161,28 +161,28 @@ function AsyncTooltipDataView({
           p: 1,
           py: 0,
           fontSize: "0.7rem",
-          color: theme => theme.palette.grey[700],
+          color: (theme) => theme.palette.grey[700],
           textDecoration: "underline",
         }}
       >
         {`${entity}/${data?.id}`}
       </Box>
       <Box sx={{ display: "flex", gap: 1, py: 1 }}>
-        <Box sx={{ p: 1, color: theme => theme.palette.primary.main }}>
-          <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)}></FontAwesomeIcon>
+        <Box sx={{ p: 1, color: (theme) => theme.palette.primary.main }}>
+          <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)} />
         </Box>
         <Box sx={{ pt: 0.4 }}>
           <Box
             sx={{
               typography: "subtitle2",
-              color: theme => theme.palette.grey[900],
+              color: (theme) => theme.palette.grey[900],
               textTransform: "capitalize",
               fontWeight: "bold",
             }}
           >
             {getLabel()}
           </Box>{" "}
-          <Box sx={{ typography: "body2", color: theme => theme.palette.grey[800] }}>
+          <Box sx={{ typography: "body2", color: (theme) => theme.palette.grey[800] }}>
             {getEntityDescription(entity, data)}
           </Box>
         </Box>
@@ -191,7 +191,7 @@ function AsyncTooltipDataView({
         <>
           <Divider />
           <Box
-            sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}
+            sx={{ typography: "caption", color: (theme) => theme.palette.grey[900], pt: 1, pl: 1 }}
           >
             {getSubtext()}
           </Box>

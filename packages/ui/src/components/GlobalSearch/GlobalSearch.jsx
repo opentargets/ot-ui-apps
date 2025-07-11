@@ -1,7 +1,7 @@
-import { useEffect, useContext } from "react";
-import { Box, styled, Typography } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Typography, styled } from "@mui/material";
+import { useContext, useEffect } from "react";
 
 import GlobalSearchDialog from "./GlobalSearchDialog";
 import { SearchContext } from "./SearchContext";
@@ -13,7 +13,7 @@ const SearchButton = styled("button")(({ theme, isHomePage = false }) => ({
   background: isHomePage ? "#F0F0F0" : theme.palette.secondary.main,
   color: isHomePage ? "inherit" : "white",
   borderRadius: theme.spacing(0.6),
-  border: isHomePage ? `1px solid #F0F0F0` : `1px solid ${theme.palette.secondary.main}`,
+  border: isHomePage ? "1px solid #F0F0F0" : `1px solid ${theme.palette.secondary.main}`,
   padding: isHomePage ? theme.spacing(1) : theme.spacing(0.3),
 }));
 
@@ -25,7 +25,7 @@ function GlobalSearch({ isHomePage }) {
     display: "flex",
     justifyContent: "center",
     ...(isHomePage && {
-      margin: theme => `${theme.spacing(5)} 0 ${theme.spacing(5)}`,
+      margin: (theme) => `${theme.spacing(5)} 0 ${theme.spacing(5)}`,
     }),
   };
 
@@ -64,7 +64,7 @@ function GlobalSearch({ isHomePage }) {
           }}
         >
           <Box
-            sx={{ paddingLeft: theme => theme.spacing(1), display: "flex", alignItems: "center" }}
+            sx={{ paddingLeft: (theme) => theme.spacing(1), display: "flex", alignItems: "center" }}
           >
             <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />
             <Typography sx={{ ml: 2 }}>Search...</Typography>
@@ -73,10 +73,10 @@ function GlobalSearch({ isHomePage }) {
             sx={{
               typography: "caption",
               fontWeight: "bold",
-              color: theme => (isHomePage ? theme.palette.text : "white"),
-              backgroundColor: theme => (isHomePage ? "#CECECE" : "#235d89"),
-              padding: theme => `${theme.spacing(0.2)} ${theme.spacing(1)}`,
-              borderRadius: theme => theme.spacing(0.4),
+              color: (theme) => (isHomePage ? theme.palette.text : "white"),
+              backgroundColor: (_theme) => (isHomePage ? "#CECECE" : "#235d89"),
+              padding: (theme) => `${theme.spacing(0.2)} ${theme.spacing(1)}`,
+              borderRadius: (theme) => theme.spacing(0.4),
             }}
           >
             {shortcutText}

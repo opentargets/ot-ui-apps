@@ -1,6 +1,6 @@
-import { ReactNode, useState } from "react";
-import { Theme, Typography } from "@mui/material";
+import { type Theme, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { type ReactNode, useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   showMore: {

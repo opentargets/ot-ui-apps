@@ -1,29 +1,29 @@
-import { useCallback, useState } from "react";
-import { hsl, scaleLinear } from "d3";
-import { ObsPlot, DataDownloader, Link } from "../../index";
-import { Box, Typography, Popover, Dialog, Checkbox, FormControlLabel } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowDownWideShort, faChevronRight, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { renderWaterfallPlot } from "./renderWaterfallPlot";
-import HeatmapLegend from "./HeatmapLegend";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Checkbox, Dialog, FormControlLabel, Popover, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { hsl, scaleLinear } from "d3";
+import { useCallback, useState } from "react";
+import { DataDownloader, Link, ObsPlot } from "../../index";
+import HeatmapLegend from "./HeatmapLegend";
 import {
-  waterfallMaxWidth,
-  waterfallMargins,
-  waterfallMaxCanvasWidth,
   featureToGroup,
   groupNames,
+  waterfallMargins,
+  waterfallMaxCanvasWidth,
+  waterfallMaxWidth,
 } from "./constants";
-import { getGroupResults, computeWaterfall, getColorInterpolator } from "./helpers";
+import { computeWaterfall, getColorInterpolator, getGroupResults } from "./helpers";
+import { renderWaterfallPlot } from "./renderWaterfallPlot";
 
 function THead({ children }) {
   return (
     <thead>
       <Box component="tr">
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th />
+        <th />
+        <th />
+        <th />
         <Box
           component="th"
           colSpan="3"
@@ -31,9 +31,9 @@ function THead({ children }) {
         >
           <Typography variant="subtitle2">Colocalisation</Typography>
         </Box>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th />
+        <th />
+        <th />
       </Box>
       <tr>{children}</tr>
     </thead>
@@ -48,14 +48,14 @@ function BodyRow({ row, colorInterpolator, data }) {
   const [over, setOver] = useState(false);
 
   const { row: waterfallRow, xDomain: waterfallXDomain } = computeWaterfall(
-    data.rows.find(d => d.target.id === row.targetId)
+    data.rows.find((d) => d.target.id === row.targetId)
   );
 
-  function handleMouseEnter(event) {
+  function handleMouseEnter(_event) {
     setOver(true);
   }
 
-  function handleMouseLeave(event) {
+  function handleMouseLeave(_event) {
     setOver(false);
   }
 
@@ -79,7 +79,7 @@ function BodyRow({ row, colorInterpolator, data }) {
       <CellWrapper {...cellWrapperProps}>
         <ScoreCell value={row.score.toFixed(3)} />
       </CellWrapper>
-      {groupNames.map(groupName => (
+      {groupNames.map((groupName) => (
         <CellWrapper key={groupName} {...cellWrapperProps}>
           <HeatCell
             value={row[groupName]?.toFixed(3)}
@@ -121,7 +121,7 @@ function HeaderCell({ value, textAlign }) {
     <Box component="th" pt={1}>
       <Typography variant="subtitle2" textAlign={textAlign}>
         {value}{" "}
-        {value == "Score" && (
+        {value === "Score" && (
           <span style={{ color: grey[500] }}>
             <FontAwesomeIcon size="sm" icon={faArrowDownWideShort} />
           </span>
@@ -160,7 +160,7 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
 
   function handleClick(event) {
     const filteredWaterfallRow = structuredClone(waterfallRow);
-    filteredWaterfallRow.features = filteredWaterfallRow.features.filter(d => {
+    filteredWaterfallRow.features = filteredWaterfallRow.features.filter((d) => {
       return featureToGroup[d.name] === groupName;
     });
     let { row, xDomain } = computeWaterfall(filteredWaterfallRow, waterfallXDomain, true);
@@ -193,7 +193,7 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
     setAnchorEl(event.currentTarget);
   }
 
-  function handleClose(event) {
+  function handleClose(_event) {
     setAnchorEl(null);
     setPlotProps(null);
     mouseLeaveRow();
@@ -399,7 +399,7 @@ function HeatmapTable({
     ({ all }) => {
       if (!filterProvied) return all;
       if (filterProvied && showAll) return all;
-      return all.filter(row => row.targetId === fixedGene);
+      return all.filter((row) => row.targetId === fixedGene);
     },
     [showAll]
   );
@@ -437,7 +437,7 @@ function HeatmapTable({
                 onChange={() => {
                   setShowAll(!showAll);
                 }}
-              ></Checkbox>
+              />
             }
             label={
               <Typography variant="body2">
@@ -486,7 +486,7 @@ function HeatmapTable({
             ))}
           </THead>
           <TBody>
-            {rows.map(row => (
+            {rows.map((row) => (
               <BodyRow
                 data={data}
                 key={row.targetId}

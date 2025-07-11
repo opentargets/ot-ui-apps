@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { makeStyles } from "@mui/styles";
+import { useState } from "react";
 
 import Link from "../Link";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   showMore: {
     color: theme.palette.primary.main,
     cursor: "pointer",

@@ -1,8 +1,8 @@
-import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
-import { makeStyles } from "@mui/styles";
 import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { type PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",

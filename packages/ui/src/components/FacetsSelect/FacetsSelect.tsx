@@ -1,11 +1,12 @@
-import { Box, Chip, MenuItem, SelectChangeEvent, TextField, Typography } from "@mui/material";
-import { ReactElement, useEffect, useReducer, useState } from "react";
+import { Box, Chip, MenuItem, type SelectChangeEvent, TextField, Typography } from "@mui/material";
+import { type ReactElement, useEffect, useReducer, useState } from "react";
 import { Tooltip, useApolloClient, useDebounce } from "../../index";
 
+import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { v1 } from "uuid";
 import FacetsHelpBlock from "./FacetsHelpBlock";
 import { resetFacets, selectFacet, setCategory, setFacetsData, setLoading } from "./facetsActions";
-import { createInitialState, facetsReducer } from "./facetsReducer";
-import { v1 } from "uuid";
 import {
   FacetListItemCategory,
   FacetListItemContainer,
@@ -14,13 +15,12 @@ import {
   FacetsPopper,
   Select,
 } from "./facetsLayout";
+import { createInitialState, facetsReducer } from "./facetsReducer";
+import type { ENTITY, Facet } from "./facetsTypes";
 import { getFacetsData } from "./service/facetsService";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
-import { ENTITY, Facet } from "./facetsTypes";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
-  return items.filter(item => item.id !== idToRemove);
+  return items.filter((item) => item.id !== idToRemove);
 }
 
 type onFacetSelect = (f: Facet[]) => void;
@@ -58,7 +58,7 @@ function FacetsSelect({
       return dispatch(setCategory(category, []));
     }
     const facetData = getFacetsData("*", entityToGet, category, client);
-    facetData.then(data => {
+    facetData.then((data) => {
       dispatch(setCategory(category, data));
     });
   }
@@ -66,7 +66,7 @@ function FacetsSelect({
   function getFacetsQueryData() {
     dispatch(setLoading(true));
     const facetData = getFacetsData(inputValue, entityToGet, state.categoryFilterValue, client);
-    facetData.then(data => {
+    facetData.then((data) => {
       dispatch(setFacetsData(data));
     });
   }
@@ -87,7 +87,7 @@ function FacetsSelect({
 
   const handleOptionSelect = (_, newValue) => {
     if (newValue) {
-      if (!parentState.some(option => option.id === newValue.id)) {
+      if (!parentState.some((option) => option.id === newValue.id)) {
         dispatch(selectFacet([newValue, ...parentState]));
         onFacetSelect([newValue, ...parentState]);
       }
@@ -113,17 +113,17 @@ function FacetsSelect({
           inputValue={inputValue}
           loading={state.loading}
           options={state.dataOptions}
-          filterOptions={x => x}
-          getOptionLabel={option => option?.label}
+          filterOptions={(x) => x}
+          getOptionLabel={(option) => option?.label}
           isOptionEqualToValue={(option, value) => option.id === value?.id}
           onOpen={() => setOptionsOpen(true)}
           onClose={() => setOptionsOpen(false)}
           onChange={handleOptionSelect}
-          onInputChange={(event, newInputValue) => {
+          onInputChange={(_event, newInputValue) => {
             setInputValue(newInputValue);
           }}
           PopperComponent={FacetsPopper}
-          renderInput={params => (
+          renderInput={(params) => (
             <TextField {...params} label={facetAutocompletePlaceholder} fullWidth />
           )}
           renderOption={(props, option) => (
@@ -133,7 +133,7 @@ function FacetsSelect({
                   <Typography
                     variant="body2"
                     dangerouslySetInnerHTML={{ __html: option.highlights[0] || option.label }}
-                  ></Typography>
+                  />
                 </FacetListItemLabel>
                 <FacetListItemCategory>
                   <Typography variant="caption">in {option.category}</Typography>

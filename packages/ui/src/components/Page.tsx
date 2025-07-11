@@ -1,6 +1,6 @@
-import { Theme, Grid } from "@mui/material";
+import { Grid, type Theme } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   page: {

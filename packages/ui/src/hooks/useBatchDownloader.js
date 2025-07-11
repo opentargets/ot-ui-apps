@@ -56,7 +56,7 @@ function useBatchDownloader(
 
     const remainingChunks = await Promise.all(chunkPromises);
 
-    remainingChunks.forEach(chunk => {
+    remainingChunks.forEach((chunk) => {
       data = [...data, ...getRows(chunk, rowPath)];
     });
 
