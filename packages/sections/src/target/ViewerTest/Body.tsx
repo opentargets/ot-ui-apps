@@ -1,14 +1,16 @@
+import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { SectionItem } from "ui";
-import { Box, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
-import Viewer from "ui";  !!! NOT LOADING !!!!!!!!!!!!!!!!!!!!!!!!!
+import { Viewer } from "ui";
 import { ViewerProvider } from "ui/src/components/Viewer/Context";
+import { getUniprotIds } from "@ot/utils";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
-  [structureData, setStructureData] = useState(null);
+  const [structureData, setStructureData] = useState(null);
 
   const variables = { ensemblId };
   const request = useQuery(VIEWER_TEST_QUERY, {
@@ -20,17 +22,20 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     : null;
 
   // fetch alphaFold structure
-  useEffect(async () => {
-    const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
-    let response;
-    try {
-      const response = await fetch(pdbUri);
-      if (response?.ok) return response;
-    } catch (error) {}
-    if (response) {
-      setStructureData(await alphaFoldResponse.text());
-    }
-  }, []);
+  useEffect(() => {
+    const fetchStructure = async () => {
+      if (!uniprotId) return;
+      const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
+      let response;
+      try {
+        response = await fetch(pdbUri);
+      } catch (error) {}
+      if (response.ok) {
+        setStructureData(await response.text());
+      }
+    };
+    fetchStructure();
+  }, [uniprotId]);
 
   function reducer(state, action) {
     return {};
@@ -45,18 +50,12 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderBody={() => {
         if (!request?.data?.target) return <></>;
         return (
-          <ViewerProvider
-            reducer={reducer}
-            initialState={{}}
-            // initialState={{
-            //   data: {request.data.target},
-            // }}
-          >
+          <ViewerProvider reducer={reducer} initialState={{}}>
             <Box>
               {structureData ? (
                 <Viewer
                   data={[{ structureData, info: {} }]}
-                  appearance={[{ style: { cartoon: { color: "spectrum" } } }]}
+                  drawAppearance={[{ style: { cartoon: { color: "spectrum" } } }]}
                 />
               ) : (
                 "NO STRUCTURE DATA!!!"

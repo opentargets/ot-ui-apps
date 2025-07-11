@@ -30,6 +30,8 @@ export default function Viewer({
   const [viewer, setViewer] = useState(null);
   const viewerState = useViewerState();
 
+  const viewerRef = useRef(null);
+
   function resolveProperty(appearance, propertyName, ...args) {
     const value = appearance[propertyName];
     return typeof value === "function" ? value(...args) : value ?? {};
@@ -49,61 +51,63 @@ export default function Viewer({
 
   // create viewer
   useEffect(() => {
-    if (!data) return;
-
-    // create viewer and add basic functionality
-    const _viewer = createViewer(viewerRef.current.querySelector(".viewerContainer"), {
-      backgroundColor: "#f8f8f8",
-      antialias: true,
-      cartoonQuality: 10,
-      lowerZoomLimit: zoomLimit[0],
-      upperZoomLimit: zoomLimit[1],
-    });
-    _viewer.getCanvas().addEventListener(
-      "wheel",
-      event => {
-        if (!event.ctrlKey) event.stopImmediatePropagation();
-      },
-      true // use capture phase so fires before library handler
-    );
-    if (onDblClick) {
-      _viewer.getCanvas().ondblclick = event => {
-        onDblClick(event, _viewer, viewerState);
-      };
-    }
-    _viewer.setHoverDuration(hoverDuration);
-    setViewer(_viewer);
-
-    // click behavior
-    for (const [index, appearance] of clickAppearance.entries()) {
-      _viewer.setClickable(appearance.eventSelection, true, atom => {
-        applyAppearance(appearance, atom);
-        appearance.onApply?.(viewerState, atom);
-        if (index === clickAppearance.length - 1) _viewer.render();
+    let _viewer;
+    if (data && viewerRef.current) {
+      // create viewer and add basic functionality
+      _viewer = createViewer(viewerRef.current, {
+        backgroundColor: "#f8f8f8",
+        antialias: true,
+        cartoonQuality: 10,
+        lowerZoomLimit: zoomLimit[0],
+        upperZoomLimit: zoomLimit[1],
       });
-    }
+      _viewer.getCanvas().addEventListener(
+        "wheel",
+        event => {
+          if (!event.ctrlKey) event.stopImmediatePropagation();
+        },
+        true // use capture phase so fires before library handler
+      );
+      if (onDblClick) {
+        _viewer.getCanvas().ondblclick = event => {
+          onDblClick(event, _viewer, viewerState);
+        };
+      }
+      _viewer.setHoverDuration(hoverDuration);
+      setViewer(_viewer);
 
-    // hover behavior
-    for (const appearance of hoverAppearance.entries()) {
-      _viewer.setHoverable(
-        appearance.eventSelection,
-        true,
-        atom => {
+      // click behavior
+      for (const [index, appearance] of clickAppearance.entries()) {
+        _viewer.setClickable(appearance.eventSelection, true, atom => {
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
-          if (index === hoverAppearance.length - 1) _viewer.render();
-        },
-        atom => {
-          applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle");
-          appearance.onUnapply?.(viewerState, atom);
-          if (index === hoverAppearance.length - 1) _viewer.render();
-        }
-      );
-    }
+          if (index === clickAppearance.length - 1) _viewer.render();
+        });
+      }
 
-    // load data into viewer
-    data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-    onData?.(_viewer, viewerState);
+      // hover behavior
+      for (const appearance of hoverAppearance.entries()) {
+        _viewer.setHoverable(
+          appearance.eventSelection,
+          true,
+          atom => {
+            applyAppearance(appearance, atom);
+            appearance.onApply?.(viewerState, atom);
+            if (index === hoverAppearance.length - 1) _viewer.render();
+          },
+          atom => {
+            applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle");
+            appearance.onUnapply?.(viewerState, atom);
+            if (index === hoverAppearance.length - 1) _viewer.render();
+          }
+        );
+      }
+
+      // load data into viewer`
+      data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
+      window.viewer = _viewer; // !! REMOVE !!
+      onData?.(_viewer, viewerState);
+    }
 
     return () => _viewer.clear();
   }, []);
@@ -114,7 +118,7 @@ export default function Viewer({
     if (!viewer) return;
 
     // hide everything
-    _viewer?.setStyle({}, { hidden: true });
+    viewer?.setStyle({}, { hidden: true });
 
     // state properties that changed
     if (dep?.length) {

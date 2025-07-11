@@ -1,5 +1,9 @@
 query ViewerTestQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
+    proteinIds {
+      id
+      source
+    }
   }
 }
