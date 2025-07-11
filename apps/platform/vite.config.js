@@ -1,9 +1,9 @@
-import { defineConfig } from "vite";
+import { execSync } from "node:child_process";
 import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import viteCompression from "vite-plugin-compression";
 import gql from "vite-plugin-simple-gql";
 import svgrPlugin from "vite-plugin-svgr";
-import viteCompression from "vite-plugin-compression";
-import { execSync } from "child_process";
 
 const getGitVersion = () => {
   try {
