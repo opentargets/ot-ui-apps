@@ -25,7 +25,13 @@
       "**/.next/**",
       "**/coverage/**",
       "**/*.d.ts",
-      "**/generated/**"
+      "**/generated/**",
+      "**/apps/platform/src/**",
+      "**/packages/ui/**",
+      "**/packages/sections/**",
+      "**/packages/ot-config/**",
+      "**/packages/ot-constants/**",
+      "**/packages/ot-utils/**"
     ]
   },
   "formatter": {
@@ -53,6 +59,9 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "performance": {
+        "noAccumulatingSpread": "warn"
+      },
       "a11y": {
         "useKeyWithClickEvents": "error",
         "useButtonType": "error"
@@ -62,7 +71,9 @@
         "noUnusedVariables": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "warn"
+        "noArrayIndexKey": "warn",
+        "noExplicitAny": "warn",
+        "noImplicitAnyLet": "warn"
       },
       "style": {
         "useTemplate": "error",

@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "license": "Apache-2.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "bugs": {
     "url": "https://github.com/opentargets/ot-ui-apps/issues",
     "email": "support@targetvalidation.org"
@@ -23,6 +20,7 @@
     "lint:fix": "biome check --write .",
     "format": "biome format .",
     "format:fix": "biome format --write .",
+    "format:check": "biome ci",
     "check": "biome check --formatter-enabled=true .",
     "check:fix": "biome check --formatter-enabled=true --write .",
     "prepare": "husky install"
