@@ -5,8 +5,12 @@
   "types": "./src/index.tsx",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint --quiet \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\"",
-    "prettier:all": "prettier --write \"src/**/*.{js,jsx,mjs,cjs,ts,tsx}\""
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write .",
+    "check": "biome check --formatter-enabled=true .",
+    "check:fix": "biome check --formatter-enabled=true --write ."
   },
   "dependencies": {
     "@apollo/client": "3.10.8",
@@ -41,8 +45,6 @@
     "@types/d3-format": "^3.0.1",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
-    "eslint": "7.32.0",
-    "eslint-config-custom": "*",
     "tsconfig": "*",
     "typescript": "^5.2.2"
   }
