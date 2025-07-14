@@ -57,7 +57,7 @@ An `appearance` object is a description of what to show in the viewer and how:
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
 | `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
-| `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
+| `style` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
@@ -71,7 +71,7 @@ An `eventAppearance` object describes a change due to a click or hover event:
 |----------|---------|------|-------------|
 | `eventSelection` | `{}` | 3dMol `AtomSelectionSpec` | Selects atoms that listen for the event - whereas the `selection` property selects atoms whose appearance is changed by the event. |
 | `selection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | If a function, is passed the state and the atom that heard the event; should return a `AtomSelectionSpec`. |
-| `style` | `{}` | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and the atom that heard the event; should return a `AtomStyleSpec`. |
+| `style` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and the atom that heard the event; should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied - i.e. a click or hover event. Passed the state and the atom that heard the event. |
 
@@ -80,7 +80,7 @@ And for hover events only:
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
 | `unhoveSelection` | `{}` | 3dMol `AtomSelectionSpec`, `function` | As `selection` but selects atoms whose appearance change on unhover. Defaults to `selection`. |
-| `unhoverStyle` | `{}` | 3dMol `AtomStyleSpec`, function | As `style` but applied to atoms selected by `unhoverSelection`. |
+| `unhoverStyle` | | 3dMol `AtomStyleSpec`, function | As `style` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverAddStyle` | `false` | `boolean` | As `addSsyle` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
 

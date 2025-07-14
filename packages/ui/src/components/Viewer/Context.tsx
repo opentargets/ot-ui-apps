@@ -3,7 +3,7 @@ import { useReducer, useContext, createContext } from "react";
 const StateContext = createContext({});
 const DispatchContext = createContext({});
 
-export function ViewerProvider({ children, initialState, reducer }) {
+export function ViewerProvider({ children, initialState = {}, reducer }) {
   const [viewerState, dispatch] = useReducer(reducer, initialState);
 
   return (

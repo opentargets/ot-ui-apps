@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { SectionItem } from "ui";
-import { Box } from "@mui/material";
 import Description from "./Description";
 import { definition } from ".";
 import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
@@ -32,9 +31,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
     fetchStructure();
   }, [uniprotId]);
 
-  function reducer(state, action) {
-    return {};
-  }
+  const baseStyle = { cartoon: { color: "spectrum" } };
 
   return (
     <SectionItem
@@ -45,28 +42,23 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       renderBody={() => {
         if (!request?.data?.target) return <></>;
         return (
-          <ViewerProvider reducer={reducer} initialState={{}}>
-            <Box>
-              {structureData ? (
-                <Viewer
-                  data={[{ structureData, info: {} }]}
-                  drawAppearance={[{ style: { cartoon: { color: "spectrum" } } }]}
-                  hoverAppearance={[
-                    {
-                      eventSelection: {},
-                      selection: (state, atom) => ({ resi: atom.resi }),
-                      style: { stick: {}, sphere: { radius: 0.6 } },
-                      addStyle: true,
-                      unhoverSelection: (state, atom) => ({ resi: atom.resi }),
-                      unhoverStyle: { stick: { hidden: true }, sphere: { hidden: true } },
-                      unhoverAddStyle: true,
-                    },
-                  ]}
-                />
-              ) : (
-                "NO STRUCTURE DATA!!!"
-              )}
-            </Box>
+          <ViewerProvider>
+            {structureData ? (
+              <Viewer
+                data={[{ structureData }]}
+                drawAppearance={[{ style: baseStyle }]}
+                hoverAppearance={[
+                  {
+                    selection: (state, atom) => ({ resi: atom.resi }),
+                    style: { stick: {}, sphere: { radius: 0.6 } },
+                    addStyle: true,
+                    unhoverStyle: baseStyle,
+                  },
+                ]}
+              />
+            ) : (
+              "NO STRUCTURE DATA!!!"
+            )}
           </ViewerProvider>
         );
       }}

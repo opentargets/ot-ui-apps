@@ -33,8 +33,11 @@ export default function Viewer({
   const viewerRef = useRef(null);
 
   function resolveProperty(appearance, propertyName, ...args) {
-    const value = appearance[propertyName];
-    return typeof value === "function" ? value(...args) : value ?? {};
+    let value = appearance[propertyName];
+    if (!value && propertyName.toLowerCase().includes("selection")) {
+      value = {};
+    }
+    return typeof value === "function" ? value(...args) : value;
   }
 
   function applyAppearance(
@@ -44,9 +47,11 @@ export default function Viewer({
     style = "style",
     addStyle = "addStyle"
   ) {
+    const resolvedStyle = resolveProperty(appearance, style, viewerState, atom);
+    if (!resolvedStyle) return;
     viewer[appearance[addStyle] ? "addStyle" : "setStyle"](
       resolveProperty(appearance, selection, viewerState, atom),
-      resolveProperty(appearance, style, viewerState, atom)
+      resolvedStyle
     );
   }
 
@@ -103,7 +108,7 @@ export default function Viewer({
     // hover behavior
     for (const [index, appearance] of hoverAppearance.entries()) {
       viewer.setHoverable(
-        appearance.eventSelection,
+        appearance.eventSelection ?? {},
         true,
         atom => {
           applyAppearance(appearance, atom);
