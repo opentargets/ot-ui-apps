@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createViewer } from "3dmol";
 import { Box, Button } from "@mui/material";
-import { useViewerState } from "./Context";
+import { useViewerState } from "../../providers/ViewerProvider";
 import Usage from "./Usage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
