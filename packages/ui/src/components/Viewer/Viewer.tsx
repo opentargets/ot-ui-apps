@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createViewer } from "3dmol";
 import { Box, Button } from "@mui/material";
-import { useViewerState } from "../../providers/ViewerProvider";
+import { useViewerState, useViewerDispatch } from "../../providers/ViewerProvider";
 import Usage from "./Usage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
-import { Tooltip } from "ui";
+import { Tooltip, ViewerTrack } from "ui";
 import { onClickCapture } from "./helpers";
 
 const hoverDuration = 50;
@@ -21,6 +21,7 @@ export default function Viewer({
   drawAppearance = [],
   clickAppearance = [],
   hoverAppearance = [],
+  trackColor,
   usage = {},
   topLeft,
   bottomRight,
@@ -29,6 +30,7 @@ export default function Viewer({
 }) {
   const [viewer, setViewer] = useState(null);
   const viewerState = useViewerState();
+  const viewerDispatch = useViewerDispatch();
 
   const viewerRef = useRef(null);
 
@@ -99,6 +101,8 @@ export default function Viewer({
     // click behavior
     for (const [index, appearance] of clickAppearance.entries()) {
       viewer.setClickable(appearance.eventSelection, true, atom => {
+        viewerDispatch({ type: "_setClickedAtom", value: atom });
+        viewerDispatch({ type: "_setClickedResi", value: atom.resi });
         applyAppearance(appearance, atom);
         appearance.onApply?.(viewerState, atom);
         if (index === clickAppearance.length - 1) viewer.render();
@@ -111,11 +115,15 @@ export default function Viewer({
         appearance.eventSelection ?? {},
         true,
         atom => {
+          viewerDispatch({ type: "_setHoveredAtom", value: atom });
+          viewerDispatch({ type: "_setHoveredResi", value: atom.resi });
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
           if (index === hoverAppearance.length - 1) viewer.render();
         },
         atom => {
+          viewerDispatch({ type: "_setHoveredAtom", value: null });
+          viewerDispatch({ type: "_setHoveredResi", value: null });
           applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
           appearance.unhoverOnApply?.(viewerState, atom);
           if (index === hoverAppearance.length - 1) viewer.render();
@@ -154,73 +162,76 @@ export default function Viewer({
   }, [viewer, viewerState]);
 
   return (
-    <Box ref={viewerRef} position="relative" width="100%" height={height}>
-      {/* info and screenshot button */}
-      <Box
-        sx={{
-          top: 0,
-          right: 0,
-          position: "absolute",
-          zIndex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          m: 1,
-          gap: 1,
-        }}
-      >
-        {/* usage popup button */}
-        <Usage instructions={usage} />
+    <Box>
+      {trackColor && <ViewerTrack color={trackColor} />}
+      <Box ref={viewerRef} position="relative" width="100%" height={height}>
+        {/* info and screenshot button */}
+        <Box
+          sx={{
+            top: 0,
+            right: 0,
+            position: "absolute",
+            zIndex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            m: 1,
+            gap: 1,
+          }}
+        >
+          {/* usage popup button */}
+          <Usage instructions={usage} />
 
-        {/* screenshot button */}
-        <Tooltip title="Screenshot" placement="top-start">
-          <Button
-            sx={{
-              display: "flex",
-              gap: 1,
-              bgcolor: "white",
-              "&:hover": {
-                bgcolor: "#f8f8f8d8",
-              },
-            }}
-            onClick={() => onClickCapture(viewerRef, screenshotId)}
+          {/* screenshot button */}
+          <Tooltip title="Screenshot" placement="top-start">
+            <Button
+              sx={{
+                display: "flex",
+                gap: 1,
+                bgcolor: "white",
+                "&:hover": {
+                  bgcolor: "#f8f8f8d8",
+                },
+              }}
+              onClick={() => onClickCapture(viewerRef, screenshotId)}
+            >
+              <FontAwesomeIcon icon={faCamera} />
+            </Button>
+          </Tooltip>
+        </Box>
+
+        {/* top-left info box */}
+        {topLeft && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            p="0.6rem 0.8rem"
+            zIndex={100}
+            bgcolor="#f8f8f8c8"
+            sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
+            fontSize={14}
           >
-            <FontAwesomeIcon icon={faCamera} />
-          </Button>
-        </Tooltip>
+            {topLeft}
+          </Box>
+        )}
+
+        {/* bottom-right info box */}
+        {bottomRight && (
+          <Box
+            position="absolute"
+            bottom={0}
+            right={0}
+            p="0.6rem 0.8rem"
+            zIndex={100}
+            bgcolor="#f8f8f8c8"
+            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
+            fontSize={14}
+          >
+            {bottomRight}
+          </Box>
+        )}
       </Box>
-
-      {/* top-left info box */}
-      {topLeft && (
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          p="0.6rem 0.8rem"
-          zIndex={100}
-          bgcolor="#f8f8f8c8"
-          sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
-          fontSize={14}
-        >
-          {topLeft}
-        </Box>
-      )}
-
-      {/* bottom-right info box */}
-      {bottomRight && (
-        <Box
-          position="absolute"
-          bottom={0}
-          right={0}
-          p="0.6rem 0.8rem"
-          zIndex={100}
-          bgcolor="#f8f8f8c8"
-          sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-          fontSize={14}
-        >
-          {bottomRight}
-        </Box>
-      )}
     </Box>
   );
 }

@@ -6,6 +6,7 @@ import { SectionItem, useViewerDispatch, Viewer, ViewerProvider } from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
+import { getAlphaFoldConfidence } from "@ot/constants";
 
 export default function Body({ id: ensemblId, label: symbol, entity }) {
 	const [structureData, setStructureData] = useState(null);
@@ -33,19 +34,19 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 	}, [uniprotId]);
 
 	const initialState = {
-		spectrum: false,
+		confidence: true,
 	};
 
 	function reducer(state, action) {
 		switch (action.type) {
-			case "TOGGLE_SPECTRUM":
-				return { ...state, spectrum: !state.spectrum };
+			case "TOGGLE_CONFIDENCE":
+				return { ...state, confidence: !state.confidence };
 			default:
 				throw Error(`Invalid action type: ${action.type}`);
 		}
 	}
 
-	// const baseStyle = { cartoon: { color: "spectrum" } };
+	// const baseStyle = { cartoon: { color: "confidence" } };
 
 	// !! VIEWERR PROVIDER SHOULD ONLY WRAP VIEWER AND CONTROLS, BUT LIKE
 	// THIS TO AVOID RECRECREATING PROVIDER ON RERENEDER - WHICH CAN BE FIXED
@@ -67,7 +68,12 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 								drawAppearance={[
 									{
 										style: (state) => ({
-											cartoon: { color: state.spectrum ? "spectrum" : "green" },
+											cartoon: { 
+                        colorfunc: state.confidence
+                          ? a => getAlphaFoldConfidence(a, "color")
+                          : () => "green"
+                        },
+											// cartoon: { color: state.confidence ? "confidence" : "green" },
 										}),
 									},
 								]}
@@ -87,7 +93,7 @@ function Controls() {
 	const viewerDispatch = useViewerDispatch();
 
 	function handleToggleColor() {
-		viewerDispatch({ type: "TOGGLE_SPECTRUM" });
+		viewerDispatch({ type: "TOGGLE_CONFIDENCE" });
 	}
 
 	return <Button onClick={handleToggleColor}>Toggle color</Button>;

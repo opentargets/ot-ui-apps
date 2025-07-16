@@ -1,11 +1,25 @@
 import { useReducer, useContext, createContext } from "react";
 
-export function createScopedContext(name: string) {
+export function createScopedContext({
+    name: string,
+    extraStateProperties = {},  // key-value pairs are propertyName: initialValue 
+    extraActions = {},  // key-value pairs are actionType: (state, action) => newState
+  }) {
   const StateContext = createContext(null);
   const DispatchContext = createContext(null);
 
   const ScopedProvider = ({ reducer, initialState = {}, children }) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
+
+    function wrappedReducer(state, action) {
+      return extraActions[action.type]
+        ? extraActions[action.type](state, action)
+        : reducer(state, action); 
+    }
+
+    const [state, dispatch] = useReducer(
+      wrappedReducer,
+      {...initialState, ...extraStateProperties}
+    );
 
     return (
       <StateContext.Provider value={state}>

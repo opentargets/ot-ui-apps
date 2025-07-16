@@ -76,6 +76,7 @@ export * from "./components/Table";
 export { default as Tooltip } from "./components/Tooltip";
 export { default as TooltipStyledLabel } from "./components/TooltipStyledLabel";
 export { default as Viewer } from "./components/Viewer/Viewer";
+export { default as ViewerTrack } from "./components/Viewer/ViewerTrack";
 export { default as useBatchDownloader } from "./hooks/useBatchDownloader";
 export { default as useBatchQuery } from "./hooks/useBatchQuery";
 export { default as useCursorBatchDownloader } from "./hooks/useCursorBatchDownloader";
