@@ -46,6 +46,17 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 		}
 	}
 
+  function getTrackColor(viewer, viewerState) {
+    if (!viewer) return;
+    const colors = [];
+    for (const atom of viewer.getModel().selectedAtoms()) {
+      colors[atom.resi - 1] ??= viewerState.confidence
+        ? getAlphaFoldConfidence(atom, "color")
+        : "green";
+    }
+    return colors;
+  }
+
 	// const baseStyle = { cartoon: { color: "confidence" } };
 
 	// !! VIEWERR PROVIDER SHOULD ONLY WRAP VIEWER AND CONTROLS, BUT LIKE
@@ -77,6 +88,7 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 										}),
 									},
 								]}
+                trackColor={getTrackColor}
 							/>
 							<Controls />
 						</Box>

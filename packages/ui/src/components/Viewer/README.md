@@ -51,19 +51,18 @@ When initialising the viewer state, the initial state object is copied and the f
 | Property | Type | Description |
 |----------|------|-------------|
 | `hoveredAtom` | 3dMol atom object | Atom on structure that currently hovering over. |
-| `clickedAtom`  | 3dMol atom object | Atom on structure that last clicked on. Cleared by next click anywhere. |
+| `clickedAtom`  | 3dMol atom object | Atom on structure that last clicked on. |
 | `hoveredResi` | `number` | Residue index from structure or track that currently hovering over. |
-| `clickedResi` | `number` | Residue index from structure or track that last clicked on. Cleared by next click anywhere. |
+| `clickedResi` | `number` | Residue index from structure or track that last clicked on. |
 
 The reducer function passed to the provider is augmented with corresponding action types:
 
-- `_setHoveredAtom`
-- `_setClickedAtom`
-- `_setHoveredResi`
--  `_setClickedResi`
+- `_setHoveredAtom` (when hover/unhover over atom in viewer)
+- `_setClickedAtom` (when click on atom in viewer)
+- `_setHoveredResi` (when hover/unhover over residue on track)
+-  `_setClickedResi` (when click on residue on track)
 
 These actions are used by the viewer internally and should not be used explicitly. However, the values of the associated state properties can be used as required.
-
 
 ### Derived State
 
@@ -103,6 +102,14 @@ And for hover events only:
 | `unhoverAddStyle` | `false` | `boolean` | As `addSsyle` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
 
+Notes:
+
+- For `eventAppearance` objects passed to the viewer using the `trackHoverAppearance` or the `trackClickAppearance` objects:
+  
+  - The `selection` and `unhoverSelection` properties default to atoms that belong to the hovered track residue (rather than all atoms).
+  
+  - The `onApply` property is ignored.
+
 ## Shapes
 
 Showing surfaces, spheres etc, is very similar to showing structures.
@@ -125,9 +132,11 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event and viewer state. |
 | `dep` | | `string[]` | List of state properties that are 'dependencies' - changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
-| `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackColor` |  | `string[]` \| `function` | Array of residue colors for the track. If a function, is passed the viewer state and should return an array of colors. If `trackColor` is omitted, no track is shown. |  
+| `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
+| `trackHoverAppearance`| `[]` | `eventAppearance[]` | Appearance of structure when user hovers/unhovers on a residue in the track. See [Click and Hover](#click-and-hover). |
+| `trackClickAppearance`| | `eventAppearance[]` | Appearance of structure when user clicks on a residue in the track. See [Click and Hover](#click-and-hover). |
+| `trackColor` |  | `string[]` \| `function` | Array of residue colors for the track. If a function, is passed the 3dMol viewer and the viewer state and should return an array of colors. If `trackColor` is omitted, no track is shown. |  
 | `usage` | `{}` | `object` | Label-value pairs to add to the usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
 | `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |

@@ -10,10 +10,10 @@ export const { ScopedProvider, useScopedState, useScopedDispatch } =
       clickedResi: null,
     },
     extraActions: {
-      _setHoveredAtom: (state, action) => ({ ...state, state.hoveredAtom: action.value }),
-      _setClickedAtom: (state, action) => ({ ...state, state.clickedAtom: action.value }),
-      _setHoveredResi: (state, action) => ({ ...state, state.hoveredResi: action.value }),
-      _setClickedResi: (state, action) => ({ ...state, state.clickedResi: action.value }),
+      _setHoveredAtom: (state, action) => ({ ...state, hoveredAtom: action.value }),
+      _setClickedAtom: (state, action) => ({ ...state, clickedAtom: action.value }),
+      _setHoveredResi: (state, action) => ({ ...state, hoveredResi: action.value }),
+      _setClickedResi: (state, action) => ({ ...state, clickedResi: action.value }),
     }
   });
 

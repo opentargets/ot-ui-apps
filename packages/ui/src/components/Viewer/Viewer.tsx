@@ -19,8 +19,10 @@ export default function Viewer({
   onDblClick,
   dep = [],
   drawAppearance = [],
-  clickAppearance = [],
   hoverAppearance = [],
+  clickAppearance = [],
+  trackHoverAppearance = [],
+  trackClickAppearance = [],
   trackColor,
   usage = {},
   topLeft,
@@ -29,6 +31,7 @@ export default function Viewer({
   screenshotId = "",
 }) {
   const [viewer, setViewer] = useState(null);
+  const [oldHoveredResi, setOldHoveredResi] = useState(null);
   const viewerState = useViewerState();
   const viewerDispatch = useViewerDispatch();
 
@@ -44,7 +47,7 @@ export default function Viewer({
 
   function applyAppearance(
     appearance,
-    atom = null, // only non-null for click/hover-triggered appearance changes
+    atom = null, // only non-null for click/hover on structure (not track) appearance changes
     selection = "selection",
     style = "style",
     addStyle = "addStyle"
@@ -102,7 +105,6 @@ export default function Viewer({
     for (const [index, appearance] of clickAppearance.entries()) {
       viewer.setClickable(appearance.eventSelection, true, atom => {
         viewerDispatch({ type: "_setClickedAtom", value: atom });
-        viewerDispatch({ type: "_setClickedResi", value: atom.resi });
         applyAppearance(appearance, atom);
         appearance.onApply?.(viewerState, atom);
         if (index === clickAppearance.length - 1) viewer.render();
@@ -116,21 +118,57 @@ export default function Viewer({
         true,
         atom => {
           viewerDispatch({ type: "_setHoveredAtom", value: atom });
-          viewerDispatch({ type: "_setHoveredResi", value: atom.resi });
           applyAppearance(appearance, atom);
           appearance.onApply?.(viewerState, atom);
           if (index === hoverAppearance.length - 1) viewer.render();
         },
         atom => {
           viewerDispatch({ type: "_setHoveredAtom", value: null });
-          viewerDispatch({ type: "_setHoveredResi", value: null });
           applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
           appearance.unhoverOnApply?.(viewerState, atom);
           if (index === hoverAppearance.length - 1) viewer.render();
         }
       );
     }
-  }, [viewer]);
+  }, [viewer, viewerState]);
+
+  // update to reflect click on track
+  useEffect(() => {
+    if (!viewer) return;   // || !trackHoverAppearance)
+    for (const [index, appearance] of trackClickAppearance.entries()) {
+      const a = {...appearance };
+      if (!a.selection) a.selection = { resi: viewerState.clickedResi };
+      applyAppearance(a);
+      if (index === trackClickAppearance.length - 1) viewer.render();
+    }
+  }, [viewer, viewerState.clickedResi]);
+
+  // update to reflect hover/unhover on track
+  useEffect(() => {
+    if (!viewer) return;   // || !trackHoverAppearance)
+    
+    // unhover
+    if (oldHoveredResi) {
+      for (const [index, appearance] of trackHoverAppearance.entries()) {
+        const a = {...appearance };
+        if (!a.unhoverSelection) a.unhoverSelection = { resi: oldHoveredResi };
+        applyAppearance(a, null, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
+        if (index === trackHoverAppearance.length - 1) viewer.render();
+      }
+    }
+      
+    // hover
+    if (viewerState.hoveredResi) {
+      for (const [index, appearance] of trackHoverAppearance.entries()) {
+        const a = {...appearance };
+        if (!a.selection) a.selection = { resi: viewerState.hoveredResi };
+        applyAppearance(a);
+        if (index === trackHoverAppearance.length - 1) viewer.render();
+      }
+    }
+    
+    setOldHoveredResi(viewerState.hoveredResi);
+  }, [viewer, viewerState.hoveredResi]);
 
   // draw/redraw
   const prevDepValues = useRef({});
@@ -162,8 +200,8 @@ export default function Viewer({
   }, [viewer, viewerState]);
 
   return (
-    <Box>
-      {trackColor && <ViewerTrack color={trackColor} />}
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      {trackColor && <ViewerTrack color={trackColor} viewer={viewer} />}
       <Box ref={viewerRef} position="relative" width="100%" height={height}>
         {/* info and screenshot button */}
         <Box
