@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import {
+  TOTAL_ENTITIES,
   addSearchToLocalStorage,
   getSelectedEntityFilter,
-  TOTAL_ENTITIES,
 } from "../components/GlobalSearch/utils/searchUtils";
 
 function useListOption() {

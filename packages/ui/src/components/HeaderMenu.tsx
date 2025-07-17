@@ -1,18 +1,18 @@
-import { ReactElement, useState, MouseEvent, KeyboardEvent } from "react";
-import { v1 } from "uuid";
-import {
-  MenuItem,
-  Popper,
-  MenuList,
-  IconButton,
-  Fade,
-  Paper,
-  ClickAwayListener,
-  PopperPlacementType,
-} from "@mui/material";
-import { faXmark, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  ClickAwayListener,
+  Fade,
+  IconButton,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  type PopperPlacementType,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { type KeyboardEvent, type MouseEvent, type ReactElement, useState } from "react";
+import { v1 } from "uuid";
 import Link from "./Link";
 import PrivateWrapper from "./PrivateWrapper";
 
@@ -81,7 +81,6 @@ function HeaderMenu({ items, placement }: HeaderMenuProps): ReactElement {
       <Popper
         open={isMenuOpen}
         anchorEl={anchorEl}
-        role={undefined}
         transition
         // disablePortal
         placement={placement || "bottom-start"}

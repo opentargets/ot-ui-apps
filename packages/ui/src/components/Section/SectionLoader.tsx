@@ -8,7 +8,7 @@ type SectionContainerLoaderProps = {
 function SectionLoader({ sectionsCount = 1 }: SectionContainerLoaderProps) {
   const loadingSections = Array.from(Array(sectionsCount));
 
-  return loadingSections.map((_, i) => (
+  return loadingSections.map((_, _i) => (
     <Grid key={v1()} item xs={12}>
       <section>
         <Card elevation={0} variant="outlined">

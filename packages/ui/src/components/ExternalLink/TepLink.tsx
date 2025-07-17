@@ -1,14 +1,14 @@
+import { useQuery } from "@apollo/client";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { makeStyles } from "@mui/styles";
 import { Tooltip } from "@mui/material";
-import { useQuery } from "@apollo/client";
+import { makeStyles } from "@mui/styles";
 
 import Link from "../Link";
 
 import TEP_LINK_QUERY from "./TepLinkQuery.gql";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   helpIcon: {
     fontSize: "10px",
   },

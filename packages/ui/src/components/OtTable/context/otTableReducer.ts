@@ -1,4 +1,4 @@
-import { Action, ActionType, OtTableSSPState } from "../types/tableTypes";
+import { type Action, ActionType, type OtTableSSPState } from "../types/tableTypes";
 import { getLoadingRows } from "../utils/tableUtils";
 
 export const initialState: OtTableSSPState = {
@@ -10,15 +10,12 @@ export const initialState: OtTableSSPState = {
   initialLoading: true,
 };
 
-export function createInitialState(str: string): OtTableSSPState {
+export function createInitialState(_str: string): OtTableSSPState {
   return initialState;
 }
 
-export function otTableReducer(
-  state: OtTableSSPState = initialState,
-  action: Action
-): OtTableSSPState {
-  if (typeof state === undefined) {
+export function otTableReducer(state: OtTableSSPState, action: Action): OtTableSSPState {
+  if (typeof state === "undefined") {
     throw Error("State provided to table reducer is undefined");
   }
   switch (action.type) {
@@ -47,15 +44,17 @@ export function otTableReducer(
       };
     }
     case ActionType.ADD_DATA: {
+      const currentRows = Array.isArray(state.rows) ? state.rows : [];
+      const newRows = Array.isArray(action.payload.rows) ? action.payload.rows : [];
+
       return {
         ...state,
         loading: false,
         cursor: action.payload.cursor,
-        rows: [...state.rows, ...action.payload.rows],
+        rows: [...currentRows, ...newRows],
       };
     }
     default: {
-      throw Error("Unknown action: " + action);
       return state;
     }
   }
