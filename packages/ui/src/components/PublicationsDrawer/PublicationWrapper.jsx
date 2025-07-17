@@ -85,6 +85,7 @@ function PublicationWrapper({
           <Link external to={externalURL}>
             {titleHtml ? (
               <span
+                // biome-ignore lint/security/noDangerouslySetInnerHtml: As the title is already sanitized
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
                 style={{ whiteSpace: "normal" }}
               />
@@ -160,6 +161,7 @@ function PublicationWrapper({
       {showAbstract && (
         <Box className={classes.detailPanel}>
           <Typography variant="subtitle2">Abstract</Typography>
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: As the abstract is already sanitized */}
           <span className={classes.abstractSpan} dangerouslySetInnerHTML={{ __html: abstract }} />
         </Box>
       )}

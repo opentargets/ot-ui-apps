@@ -74,11 +74,11 @@ export type OtTableSSPProps = {
 };
 
 export type OtTableSSPState = {
-  count: number;
+  count: unknown | number;
   loading: boolean;
-  rows: Array<unknown>;
-  cursor: null | string;
-  freeTextQuery: null | string;
+  rows: unknown | Array<unknown>;
+  cursor: unknown | string;
+  freeTextQuery: unknown | string;
   initialLoading: boolean;
 };
 

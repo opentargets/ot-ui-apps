@@ -44,15 +44,17 @@ export function otTableReducer(state: OtTableSSPState, action: Action): OtTableS
       };
     }
     case ActionType.ADD_DATA: {
+      const currentRows = Array.isArray(state.rows) ? state.rows : [];
+      const newRows = Array.isArray(action.payload.rows) ? action.payload.rows : [];
+
       return {
         ...state,
         loading: false,
         cursor: action.payload.cursor,
-        rows: [...state.rows, ...action.payload.rows],
+        rows: [...currentRows, ...newRows],
       };
     }
     default: {
-      throw Error(`Unknown action: ${action}`);
       return state;
     }
   }
