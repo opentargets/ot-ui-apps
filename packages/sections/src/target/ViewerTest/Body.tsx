@@ -39,18 +39,30 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 
 	function reducer(state, action) {
 		switch (action.type) {
-			case "TOGGLE_CONFIDENCE":
-				return { ...state, confidence: !state.confidence };
+      case "UPDATE_TRACK_COLOR": {
+        return {
+          ...state,
+          trackColor: getTrackColor(state),
+        }
+      }
+
+			case "TOGGLE_CONFIDENCE": {
+				const newState = { ...state };
+        newState.confidence = !state.confidence
+        newState.trackColor = getTrackColor(newState);
+        return newState;
+      }
+
 			default:
 				throw Error(`Invalid action type: ${action.type}`);
 		}
 	}
 
-  function getTrackColor(viewer, viewerState) {
-    if (!viewer) return;
+  function getTrackColor(state) {
+    if (!state.viewer) return;
     const colors = [];
-    for (const atom of viewer.getModel().selectedAtoms()) {
-      colors[atom.resi - 1] ??= viewerState.confidence
+    for (const atom of state.viewer.getModel().selectedAtoms()) {
+      colors[atom.resi - 1] ??= state.confidence
         ? getAlphaFoldConfidence(atom, "color")
         : "green";
     }
@@ -88,7 +100,8 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 										}),
 									},
 								]}
-                trackColor={getTrackColor}
+                showTrack={true}
+                onData={(state, dispatch) => dispatch({ type: "UPDATE_TRACK_COLOR" })}
 							/>
 							<Controls />
 						</Box>

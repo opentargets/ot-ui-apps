@@ -4,12 +4,15 @@ export const { ScopedProvider, useScopedState, useScopedDispatch } =
 	createScopedContext({
     name: "viewer",
     extraStateProperties: {
+      viewer: null,
       hoveredAtom: null,
       clickedAtom: null,
       hoveredResi: null,
       clickedResi: null,
+      trackColor: null,
     },
     extraActions: {
+      _setViewer: (state, action) => ({ ...state, viewer: action.value }),
       _setHoveredAtom: (state, action) => ({ ...state, hoveredAtom: action.value }),
       _setClickedAtom: (state, action) => ({ ...state, clickedAtom: action.value }),
       _setHoveredResi: (state, action) => ({ ...state, hoveredResi: action.value }),

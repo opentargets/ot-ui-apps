@@ -23,7 +23,7 @@ export default function Viewer({
   clickAppearance = [],
   trackHoverAppearance = [],
   trackClickAppearance = [],
-  trackColor,
+  showTrack = false,
   usage = {},
   topLeft,
   bottomRight,
@@ -72,6 +72,8 @@ export default function Viewer({
         lowerZoomLimit: zoomLimit[0],
         upperZoomLimit: zoomLimit[1],
       });
+      setViewer(_viewer);  // ?? DO WE NEED LOACAL VIEWER STATE NOW THAT KEEP IT IN CONTEXT ??
+      viewerDispatch({ type: '_setViewer', value: _viewer });
       _viewer.getCanvas().addEventListener(
         "wheel",
         event => {
@@ -81,16 +83,16 @@ export default function Viewer({
       );
       if (onDblClick) {
         _viewer.getCanvas().ondblclick = event => {
-          onDblClick(event, _viewer, viewerState);
+          onDblClick(viewerState, viewerDispatch);
         };
       }
       _viewer.setHoverDuration(hoverDuration);
 
       // load data into viewer`
       data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-      onData?.(_viewer, viewerState);
+      onData?.(viewerState, viewerDispatch);
 
-      setViewer(_viewer);
+
       window.viewer = _viewer; // !! REMOVE !!
     }
 
@@ -134,7 +136,7 @@ export default function Viewer({
 
   // update to reflect click on track
   useEffect(() => {
-    if (!viewer) return;   // || !trackHoverAppearance)
+    if (!viewer) return;
     for (const [index, appearance] of trackClickAppearance.entries()) {
       const a = {...appearance };
       if (!a.selection) a.selection = { resi: viewerState.clickedResi };
@@ -145,7 +147,7 @@ export default function Viewer({
 
   // update to reflect hover/unhover on track
   useEffect(() => {
-    if (!viewer) return;   // || !trackHoverAppearance)
+    if (!viewer) return;
     
     // unhover
     if (oldHoveredResi) {
@@ -201,7 +203,11 @@ export default function Viewer({
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      {trackColor && <ViewerTrack color={trackColor} viewer={viewer} />}
+     
+      {/* track */}
+      {showTrack && <ViewerTrack />}
+     
+      {/* viewer */}
       <Box ref={viewerRef} position="relative" width="100%" height={height}>
         {/* info and screenshot button */}
         <Box

@@ -50,19 +50,24 @@ When initialising the viewer state, the initial state object is copied and the f
 
 | Property | Type | Description |
 |----------|------|-------------|
+| `viewer` | 3dMol viewer | The 3dMol viewer object. |
 | `hoveredAtom` | 3dMol atom object | Atom on structure that currently hovering over. |
 | `clickedAtom`  | 3dMol atom object | Atom on structure that last clicked on. |
 | `hoveredResi` | `number` | Residue index from structure or track that currently hovering over. |
 | `clickedResi` | `number` | Residue index from structure or track that last clicked on. |
+| `trackColor` | `string[]` | Residue colors to show in track. |
 
 The reducer function passed to the provider is augmented with corresponding action types:
 
-- `_setHoveredAtom` (when hover/unhover over atom in viewer)
-- `_setClickedAtom` (when click on atom in viewer)
-- `_setHoveredResi` (when hover/unhover over residue on track)
--  `_setClickedResi` (when click on residue on track)
+- `_setViewer`: Used internally when 3dMol viewer is created.
+- `_setHoveredAtom`: Used internally when hover/unhover over atom in viewer.
+- `_setClickedAtom`: Used internally when click on atom in viewer.
+- `_setHoveredResi`: Used internally when hover/unhover over residue on track.
+- `_setClickedResi`: Used internally when click on residue on track.
 
-These actions are used by the viewer internally and should not be used explicitly. However, the values of the associated state properties can be used as required.
+The actions prefixed with `_` are used by the viewer internally and should not be used explicitly. However, the associated state properties can be used as required.
+
+The `trackColor` state property should be set by dispatch actions as appropriate.
 
 ### Derived State
 
@@ -128,15 +133,15 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 |-------|---------|------|------------|
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
-| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer and viewer state. |
-| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the event and viewer state. |
+| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer state and viewer dispatch function. |
+| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state and viewer dispatch function. |
 | `dep` | | `string[]` | List of state properties that are 'dependencies' - changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackHoverAppearance`| `[]` | `eventAppearance[]` | Appearance of structure when user hovers/unhovers on a residue in the track. See [Click and Hover](#click-and-hover). |
+| `trackHoverAppearance` | `[]` | `eventAppearance[]` | Appearance of structure when user hovers/unhovers on a residue in the track. See [Click and Hover](#click-and-hover). |
 | `trackClickAppearance`| | `eventAppearance[]` | Appearance of structure when user clicks on a residue in the track. See [Click and Hover](#click-and-hover). |
-| `trackColor` |  | `string[]` \| `function` | Array of residue colors for the track. If a function, is passed the 3dMol viewer and the viewer state and should return an array of colors. If `trackColor` is omitted, no track is shown. |  
+| `showTrack` | `false` | `boolean` | Show 1D residue track. Residues are colored using the `trackColor` state property. A gray track is shown if this not an array. |  
 | `usage` | `{}` | `object` | Label-value pairs to add to the usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left - typically a warning. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
 | `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
