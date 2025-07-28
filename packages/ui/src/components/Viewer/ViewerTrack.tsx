@@ -1,6 +1,8 @@
 import { useRef, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { useViewerState, useViewerDispatch } from "../../providers/ViewerProvider";
+import { useViewerState } from "../../providers/ViewerProvider";
+import { useViewerInteractionState, useViewerInteractionDispatch } from "ui";
+import { throttle } from "lodash";
 
 function svgElement(tag: string) {
   return document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -13,87 +15,87 @@ const totalHeight = trackHeight + topSpace + bottomSpace;
 
 // currently for alphaFold only - assumes single/first structure and contiguous
 // residue indices from 1 to structure length
-export default function ViewerTrack() {
+export default function ViewerTrack({ trackColor }) {
 
   const viewerState = useViewerState();
-  const viewerDispatch = useViewerDispatch();
+  const viewerInteractionState = useViewerInteractionState();
+  const viewerInteractionDispatch = useViewerInteractionDispatch();
   const svgRef = useRef(null);
+  const tooltipRef = useRef(null);
 
-  // add a rectangle for each residue to the svg
+  function handlePointerMove(event) {
+    const rect = event.target;
+    const resi = Number(rect?.dataset?.resi);
+    viewerInteractionDispatch({
+      type: "setHoveredResi",
+      value: resi ?? null,
+    });
+  }
+
+  function handleMouseleave(event) {
+    viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+  }
+
+  // add a rectangle for each residue - and a larger invisible rectangle for each hover zone
   useEffect(() => {
     const svg = svgRef.current;
     if (!svg) return;
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    if (!viewerState.trackColor?.length) return;
-    svg.setAttribute("viewBox", `0 0 ${viewerState.trackColor.length} ${totalHeight}`);
-    svg.append(...viewerState.trackColor.map((color, index) => {
+    if (!viewerState.viewer || !viewerState.atomsByResi) return;
+    const nResidues = viewerState.atomsByResi.size;
+    svg.setAttribute("viewBox", `0 0 ${nResidues} ${totalHeight}`);
+    const rects = [];
+    for (const resi of viewerState.atomsByResi.keys()) {
       const rect = svgElement("rect");
-      rect.addEventListener(
-        "mouseenter",
-        () => viewerDispatch({ type: "_setHoveredResi", value: index + 1 })
-      );
-      rect.addEventListener(
-        "mouseleave",
-        () => viewerDispatch({ type: "_setHoveredResi", value: null })
-      );
-      rect.addEventListener(
-        "click",
-        () => viewerDispatch({ type: "_setClickedResi", value: index + 1 })
-      );
-      rect.setAttribute("x", index);
+      rect.setAttribute("x", resi - 1);
       rect.setAttribute("y", topSpace);
       rect.setAttribute("width", 1);
       rect.setAttribute("height", trackHeight);
-      rect.setAttribute("stroke",color);
-      // rect.setAttribute("shape-rendering","crispEdges");
-      return rect;
-    }));
-  }, [viewerState.trackColor]);
-
-  // highlight position
-  const prevHoveredResi = useRef({});
-  useEffect(() => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    const hoveredResi = viewerState.hoveredResi ?? viewerState.hoveredAtom;
-    if (!hoveredResi) {
-      svg.querySelector(".position-highlight")?.remove();
-      prevHoveredResi.current.resi = null;
-      return
-    } else if (hoveredResi === prevHoveredResi.current.resi) {
-      return;
+      rect.setAttribute("fill", trackColor(viewerState, resi));
+      rect.setAttribute("pointer-events", "none");
+      rect.setAttribute("shape-rendering","crispEdges");
+      const invisibleRect = svgElement("rect");
+      invisibleRect.setAttribute("x", resi - 1);
+      invisibleRect.setAttribute("y", 0);
+      invisibleRect.setAttribute("width", 1);
+      invisibleRect.setAttribute("height", totalHeight);
+      invisibleRect.setAttribute("stoke", "none");
+      invisibleRect.setAttribute("fill-opacity", 0);  // so can still trigger evevnts
+      invisibleRect.setAttribute("data-resi", resi);
+      rects.push(rect, invisibleRect);
     }
-    svg.querySelector(".position-highlight")?.remove();
-    const g = svgElement("g");
-    g.classList.add("position-highlight");
-    g.setAttribute("transform", `translate(${hoveredResi - 0.5} ${topSpace})`);
-    g.setAttribute("pointer-events", "none");
-    svg.append(g);
-    const line = svgElement("line");
-    line.setAttribute("x1", 0);
-    line.setAttribute("x2", 0);
-    line.setAttribute("y1", -topSpace / 3);
-    line.setAttribute("y2", trackHeight + bottomSpace / 3);
-    line.setAttribute("stroke-width", 2);
-    line.setAttribute("stroke", "black");
-    line.setAttribute("vector-effect", "non-scaling-stroke");
-    g.append(line);
-    const foreignObject = document.createElementNS(
-      "http://www.w3.org/1999/xhtml",
-      "foreignObject"
-    );
-    foreignObject.setAttribute("width", "100");
-    foreignObject.setAttribute("height", "100");
-    foreignObject.innerHTML = `
-    <body xmlns="http://www.w3.org/1999/xhtml">
-      <div style="font-size: 18px; font-family: sans-serif; color: darkblue; background: lime">
-        Hello from <strong>foreignObject</strong>!
-      </div>
-    </body>
-    `;
-    g.append(foreignObject);
-    prevHoveredResi.current.resi = hoveredResi;
-  }, [viewerState.hoveredResi, viewerState.hoveredAtom])
+    svg.append(...rects);
+    svg.addEventListener("pointermove", handlePointerMove);
+    svg.addEventListener("mouseleave", handleMouseleave);
+  }, [viewerState]);
+  // }, [viewerState.viewer, viewerState.atomsByResi]);
+
+  // hide/show tooltip based on if there is a hoveredResi
+  useEffect(() => {
+    if (!viewerInteractionState) return;
+    const svg = svgRef.current;
+    const tooltip = tooltipRef.current;
+    if (!svg || !tooltip) return;
+    const resi = viewerInteractionState.hoveredResi;
+    if (resi) {
+      const rect = svg.querySelector(`[data-resi="${resi}"]`);
+      if (!rect) {
+        tooltip.style.display = "none";
+      } else {
+        const rectBB = rect.getBoundingClientRect();
+        tooltip.textContent = resi;
+        tooltip.style.left = `${rectBB.left + rectBB.width / 2 + window.scrollX - 1}px`;
+        tooltip.style.top = `${rectBB.top + window.scrollY}px`;
+        tooltip.style.display = "block";
+      }
+    } else {
+      tooltip.style.display = "none";
+    }
+  }, [viewerInteractionState?.hoveredResi]);
+
+  // HANDLE CLICK ON TRACK!!
+
+  if (!viewerInteractionState) return null;
 
 	return (
     <Box sx={{
@@ -116,6 +118,18 @@ export default function ViewerTrack() {
         </svg>
       </Box>
       <ResidueLength />
+      <Typography
+        ref={tooltipRef}
+        variant="caption"
+        sx={{
+          position: "absolute",
+          pointerEvents: "none",
+          height: `${totalHeight}px`,
+          borderLeft: "2px solid #888",
+          paddingLeft: 0.5,
+          lineHeight: 0.9,
+          display: "none",
+        }} />
     </Box>
   );
 }
@@ -127,7 +141,7 @@ function ResidueLength() {
       variant="caption"
       sx={{ flex: 0, mt: `-${trackHeight - 2}px` }}
     >
-      {viewerState.trackColor?.length ?? ""}
+      {viewerState.atomsByResi?.size || ""}
     </Typography>
   );
 }

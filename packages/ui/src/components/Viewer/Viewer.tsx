@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { createViewer } from "3dmol";
 import { Box, Button } from "@mui/material";
 import { useViewerState, useViewerDispatch } from "../../providers/ViewerProvider";
+import { useViewerInteractionState, useViewerInteractionDispatch } from "ui";
 import Usage from "./Usage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
@@ -21,9 +22,7 @@ export default function Viewer({
   drawAppearance = [],
   hoverAppearance = [],
   clickAppearance = [],
-  trackHoverAppearance = [],
-  trackClickAppearance = [],
-  showTrack = false,
+  trackColor,
   usage = {},
   topLeft,
   bottomRight,
@@ -34,6 +33,8 @@ export default function Viewer({
   const [oldHoveredResi, setOldHoveredResi] = useState(null);
   const viewerState = useViewerState();
   const viewerDispatch = useViewerDispatch();
+  const viewerInteractionState = useViewerInteractionState();
+  const viewerInteractionDispatch = useViewerInteractionDispatch();
 
   const viewerRef = useRef(null);
 
@@ -47,15 +48,15 @@ export default function Viewer({
 
   function applyAppearance(
     appearance,
-    atom = null, // only non-null for click/hover on structure (not track) appearance changes
+    resi = null, // only non-null for click/hover on structure (not track) appearance changes
     selection = "selection",
     style = "style",
-    addStyle = "addStyle"
+    addStyle = "addStyle",
   ) {
-    const resolvedStyle = resolveProperty(appearance, style, viewerState, atom);
+    const resolvedStyle = resolveProperty(appearance, style, viewerState, resi);
     if (!resolvedStyle) return;
     viewer[appearance[addStyle] ? "addStyle" : "setStyle"](
-      resolveProperty(appearance, selection, viewerState, atom),
+      resolveProperty(appearance, selection, viewerState, resi),
       resolvedStyle
     );
   }
@@ -72,8 +73,7 @@ export default function Viewer({
         lowerZoomLimit: zoomLimit[0],
         upperZoomLimit: zoomLimit[1],
       });
-      setViewer(_viewer);  // ?? DO WE NEED LOACAL VIEWER STATE NOW THAT KEEP IT IN CONTEXT ??
-      viewerDispatch({ type: '_setViewer', value: _viewer });
+      setViewer(_viewer);
       _viewer.getCanvas().addEventListener(
         "wheel",
         event => {
@@ -83,7 +83,7 @@ export default function Viewer({
       );
       if (onDblClick) {
         _viewer.getCanvas().ondblclick = event => {
-          onDblClick(viewerState, viewerDispatch);
+          onDblClick(viewerState);
         };
       }
       _viewer.setHoverDuration(hoverDuration);
@@ -92,7 +92,9 @@ export default function Viewer({
       data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
       onData?.(viewerState, viewerDispatch);
 
-
+      // set state viewer after add data - since state groups atoms by resi
+      viewerDispatch({ type: '_setViewer', value: _viewer });
+      
       window.viewer = _viewer; // !! REMOVE !!
     }
 
@@ -101,84 +103,75 @@ export default function Viewer({
 
   // click, hover and unhover behavior
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewerInteractionState) return;
 
     // click behavior
     for (const [index, appearance] of clickAppearance.entries()) {
       viewer.setClickable(appearance.eventSelection, true, atom => {
-        viewerDispatch({ type: "_setClickedAtom", value: atom });
-        applyAppearance(appearance, atom);
-        appearance.onApply?.(viewerState, atom);
-        if (index === clickAppearance.length - 1) viewer.render();
+        viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
       });
     }
 
     // hover behavior
-    for (const [index, appearance] of hoverAppearance.entries()) {
+    for (const appearance of hoverAppearance) {
       viewer.setHoverable(
         appearance.eventSelection ?? {},
         true,
         atom => {
-          viewerDispatch({ type: "_setHoveredAtom", value: atom });
-          applyAppearance(appearance, atom);
-          appearance.onApply?.(viewerState, atom);
-          if (index === hoverAppearance.length - 1) viewer.render();
+          viewerInteractionDispatch({ type: "setHoveredResi", value: atom.resi });
         },
         atom => {
-          viewerDispatch({ type: "_setHoveredAtom", value: null });
-          applyAppearance(appearance, atom, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
-          appearance.unhoverOnApply?.(viewerState, atom);
-          if (index === hoverAppearance.length - 1) viewer.render();
+          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
         }
       );
     }
-  }, [viewer, viewerState]);
+  }, [viewer]);  // !! CAN ACTUALLY PUT THIS WHERE CREATE VIEWER NOW?!!
+  // }, [viewer, viewerInteractionState.hoveredResi]);
 
-  // update to reflect click on track
+  // update for change in clicked resi
   useEffect(() => {
-    if (!viewer) return;
-    for (const [index, appearance] of trackClickAppearance.entries()) {
-      const a = {...appearance };
-      if (!a.selection) a.selection = { resi: viewerState.clickedResi };
-      applyAppearance(a);
-      if (index === trackClickAppearance.length - 1) viewer.render();
+    if (!viewer || !viewerInteractionState) return;
+    for (const [index, appearance] of clickAppearance.entries()) {
+      const a = { ...appearance };
+      const resi = viewerInteractionState.clickedResi;
+      if (!a.selection) a.selection = { resi };
+      applyAppearance(a, resi);
+      if (index === clickAppearance.length - 1) viewer.render();
     }
-  }, [viewer, viewerState.clickedResi]);
+  }, [viewer, viewerInteractionState?.clickedResi]);
 
-  // update to reflect hover/unhover on track
+  // update for change in hovered resi
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer || !viewerInteractionState) return;
     
     // unhover
     if (oldHoveredResi) {
-      for (const [index, appearance] of trackHoverAppearance.entries()) {
+      for (const [index, appearance] of hoverAppearance.entries()) {
         const a = {...appearance };
         if (!a.unhoverSelection) a.unhoverSelection = { resi: oldHoveredResi };
-        applyAppearance(a, null, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
-        if (index === trackHoverAppearance.length - 1) viewer.render();
+        applyAppearance(a, oldHoveredResi, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
+        if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
       
     // hover
-    if (viewerState.hoveredResi) {
-      for (const [index, appearance] of trackHoverAppearance.entries()) {
+    if (viewerInteractionState.hoveredResi) {
+      for (const [index, appearance] of hoverAppearance.entries()) {
         const a = {...appearance };
-        if (!a.selection) a.selection = { resi: viewerState.hoveredResi };
-        applyAppearance(a);
-        if (index === trackHoverAppearance.length - 1) viewer.render();
+        const resi = viewerInteractionState.hoveredResi;
+        if (!a.selection) a.selection = { resi };
+        applyAppearance(a, resi);
+        if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
     
-    setOldHoveredResi(viewerState.hoveredResi);
-  }, [viewer, viewerState.hoveredResi]);
+    setOldHoveredResi(viewerInteractionState.hoveredResi);
+  }, [viewer, viewerInteractionState?.hoveredResi]);
 
   // draw/redraw
   const prevDepValues = useRef({});
   useEffect(() => {
     if (!viewer) return;
-
-    // hide everything
-    viewer?.setStyle({}, { hidden: true });
 
     // state properties that changed
     if (dep?.length) {
@@ -189,10 +182,11 @@ export default function Viewer({
           depChanged = true;
         }
       }
-      if (depChanged) return;
-    }
+      if (!depChanged) return;
+    } 
 
-    // apply appearances
+    // hide everything then apply appearances
+    viewer.setStyle({}, { hidden: true });
     for (const appearance of drawAppearance) {
       if (!appearance.use || appearance.use(viewerState)) {
         applyAppearance(appearance);
@@ -205,7 +199,7 @@ export default function Viewer({
     <Box sx={{ display: "flex", flexDirection: "column" }}>
      
       {/* track */}
-      {showTrack && <ViewerTrack />}
+      {trackColor && <ViewerTrack trackColor={trackColor} />}
      
       {/* viewer */}
       <Box ref={viewerRef} position="relative" width="100%" height={height}>

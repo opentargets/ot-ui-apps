@@ -93,8 +93,8 @@ An `eventAppearance` object describes a change due to a click or hover event:
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
 | `eventSelection` | `{}` | 3dMol `AtomSelectionSpec` | Selects atoms that listen for the event - whereas the `selection` property selects atoms whose appearance is changed by the event. |
-| `selection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | If a function, is passed the state and the atom that heard the event; should return a `AtomSelectionSpec`. |
-| `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the atom that heard the event; should return a `AtomStyleSpec`. |
+| `selection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomSelectionSpec`. |
+| `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied - i.e. a click or hover event. Passed the state and the atom that heard the event. |
 
@@ -102,9 +102,9 @@ And for hover events only:
 
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
-| `unhoveSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | As `selection` but selects atoms whose appearance change on unhover. Defaults to `selection`. |
+| `unhoverSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | As `selection` but selects atoms whose appearance change on unhover. Defaults to `selection`. |
 | `unhoverStyle` | | 3dMol `AtomStyleSpec` \| `function` | As `style` but applied to atoms selected by `unhoverSelection`. |
-| `unhoverAddStyle` | `false` | `boolean` | As `addSsyle` but applied to atoms selected by `unhoverSelection`. |
+| `unhoverAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
 
 Notes:
@@ -134,7 +134,7 @@ DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-rig
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer state and viewer dispatch function. |
-| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state and viewer dispatch function. |
+| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `dep` | | `string[]` | List of state properties that are 'dependencies' - changing any of these properties triggers a redraw. If `dep` is omitted, a redraw occurs on every state change. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |

@@ -1,7 +1,7 @@
 import { useReducer, useContext, createContext } from "react";
 
 export function createScopedContext({
-    name: string,
+    name,
     extraStateProperties = {},  // key-value pairs are propertyName: initialValue 
     extraActions = {},  // key-value pairs are actionType: (state, action) => newState
   }) {

@@ -95,3 +95,4 @@ export * from "./providers/OTApolloProvider/OTApolloProvider";
 export { default as PlatformApiProvider } from "./providers/PlatformApiProvider";
 export { default as ThemeProvider } from "./providers/ThemeProvider/ThemeProvider";
 export * from "./providers/ViewerProvider";
+export * from "./providers/ViewerInteractionProvider";

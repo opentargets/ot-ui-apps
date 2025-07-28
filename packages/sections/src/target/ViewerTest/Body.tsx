@@ -2,7 +2,13 @@ import { useQuery } from "@apollo/client";
 import { Box, Button } from "@mui/material";
 import { alphaFoldCifUrl, getUniprotIds, safeFetch } from "@ot/utils";
 import { useEffect, useState } from "react";
-import { SectionItem, useViewerDispatch, Viewer, ViewerProvider } from "ui";
+import {
+  SectionItem,
+  useViewerDispatch,
+  Viewer,
+  ViewerProvider,
+  ViewerInteractionProvider
+} from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import VIEWER_TEST_QUERY from "./ViewerTestQuery.gql";
@@ -39,77 +45,80 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 
 	function reducer(state, action) {
 		switch (action.type) {
-      case "UPDATE_TRACK_COLOR": {
-        return {
-          ...state,
-          trackColor: getTrackColor(state),
-        }
-      }
-
 			case "TOGGLE_CONFIDENCE": {
 				const newState = { ...state };
         newState.confidence = !state.confidence
-        newState.trackColor = getTrackColor(newState);
         return newState;
       }
-
-			default:
+			default: {
 				throw Error(`Invalid action type: ${action.type}`);
+      }
 		}
 	}
 
-  function getTrackColor(state) {
+  function trackColor(state, resi) {
     if (!state.viewer) return;
-    const colors = [];
-    for (const atom of state.viewer.getModel().selectedAtoms()) {
-      colors[atom.resi - 1] ??= state.confidence
-        ? getAlphaFoldConfidence(atom, "color")
-        : "green";
-    }
-    return colors;
+    if (state.confidence)
+      return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
+    return "green";
   }
 
-	// const baseStyle = { cartoon: { color: "confidence" } };
+	// const baseStyle = { cartoon: { color: "red" } };
+  // const baseStyle = {};
 
 	// !! VIEWERR PROVIDER SHOULD ONLY WRAP VIEWER AND CONTROLS, BUT LIKE
 	// THIS TO AVOID RECRECREATING PROVIDER ON RERENEDER - WHICH CAN BE FIXED
 	// WITH A USEMEMO IN THE SCOPED PROVIDER BUT THAT MAY BE HINDING SOMETHING
 	// UGLIER !!
+
+  const drawAppearance = [
+    {
+      style: (state) => ({
+        cartoon: { 
+          colorfunc: state.confidence
+            ? a => getAlphaFoldConfidence(a, "color")
+            : () => "green"
+          },
+        }
+      ),
+    },
+  ];
+
 	return (
 		<ViewerProvider initialState={initialState} reducer={reducer}>
-			<SectionItem
-				definition={definition}
-				entity={entity}
-				request={request}
-				renderDescription={() => <Description />}
-				renderBody={() => {
-					if (!request?.data?.target) return <></>;
-					return structureData ? (
-						<Box>
-							<Viewer
-								data={[{ structureData }]}
-								drawAppearance={[
-									{
-										style: (state) => ({
-											cartoon: { 
-                        colorfunc: state.confidence
-                          ? a => getAlphaFoldConfidence(a, "color")
-                          : () => "green"
-                        },
-											// cartoon: { color: state.confidence ? "confidence" : "green" },
-										}),
-									},
-								]}
-                showTrack={true}
-                onData={(state, dispatch) => dispatch({ type: "UPDATE_TRACK_COLOR" })}
-							/>
-							<Controls />
-						</Box>
-					) : (
-						"NO STRUCTURE DATA!!!"
-					);
-				}}
-			/>
+      <ViewerInteractionProvider>
+        <SectionItem
+          definition={definition}
+          entity={entity}
+          request={request}
+          renderDescription={() => <Description />}
+          renderBody={() => {
+            if (!request?.data?.target) return <></>;
+            return structureData ? (
+              <Box>
+                <Viewer
+                  data={[{ structureData }]}
+                  drawAppearance={drawAppearance}
+                  trackColor={trackColor}
+                  // hoverAppearance={[
+                  //   {
+                  //     selection: (state, resi) => ({ resi }),
+                  //     style: { stick: {}, sphere: { radius: 0.6 } },
+                  //     addStyle: true,
+                  //     unhoverSelection: {},
+                  //     unhoverStyle: drawAppearance.style,
+                  //     unhoverAddStyle: false,
+                  //   }
+                  // ]}
+                  />
+                <Controls />
+              </Box>
+            ) : (
+              "NO STRUCTURE DATA!!!"
+            );
+          }}
+        />
+      </ViewerInteractionProvider>
 		</ViewerProvider>
 	);
 }

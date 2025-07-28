@@ -5,18 +5,19 @@ export const { ScopedProvider, useScopedState, useScopedDispatch } =
     name: "viewer",
     extraStateProperties: {
       viewer: null,
-      hoveredAtom: null,
-      clickedAtom: null,
-      hoveredResi: null,
-      clickedResi: null,
-      trackColor: null,
+      atomsByResi: null,
+
     },
     extraActions: {
-      _setViewer: (state, action) => ({ ...state, viewer: action.value }),
-      _setHoveredAtom: (state, action) => ({ ...state, hoveredAtom: action.value }),
-      _setClickedAtom: (state, action) => ({ ...state, clickedAtom: action.value }),
-      _setHoveredResi: (state, action) => ({ ...state, hoveredResi: action.value }),
-      _setClickedResi: (state, action) => ({ ...state, clickedResi: action.value }),
+      _setViewer: (state, action) => {
+        const newState = { ... state };
+        newState.viewer = action.value;
+        const atoms = newState.viewer.getModel().selectedAtoms();
+        newState.atomsByResi = atoms?.length > 0
+          ? Map.groupBy(atoms, atom => atom.resi)
+          : null
+        return newState; 
+      }
     }
   });
 
