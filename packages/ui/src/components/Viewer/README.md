@@ -37,7 +37,9 @@ Props:
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object and should return a new state object. |
+| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object. Should should return a new state object. |
+
+**Note**: Reducer actions should start by shallow copying the state to ensure the extra state properties descibed below are not discarded.  
 
 Any component inside a `<ViewerProvider>` can import the following (from the same file as the provider comes from):
 
@@ -46,7 +48,7 @@ Any component inside a `<ViewerProvider>` can import the following (from the sam
 
 While the dispatch function can be used from e.g. a click handler attached to the viewer, most uses of the dispatch function come from other elements inside the provider (tables, filters, etc.) and the viewer then reacts to the state change.
 
-When initialising the viewer state, the initial state object is copied and the following properties are added:
+When creating the viewer state, the initial state object is copied and the following properties are added:
 
 | Property | Type | Description |
 |----------|------|-------------|
@@ -57,7 +59,7 @@ The reducer function passed to the provider is augmented with corresponding acti
 
 - `_setViewer`: Used internally when 3dMol viewer is created.
 
-The `viewer` and `atomsByResi` state properties can be used as needed, but `_setViewer` should not be - it is internally by the viewer
+The `viewer` and `atomsByResi` state properties can be used as needed, but `_setViewer` should not be - it is internally by the viewer.
 
 ### Derived State
 
@@ -65,27 +67,21 @@ There is no built-in mechanism to handle derived state. For example, where the s
 
 ### Viewer Interaction Provider
 
-If including hover and click behavior, include a `ViewerInteractionProvider` inside the `ViewerProvider`:
+When a state property changes, the viewer redraws the structure using the `drawAppearance` prop passed to the viewer component. To modify the viewer appearance without a redraw, include a `ViewerInteractionProvider`. In particular, a `ViewerInteractionProvider` is needed for basic hover and click behavior, as well as any custom highlighting - such as adding arbitrary shapes to the viewer or using the viewer's builtin labels.
 
-```jsx
-<ViewerProvider initialState={initialState} reducer={reducer}>
-  <ViewerInteractionProvider>
-    {/* add Viewer and other components that use/set viewer state here */}  
-  </ViewerInteractionProvider>
-</ViewerProvider>
-```
+Like `ViewerProvider`, `ViewerInteractionProvider` takes `initialState` and `reducer` props. Any component inside a `<ViewerInteractionProvider>` can import the following (from the same file as the provider comes from):
 
-Any component inside a `<ViewerInteractionProvider>` can import the following (from the same file as the provider comes from):
+- `useViewerInteractionState`: get the interaction state object.
+- `useViewerInteractionDispatch`: dispatch function for changing the interaction state - passed an action object.
 
-- `useViewerInteractionState`: get the state object.
-- `useViewerInteractionDispatch`: dispatch function for changing the hover/click state - passed an action object.
+When creating the interaction state, the initial state object is copied and the following properties are added:
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `hoveredResi` | number | Residue index of hovered residue. |
 | `clickedResi` | number | Last clicked residue index. |
 
-These can be uased as needed and are updated automatically from the structure and track. They can also be set manually using e.g.
+These can be used as needed and are updated automatically from the structure and track. They can also be set manually, e.g.
 
 ```js
 const viewerInteractionDispatch = useViewerInteractionDispatch();
@@ -95,8 +91,6 @@ viewerInteractionDispatch({
   value: 174,
 });
 ```
-
-This can be used to e.g. highlight a residue from a different component such as a table.
 
 ## Appearance
 
@@ -131,16 +125,6 @@ And for hover events only:
 | `unhoverStyle` | | 3dMol `AtomStyleSpec` \| `function` | As `style` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
-
-## Shapes
-
-Showing surfaces, spheres etc, is very similar to showing structures.
-
-- SLIGHTLY FIDDLY SINCE MAY NEED TO TRACK EXISTING SHAPES TO REMOVE ONLY IF REQD
-
-## Labels
-
-DO AFTER BASIC WORKING: Way to use both 3dMol built-in labels and our bottom-right corner info box
 
 ## Viewer Props
 
