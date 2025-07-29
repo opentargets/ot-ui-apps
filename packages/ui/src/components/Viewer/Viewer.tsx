@@ -18,7 +18,6 @@ export default function Viewer({
   data,
   onData,
   onDblClick,
-  dep = [],
   drawAppearance = [],
   hoverAppearance = [],
   clickAppearance = [],
@@ -30,13 +29,13 @@ export default function Viewer({
   screenshotId = "",
 }) {
   const [viewer, setViewer] = useState(null);
-  const [oldHoveredResi, setOldHoveredResi] = useState(null);
   const viewerState = useViewerState();
   const viewerDispatch = useViewerDispatch();
   const viewerInteractionState = useViewerInteractionState();
   const viewerInteractionDispatch = useViewerInteractionDispatch();
 
   const viewerRef = useRef(null);
+  const oldHoveredResi = useRef(null);
 
   function resolveProperty(appearance, propertyName, ...args) {
     let value = appearance[propertyName];
@@ -61,7 +60,7 @@ export default function Viewer({
     );
   }
 
-  // create viewer
+  // create viewer and load data
   useEffect(() => {
     let _viewer;
     if (data && viewerRef.current) {
@@ -92,41 +91,44 @@ export default function Viewer({
       data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
       onData?.(viewerState, viewerDispatch);
 
-      // set state viewer after add data - since state groups atoms by resi
+      // set state viewer after load data - since state groups atoms by resi
       viewerDispatch({ type: '_setViewer', value: _viewer });
+    }
+
+    // interaction
+    if(viewerInteractionState) {
       
-      window.viewer = _viewer; // !! REMOVE !!
+      // click atom
+      for (const [index, appearance] of clickAppearance.entries()) {
+        _viewer.setClickable(appearance.eventSelection ?? {}, true, atom => {
+          viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
+        });
+      }
+
+      // hover/unhover atom
+      for (const appearance of hoverAppearance) {
+        _viewer.setHoverable(
+          appearance.eventSelection ?? {},
+          true,
+          atom => {
+            viewerInteractionDispatch({ type: "setHoveredResi", value: atom.resi });
+          },
+          atom => {
+            viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+          }
+        );
+      }
+
+      // clear hover when leave canvas
+      _viewer.getCanvas().onmouseleave = () => {
+        setTimeout(() => {
+          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+        }, hoverDuration + 50);
+      };
     }
 
     return () => _viewer.clear();
   }, []);
-
-  // click, hover and unhover behavior
-  useEffect(() => {
-    if (!viewer || !viewerInteractionState) return;
-
-    // click behavior
-    for (const [index, appearance] of clickAppearance.entries()) {
-      viewer.setClickable(appearance.eventSelection, true, atom => {
-        viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
-      });
-    }
-
-    // hover behavior
-    for (const appearance of hoverAppearance) {
-      viewer.setHoverable(
-        appearance.eventSelection ?? {},
-        true,
-        atom => {
-          viewerInteractionDispatch({ type: "setHoveredResi", value: atom.resi });
-        },
-        atom => {
-          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
-        }
-      );
-    }
-  }, [viewer]);  // !! CAN ACTUALLY PUT THIS WHERE CREATE VIEWER NOW?!!
-  // }, [viewer, viewerInteractionState.hoveredResi]);
 
   // update for change in clicked resi
   useEffect(() => {
@@ -136,6 +138,7 @@ export default function Viewer({
       const resi = viewerInteractionState.clickedResi;
       if (!a.selection) a.selection = { resi };
       applyAppearance(a, resi);
+      a.onApply?.(viewerState, resi);
       if (index === clickAppearance.length - 1) viewer.render();
     }
   }, [viewer, viewerInteractionState?.clickedResi]);
@@ -145,11 +148,13 @@ export default function Viewer({
     if (!viewer || !viewerInteractionState) return;
     
     // unhover
-    if (oldHoveredResi) {
+    if (oldHoveredResi.current) {
       for (const [index, appearance] of hoverAppearance.entries()) {
         const a = {...appearance };
-        if (!a.unhoverSelection) a.unhoverSelection = { resi: oldHoveredResi };
-        applyAppearance(a, oldHoveredResi, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
+        const resi = oldHoveredResi.current;
+        if (!a.unhoverSelection) a.unhoverSelection = { resi };
+        applyAppearance(a, resi, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
+        a.unhoverOnApply?.(viewerState, resi);
         if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
@@ -161,31 +166,17 @@ export default function Viewer({
         const resi = viewerInteractionState.hoveredResi;
         if (!a.selection) a.selection = { resi };
         applyAppearance(a, resi);
+        a.onApply?.(viewerState, resi);
         if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
     
-    setOldHoveredResi(viewerInteractionState.hoveredResi);
+    oldHoveredResi.current = viewerInteractionState.hoveredResi;
   }, [viewer, viewerInteractionState?.hoveredResi]);
 
   // draw/redraw
-  const prevDepValues = useRef({});
   useEffect(() => {
     if (!viewer) return;
-
-    // state properties that changed
-    if (dep?.length) {
-      let depChanged = false;
-      for (const key of Object.keys(viewerState)) {
-        if (viewerState[key] !== prevDepValues.current[key]) {
-          prevDepValues.current[key] = viewerState[key];
-          depChanged = true;
-        }
-      }
-      if (!depChanged) return;
-    } 
-
-    // hide everything then apply appearances
     viewer.setStyle({}, { hidden: true });
     for (const appearance of drawAppearance) {
       if (!appearance.use || appearance.use(viewerState)) {
@@ -193,7 +184,7 @@ export default function Viewer({
       }
     }
     viewer.render();
-  }, [viewer, viewerState]);
+  }, [viewerState]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

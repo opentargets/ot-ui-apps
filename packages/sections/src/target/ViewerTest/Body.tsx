@@ -79,6 +79,7 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
             ? a => getAlphaFoldConfidence(a, "color")
             : () => "green"
           },
+          arrows: true,
         }
       ),
     },
@@ -100,16 +101,17 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
                   data={[{ structureData }]}
                   drawAppearance={drawAppearance}
                   trackColor={trackColor}
-                  // hoverAppearance={[
-                  //   {
-                  //     selection: (state, resi) => ({ resi }),
-                  //     style: { stick: {}, sphere: { radius: 0.6 } },
-                  //     addStyle: true,
-                  //     unhoverSelection: {},
-                  //     unhoverStyle: drawAppearance.style,
-                  //     unhoverAddStyle: false,
-                  //   }
-                  // ]}
+                  // hoverAppearance={[{}]}
+                  hoverAppearance={[
+                    {
+                      selection: (state, resi) => ({ resi }),
+                      style: { stick: {}, sphere: { radius: 0.6 } },
+                      addStyle: true,
+                      unhoverSelection: {},
+                      unhoverStyle: drawAppearance.style,
+                      unhoverAddStyle: false,
+                    }
+                  ]}
                   />
                 <Controls />
               </Box>

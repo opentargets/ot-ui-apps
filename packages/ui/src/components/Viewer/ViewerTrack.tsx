@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { useViewerState } from "../../providers/ViewerProvider";
 import { useViewerInteractionState, useViewerInteractionDispatch } from "ui";
-import { throttle } from "lodash";
 
 function svgElement(tag: string) {
   return document.createElementNS("http://www.w3.org/2000/svg", tag);
@@ -68,7 +67,6 @@ export default function ViewerTrack({ trackColor }) {
     svg.addEventListener("pointermove", handlePointerMove);
     svg.addEventListener("mouseleave", handleMouseleave);
   }, [viewerState]);
-  // }, [viewerState.viewer, viewerState.atomsByResi]);
 
   // hide/show tooltip based on if there is a hoveredResi
   useEffect(() => {
