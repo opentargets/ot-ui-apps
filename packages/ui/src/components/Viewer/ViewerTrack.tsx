@@ -35,6 +35,13 @@ export default function ViewerTrack({ trackColor }) {
     viewerInteractionDispatch({ type: "setHoveredResi", value: null });
   }
 
+  function handleClick(event) {
+    viewerInteractionDispatch({
+      type: "setClickedResi",
+      value: event.target.dataset.resi,
+    });
+  }
+
   // add a rectangle for each residue - and a larger invisible rectangle for each hover zone
   useEffect(() => {
     const svg = svgRef.current;
@@ -61,6 +68,7 @@ export default function ViewerTrack({ trackColor }) {
       invisibleRect.setAttribute("stoke", "none");
       invisibleRect.setAttribute("fill-opacity", 0);  // so can still trigger evevnts
       invisibleRect.setAttribute("data-resi", resi);
+      invisibleRect.addEventListener("click", handleClick);
       rects.push(rect, invisibleRect);
     }
     svg.append(...rects);

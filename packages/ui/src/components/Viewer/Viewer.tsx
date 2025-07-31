@@ -9,7 +9,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip, ViewerTrack } from "ui";
 import { onClickCapture } from "./helpers";
 
-const hoverDuration = 50;
+const hoverDuration = 0;
 
 // !!!!! ADD PROP TYPES !!!!!
 
@@ -18,6 +18,7 @@ export default function Viewer({
   data,
   onData,
   onDblClick,
+  onDraw,
   drawAppearance = [],
   hoverAppearance = [],
   clickAppearance = [],
@@ -63,49 +64,8 @@ export default function Viewer({
   // create viewer and load data
   useEffect(() => {
     let _viewer;
-    if (data && viewerRef.current) {
-      // create viewer and add basic functionality
-      _viewer = createViewer(viewerRef.current, {
-        backgroundColor: "#f8f8f8",
-        antialias: true,
-        cartoonQuality: 10,
-        lowerZoomLimit: zoomLimit[0],
-        upperZoomLimit: zoomLimit[1],
-      });
-      setViewer(_viewer);
-      _viewer.getCanvas().addEventListener(
-        "wheel",
-        event => {
-          if (!event.ctrlKey) event.stopImmediatePropagation();
-        },
-        true // use capture phase so fires before library handler
-      );
-      if (onDblClick) {
-        _viewer.getCanvas().ondblclick = event => {
-          onDblClick(viewerState);
-        };
-      }
-      _viewer.setHoverDuration(hoverDuration);
 
-      // load data into viewer`
-      data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-      onData?.(viewerState, viewerDispatch);
-
-      // set state viewer after load data - since state groups atoms by resi
-      viewerDispatch({ type: '_setViewer', value: _viewer });
-    }
-
-    // interaction
-    if(viewerInteractionState) {
-      
-      // click atom
-      for (const [index, appearance] of clickAppearance.entries()) {
-        _viewer.setClickable(appearance.eventSelection ?? {}, true, atom => {
-          viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
-        });
-      }
-
-      // hover/unhover atom
+    function enableHover() {
       for (const appearance of hoverAppearance) {
         _viewer.setHoverable(
           appearance.eventSelection ?? {},
@@ -117,7 +77,67 @@ export default function Viewer({
             viewerInteractionDispatch({ type: "setHoveredResi", value: null });
           }
         );
+        _viewer.render();  // required to reactivate hover
       }
+    }
+
+    if (data && viewerRef.current) {
+
+      // create viewer
+      _viewer = createViewer(viewerRef.current, {
+        backgroundColor: "#f8f8f8",
+        antialias: true,
+        cartoonQuality: 10,
+        lowerZoomLimit: zoomLimit[0],
+        upperZoomLimit: zoomLimit[1],
+      });
+      if (onDblClick) {
+        _viewer.getCanvas().ondblclick = event => {
+          onDblClick(viewerState);
+        };
+      }
+      _viewer.setHoverDuration(hoverDuration);
+
+      // disable wheel-zoom
+      setViewer(_viewer);
+      _viewer.getCanvas().addEventListener(
+        "wheel",
+        event => {
+          if (!event.ctrlKey) event.stopImmediatePropagation();
+        },
+        true // use capture phase so fires before library handler
+      );
+
+      // load data into viewer`
+      data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
+      onData?.(viewerState, viewerDispatch);
+
+      // set state viewer after load data - since state groups atoms by resi
+      viewerDispatch({ type: '_setViewer', value: _viewer });
+    }
+
+    // interaction
+    if(viewerInteractionState) {
+
+      // disable hover when mousedown
+      _viewer.getCanvas().addEventListener(
+        "mousedown",
+        event => _viewer.setHoverable(false)
+      );
+      _viewer.getCanvas().addEventListener(
+        "mouseup",
+        event => enableHover()
+      );
+      
+      // click atom
+      for (const appearance of clickAppearance) {
+        _viewer.setClickable(appearance.eventSelection ?? {}, true, atom => {
+          viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
+        });
+      }
+
+      // hover/unhover atom
+      enableHover();
 
       // clear hover when leave canvas
       _viewer.getCanvas().onmouseleave = () => {
@@ -138,7 +158,7 @@ export default function Viewer({
       const resi = viewerInteractionState.clickedResi;
       if (!a.selection) a.selection = { resi };
       applyAppearance(a, resi);
-      a.onApply?.(viewerState, resi);
+      a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
       if (index === clickAppearance.length - 1) viewer.render();
     }
   }, [viewer, viewerInteractionState?.clickedResi]);
@@ -154,7 +174,7 @@ export default function Viewer({
         const resi = oldHoveredResi.current;
         if (!a.unhoverSelection) a.unhoverSelection = { resi };
         applyAppearance(a, resi, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
-        a.unhoverOnApply?.(viewerState, resi);
+        a.unhoverOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
         if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
@@ -166,7 +186,7 @@ export default function Viewer({
         const resi = viewerInteractionState.hoveredResi;
         if (!a.selection) a.selection = { resi };
         applyAppearance(a, resi);
-        a.onApply?.(viewerState, resi);
+        a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
         if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
@@ -177,12 +197,18 @@ export default function Viewer({
   // draw/redraw
   useEffect(() => {
     if (!viewer) return;
+    viewer.removeAllShapes();
+    viewer.removeAllSurfaces();
+    viewer.removeAllLabels();
     viewer.setStyle({}, { hidden: true });
+    viewerInteractionDispatch?.({ type: "setHoveredResi", value: null });
+    viewerInteractionDispatch?.({ type: "setClickedResi", value: null });
     for (const appearance of drawAppearance) {
       if (!appearance.use || appearance.use(viewerState)) {
         applyAppearance(appearance);
       }
     }
+    onDraw?.(viewerState);
     viewer.render();
   }, [viewerState]);
 

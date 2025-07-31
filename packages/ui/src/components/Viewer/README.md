@@ -115,7 +115,7 @@ An `eventAppearance` object describes a change triggered by changes to `hoveredR
 | `selection` | `{ resi: eventResi }` | 3dMol `AtomSelectionSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomSelectionSpec`. |
 | `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
-| `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state and the hovered.clicked residue index. |
+| `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
 
 And for hover events only: 
 
@@ -126,6 +126,8 @@ And for hover events only:
 | `unhoverAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `unhoverSelection`. |
 | `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
 
+**Note**: To call an arbitrary callback when `hoveredResi` or `clickedResi` changes, use the `onApply` property of an `eventAppearance` - and omit style if there should be no change in appearance.
+
 ## Viewer Props
 
 | Prop | Default | Type | Description |
@@ -133,11 +135,11 @@ And for hover events only:
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer state and viewer dispatch function. |
+| `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackHoverAppearance` | `[]` | `eventAppearance[]` | Appearance of structure when user hovers/unhovers on a residue in the track. See [Click and Hover](#click-and-hover). |
 | `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |  
 | `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left - typically a warning. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
@@ -154,3 +156,13 @@ Notes:
 ## Notes
 
 - We often show a message over the viewer such as "Loading Structure ...". There is no built-in message functionality in the viewer since we may want the message to cover related content such as legends - particularly if the message may not be cleared due to e.g. unavailability of data at runtime. To implement a message, include a appropriate component (e.g. an absolutely positioned box over all relevant content) and conditionally render the message versus the viewer and associated content based on a state property such as `message`.
+
+- If hover on residue at edge of canvas, leave canvas, hover on same residue, is not highlighted.
+
+## Checks
+
+- That no sluggish drag/rotate/pan/zoom even with zero `hoverDuration`. If slow with zoom but OK otherwise, can disable hover Ctrl down.
+
+- Check behavior with touch events and disable hover etc. as appropriate.
+
+- Passing multiple appearance objects(for draw, hover or click) work as expected.

@@ -45,7 +45,7 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 
 	function reducer(state, action) {
 		switch (action.type) {
-			case "TOGGLE_CONFIDENCE": {
+			case "toggleConfidence": {
 				const newState = { ...state };
         newState.confidence = !state.confidence
         return newState;
@@ -56,20 +56,27 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
 		}
 	}
 
+  function interactionReducer(state, action) {
+    switch (action.type) {
+			case "setHoverSphere": {
+        return { ...state, hoverSphere: action.value };
+      }
+			default: {
+				throw Error(`Invalid action type: ${action.type}`);
+      }
+		}
+  }
+
+  const initialInteractionState = {
+    hoverSphere: null,
+  };
+
   function trackColor(state, resi) {
     if (!state.viewer) return;
     if (state.confidence)
       return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
     return "green";
   }
-
-	// const baseStyle = { cartoon: { color: "red" } };
-  // const baseStyle = {};
-
-	// !! VIEWERR PROVIDER SHOULD ONLY WRAP VIEWER AND CONTROLS, BUT LIKE
-	// THIS TO AVOID RECRECREATING PROVIDER ON RERENEDER - WHICH CAN BE FIXED
-	// WITH A USEMEMO IN THE SCOPED PROVIDER BUT THAT MAY BE HINDING SOMETHING
-	// UGLIER !!
 
   const drawAppearance = [
     {
@@ -85,43 +92,67 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
     },
   ];
 
+  function showSphere(state, resi, interctionState, interactionDispatch) {
+    const atom = state.atomsByResi.get(resi)[0];  // JUST USE FIRST ATOM FOR TRIAL
+    const sphere = state.viewer.addSphere({
+      center: {x: atom.x, y: atom.y, z: atom.z},
+        radius: 2,
+        color:'red',
+        opacity: 1,
+    });
+    interactionDispatch({ type: "setHoverSphere", value: sphere });
+  }
+
+  function removeSphere(state, resi, interctionState, interactionDispatch) {
+    state.viewer.removeShape(interctionState.hoverSphere);
+    interactionDispatch({ type: "setHoverSphere", value: null });
+  }
+
 	return (
-		<ViewerProvider initialState={initialState} reducer={reducer}>
-      <ViewerInteractionProvider>
-        <SectionItem
-          definition={definition}
-          entity={entity}
-          request={request}
-          renderDescription={() => <Description />}
-          renderBody={() => {
-            if (!request?.data?.target) return <></>;
-            return structureData ? (
+    <SectionItem
+      definition={definition}
+      entity={entity}
+      request={request}
+      renderDescription={() => <Description />}
+      renderBody={() => {
+        if (!request?.data?.target) return <></>;
+        return structureData ? (
+          <ViewerProvider
+            initialState={initialState}
+            reducer={reducer}
+          >
+            <ViewerInteractionProvider
+              initialState={initialInteractionState}
+              reducer={interactionReducer}
+            >
               <Box>
                 <Viewer
                   data={[{ structureData }]}
                   drawAppearance={drawAppearance}
+                  // onDraw={handleDraw}
                   trackColor={trackColor}
-                  // hoverAppearance={[{}]}
                   hoverAppearance={[
                     {
-                      selection: (state, resi) => ({ resi }),
-                      style: { stick: {}, sphere: { radius: 0.6 } },
-                      addStyle: true,
-                      unhoverSelection: {},
-                      unhoverStyle: drawAppearance.style,
-                      unhoverAddStyle: false,
+                      eventSelection: { atom: "CA" },
+                      // selection: (state, resi) => ({ resi }),
+                      // style: { stick: { hidden: false }, sphere: { radius: 0.6, hidden: false } },
+                      // addStyle: true,
+                      // unhoverStyle: { stick: { hidden: true }, sphere: { hidden: true } },
+                      // unhoverAddStyle: true,
+                      onApply: showSphere,
+                      unhoverOnApply: removeSphere,
                     }
                   ]}
                   />
                 <Controls />
               </Box>
-            ) : (
-              "NO STRUCTURE DATA!!!"
-            );
-          }}
-        />
-      </ViewerInteractionProvider>
-		</ViewerProvider>
+            </ViewerInteractionProvider>
+		      </ViewerProvider>
+        ) : (
+          "NO STRUCTURE DATA!!!"
+        );
+      }}
+    />
 	);
 }
 
@@ -129,18 +160,9 @@ function Controls() {
 	const viewerDispatch = useViewerDispatch();
 
 	function handleToggleColor() {
-		viewerDispatch({ type: "TOGGLE_CONFIDENCE" });
+		viewerDispatch({ type: "toggleConfidence" });
 	}
 
 	return <Button onClick={handleToggleColor}>Toggle color</Button>;
 }
 
-// drawAppearance={[{ style: { cartoon: { color: "green" } }}]}
-// hoverAppearance={[
-//   {
-//     selection: (state, atom) => ({ resi: atom.resi }),
-//     style: { stick: {}, sphere: { radius: 0.6 } },
-//     addStyle: true,
-//     unhoverStyle: baseStyle,
-//   },
-// ]}
