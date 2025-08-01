@@ -92,20 +92,38 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
     },
   ];
 
-  function showSphere(state, resi, interactionState, interactionDispatch) {
-    const atom = state.atomsByResi.get(resi)[0];  // JUST USE FIRST ATOM FOR TRIAL
-    const sphere = state.viewer.addSphere({
-      center: {x: atom.x, y: atom.y, z: atom.z},
-        radius: 2,
-        color: '#fbb',
-        opacity: 0.99,
+  // function showSphere(state, resi, interactionState, interactionDispatch) {
+  //   const atom = state.atomsByResi.get(resi)[0];  // JUST USE FIRST ATOM FOR TRIAL
+  //   const sphere = state.viewer.addSphere({
+  //     center: {x: atom.x, y: atom.y, z: atom.z},
+  //       radius: 2,
+  //       color: '#fbb',
+  //       opacity: 0.99,
+  //   });
+  //   interactionDispatch({ type: "setHoverSphere", value: sphere });
+  // }
+
+  // function removeSphere(state, resi, interactionState, interactionDispatch) {
+  //   state.viewer.removeShape(interactionState.hoverSphere);
+  //   interactionDispatch({ type: "setHoverSphere", value: null });
+  // }
+
+  function showSpheres(state, resi, interactionState, interactionDispatch) {
+    // const spheres = state.atomsByResi.get(resi).map(atom => {
+    state.atomsByResi.get(resi).map(atom => {
+      return state.viewer.addSphere({
+        center: {x: atom.x, y: atom.y, z: atom.z},
+        radius: 1.2,
+        color: '#bbb',
+        opacity: 0.6,
+      });
     });
-    interactionDispatch({ type: "setHoverSphere", value: sphere });
+    // interactionDispatch({ type: "setHoverSphere", value: spheres });
   }
 
-  function removeSphere(state, resi, interactionState, interactionDispatch) {
-    state.viewer.removeShape(interactionState.hoverSphere);
-    interactionDispatch({ type: "setHoverSphere", value: null });
+  function removeSpheres(state, resi, interactionState, interactionDispatch) {
+    state.viewer.removeAllShapes();
+    // interactionDispatch({ type: "setHoverSphere", value: null });
   }
 
 	return (
@@ -134,8 +152,8 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
                   hoverAppearance={[
                     {
                       eventSelection: { atom: "CA" },
-                      onApply: showSphere,
-                      leaveOnApply: removeSphere,
+                      onApply: showSpheres,
+                      leaveOnApply: removeSpheres,
                     }
                   ]}
                   clickAppearance={[
@@ -143,8 +161,9 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
                       selection: (state, resi) => ({ resi }),
                       style: { stick: { hidden: false }, sphere: { radius: 0.6, hidden: false } },
                       addStyle: true,
-                      leaveStyle: { stick: { hidden: true }, sphere: { hidden: true } },
-                      leaveAddStyle: true,
+                      // need to use setStyle to remove ball+stick - since this slows down hover
+                      leaveSelection: {},
+                      leaveStyle: drawAppearance[0].style,
                     }
                   ]}
                   />
