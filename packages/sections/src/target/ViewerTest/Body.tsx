@@ -92,19 +92,19 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
     },
   ];
 
-  function showSphere(state, resi, interctionState, interactionDispatch) {
+  function showSphere(state, resi, interactionState, interactionDispatch) {
     const atom = state.atomsByResi.get(resi)[0];  // JUST USE FIRST ATOM FOR TRIAL
     const sphere = state.viewer.addSphere({
       center: {x: atom.x, y: atom.y, z: atom.z},
         radius: 2,
-        color:'red',
-        opacity: 1,
+        color: '#fbb',
+        opacity: 0.99,
     });
     interactionDispatch({ type: "setHoverSphere", value: sphere });
   }
 
-  function removeSphere(state, resi, interctionState, interactionDispatch) {
-    state.viewer.removeShape(interctionState.hoverSphere);
+  function removeSphere(state, resi, interactionState, interactionDispatch) {
+    state.viewer.removeShape(interactionState.hoverSphere);
     interactionDispatch({ type: "setHoverSphere", value: null });
   }
 
@@ -134,13 +134,17 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
                   hoverAppearance={[
                     {
                       eventSelection: { atom: "CA" },
-                      // selection: (state, resi) => ({ resi }),
-                      // style: { stick: { hidden: false }, sphere: { radius: 0.6, hidden: false } },
-                      // addStyle: true,
-                      // unhoverStyle: { stick: { hidden: true }, sphere: { hidden: true } },
-                      // unhoverAddStyle: true,
                       onApply: showSphere,
-                      unhoverOnApply: removeSphere,
+                      leaveOnApply: removeSphere,
+                    }
+                  ]}
+                  clickAppearance={[
+                    {
+                      selection: (state, resi) => ({ resi }),
+                      style: { stick: { hidden: false }, sphere: { radius: 0.6, hidden: false } },
+                      addStyle: true,
+                      leaveStyle: { stick: { hidden: true }, sphere: { hidden: true } },
+                      leaveAddStyle: true,
                     }
                   ]}
                   />

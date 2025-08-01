@@ -37,6 +37,10 @@ export default function Viewer({
 
   const viewerRef = useRef(null);
   const oldHoveredResi = useRef(null);
+  const oldClickedResi = useRef(null);
+  const clickHandled = useRef(false);
+  const manipulating = useRef(false);
+  const startedManipulating = useRef(0);
 
   function resolveProperty(appearance, propertyName, ...args) {
     let value = appearance[propertyName];
@@ -65,22 +69,6 @@ export default function Viewer({
   useEffect(() => {
     let _viewer;
 
-    function enableHover() {
-      for (const appearance of hoverAppearance) {
-        _viewer.setHoverable(
-          appearance.eventSelection ?? {},
-          true,
-          atom => {
-            viewerInteractionDispatch({ type: "setHoveredResi", value: atom.resi });
-          },
-          atom => {
-            viewerInteractionDispatch({ type: "setHoveredResi", value: null });
-          }
-        );
-        _viewer.render();  // required to reactivate hover
-      }
-    }
-
     if (data && viewerRef.current) {
 
       // create viewer
@@ -92,9 +80,9 @@ export default function Viewer({
         upperZoomLimit: zoomLimit[1],
       });
       if (onDblClick) {
-        _viewer.getCanvas().ondblclick = event => {
+        _viewer.getCanvas().addEventListener("dblclick", event => {
           onDblClick(viewerState);
-        };
+        });
       }
       _viewer.setHoverDuration(hoverDuration);
 
@@ -117,27 +105,61 @@ export default function Viewer({
     }
 
     // interaction
-    if(viewerInteractionState) {
+    if (viewerInteractionState) {
 
       // disable hover when mousedown
       _viewer.getCanvas().addEventListener(
         "mousedown",
-        event => _viewer.setHoverable(false)
+        event => {
+          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+          manipulating.current = true;
+          startedManipulating.current = Date.now();
+        }
       );
       _viewer.getCanvas().addEventListener(
         "mouseup",
-        event => enableHover()
+        event => manipulating.current = false
       );
       
-      // click atom
+      // click event on canvas for 'click off' events
+      _viewer.getCanvas().addEventListener("click", event => {
+        setTimeout(() => {
+          if(
+            !clickHandled.current &&
+            Date.now() - startedManipulating.current < 250  // click rather than manipulate structure
+          ) {
+            viewerInteractionDispatch({ type: "setClickedResi", value: null });
+          }
+          clickHandled.current = false;
+        }, 0);
+      });
+
+      // click
       for (const appearance of clickAppearance) {
         _viewer.setClickable(appearance.eventSelection ?? {}, true, atom => {
-          viewerInteractionDispatch({ type: "setClickedResi", value: atom.resi });
+          viewerInteractionDispatch({ type: "setClickedResi", value: +atom.resi });
+          clickHandled.current = true;
         });
       }
 
-      // hover/unhover atom
-      enableHover();
+      // hover
+      for (const appearance of hoverAppearance) {
+        _viewer.setHoverable(
+          appearance.eventSelection ?? {},
+          true,
+          atom => {
+            if (!manipulating.current) {
+              viewerInteractionDispatch({ type: "setHoveredResi", value: +atom.resi });
+            }
+          },
+          atom => {
+            if (!manipulating.current) {
+              viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+            }
+          }
+        );
+        _viewer.render();  // required to reactivate hover
+      }
 
       // clear hover when leave canvas
       _viewer.getCanvas().onmouseleave = () => {
@@ -153,14 +175,32 @@ export default function Viewer({
   // update for change in clicked resi
   useEffect(() => {
     if (!viewer || !viewerInteractionState) return;
-    for (const [index, appearance] of clickAppearance.entries()) {
-      const a = { ...appearance };
-      const resi = viewerInteractionState.clickedResi;
-      if (!a.selection) a.selection = { resi };
-      applyAppearance(a, resi);
-      a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
-      if (index === clickAppearance.length - 1) viewer.render();
+
+    // unclick
+    if (oldClickedResi.current) {
+      for (const [index, appearance] of clickAppearance.entries()) {
+        const a = {...appearance };
+        const resi = Number(oldClickedResi.current);
+        if (!a.leaveSelection) a.leaveSelection = { resi };
+        applyAppearance(a, resi, "leaveSelection", "leaveStyle", "leaveAddStyle");
+        a.leaveOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
+        if (index === clickAppearance.length - 1) viewer.render();
+      }
     }
+
+    // click
+     if (viewerInteractionState.clickedResi) {
+      for (const [index, appearance] of clickAppearance.entries()) {
+        const a = { ...appearance };
+        const resi = Number(viewerInteractionState.clickedResi);
+        if (!a.selection) a.selection = { resi };
+        applyAppearance(a, resi);
+        a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
+        if (index === clickAppearance.length - 1) viewer.render();
+      }
+    }
+
+    oldClickedResi.current = viewerInteractionState.clickedResi;
   }, [viewer, viewerInteractionState?.clickedResi]);
 
   // update for change in hovered resi
@@ -171,10 +211,10 @@ export default function Viewer({
     if (oldHoveredResi.current) {
       for (const [index, appearance] of hoverAppearance.entries()) {
         const a = {...appearance };
-        const resi = oldHoveredResi.current;
-        if (!a.unhoverSelection) a.unhoverSelection = { resi };
-        applyAppearance(a, resi, "unhoverSelection", "unhoverStyle", "unhoverAddStyle");
-        a.unhoverOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
+        const resi = Number(oldHoveredResi.current);
+        if (!a.leaveSelection) a.leaveSelection = { resi };
+        applyAppearance(a, resi, "leaveSelection", "leaveStyle", "leaveAddStyle");
+        a.leaveOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
         if (index === hoverAppearance.length - 1) viewer.render();
       }
     }
@@ -183,7 +223,7 @@ export default function Viewer({
     if (viewerInteractionState.hoveredResi) {
       for (const [index, appearance] of hoverAppearance.entries()) {
         const a = {...appearance };
-        const resi = viewerInteractionState.hoveredResi;
+        const resi = Number(viewerInteractionState.hoveredResi);
         if (!a.selection) a.selection = { resi };
         applyAppearance(a, resi);
         a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);

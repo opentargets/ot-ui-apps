@@ -37,6 +37,10 @@ export default function ViewerTrack({ trackColor }) {
 
   function handleClick(event) {
     viewerInteractionDispatch({
+      type: "setHoveredResi",
+      value: null,
+    });
+    viewerInteractionDispatch({
       type: "setClickedResi",
       value: event.target.dataset.resi,
     });
@@ -98,8 +102,6 @@ export default function ViewerTrack({ trackColor }) {
       tooltip.style.display = "none";
     }
   }, [viewerInteractionState?.hoveredResi]);
-
-  // HANDLE CLICK ON TRACK!!
 
   if (!viewerInteractionState) return null;
 

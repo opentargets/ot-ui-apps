@@ -81,7 +81,12 @@ When creating the interaction state, the initial state object is copied and the 
 | `hoveredResi` | number | Residue index of hovered residue. |
 | `clickedResi` | number | Last clicked residue index. |
 
-These can be used as needed and are updated automatically from the structure and track. They can also be set manually, e.g.
+The reducer function passed to the provider is augmented with corresponding action types:
+
+- `setHoveredResi`: Set hovered residue index.
+- `setClickedResi`: Sel clicked residue index.
+
+These are automatically when hovering/clicked on the structure and track. They can also be set manually, e.g.
 
 ```js
 const viewerInteractionDispatch = useViewerInteractionDispatch();
@@ -91,6 +96,8 @@ viewerInteractionDispatch({
   value: 174,
 });
 ```
+
+**Note**: A click on the viewer canvas that does not set `clickedResi` to a value, sets `clickedResi` to `null` - i.e. it 'clicks off' the currently selected residue. 
 
 ## Appearance
 
@@ -116,17 +123,12 @@ An `eventAppearance` object describes a change triggered by changes to `hoveredR
 | `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
+| `leaveSelection` | `{ resi: eventResi }` | 3dMol `AtomSelectionSpec` \| `function` | As `selection` but selects atoms whose appearance change when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
+| `leaveStyle` | | 3dMol `AtomStyleSpec` \| `function` | As `style` but applied to atoms selected by `leaveSelection`. |
+| `leaveAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `leaveSelection`. |
+| `leaveOnApply` | | `function` | As `onApply` but applied when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
 
-And for hover events only: 
-
-| Property | Default | Type | Description |
-|----------|---------|------|-------------|
-| `unhoverSelection` | `{ resi: eventResi }` | 3dMol `AtomSelectionSpec` \| `function` | As `selection` but selects atoms whose appearance change on unhover. |
-| `unhoverStyle` | | 3dMol `AtomStyleSpec` \| `function` | As `style` but applied to atoms selected by `unhoverSelection`. |
-| `unhoverAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `unhoverSelection`. |
-| `unhoverOnApply` | | `function` | As `onApply` but applied after an unhover event. |
-
-**Note**: To call an arbitrary callback when `hoveredResi` or `clickedResi` changes, use the `onApply` property of an `eventAppearance` - and omit style if there should be no change in appearance.
+**Note**: To call an arbitrary callback when `hoveredResi` or `clickedResi` changes without an appearance change, use the `onApply` property of an `eventAppearance` and omit the `style` property.
 
 ## Viewer Props
 
