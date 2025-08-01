@@ -111,14 +111,16 @@ export default function Viewer({
       _viewer.getCanvas().addEventListener(
         "mousedown",
         event => {
-          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
           manipulating.current = true;
           startedManipulating.current = Date.now();
         }
       );
       _viewer.getCanvas().addEventListener(
         "mouseup",
-        event => manipulating.current = false
+        event => {
+          viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+          manipulating.current = false;
+        }
       );
       
       // click event on canvas for 'click off' events

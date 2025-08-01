@@ -86,7 +86,7 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
             ? a => getAlphaFoldConfidence(a, "color")
             : () => "green"
           },
-          arrows: true,
+          arrows: true,  // ?? ARROWS NOT SHOWING ??
         }
       ),
     },
