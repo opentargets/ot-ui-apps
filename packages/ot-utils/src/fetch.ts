@@ -13,4 +13,3 @@ export async function safeFetch(
     return [undefined, error];
   }
 }
-``

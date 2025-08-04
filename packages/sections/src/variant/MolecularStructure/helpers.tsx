@@ -1,8 +1,11 @@
+import { max, interpolateTurbo } from "d3";
 import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicityColor,
   aminoAcidLookup
 } from "@ot/constants";
+
+const sequentialColorFunction = interpolateTurbo;
 
 function showSpheres(state, resi, interactionState, interactionDispatch) {
   // const spheres = state.atomsByResi.get(resi).map(atom => {
@@ -24,15 +27,30 @@ function removeSpheres(state, resi, interactionState, interactionDispatch) {
 
 export const drawAppearance = [
   {
-    style: (state) => ({
-      cartoon: { 
-        colorfunc: state.confidence
-          ? a => getAlphaFoldConfidence(a, "color")
-          : () => "green"
-        },
-        arrows: true,  // ?? ARROWS NOT SHOWING ??
+    style: (state) => {
+      let cartoon;
+      switch (state.colorBy) {
+        case "confidence":
+          cartoon = { 
+            colorfunc: a => getAlphaFoldConfidence(a, "color"),
+          };
+          break;
+        case "pathogenicity":
+          cartoon = { 
+            colorfunc: state.pathogenicityScores 
+             ? a => getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(a.resi))
+             : a => "green"
+          };
+          break;
+        case "sequential":
+          cartoon = { 
+            colorfunc: a => sequentialColorFunction(a.resi / state.nResidues)
+          };
+          break;
       }
-    ),
+      cartoon.arrows = true;
+      return { cartoon };
+    },
   },
 ];
 
@@ -55,18 +73,28 @@ export const clickAppearance = [
 
 export function trackColor(state, resi) {
   if (!state.viewer) return;
-  if (state.confidence)
-    return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
-  return "green";
+  switch (state.colorBy) {
+    case "confidence":
+      return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
+    case "pathogenicity":
+      return state.pathogenicityScores
+        ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
+        : "green"
+    case "sequential":
+      return sequentialColorFunction(resi / state.nResidues);
+  }
 }
 
 // after load data into viewer, check variant's reference amino acid matches
 // amino acid at same position in structure data
 export function dataHandler(viewer, dispatch, row) {
-  const structureReferenceAminoAcid = viewer
-    .getModel()
-    .selectedAtoms()
-    .find(atom => atom.resi === row.aminoAcidPosition)?.resn;
+  const allAtoms = viewer.getModel().selectedAtoms();
+  dispatch({
+    type: "setNResidues",
+    value: max(allAtoms, atom => atom.resi),
+  });
+  const structureReferenceAminoAcid = 
+    allAtoms.find(atom => atom.resi === row.aminoAcidPosition)?.resn;
   if (aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid) {
     dispatch({
       type: "setMessage",

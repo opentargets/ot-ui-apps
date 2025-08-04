@@ -26,7 +26,7 @@ export async function fetchPathogenicityScores(uniprotId: string) {
 // - value (number): mean pathogenicity score over alternate amino acids
 export function meanPathogenicityScores(pathogenicityScores) {
   const meanScores = new Map();
-  for ([resi, group] of pathogenicityScores) {
+  for (const [resi, group] of pathogenicityScores) {
     meanScores.set(resi, mean(group, d => Number(d.am_pathogenicity)));
   }
   return meanScores;

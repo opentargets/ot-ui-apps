@@ -5,7 +5,12 @@ import { definition } from ".";
 import Description from "./Description";
 import MOLECULAR_STRUCTURE_QUERY from "./MolecularStructureQuery.gql";
 import StructureViewer from "./StructureViewer";
-import { initialState, reducer, initialInteractionState, interactionReducer } from "./context";
+import {
+  initialState,
+  reducer, 
+  // initialInteractionState,
+  // interactionReducer
+} from "./context";
 
 type BodyProps = {
   id: string;
@@ -43,10 +48,7 @@ export function Body({ id, entity }: BodyProps): ReactElement {
           initialState={initialState}
           reducer={reducer}
         >
-          <ViewerInteractionProvider
-            initialState={initialInteractionState}
-            reducer={interactionReducer}
-          >
+          <ViewerInteractionProvider>
             <StructureViewer row={proteinCodingCoordinatesRow} />
           </ViewerInteractionProvider>
         </ViewerProvider>

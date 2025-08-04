@@ -60,8 +60,8 @@ export const alphaFoldPathogenicityColorScale = scaleLinear()
 // only some of the scale breakpoints are meaningful for the legend
 alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
-export function getAlphaFoldPathogenicityColor(atom, scores) {
-  return alphaFoldPathogenicityColorScale(scores[atom.resi]);
+export function getAlphaFoldPathogenicityColor(score) {
+  return alphaFoldPathogenicityColorScale(score);
 }
 
 export const aminoAcidLookup = {

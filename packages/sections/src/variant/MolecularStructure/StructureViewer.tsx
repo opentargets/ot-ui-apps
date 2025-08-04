@@ -1,10 +1,5 @@
 import { Box } from "@mui/material";
-import {
-  Viewer,
-  useViewerDispatch,
-  useViewerInteractionState,
-  useViewerInteractionDispatch,
-} from "ui";
+import { Viewer, useViewerState, useViewerDispatch } from "ui";
 import {
   alphaFoldCifUrl,
   fetchPathogenicityScores,
@@ -20,11 +15,11 @@ import {
   clickAppearance,
   trackColor,
 } from "./helpers";
+import Controls from "./Controls";
 
 function StructureViewer({ row }) {
+  const viewerState = useViewerState();
   const viewerDispatch = useViewerDispatch();
-  const viewerInteractionState = useViewerInteractionState();
-  const viewerInteractionDispatch = useViewerInteractionDispatch();
   const [structureData, setStructureData] = useState(null);
   const [uniprotId, setUniprotId] = useState(null);
 
@@ -57,19 +52,19 @@ function StructureViewer({ row }) {
 
   // fetch pathogenicity data
   useEffect(() => {
-    if (viewerInteractionState.colorBy === "pathogenicity" &&
-        !viewerInteractionState.pathogenicityScores &&
+    if (viewerState.colorBy === "pathogenicity" &&
+        !viewerState.pathogenicityScores &&
         uniprotId) {
       async function fetchScores() {
         const [scoresByResi] = await fetchPathogenicityScores(uniprotId);
         if (!scoresByResi) return;
-        viewerInteractionDispatch({
+        viewerDispatch({
           type: "setPathogenicityScores",
           value: meanPathogenicityScores(scoresByResi),
         });        
         const computeVariantScore =
           row.referenceAminoAcid.length === 1 && row.alternateAminoAcid.length === 1;
-        viewerInteractionDispatch({
+        viewerDispatch({
           type: "setVariantPathogenicityScore",
           value: computeVariantScore
             ? pickPathogenicityScore(scoresByResi, row.aminoAcidPosition, row.alternateAminoAcid)
@@ -78,13 +73,14 @@ function StructureViewer({ row }) {
       }
       fetchScores();
     }
-  }, [row, structureData, viewerInteractionState.colorBy]);
+  }, [row, structureData, viewerState.colorBy]);
 
   if (!structureData) return null;
   
   return (
     // !! NEED TO ADD MESSAGE BOX OVER EVERYTHING !!
     <Box>
+      
       <Viewer
         data={[{ structureData }]}
         onData={(viewer, viewerStateDispatch) => {
@@ -95,7 +91,18 @@ function StructureViewer({ row }) {
         clickAppearance={clickAppearance}
         trackColor={trackColor}
       />
-      {/* <Controls /> */}
+      
+      {/* wrapper for controls and legend */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
+          flexDirection: { xs: "column", lg: "row" },
+        }}
+      >
+        <Controls />
+      </Box>
     </Box>
   );
 }
