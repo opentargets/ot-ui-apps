@@ -8,8 +8,9 @@ export async function safeFetch(
     if (!response.ok) {
       throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
     }
-    return [parseAs ? await response[parseAs]() : response, undefined];
+    return [(parseAs ? (await response[parseAs]()) : response), undefined];
   } catch (error) {
     return [undefined, error];
   }
 }
+``

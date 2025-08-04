@@ -9,3 +9,5 @@ export * from "./study";
 export * from "./literature";
 export * from "./variant";
 export * from "./createScopedContext";
+export * from "./alphaFold";
+

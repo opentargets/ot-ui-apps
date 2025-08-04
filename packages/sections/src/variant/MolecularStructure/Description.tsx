@@ -9,7 +9,6 @@ type DescriptionProps = {
   uniprotAccession: string;
 };
 
-// !! HARD CODE SOME OF DESCRIPTIPN FOR NOW !!
 function Description({
   variantId,
   referenceAllele,

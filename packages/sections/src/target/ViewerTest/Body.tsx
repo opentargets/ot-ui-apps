@@ -151,7 +151,7 @@ export default function Body({ id: ensemblId, label: symbol, entity }) {
                   trackColor={trackColor}
                   hoverAppearance={[
                     {
-                      eventSelection: { atom: "CA" },
+                      // eventSelection: { atom: "CA" },
                       onApply: showSpheres,
                       leaveOnApply: removeSpheres,
                     }

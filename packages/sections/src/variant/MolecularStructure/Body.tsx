@@ -1,10 +1,11 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
+import { SectionItem, ViewerProvider, ViewerInteractionProvider} from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import MOLECULAR_STRUCTURE_QUERY from "./MolecularStructureQuery.gql";
-import Viewer from "./Viewer";
+import StructureViewer from "./StructureViewer";
+import { initialState, reducer, initialInteractionState, interactionReducer } from "./context";
 
 type BodyProps = {
   id: string;
@@ -37,9 +38,19 @@ export function Body({ id, entity }: BodyProps): ReactElement {
           uniprotAccession={proteinCodingCoordinatesRow?.uniprotAccessions?.[0]}
         />
       )}
-      renderBody={() => {
-        return <Viewer row={proteinCodingCoordinatesRow} />;
-      }}
+      renderBody={() => (
+        <ViewerProvider
+          initialState={initialState}
+          reducer={reducer}
+        >
+          <ViewerInteractionProvider
+            initialState={initialInteractionState}
+            reducer={interactionReducer}
+          >
+            <StructureViewer row={proteinCodingCoordinatesRow} />
+          </ViewerInteractionProvider>
+        </ViewerProvider>
+      )}
     />
   );
 }

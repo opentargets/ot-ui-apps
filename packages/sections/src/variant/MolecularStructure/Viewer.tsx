@@ -28,7 +28,7 @@ import {
   drawVariantSurface,
   setVariantSurfaceColor,
   setHoverBehavior,
-} from "./ViewerHelpers";
+} from "./helpers";
 import { csvParse, mean } from "d3";
 import InfoPopper from "./InfoPopper";
 import { grey } from "@mui/material/colors";

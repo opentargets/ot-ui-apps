@@ -1,4 +1,82 @@
-import { getAlphaFoldConfidence, getAlphaFoldPathogenicityColor } from "@ot/constants";
+import {
+  getAlphaFoldConfidence,
+  getAlphaFoldPathogenicityColor,
+  aminoAcidLookup
+} from "@ot/constants";
+
+function showSpheres(state, resi, interactionState, interactionDispatch) {
+  // const spheres = state.atomsByResi.get(resi).map(atom => {
+  state.atomsByResi.get(resi).map(atom => {
+    return state.viewer.addSphere({
+      center: {x: atom.x, y: atom.y, z: atom.z},
+      radius: 1.2,
+      color: '#bbb',
+      opacity: 0.6,
+    });
+  });
+  // interactionDispatch({ type: "setHoverSphere", value: spheres });
+}
+
+function removeSpheres(state, resi, interactionState, interactionDispatch) {
+  state.viewer.removeAllShapes();
+  // interactionDispatch({ type: "setHoverSphere", value: null });
+}
+
+export const drawAppearance = [
+  {
+    style: (state) => ({
+      cartoon: { 
+        colorfunc: state.confidence
+          ? a => getAlphaFoldConfidence(a, "color")
+          : () => "green"
+        },
+        arrows: true,  // ?? ARROWS NOT SHOWING ??
+      }
+    ),
+  },
+];
+
+export const hoverAppearance = [
+  {
+    onApply: showSpheres,
+    leaveOnApply: removeSpheres,
+  }
+];
+
+export const clickAppearance = [
+  {
+    selection: (state, resi) => ({ resi }),
+    style: { stick: { hidden: false }, sphere: { radius: 0.6, hidden: false } },
+    addStyle: true,
+    leaveSelection: {},
+    leaveStyle: drawAppearance[0].style,
+  }
+];
+
+export function trackColor(state, resi) {
+  if (!state.viewer) return;
+  if (state.confidence)
+    return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
+  return "green";
+}
+
+// after load data into viewer, check variant's reference amino acid matches
+// amino acid at same position in structure data
+export function dataHandler(state, dispatch, row) {
+  debugger;
+  const structureReferenceAminoAcid = state.viewer
+    .getModel()
+    .selectedAtoms()
+    .find(atom => atom.resi === row.aminoAcidPosition)?.resn;
+  if (aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid) {
+    dispatch({
+      type: "setMessage",
+      value: "AlphaFold structure not available",
+    });
+  }
+}
+
+// OLD /////////////////////////////////////////////////////////////////////////
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
   let cx = 0,
