@@ -98,7 +98,7 @@ export default function Viewer({
 
       // load data into viewer`
       data.map(({ structureData }) => _viewer.addModel(structureData, "cif"));
-      onData?.(viewerState, viewerDispatch);
+      onData?.(_viewer, viewerDispatch);
 
       // set state viewer after load data - since state groups atoms by resi
       viewerDispatch({ type: '_setViewer', value: _viewer });

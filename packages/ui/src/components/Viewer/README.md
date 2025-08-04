@@ -136,7 +136,7 @@ An `eventAppearance` object describes a change triggered by changes to `hoveredR
 |-------|---------|------|------------|
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
-| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer state and viewer dispatch function. |
+| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. Typically used to validate the data loaded into the viewer - if there is a problem, use the dispatch function to set a flag. |
 | `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |

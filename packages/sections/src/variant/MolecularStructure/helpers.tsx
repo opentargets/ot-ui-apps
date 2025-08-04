@@ -62,9 +62,8 @@ export function trackColor(state, resi) {
 
 // after load data into viewer, check variant's reference amino acid matches
 // amino acid at same position in structure data
-export function dataHandler(state, dispatch, row) {
-  debugger;
-  const structureReferenceAminoAcid = state.viewer
+export function dataHandler(viewer, dispatch, row) {
+  const structureReferenceAminoAcid = viewer
     .getModel()
     .selectedAtoms()
     .find(atom => atom.resi === row.aminoAcidPosition)?.resn;

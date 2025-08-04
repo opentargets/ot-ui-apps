@@ -87,8 +87,8 @@ function StructureViewer({ row }) {
     <Box>
       <Viewer
         data={[{ structureData }]}
-        onData={(viewerState, viewerStateDispatch) => {
-          dataHandler(viewerState, viewerStateDispatch, row)
+        onData={(viewer, viewerStateDispatch) => {
+          dataHandler(viewer, viewerStateDispatch, row)
         }}
         drawAppearance={drawAppearance}
         hoverAppearance={hoverAppearance}
