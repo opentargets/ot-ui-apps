@@ -71,7 +71,7 @@ const columns = [
   },
   {
     id: "start",
-    label: "Enhancer Start",
+    label: "Interval Start",
     renderCell: ({ start }: { start: number }) => {
       if (!start) return naLabel;
       return start.toLocaleString();
@@ -80,7 +80,7 @@ const columns = [
   },
   {
     id: "end",
-    label: "Enhancer End",
+    label: "Interval End",
     renderCell: ({ end }: { end: number }) => {
       if (!end) return naLabel;
       return end.toLocaleString();
