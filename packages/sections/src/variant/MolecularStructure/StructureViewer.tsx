@@ -16,6 +16,8 @@ import {
   trackColor,
 } from "./helpers";
 import Controls from "./Controls";
+import AtomInfo from "./AtomInfo";
+import Legend from "./Legend";
 
 function StructureViewer({ row }) {
   const viewerState = useViewerState();
@@ -40,6 +42,12 @@ function StructureViewer({ row }) {
       if (_structureData) {
         setUniprotId(_uniprotId);
         setStructureData(_structureData);
+        viewerDispatch({
+          type: "setVariantResidues",
+          value: new Set(
+            row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
+          )
+        });
       } else {
         viewerDispatch({
           type: "setMessage",
@@ -78,7 +86,6 @@ function StructureViewer({ row }) {
   if (!structureData) return null;
   
   return (
-    // !! NEED TO ADD MESSAGE BOX OVER EVERYTHING !!
     <Box>
       
       <Viewer
@@ -90,11 +97,12 @@ function StructureViewer({ row }) {
         hoverAppearance={hoverAppearance}
         clickAppearance={clickAppearance}
         trackColor={trackColor}
+        bottomRight={<AtomInfo />}
       />
       
-      {/* wrapper for controls and legend */}
       <Box
         sx={{
+          mt: 0.5,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "start",
@@ -102,7 +110,9 @@ function StructureViewer({ row }) {
         }}
       >
         <Controls />
+        <Legend />
       </Box>
+    
     </Box>
   );
 }

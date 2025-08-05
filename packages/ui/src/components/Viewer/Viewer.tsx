@@ -308,6 +308,9 @@ export default function Viewer({
             bgcolor="#f8f8f8c8"
             sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
             fontSize={14}
+            height="50%"  // stops jumping when canvas overlaps top/bottom of window
+            display="flex"
+            alignItems="start"
           >
             {topLeft}
           </Box>
@@ -324,6 +327,9 @@ export default function Viewer({
             bgcolor="#f8f8f8c8"
             sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
             fontSize={14}
+            height="50%"  // stops jumping when canvas overlaps top/bottom of window
+            display="flex"
+            alignItems="end"
           >
             {bottomRight}
           </Box>

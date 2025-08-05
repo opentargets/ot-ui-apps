@@ -1,6 +1,7 @@
 export const initialState = {
   message: null,
   nResidues: null,
+  variantResidues: null,
   colorBy: "confidence",
   pathogenicityScores: null,
   variantPathogenicityScore: null,
@@ -12,6 +13,8 @@ export function reducer(state, action) {
       return { ...state, message: action.value };
     case "setNResidues":
       return { ...state, nResidues: action.value };
+    case "setVariantResidues":  
+      return { ...state, variantResidues: action.value };
     case "setColorBy": 
       return { ...state, colorBy: action.value };
     case "setVariantPathogenicityScore":
