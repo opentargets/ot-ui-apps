@@ -4,7 +4,7 @@ import { Variant } from "@ot/constants";
 export const definition = {
   id: "intervals",
   name: "Intervals",
-  shortName: "INT",
+  shortName: "IN",
   hasData: (data: Variant) => {
     return (data.intervals?.count || 0) > 0;
   },

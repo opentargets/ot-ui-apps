@@ -96,29 +96,27 @@ const columns = [
     },
     filterValue: ({ distanceToTSS }: { distanceToTSS: number }) => distanceToTSS?.toString() || "",
   },
-  {
-    id: "pmid",
-    label: "Publication",
-    renderCell: ({ pmid }: { pmid: string }) => {
-      if (!pmid) return naLabel;
-      const literatureList = [
-        {
-          name: pmid,
-          url: epmcUrl(pmid),
-          group: "literature",
-        },
-      ];
-      return (
-        <PublicationsDrawer 
-          entries={literatureList}
-          customLabel={pmid}
-          symbol=""
-          name=""
-        />
-      );
-    },
-    filterValue: ({ pmid }: { pmid: string }) => pmid || "",
-  },
+  // {
+  //   id: "pmid",
+  //   label: "Publication",
+  //   renderCell: ({ pmid }: { pmid: string }) => {
+  //     if (!pmid) return naLabel;
+  //     const literatureList = [
+  //       {
+  //         name: pmid,
+  //         url: epmcUrl(pmid),
+  //         group: "literature",
+  //       },
+  //     ];
+  //     console.log(literatureList)
+  //     return (
+  //       <PublicationsDrawer 
+  //         entries={literatureList}
+  //       />
+  //     );
+  //   },
+  //   filterValue: ({ pmid }: { pmid: string }) => pmid || "",
+  // },
 ];
 
 type BodyProps = {

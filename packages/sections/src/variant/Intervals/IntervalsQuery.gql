@@ -2,6 +2,8 @@ query IntervalsQuery($variantId: String!) {
   variant(variantId: $variantId) {
     id
     rsIds
+    referenceAllele
+    alternateAllele
     intervals(page: {size:3000, index : 1}) {
       count
       rows {
