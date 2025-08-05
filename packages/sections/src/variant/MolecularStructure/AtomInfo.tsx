@@ -53,7 +53,14 @@ function AtomInfo() {
   }
 
   return (
-    <Box display="flex" flexDirection="column">
+    <Box
+      display="flex"
+      flexDirection="column"
+      p="0.6rem 0.8rem"
+      bgcolor="#f8f8f8c8"
+      sx={{ borderTopLeftRadius: "0.2rem" }}
+      fontSize={14}
+    >
       <Typography variant="caption" component="p" textAlign="right">
         {resiAtom.resn}{" "}{hoveredResi}
       </Typography>

@@ -303,14 +303,11 @@ export default function Viewer({
             position="absolute"
             top={0}
             left={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8c8"
-            sx={{ borderBottomRightRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
             height="50%"  // stops jumping when canvas overlaps top/bottom of window
             display="flex"
             alignItems="start"
+            zIndex={100}
+            sx={{ pointerEvents: "none" }}
           >
             {topLeft}
           </Box>
@@ -322,14 +319,11 @@ export default function Viewer({
             position="absolute"
             bottom={0}
             right={0}
-            p="0.6rem 0.8rem"
-            zIndex={100}
-            bgcolor="#f8f8f8c8"
-            sx={{ borderTopLeftRadius: "0.2rem", pointerEvents: "none" }}
-            fontSize={14}
             height="50%"  // stops jumping when canvas overlaps top/bottom of window
             display="flex"
             alignItems="end"
+            zIndex={100}
+            sx={{ pointerEvents: "none" }}
           >
             {bottomRight}
           </Box>
