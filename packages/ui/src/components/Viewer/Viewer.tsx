@@ -79,6 +79,9 @@ export default function Viewer({
         lowerZoomLimit: zoomLimit[0],
         upperZoomLimit: zoomLimit[1],
       });
+
+      window._viewer = _viewer;  // !! REMOVE !!
+
       if (onDblClick) {
         _viewer.getCanvas().addEventListener("dblclick", event => {
           onDblClick(viewerState);

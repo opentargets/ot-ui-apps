@@ -7,22 +7,36 @@ import {
 
 const sequentialColorFunction = interpolateTurbo;
 
-function showSpheres(state, resi, interactionState, interactionDispatch) {
-  // const spheres = state.atomsByResi.get(resi).map(atom => {
-  state.atomsByResi.get(resi).map(atom => {
-    return state.viewer.addSphere({
-      center: {x: atom.x, y: atom.y, z: atom.z},
-      radius: 1.2,
-      color: '#bbb',
-      opacity: 0.6,
+function showOnHover(state, resi, interactionState, interactionDispatch) {
+  if (state.showGlobalSurface) {
+    state.viewer._hoverSurface = state.viewer.addSurface(
+      "VDW",
+      { opacity: 1, color: "#fff" },
+      { resi },
+      undefined,
+      undefined,
+      () => {} // include surface callback so addSurface returns surface id synchronously
+    );
+  } else {
+    state.atomsByResi.get(resi).map(atom => {
+      return state.viewer.addSphere({
+        center: {x: atom.x, y: atom.y, z: atom.z},
+        radius: 1.2,
+        color: '#bbb',
+        opacity: 0.6,
+      });
     });
-  });
-  // interactionDispatch({ type: "setHoverSphere", value: spheres });
+  }
 }
 
-function removeSpheres(state, resi, interactionState, interactionDispatch) {
-  state.viewer.removeAllShapes();
-  // interactionDispatch({ type: "setHoverSphere", value: null });
+function removeOnHover(state, resi, interactionState, interactionDispatch) {
+  if (state.showGlobalSurface) {
+    if (state.viewer._hoverSurface) {
+      state.viewer.removeSurface(state.viewer._hoverSurface);
+    }
+  } else {
+    state.viewer.removeAllShapes();
+  }
 }
 
 export const drawAppearance = [
@@ -52,12 +66,18 @@ export const drawAppearance = [
       return { cartoon };
     },
   },
+  // add clickspheres to variant residues so variant surface seems hoverable
+  {
+    selection: state => ({ resi: [...state.variantResidues]}),
+    style: { clicksphere: { radius: 1.5 } },
+    addStyle: true,
+  }
 ];
 
 export const hoverAppearance = [
   {
-    onApply: showSpheres,
-    leaveOnApply: removeSpheres,
+    onApply: showOnHover,
+    leaveOnApply: removeOnHover,
   }
 ];
 
@@ -103,6 +123,31 @@ export function dataHandler(viewer, dispatch, row) {
   }
 }
 
+// draw the variant surface after a redraw
+export function drawHandler(state) {
+  const { viewer, colorBy, variantPathogenicityScore } = state;
+  const color = colorBy === "confidence"
+    ? "lime"
+    : colorBy === "pathogenicity"
+      ? (variantPathogenicityScore
+          ? getAlphaFoldPathogenicityColor(variantPathogenicityScore)
+          : "lime"
+        )
+      : "lime";
+  viewer._variantSurfaceId = viewer.addSurface(
+    "VDW",
+    { opacity: 1, color },
+    { resi: [...state.variantResidues] },
+    undefined,
+    undefined,
+    () => {} // include surface callback so addSurface returns surface id synchronously
+  );
+  if (state.showGlobalSurface) {
+    viewer._globalSurface = 
+      viewer.addSurface("VDW", { opacity: 0.55, color: "#fff" }, {}, undefined, undefined, () => {});
+  }
+}
+
 // OLD /////////////////////////////////////////////////////////////////////////
 
 export function resetViewer(viewer, variantResidues, duration = 0) {
@@ -121,45 +166,7 @@ export function resetViewer(viewer, variantResidues, duration = 0) {
   viewer.zoomTo({ resi: [...variantResidues] }, duration);
 }
 
-export function onClickCapture(viewerRef, targetId) {
-  if (!viewerRef.current) return;
 
-  try {
-    // Get the canvas element from the container
-    const canvas = viewerRef.current.querySelector("canvas");
-
-    if (!canvas) {
-      console.error("Canvas element not found");
-      return;
-    }
-
-    // Create a new canvas with proper background
-    const newCanvas = document.createElement("canvas");
-    newCanvas.width = canvas.width;
-    newCanvas.height = canvas.height;
-
-    const ctx = newCanvas.getContext("2d");
-
-    // Draw background
-    ctx.fillRect(0, 0, newCanvas.width, newCanvas.height);
-
-    // Draw original canvas content on top
-    ctx.drawImage(canvas, 0, 0);
-
-    // Convert the new canvas to data URL
-    const dataUrl = newCanvas.toDataURL("image/png");
-
-    // Create a temporary link and trigger download
-    const link = document.createElement("a");
-    link.href = dataUrl;
-    link.download = `${targetId}-molecular-structure.png`;
-    link.click();
-  } catch (error) {
-    console.error("Error taking screenshot:", error);
-  } finally {
-    // setLoading(false);
-  }
-}
 
 export function drawCartoon({ viewer, colorBy, pathogenicityScores, variantResidues }) {
   const colorfunc = !colorBy

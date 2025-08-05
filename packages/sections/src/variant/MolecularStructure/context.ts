@@ -5,6 +5,7 @@ export const initialState = {
   colorBy: "confidence",
   pathogenicityScores: null,
   variantPathogenicityScore: null,
+  showGlobalSurface: true,
 };
 
 export function reducer(state, action) {
@@ -21,6 +22,8 @@ export function reducer(state, action) {
       return { ...state, variantPathogenicityScore: action.value };
     case "setPathogenicityScores":
       return { ...state, pathogenicityScores: action.value };
+    case "setPathogenicityScores":
+      return { ...state, showGlobalSurface: action.value };
     default:
       throw Error(`Invalid action type: ${action.type}`);
   }

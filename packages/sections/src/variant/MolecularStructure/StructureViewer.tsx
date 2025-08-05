@@ -13,6 +13,7 @@ import {
   drawAppearance,
   hoverAppearance,
   clickAppearance,
+  drawHandler,
   trackColor,
 } from "./helpers";
 import Controls from "./Controls";
@@ -96,6 +97,7 @@ function StructureViewer({ row }) {
         drawAppearance={drawAppearance}
         hoverAppearance={hoverAppearance}
         clickAppearance={clickAppearance}
+        onDraw={drawHandler}
         trackColor={trackColor}
         bottomRight={<AtomInfo />}
       />
