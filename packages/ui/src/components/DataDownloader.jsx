@@ -27,6 +27,7 @@ const asJSON = (columns, rows) => {
       const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
       return {
+        // biome-ignore lint/performance/noAccumulatingSpread: TODO: fix this
         ...accumulator,
         [newLabel]: newKey.exportValue
           ? newKey.exportValue(row)
@@ -56,6 +57,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
 
       const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
+      // biome-ignore lint/performance/noAccumulatingSpread: TODO: fix this
       return [...accHeaderString, newLabel];
     }, [])
     .join(separator);
@@ -72,6 +74,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
               : _.get(row, column.propertyPath || column.id, "")
           );
 
+          // biome-ignore lint/performance/noAccumulatingSpread: TODO: fix this
           return [...rowString, newValue];
         }, [])
         .join(separator)

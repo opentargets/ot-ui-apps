@@ -4,10 +4,10 @@ import { type ReactNode, createContext, useMemo } from "react";
 interface PlatformApiContextValue {
   entity: string;
   loading: boolean;
-  error?: any;
-  data?: any;
-  refetch: () => Promise<any>;
-  fetchMore: (options: any) => Promise<any>;
+  error?: unknown;
+  data?: unknown;
+  refetch: () => Promise<unknown>;
+  fetchMore: (options: unknown) => Promise<unknown>;
 }
 
 const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(undefined);
@@ -15,7 +15,7 @@ const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(un
 interface PlatformApiProviderProps {
   entity: string;
   query: DocumentNode;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   children: ReactNode;
 }
 

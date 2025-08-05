@@ -76,7 +76,6 @@ export function facetsReducer(state: FacetState, action: Action): FacetState {
     }
     default: {
       throw Error(`Unknown action: ${action}`);
-      return state;
     }
   }
 }

@@ -35,7 +35,7 @@ const GraphiQL = lazy(() =>
 
 type ApiPlaygroundDrawerProps = {
   query: string;
-  variables: any;
+  variables: unknown;
   fullHeight: boolean;
   inMenu?: boolean;
 };

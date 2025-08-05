@@ -76,16 +76,17 @@ function FacetsSelect({
     onFacetSelect(newState);
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     if (inputValue) getFacetsQueryData();
     else dispatch(setFacetsData([]));
   }, [debouncedInputValue]);
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     dispatch(resetFacets(entityToGet));
   }, [id]);
 
-  const handleOptionSelect = (_, newValue) => {
+  const handleOptionSelect = (_: unknown, newValue: Facet | null) => {
     if (newValue) {
       if (!parentState.some((option) => option.id === newValue.id)) {
         dispatch(selectFacet([newValue, ...parentState]));

@@ -40,7 +40,15 @@ function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksP
       {ids.length > limit ? (
         <span>
           {showMore ? "" : "... "}[{" "}
-          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
+          <span
+            className={classes.showMore}
+            onClick={() => setShowMore(!showMore)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setShowMore(!showMore);
+              }
+            }}
+          >
             {showMore ? " hide" : " show more"}
           </span>{" "}
           ]

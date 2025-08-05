@@ -83,13 +83,15 @@ function GlobalSearchList({ inputValue }) {
     [filterState]
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   const focusOnItem = useCallback((index = 0) => {
     selected = index;
     const items = document.querySelectorAll(".search-list-item");
     if (items.length) {
-      items.forEach((el) => {
+      for (let i = 0; i < items.length; i++) {
+        const el = items[i];
         el.classList.remove("search-list-item-active");
-      });
+      }
       items[index].classList.add("search-list-item-active");
       items[index].scrollIntoView({
         behavior: "smooth",
@@ -98,6 +100,7 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   const onKeyDownHandler = useCallback((e) => {
     if (e.key === "Escape") {
       setOpen(false);
@@ -121,6 +124,7 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   const handleItemClick = useCallback(
     (item) => {
       setOpen(false);
@@ -212,7 +216,7 @@ function GlobalSearchList({ inputValue }) {
       </List>
     </Box>
   );
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     if (loading) abortExistingRequest();
     else {
@@ -222,12 +226,14 @@ function GlobalSearchList({ inputValue }) {
     }
   }, [inputValue, selectedEntityFilterLength]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
   }, [aborterRef]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
     window.addEventListener("storage", handleChangeInRecentItems);

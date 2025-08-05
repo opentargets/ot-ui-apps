@@ -1,4 +1,5 @@
 import { Autocomplete, Select as MuiSlect, Popper, styled } from "@mui/material";
+import type { PopperProps } from "@mui/material";
 
 export const Select = styled(MuiSlect)(({ theme }) => ({
   minWidth: "150px",
@@ -8,21 +9,19 @@ export const Select = styled(MuiSlect)(({ theme }) => ({
   boxShadow: "none",
   fontSize: "0.8rem",
   ".MuiOutlinedInput-notchedOutline": {
-    // borderRight: 0,
     borderLeft: 0,
     borderTopRightRadius: 0,
     borderBottomRightRadius: 0,
     borderTopLeftRadius: 0,
-
     borderBottomLeftRadius: 0,
   },
 }));
 
-export const FacetsPopper = (props) => {
+export const FacetsPopper = (props: PopperProps) => {
   return <Popper {...props} style={{ width: "360px" }} placement="bottom-start" />;
 };
 
-export const FacetsAutocomplete = styled(Autocomplete)(({ theme }) => ({
+export const FacetsAutocomplete = styled(Autocomplete)(() => ({
   minWidth: "240px",
   flexWrap: "nowrap",
   ".MuiAutocomplete-popper": {

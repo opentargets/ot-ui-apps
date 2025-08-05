@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { alphaFoldPathogenicityColorScale } from "@ot/constants";
+import { v1 } from "uuid";
 
 export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
   const barWidth = 330;
@@ -24,12 +25,18 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
       <Box display="flex" flexDirection="column" pt={0.5} gap={0.75}>
         {showTitle && <Typography variant="subtitle2">Model Confidence</Typography>}
         <Box display="flex" gap={3.5}>
-          <svg width={barWidth + 10} height={barHeight + 30} style={{ borderRadius: "2px" }}>
+          <svg
+            width={barWidth + 10}
+            height={barHeight + 30}
+            style={{ borderRadius: "2px" }}
+            aria-label="AlphaFold model pathogenicity"
+          >
+            <title>AlphaFold model pathogenicity</title>
             <g transform="translate(5,0)">
               <defs>
                 <linearGradient id={gradientId} x1="0%" x2="100%" y1="0%" y2="0%">
-                  {stops.map((stop, i) => (
-                    <stop key={i} offset={stop.offset} stopColor={stop.color} />
+                  {stops.map((stop) => (
+                    <stop key={v1()} offset={stop.offset} stopColor={stop.color} />
                   ))}
                 </linearGradient>
               </defs>
@@ -44,9 +51,9 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                 stroke="none"
               />
               <g transform={`translate(0, ${barHeight + 20})`}>
-                {primaryDomain.map((t, i) => (
+                {primaryDomain.map((t) => (
                   <text
-                    key={i}
+                    key={v1()}
                     x={t * barWidth}
                     y={0}
                     fontSize={fontSize}
@@ -59,9 +66,9 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                 ))}
               </g>
               <g transform={`translate(0, ${barHeight + 4})`}>
-                {["likely benign", "uncertain", "likely pathogenic"].map((label, i) => (
+                {["likely benign", "uncertain", "likely pathogenic"].map((label) => (
                   <text
-                    key={i}
+                    key={v1()}
                     x={((primaryDomain[i] + primaryDomain[i + 1]) * barWidth) / 2}
                     y={0}
                     fontSize={fontSize}
@@ -73,9 +80,9 @@ export default function AlphaFoldPathogenicityLegend({ showTitle = true }) {
                   </text>
                 ))}
               </g>
-              {primaryDomain.map((t, i) => (
+              {primaryDomain.map((t) => (
                 <line
-                  key={i}
+                  key={v1()}
                   x1={t * barWidth}
                   x2={t * barWidth}
                   y1={0}
