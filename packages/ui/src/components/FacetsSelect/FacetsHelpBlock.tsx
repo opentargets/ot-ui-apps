@@ -1,10 +1,10 @@
-import { ReactElement, useState } from "react";
 import { Box, Collapse } from "@mui/material";
+import { type ReactElement, useState } from "react";
 
-import { ENTITY } from "./facetsTypes";
-import { Link } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "ui";
+import { ENTITY } from "./facetsTypes";
 
 const EXAMPLE = {
   [ENTITY.DISEASE]: "Eczema",
@@ -12,7 +12,6 @@ const EXAMPLE = {
 };
 
 function FacetsHelpBlock({ entityToGet }: { entityToGet: ENTITY }): ReactElement {
-
   const [open, setOpen] = useState(false);
   return (
     <Box sx={{ display: "flex", alignItems: "center", my: 1 }}>

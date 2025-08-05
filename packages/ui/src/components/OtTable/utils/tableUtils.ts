@@ -1,4 +1,4 @@
-import { DefaultSortProp, loadingTableRows } from "./table.types";
+import type { DefaultSortProp, loadingTableRows } from "./table.types";
 
 /*********************************************************************
  * FN TO CONVERT CLASSIC MUI TABLE COLUMNS TO TANSTACK TABLE COLUMNS *
@@ -8,7 +8,7 @@ export function mapTableColumnToTanstackColumns(
   allColumns: Record<string, unknown>[]
 ): Record<string, unknown>[] {
   const arr: Record<string, unknown>[] = [];
-  allColumns.forEach(e => {
+  allColumns.forEach((e) => {
     if (isNestedColumns(e)) {
       const headerObj = {
         header: e.header || e.label,
@@ -72,7 +72,7 @@ export function flattenObj(ob: Record<string, unknown>): Record<string, unknown>
   for (const i in ob) {
     if (typeof ob[i] === "object") {
       const temp = flattenObj(ob[i]);
-      for (const j in temp) result[i + "." + j] = temp[j];
+      for (const j in temp) result[`${i}.${j}`] = temp[j];
     } else result[i] = ob[i];
   }
   return result;
@@ -132,7 +132,7 @@ function mapToTanstackColumnObject(
     enableColumnFilter: originalTableObject.enableColumnFilter || false,
     filterFn: "equalsString",
     ...(originalTableObject.comparator && {
-      sortingFn: (rowA, rowB, column) =>
+      sortingFn: (rowA, rowB, _column) =>
         originalTableObject.comparator(rowA.original, rowB.original),
     }),
     accessorFn: (row: Record<string, unknown>) => {

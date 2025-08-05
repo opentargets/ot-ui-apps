@@ -1,8 +1,8 @@
-import { PropsWithChildren, createContext, useContext } from "react";
-import { Config, theme } from "@ot/config";
+import { type Config, theme } from "@ot/config";
+import { type PropsWithChildren, createContext, useContext } from "react";
+import { APIMetadataProvider } from "./APIMetadataProvider";
 import { OTApolloProvider } from "./OTApolloProvider/OTApolloProvider";
 import ThemeProvider from "./ThemeProvider/ThemeProvider";
-import { APIMetadataProvider } from "./APIMetadataProvider";
 
 type ContextType = {
   config: Config | null;

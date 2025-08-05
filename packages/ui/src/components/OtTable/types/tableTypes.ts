@@ -1,5 +1,5 @@
-import { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
-import { ColumnDef, Row, Table } from "@tanstack/table-core";
+import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
+import type { ColumnDef, Row, Table } from "@tanstack/table-core";
 
 export const INIT_PAGE_SIZE = 10;
 
@@ -12,7 +12,7 @@ export type DefaultSortProp =
       {
         id: string;
         desc: boolean;
-      }
+      },
     ]
   | undefined;
 
@@ -74,11 +74,11 @@ export type OtTableSSPProps = {
 };
 
 export type OtTableSSPState = {
-  count: number;
+  count: unknown | number;
   loading: boolean;
-  rows: Array<unknown>;
-  cursor: null | string;
-  freeTextQuery: null | string;
+  rows: unknown | Array<unknown>;
+  cursor: unknown | string;
+  freeTextQuery: unknown | string;
   initialLoading: boolean;
 };
 

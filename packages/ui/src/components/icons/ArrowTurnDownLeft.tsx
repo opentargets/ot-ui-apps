@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((_theme) => ({
   mainIcon: {
     width: "1em",
     display: "flex",
@@ -17,6 +17,8 @@ function ArrowTurnDownLeft(): ReactNode {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 443.18 334.88"
       className={classes.mainIcon}
+      aria-label="Arrow Turn Down Left Icon"
+      role="img"
     >
       <defs>
         <style>

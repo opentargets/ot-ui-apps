@@ -5,7 +5,7 @@ export function createSummaryFragment(sections, entity, fragmentName) {
   const sectionFragmentNames = [];
   const fragmentNameStr = fragmentName || `${entity}ProfileSummaryFragment`;
 
-  sections.forEach(Summary => {
+  sections.forEach((Summary) => {
     if (!Summary.fragments) return;
 
     const sectionFragmentName = Object.keys(Summary.fragments)[0];
@@ -17,7 +17,9 @@ export function createSummaryFragment(sections, entity, fragmentName) {
   return gql`
     fragment ${fragmentNameStr} on ${entity} {
       ${
-        sectionFragmentNames.length ? sectionFragmentNames.map(sfn => `...${sfn}`).join("\n") : "id"
+        sectionFragmentNames.length
+          ? sectionFragmentNames.map((sfn) => `...${sfn}`).join("\n")
+          : "id"
       }
     }
     ${sectionFragments.reduce(
@@ -28,7 +30,6 @@ export function createSummaryFragment(sections, entity, fragmentName) {
       ""
     )}
   `;
-
 }
 
 export function createShortName(definition) {
@@ -37,7 +38,7 @@ export function createShortName(definition) {
     definition.name
       .split(" ")
       .slice(0, 2)
-      .map(w => w[0].toUpperCase())
+      .map((w) => w[0].toUpperCase())
       .join("")
   );
 }

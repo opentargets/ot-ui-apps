@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Widget } from "sections";
+import type { Widget } from "sections";
 import usePermissions from "../../hooks/usePermissions";
 import SectionLoader from "./SectionLoader";
 
@@ -14,7 +14,7 @@ function SectionsRenderer({ id, label, entity, widgets }: SectionsRendererProps)
   const { isPartnerPreview } = usePermissions();
   return (
     <>
-      {widgets.map(widget => {
+      {widgets.map((widget) => {
         const Body = widget.getBodyComponent();
         const isPrivate = widget.definition.isPrivate;
         if (isPrivate && !isPartnerPreview) {

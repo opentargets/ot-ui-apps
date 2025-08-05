@@ -1,5 +1,5 @@
-import { makeStyles } from "@mui/styles";
 import { Tooltip as MUITooltip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { merge } from "lodash";
 
 function Tooltip({
@@ -10,7 +10,7 @@ function Tooltip({
   placement = "top",
   ...props
 }) {
-  const classes = makeStyles(theme =>
+  const classes = makeStyles((theme) =>
     merge(style, {
       tooltip: {
         backgroundColor: `${theme.palette.background.paper} !important`,

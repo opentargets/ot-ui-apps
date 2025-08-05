@@ -1,9 +1,9 @@
-import { Box, Grid, Skeleton, SxProps, Theme, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, type SxProps, type Theme, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ReactElement, ReactNode } from "react";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import type { ReactElement, ReactNode } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   externalLinks: {

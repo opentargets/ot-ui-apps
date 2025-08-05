@@ -1,5 +1,5 @@
-import { useContext } from "react";
 import { filter } from "graphql-anywhere";
+import { useContext } from "react";
 
 import { PlatformApiContext } from "../providers/PlatformApiProvider";
 
