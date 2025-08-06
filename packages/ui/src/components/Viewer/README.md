@@ -110,8 +110,6 @@ An `appearance` object is a description of what to show in the viewer and how:
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
-After a change in state, everything is hidden then appearances are applied in the original order.
-
 ### Click and Hover
 
 An `eventAppearance` object describes a change triggered by changes to `hoveredResi` or `clickedResi` (see [Viewer Interaction Provider](#viewer-interaction-provider])): 
@@ -136,7 +134,7 @@ An `eventAppearance` object describes a change triggered by changes to `hoveredR
 |-------|---------|------|------------|
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
-| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. Typically used to validate the data loaded into the viewer - if there is a problem, use the dispatch function to set a flag. |
+| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. |
 | `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
@@ -154,6 +152,8 @@ Notes:
 - The viewer only tracks hovering of atoms that are selected by at least one appearance object in `hoverSelection`. Even `hoverAppearance: [{}]` is sufficient to include all atoms since appearance objects select all atoms by default. Similalarly, an atom must be selected by a `clickAppearance` object for the viewer to track clicks.
 
 - If used, the track represents the first structure and assumes residues are indexed from 1 and are contiguous - as with AlphaFold structures.
+
+- Example use case for `onData`: validate data loaded into the viewer - if there is a problem, use the dispatch function to set a flag.
 
 ## Notes
 

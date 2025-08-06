@@ -2,10 +2,10 @@ export const initialState = {
   message: null,
   nResidues: null,
   variantResidues: null,
-  colorBy: "confidence",
+  representBy: "surface",  // "cartoon" | "surface" | "both" 
+  colorBy: "confidence",   // "confidence" | "pathogenicity" | "sequential"
   pathogenicityScores: null,
   variantPathogenicityScore: null,
-  showGlobalSurface: true,
 };
 
 export function reducer(state, action) {
@@ -15,15 +15,15 @@ export function reducer(state, action) {
     case "setNResidues":
       return { ...state, nResidues: action.value };
     case "setVariantResidues":  
-      return { ...state, variantResidues: action.value };
+    return { ...state, variantResidues: action.value };
+    case "setRepresentBy":
+      return { ...state, representBy: action.value };
     case "setColorBy": 
       return { ...state, colorBy: action.value };
     case "setVariantPathogenicityScore":
       return { ...state, variantPathogenicityScore: action.value };
     case "setPathogenicityScores":
       return { ...state, pathogenicityScores: action.value };
-    case "setPathogenicityScores":
-      return { ...state, showGlobalSurface: action.value };
     default:
       throw Error(`Invalid action type: ${action.type}`);
   }

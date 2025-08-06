@@ -242,10 +242,6 @@ export default function Viewer({
   // draw/redraw
   useEffect(() => {
     if (!viewer) return;
-    viewer.removeAllShapes();
-    viewer.removeAllSurfaces();
-    viewer.removeAllLabels();
-    viewer.setStyle({}, { hidden: true });
     viewerInteractionDispatch?.({ type: "setHoveredResi", value: null });
     viewerInteractionDispatch?.({ type: "setClickedResi", value: null });
     for (const appearance of drawAppearance) {
