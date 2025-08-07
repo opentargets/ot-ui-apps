@@ -126,7 +126,7 @@ function StructureViewer({ row }) {
         }}
         drawAppearance={drawAppearance}
         hoverAppearance={hoverAppearance}
-        // clickAppearance={clickAppearance}
+        clickAppearance={clickAppearance}
         onDraw={drawHandler}
         trackColor={trackColor}
         bottomRight={<AtomInfo />}

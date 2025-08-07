@@ -42,7 +42,14 @@ export function Body({ id, entity }: BodyProps): ReactElement {
       )}
       renderBody={() => (
         <ViewerProvider
-          initialState={initialState}
+          initialState={{
+            ...initialState,
+            variantSummary: `${
+              proteinCodingCoordinatesRow.referenceAminoAcid}${
+              proteinCodingCoordinatesRow.aminoAcidPosition}${
+              proteinCodingCoordinatesRow.alternateAminoAcid
+            }`
+          }}
           reducer={reducer}
         >
           <ViewerInteractionProvider>

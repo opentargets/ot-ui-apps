@@ -1,4 +1,5 @@
 import { max, interpolateTurbo } from "d3";
+import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicityColor,
@@ -6,6 +7,19 @@ import {
 } from "@ot/constants";
 
 const sequentialColorFunction = interpolateTurbo;
+
+const labelStyle =   {
+  alignment: "center",
+  screenOffset: new Vector2(28, -28),
+  backgroundColor: "#fff",
+  backgroundOpacity: 0.9,
+  borderColor: "#999",
+  borderThickness: 1.5,
+  font: "'Inter', sans-serif",
+  fontColor: "#000",
+  fontSize: 12.6,
+  inFront: true,
+};
 
 function showOnHover(state, resi) {
   switch (state.representBy) {
@@ -118,7 +132,7 @@ export function drawHandler(state) {
   const { viewer } = state;
   const variantSurfaceStyle = getVariantSurfaceStyle(state);
   const globalSurfaceStyle = getGlobalSurfaceStyle(state);
-  if (!viewer._variantSurfaceId) {  // first draw: create variant surface and global surface
+  if (!viewer._variantSurfaceId) {  // first draw: create variant surface, global surface and variant label
     viewer._variantSurfaceId = viewer.addSurface(
       "VDW",
       variantSurfaceStyle,
@@ -135,6 +149,11 @@ export function drawHandler(state) {
       undefined,
       () => {}
     );
+    _viewer.addLabel(
+      ` ${state.variantSummary} `,
+      labelStyle,
+      { resi: [...state.variantResidues][0] }
+    );
   }
   viewer.setSurfaceMaterialStyle(viewer._variantSurfaceId, variantSurfaceStyle);
   viewer.setSurfaceMaterialStyle(viewer._globalSurfaceId, globalSurfaceStyle);
@@ -147,18 +166,28 @@ export const hoverAppearance = [
   }
 ];
 
-// export const clickAppearance = [
-//   {
-//     selection: (state, resi) => ({ resi }),
-//     style: state => ({
-//       stick: { colorfunc: atom => getResiColor(state, resi) },
-//       sphere: { colorfunc: atom => getResiColor(state, resi), radius: 0.6 }
-//     }),
-//     addStyle: true,
-//     leaveSelection: {},
-//     leaveStyle: drawAppearance[0].style,
-//   }
-// ];
+export const clickAppearance = [
+  {
+    selection: (state, resi) => ({ resi }),
+    style: state => ({
+      stick: { colorfunc: atom => getResiColor(state, atom.resi) },
+      sphere: { colorfunc: atom => getResiColor(state, atom.resi), radius: 0.6 }
+    }),
+    addStyle: true,
+    leaveSelection: {},
+    leaveStyle: drawAppearance[1].style,
+    onApply: (state, resi) => {
+      state.viewer._clickedLabelId = _viewer.addLabel(
+        ` ${resi} ${state.atomsByResi.get(resi)[0].resn} `,
+        labelStyle,
+        { resi }
+      );
+    },
+    leaveOnApply: (state, resi) => {
+      state.viewer.removeLabel(state.viewer._clickedLabelId);
+    }
+  }
+];
 
 export function trackColor(state, resi) {
   if (!state.viewer) return;

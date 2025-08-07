@@ -16,7 +16,6 @@ function Legend() {
   } = viewerState;
 
   return (
-    // <Box sx={{ mt: { xs: 0, lg: 1} }}>
     <Box>
       {/* explanatory text */}
       {colorBy === "pathogenicity" && pathogenicityScores && (

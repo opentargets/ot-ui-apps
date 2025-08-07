@@ -2,6 +2,7 @@ export const initialState = {
   message: null,
   nResidues: null,
   variantResidues: null,
+  variantSummary: null,
   representBy: "cartoon",  // "cartoon" | "surface" | "both" 
   colorBy: "confidence",   // "confidence" | "pathogenicity" | "sequential"
   pathogenicityScores: null,
@@ -15,7 +16,9 @@ export function reducer(state, action) {
     case "setNResidues":
       return { ...state, nResidues: action.value };
     case "setVariantResidues":  
-    return { ...state, variantResidues: action.value };
+      return { ...state, variantResidues: action.value };
+    case "setVariantSummary":  
+      return { ...state, variantSummary: action.value };
     case "setRepresentBy":
       return { ...state, representBy: action.value };
     case "setColorBy": 
