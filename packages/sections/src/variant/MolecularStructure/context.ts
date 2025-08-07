@@ -2,7 +2,7 @@ export const initialState = {
   message: null,
   nResidues: null,
   variantResidues: null,
-  representBy: "surface",  // "cartoon" | "surface" | "both" 
+  representBy: "cartoon",  // "cartoon" | "surface" | "both" 
   colorBy: "confidence",   // "confidence" | "pathogenicity" | "sequential"
   pathogenicityScores: null,
   variantPathogenicityScore: null,

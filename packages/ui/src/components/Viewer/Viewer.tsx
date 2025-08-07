@@ -34,8 +34,9 @@ export default function Viewer({
   const viewerDispatch = useViewerDispatch();
   const viewerInteractionState = useViewerInteractionState();
   const viewerInteractionDispatch = useViewerInteractionDispatch();
-
   const viewerRef = useRef(null);
+  const hoverTimeout = useRef(null);
+  const tempHoveredResi = useRef(null);
   const oldHoveredResi = useRef(null);
   const oldClickedResi = useRef(null);
   const clickHandled = useRef(false);
@@ -64,6 +65,11 @@ export default function Viewer({
       resolvedStyle
     );
   }
+
+  // keep ref in sync
+  useEffect(() => {
+    tempHoveredResi.current = viewerInteractionState.hoveredResi;
+  }, [viewerInteractionState.hoveredResi]);
 
   // create viewer and load data
   useEffect(() => {
@@ -152,15 +158,29 @@ export default function Viewer({
         _viewer.setHoverable(
           appearance.eventSelection ?? {},
           true,
+          // use tempHoveredResi and setTimeout to prevent flicker when hover aross
+          // different atoms on same residue
           atom => {
-            if (!manipulating.current) {
+            if (hoverTimeout.current) {
+              clearTimeout(hoverTimeout.current);
+              hoverTimeout.current = null;
+            }
+            if (!manipulating.current && viewerInteractionState.hoveredResi !== +atom.resi) {
               viewerInteractionDispatch({ type: "setHoveredResi", value: +atom.resi });
+              // tempHoveredResi.current = +atom.resi;
             }
           },
           atom => {
-            if (!manipulating.current) {
-              viewerInteractionDispatch({ type: "setHoveredResi", value: null });
-            }
+            hoverTimeout.current = setTimeout(() => {
+              if (!manipulating.current &&
+                  // viewerInteractionState.hoveredResi === +atom.resi //&&
+                  tempHoveredResi.current === +atom.resi
+              ) {
+                viewerInteractionDispatch({ type: "setHoveredResi", value: null });
+                tempHoveredResi.current = null;
+              }
+              hoverTimeout.current = null;
+            }, 50);
           }
         );
         _viewer.render();  // required to reactivate hover

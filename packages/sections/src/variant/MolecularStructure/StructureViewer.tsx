@@ -16,9 +16,10 @@ import {
   drawHandler,
   trackColor,
 } from "./helpers";
-import Controls from "./Controls";
 import AtomInfo from "./AtomInfo";
 import Legend from "./Legend";
+import Radios from "./Radios";
+import { initialState } from "./context";
 
 function StructureViewer({ row }) {
   const viewerState = useViewerState();
@@ -85,7 +86,36 @@ function StructureViewer({ row }) {
   }, [row, structureData, viewerState.colorBy]);
 
   if (!structureData) return null;
-  
+
+  // structure options
+  const structureOptions = {
+    cartoon: "cartoon",
+    surface: "surface",
+    both: "both",
+  };
+
+  function handleStructureChange(event) {
+    viewerDispatch({
+      type: "setRepresentBy",
+      value: event.target.value,
+    });
+  }
+
+  // color options
+  const colorOptions = {
+    confidence: "confidence",
+    pathogenicity: "pathogenicity",
+    sequential: "sequential",
+  };
+
+  function handleColorChange(event) {
+    viewerDispatch({
+      type: "setColorBy",
+      value: event.target.value,
+    });
+  }
+
+
   return (
     <Box>
       
@@ -111,8 +141,23 @@ function StructureViewer({ row }) {
           flexDirection: { xs: "column", lg: "row" },
         }}
       >
-        <Controls />
-        <Legend />
+        <Radios
+          titleLabel="Structure"
+          options={structureOptions}
+          defaultValue={initialState.representBy}
+          stateProperty="representBy"
+          handleChange={handleStructureChange}
+        />
+        <Box>
+          <Radios
+            titleLabel="Colour"
+            options={colorOptions}
+            defaultValue={initialState.colorBy}
+            stateProperty="colorBy"
+            handleChange={handleColorChange}
+          />
+          <Legend />
+        </Box>
       </Box>
     
     </Box>

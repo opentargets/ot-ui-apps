@@ -26,7 +26,7 @@ function Description({
           alternateAllele={alternateAllele}
         />
       </strong>{" "}
-      reference amino acid highlighted in predicted structural model of{" "}
+      reference amino acid highlighted in AlphaFold predicted model of{" "}
       <Link to={`/target/${targetId}`}>{targetApprovedSymbol}</Link>. Source:{" "}
       <Link external to={`https://alphafold.ebi.ac.uk/entry/${uniprotAccession}`}>
         AlphafoldDB

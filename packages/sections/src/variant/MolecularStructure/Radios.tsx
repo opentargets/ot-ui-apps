@@ -7,20 +7,11 @@ import {
   RadioGroup,
   Radio,
 } from "@mui/material";
-import { useViewerState, useViewerDispatch } from "ui";
-import { initialState } from "./context";
+import { useViewerState } from "ui";
 
-function Controls() {
+function Radios({ titleLabel, options, defaultValue, stateProperty, handleChange }) {
 
   const viewerState = useViewerState();
-  const viewerDispatch = useViewerDispatch();
-
-  function handleToggleColor(event) {
-    viewerDispatch({
-      type: "setColorBy",
-      value: event.target.value,
-    });
-  }
 
   return (
     <Box
@@ -40,27 +31,25 @@ function Controls() {
               },
             }}
           >
-            <Typography variant="subtitle2">AlphaFold model colour:</Typography>
+            <Typography variant="subtitle2">{titleLabel}:</Typography>
           </FormLabel>
           <RadioGroup
             row
-            defaultValue={initialState.colorBy}
-            name="color-by-group"
-            value={viewerState.colorBy}
-            onChange={handleToggleColor}
+            defaultValue={defaultValue}
+            value={viewerState[stateProperty]}
+            onChange={handleChange}
           >
-            {
-              ["confidence", "pathogenicity", "sequential"].map((colorBy, index, array) => (
+            {Object.entries(options).map(([label, value], index, array) => (              
                 <FormControlLabel
-                  key={colorBy}
-                  value={colorBy}
+                  key={label}
+                  value={value}
                   control={<Radio size="small" />}
-                  label={colorBy}
+                  label={label}
                   slotProps={{
                     typography: { variant: "body2" },
                   }}
                   sx={{
-                    mr: colorBy === array.at(-1) ? 0 : 2,
+                    mr: label === array.at(-1)[0] ? 0 : 2,
                     "& .MuiFormControlLabel-label": {
                       marginLeft: -0.7,
                     },
@@ -76,4 +65,4 @@ function Controls() {
 
 }
 
-export default Controls;
+export default Radios;

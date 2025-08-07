@@ -14,44 +14,34 @@ function showOnHover(state, resi) {
         state.viewer.addSphere({
           center: {x: atom.x, y: atom.y, z: atom.z},
           radius: 1.15,
-          // color: '#bbb',
           color: getResiColor(state, resi),
           opacity: 0.7,
         });
       }
       break;
     case "both":
-      state.viewer._hoverSurface = state.viewer.addSurface(
-        "VDW",
-        { opacity: 1, colorfunc: atom => getResiColor(state, atom.resi) },
-        // { opacity: 1, color: "#fff" },
-        { resi },
-        undefined,
-        undefined,
-        () => {} // include surface callback so addSurface returns surface id synchronously
+      state.viewer.setSurfaceMaterialStyle(
+        state.viewer._globalSurfaceId,
+        getGlobalSurfaceStyle(state, resi)
       );
       break;    
     case "surface":
-      const color = getResiColor(state, resi);
-      for (const atom of state.atomsByResi.get(resi)) {
-        state.viewer.addSphere({
-          center: {x: atom.x, y: atom.y, z: atom.z},
-          radius: 2,
-          color,
-          opacity: 1,
-        });
-      }
+      state.viewer.setSurfaceMaterialStyle(
+        state.viewer._globalSurfaceId,
+        getGlobalSurfaceStyle(state, resi)
+      );
       break;
   }
 }
 
 function removeOnHover(state) {
-  if (state.representBy === "both") {
-    if (state.viewer._hoverSurface) {
-      state.viewer.removeSurface(state.viewer._hoverSurface);
-    }
-  } else {
+  if (state.representBy === "cartoon") {
     state.viewer.removeAllShapes();
+  } else {
+    state.viewer.setSurfaceMaterialStyle(
+      state.viewer._globalSurfaceId,
+      getGlobalSurfaceStyle(state)
+    );
   }
 }
 
@@ -60,7 +50,7 @@ function getResiColor(state, resi) {
     case "confidence": return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
     case "pathogenicity": return state.pathogenicityScores 
       ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
-      : "#888"
+      : "#ddd"
     case "sequential": return sequentialColorFunction(resi / state.nResidues);
   }
 }
@@ -106,15 +96,21 @@ function getVariantSurfaceStyle(state) {
   };
 }
 
-function getGlobalSurfaceStyle(state) {
+function getGlobalSurfaceStyle(state, highlightResi) {
   return {
     visible: state.representBy !== "cartoon",
     opacity: state.representBy === "both" ? 0.55 : 1,
     colorfunc: state.representBy === "both"
-      ? atom => "#fff"
-      : atom => state.variantResidues.has(atom.resi)
+      ? atom => (atom.resi === highlightResi
+        ? getResiColor(state, atom.resi)
+        : "#fff"
+      )
+      : atom => (state.variantResidues.has(atom.resi)
         ? getVariantColor(state)
-        : getResiColor(state, atom.resi)
+        : atom.resi === highlightResi
+          ? "red"
+          : getResiColor(state, atom.resi)
+        )
   };
 }
 
@@ -140,7 +136,6 @@ export function drawHandler(state) {
       () => {}
     );
   }
-  console.log(globalSurfaceStyle)
   viewer.setSurfaceMaterialStyle(viewer._variantSurfaceId, variantSurfaceStyle);
   viewer.setSurfaceMaterialStyle(viewer._globalSurfaceId, globalSurfaceStyle);
 }
