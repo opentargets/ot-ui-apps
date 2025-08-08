@@ -36,7 +36,6 @@ export default function Viewer({
   const viewerInteractionDispatch = useViewerInteractionDispatch();
   const viewerRef = useRef(null);
   const hoverTimeout = useRef(null);
-  const tempClickedResi = useRef(null);
   const tempHoveredResi = useRef(null);
   const oldHoveredResi = useRef(null);
   const oldClickedResi = useRef(null);
@@ -65,9 +64,6 @@ export default function Viewer({
   }
 
   // keep ref in sync
-  useEffect(() => {
-    tempClickedResi.current = viewerInteractionState.clickedResi;
-  }, [viewerInteractionState.clickedResi]);
   useEffect(() => {
     tempHoveredResi.current = viewerInteractionState.hoveredResi;
   }, [viewerInteractionState.hoveredResi]);
@@ -271,20 +267,12 @@ export default function Viewer({
   // draw/redraw
   useEffect(() => {
     if (!viewer) return;
-    const clickedResi = tempClickedResi.current;
-    viewerInteractionDispatch?.({ type: "setHoveredResi", value: null });
-    viewerInteractionDispatch?.({ type: "setClickedResi", value: null });
     for (const appearance of drawAppearance) {
       if (!appearance.use || appearance.use(viewerState)) {
         applyAppearance(appearance);
       }
     }
     onDraw?.(viewerState);
-    if (clickedResi) {
-      setTimeout(() => {
-        viewerInteractionDispatch?.({ type: "setClickedResi", value: clickedResi });
-      }, 0);
-    }
     viewer.render();
   }, [viewerState]);
 
