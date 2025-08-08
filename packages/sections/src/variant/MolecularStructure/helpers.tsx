@@ -25,26 +25,20 @@ const labelStyle =   {
 };
 
 function showOnHover(state, resi) {
-  switch (state.representBy) {
-    case "cartoon":
-      if (!state.variantResidues.has(resi) &&
-          resi !== state.viewer._clickedResi) {
-        for (const atom of state.atomsByResi.get(resi)) {
-          state.viewer.addSphere({
-            center: {x: atom.x, y: atom.y, z: atom.z},
-            radius: 1.5,
-            color: getResiColor(state, resi),
-            opacity: 0.7,
-          });
-        }
+  if (state.representBy === "cartoon") {
+    if (!state.variantResidues.has(resi) &&
+        resi !== state.viewer._clickedResi) {
+      for (const atom of state.atomsByResi.get(resi)) {
+        state.viewer.addSphere({
+          center: {x: atom.x, y: atom.y, z: atom.z},
+          radius: 1.5,
+          color: getResiColor(state, resi),
+          opacity: 0.7,
+        });
       }
-      break;
-    case "both":
-      updateGlobalSurface(state, resi);
-      break;    
-    case "surface":
-      updateGlobalSurface(state, resi);
-      break;
+    }
+  } else {
+    updateGlobalSurface(state, resi);
   }
 }
 
@@ -70,7 +64,7 @@ export const drawAppearance = [
   {
     style: state => ({
       cartoon: {
-        hidden: state.representBy === "surface",
+        hidden: state.representBy === "opaque" || state.representBy === "transparent",
         colorfunc: atom => getResiColor(state, atom.resi),
         arrows: true,
       },
@@ -89,7 +83,7 @@ export const drawAppearance = [
 
 function getVariantSurfaceStyle(state) {
   return {
-    visible: state.representBy !== "surface",
+    visible: state.representBy !== "opaque",
     color: variantColor,
     opacity: 1,
   };
@@ -97,7 +91,7 @@ function getVariantSurfaceStyle(state) {
 
 function getClickSurfaceStyle(state) {
   return {
-    visible: state.representBy !== "surface",
+    visible: state.representBy !== "opaque",
     color: clickColor,
     opacity: 1,
   };
@@ -106,8 +100,8 @@ function getClickSurfaceStyle(state) {
 function getGlobalSurfaceStyle(state, highlightResi) {
   return {
     visible: state.representBy !== "cartoon",
-    opacity: state.representBy === "both" ? 0.55 : 1,
-    colorfunc: state.representBy === "both"
+    opacity: state.representBy === "opaque" ? 1 : "transparent" ? 0.65 : 0.55,
+    colorfunc: state.representBy === "hybrid"
       ? atom => (state.variantResidues.has(atom.resi)
         ? variantColor
         : atom.resi === state.viewer._clickedResi 
@@ -135,7 +129,7 @@ function updateGlobalSurface(state, highlightResi) {
 export function drawHandler(state) {
   const { viewer } = state;
   const variantSurfaceStyle = getVariantSurfaceStyle(state);
-  if (!viewer._variantSurfaceId) {  // first draw: create variant surface, global surface and variant label
+  if (!viewer._variantSurfaceId) {  // first draw: create surfaces and labels
     viewer._variantSurfaceId = viewer.addSurface(
       "VDW",
       variantSurfaceStyle,

@@ -90,8 +90,9 @@ function StructureViewer({ row }) {
   // structure options
   const structureOptions = {
     cartoon: "cartoon",
-    surface: "surface",
-    both: "both",
+    hybrid: "hybrid",
+    transparent: "transparent",
+    opaque: "opaque",
   };
 
   function handleStructureChange(event) {

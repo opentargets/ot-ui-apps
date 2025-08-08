@@ -3,7 +3,7 @@ export const initialState = {
   nResidues: null,
   variantResidues: null,
   variantSummary: null,
-  representBy: "cartoon",  // "cartoon" | "surface" | "both" 
+  representBy: "cartoon",  // "cartoon" | "hybrid" | "trnsparent" | "opaque"
   colorBy: "confidence",   // "confidence" | "pathogenicity" | "sequential | "none"
   pathogenicityScores: null,
   variantPathogenicityScore: null,
