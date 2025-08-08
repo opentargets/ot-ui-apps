@@ -106,6 +106,7 @@ function StructureViewer({ row }) {
     confidence: "confidence",
     pathogenicity: "pathogenicity",
     sequential: "sequential",
+    none: "none",
   };
 
   function handleColorChange(event) {

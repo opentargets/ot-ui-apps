@@ -121,10 +121,12 @@ An `eventAppearance` object describes a change triggered by changes to `hoveredR
 | `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
-| `leaveSelection` | `{ resi: eventResi }` | 3dMol `AtomSelectionSpec` \| `function` | As `selection` but selects atoms whose appearance change when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
-| `leaveStyle` | | 3dMol `AtomStyleSpec` \| `function` | As `style` but applied to atoms selected by `leaveSelection`. |
-| `leaveAddStyle` | `false` | `boolean` | As `addStyle` but applied to atoms selected by `leaveSelection`. |
-| `leaveOnApply` | | `function` | As `onApply` but applied when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
+| `leave` |  | `eventAppearance[]` | Appearance objects to apply when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi` - see below. |
+
+The `eventAppearance` objects passed in the `leave` array are slightly different:
+
+- They should not include an `eventSelection` property.
+- The residue index passed to functions is the 'outgoing' residue index.
 
 **Note**: To call an arbitrary callback when `hoveredResi` or `clickedResi` changes without an appearance change, use the `onApply` property of an `eventAppearance` and omit the `style` property.
 

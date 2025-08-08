@@ -55,14 +55,11 @@ export default function Viewer({
   function applyAppearance(
     appearance,
     resi = null, // only non-null for click/hover on structure (not track) appearance changes
-    selection = "selection",
-    style = "style",
-    addStyle = "addStyle",
   ) {
-    const resolvedStyle = resolveProperty(appearance, style, viewerState, resi);
+    const resolvedStyle = resolveProperty(appearance, "style", viewerState, resi);
     if (!resolvedStyle) return;
-    viewer[appearance[addStyle] ? "addStyle" : "setStyle"](
-      resolveProperty(appearance, selection, viewerState, resi),
+    viewer[appearance.addStyle ? "addStyle" : "setStyle"](
+      resolveProperty(appearance, "selection", viewerState, resi),
       resolvedStyle
     );
   }
@@ -207,14 +204,18 @@ export default function Viewer({
 
     // unclick
     if (oldClickedResi.current) {
-      for (const [index, appearance] of clickAppearance.entries()) {
-        const a = {...appearance };
-        const resi = Number(oldClickedResi.current);
-        if (!a.leaveSelection) a.leaveSelection = { resi };
-        applyAppearance(a, resi, "leaveSelection", "leaveStyle", "leaveAddStyle");
-        a.leaveOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
-        if (index === clickAppearance.length - 1) viewer.render();
+      let applied = false;
+      for (const appearance of clickAppearance) {
+        for (const leaveAppearance of appearance.leave || []) {
+          const a = {...leaveAppearance };
+          const resi = Number(oldClickedResi.current);
+          if (!a.selection) a.selection = { resi };
+          applyAppearance(a, resi);
+          a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
+          applied = true;
+        }
       }
+      if (applied) viewer.render();
     }
 
     // click
@@ -238,14 +239,18 @@ export default function Viewer({
     
     // unhover
     if (oldHoveredResi.current) {
-      for (const [index, appearance] of hoverAppearance.entries()) {
-        const a = {...appearance };
-        const resi = Number(oldHoveredResi.current);
-        if (!a.leaveSelection) a.leaveSelection = { resi };
-        applyAppearance(a, resi, "leaveSelection", "leaveStyle", "leaveAddStyle");
-        a.leaveOnApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
-        if (index === hoverAppearance.length - 1) viewer.render();
+      let applied = false;
+      for (const appearance of hoverAppearance) {
+         for (const leaveAppearance of appearance.leave || []) {
+          const a = {...leaveAppearance };
+          const resi = Number(oldHoveredResi.current);
+          if (!a.selection) a.selection = { resi };
+          applyAppearance(a, resi);
+          a.onApply?.(viewerState, resi, viewerInteractionState, viewerInteractionDispatch);
+          applied = true;
+        }
       }
+      if (applied) viewer.render();
     }
       
     // hover

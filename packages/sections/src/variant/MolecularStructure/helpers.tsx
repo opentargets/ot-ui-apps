@@ -1,4 +1,4 @@
-import { max, interpolateTurbo } from "d3";
+import { max, interpolateInferno } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
@@ -6,7 +6,10 @@ import {
   aminoAcidLookup
 } from "@ot/constants";
 
-const sequentialColorFunction = interpolateTurbo;
+const sequentialColorFunction = interpolateInferno;
+
+const variantColor = "lime";
+const clickColor = "magenta";
 
 const labelStyle =   {
   alignment: "center",
@@ -66,17 +69,7 @@ function getResiColor(state, resi) {
       ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
       : "#ddd"
     case "sequential": return sequentialColorFunction(resi / state.nResidues);
-  }
-}
-
-function getVariantColor(state) {
-  switch (state.colorBy) {
-    case "confidence": return "lime";
-    case "pathogenicity": return "lime"
-    // case "pathogenicity": return state.pathogenicityScores
-      // ? getResiColor(state, state.variantResidues.values().next().value)
-      // : "lime";
-    case "sequential": return "lime";
+    case "none": return "#ddd";
   }
 }
 
@@ -105,7 +98,7 @@ export const drawAppearance = [
 function getVariantSurfaceStyle(state) {
   return {
     visible: state.representBy !== "surface",
-    color: getVariantColor(state),
+    color: variantColor,
     opacity: 1
   };
 }
@@ -115,14 +108,16 @@ function getGlobalSurfaceStyle(state, highlightResi) {
     visible: state.representBy !== "cartoon",
     opacity: state.representBy === "both" ? 0.55 : 1,
     colorfunc: state.representBy === "both"
-      ? atom => (atom.resi === highlightResi
-        ? getResiColor(state, atom.resi)
-        : "#fff"
+      ? atom => (state.variantResidues.has(atom.resi)
+        ? variantColor
+        : atom.resi === highlightResi
+          ? getResiColor(state, atom.resi)
+          : "#fff"
       )
       : atom => (state.variantResidues.has(atom.resi)
-        ? getVariantColor(state)
+        ? variantColor
         : atom.resi === highlightResi
-          ? "red"
+          ? clickColor
           : getResiColor(state, atom.resi)
         )
   };
@@ -161,8 +156,9 @@ export function drawHandler(state) {
 
 export const hoverAppearance = [
   {
+    selection: { atom: "CA"},
     onApply: showOnHover,
-    leaveOnApply: removeOnHover,
+    leave: [{ onApply: removeOnHover}],
   }
 ];
 
@@ -170,22 +166,28 @@ export const clickAppearance = [
   {
     selection: (state, resi) => ({ resi }),
     style: state => ({
-      stick: { colorfunc: atom => getResiColor(state, atom.resi) },
-      sphere: { colorfunc: atom => getResiColor(state, atom.resi), radius: 0.6 }
+      stick: { color: clickColor },
+      sphere: { color: clickColor, radius: 0.6 }
+      // stick: { colorfunc: atom => getResiColor(state, atom.resi) },
+      // sphere: { colorfunc: atom => getResiColor(state, atom.resi), radius: 0.6 }
     }),
     addStyle: true,
-    leaveSelection: {},
-    leaveStyle: drawAppearance[1].style,
     onApply: (state, resi) => {
       state.viewer._clickedLabelId = _viewer.addLabel(
-        ` ${resi} ${state.atomsByResi.get(resi)[0].resn} `,
+        ` ${state.atomsByResi.get(resi)[0].resn} ${resi} `,
         labelStyle,
         { resi }
       );
     },
-    leaveOnApply: (state, resi) => {
-      state.viewer.removeLabel(state.viewer._clickedLabelId);
-    }
+    leave: [
+      drawAppearance[0],  // cartoon
+      {
+        ...drawAppearance[1],  // click spheres for hovering
+        onApply: (state, resi) => {
+         state.viewer.removeLabel(state.viewer._clickedLabelId);
+        },
+      },
+    ],
   }
 ];
 
