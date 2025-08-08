@@ -85,3 +85,26 @@ export const aminoAcidLookup = {
   N: "ASN",
   Q: "GLN",
 };
+
+export const aminoAcidTypeLookup = {
+  GLY: "nonpolar",
+  ALA: "nonpolar",
+  VAL: "nonpolar",
+  LEU: "nonpolar",
+  ILE: "nonpolar",
+  THR: "polar",
+  SER: "polar",
+  MET: "nonpolar",
+  CYS: "polar",
+  PRO: "nonpolar",
+  PHE: "nonpolar",
+  TYR: "polar",
+  TRP: "nonpolar",
+  HIS: "basic",
+  LYS: "basic",
+  ARG: "basic",
+  ASP: "acid",
+  GLU: "acid",
+  ASN: "polar",
+  GLN: "polar",
+};

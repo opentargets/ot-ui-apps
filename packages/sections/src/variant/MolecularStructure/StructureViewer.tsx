@@ -107,6 +107,9 @@ function StructureViewer({ row }) {
     confidence: "confidence",
     pathogenicity: "pathogenicity",
     sequential: "sequential",
+    "secondary structure": "secondary structure",
+    "distance to variant": "distance to variant",
+    "residue type": "residue type",
     none: "none",
   };
 

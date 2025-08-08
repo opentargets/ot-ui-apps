@@ -1,12 +1,27 @@
-import { max, interpolateInferno } from "d3";
+import { max, mean, interpolateInferno, interpolatePlasma } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicityColor,
-  aminoAcidLookup
+  aminoAcidLookup,
+  aminoAcidTypeLookup,
 } from "@ot/constants";
 
 const sequentialColorFunction = interpolateInferno;
+const distanceColorFunction = interpolatePlasma;
+
+const secondaryStructureColors = {
+  h: "#008B8B",
+  s: "#e6ab02", 
+  c: "#c0c0c0",
+}
+
+const residueTypeColors = {
+  acid: "#ff1744",
+  basic: "#0044ff",
+  nonpolar: "#ccc",
+  polar: "#17eeee",
+};
 
 const variantColor = "lime";
 const clickColor = "magenta";
@@ -52,9 +67,12 @@ function getResiColor(state, resi) {
   switch (state.colorBy) {
     case "confidence": return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
     case "pathogenicity": return state.pathogenicityScores 
-      ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
-      : "#ddd"
+    ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
+    : "#ddd"
     case "sequential": return sequentialColorFunction(resi / state.nResidues);
+    case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
+    case "distance to variant": return distanceColorFunction(1 - state.viewer._resiDistances.get(resi));
+    case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";
   }
 }
@@ -214,7 +232,33 @@ export function dataHandler(viewer, dispatch, row) {
       type: "setMessage",
       value: "AlphaFold structure not available",
     });
-  } 
+  } else {
+    const variantResidues = new Set(
+      row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
+    );
+    const variantCAAtoms = allAtoms.filter(atom => {
+      return variantResidues.has(atom.resi) && atom.atom === "CA";
+    });
+    const variantCentroid = {
+      x: mean(variantCAAtoms, atom => atom.x),
+      y: mean(variantCAAtoms, atom => atom.y),
+      z: mean(variantCAAtoms, atom => atom.z),
+    }
+    viewer._resiDistances = new Map();
+    for (const atom of allAtoms) {
+      if (atom.atom === "CA") {
+        viewer._resiDistances.set(atom.resi, Math.hypot(
+          atom.x - variantCentroid.x, 
+          atom.y - variantCentroid.y, 
+          atom.z - variantCentroid.z
+        ));
+      }
+    }
+    const maxDistance = max(viewer._resiDistances.values());
+    for (const [resi, distance] of viewer._resiDistances) {
+      viewer._resiDistances.set(resi, distance / maxDistance);
+    }
+  }
 }
 
 // OLD /////////////////////////////////////////////////////////////////////////
