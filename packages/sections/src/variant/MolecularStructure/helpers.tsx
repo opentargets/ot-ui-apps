@@ -81,21 +81,15 @@ export const drawAppearance = [
   },
 ];
 
-function getVariantSurfaceStyle(state) {
-  return {
-    visible: state.representBy !== "opaque",
-    color: variantColor,
-    opacity: 1,
-  };
-}
+const variantSurfaceStyle = {
+  color: variantColor,
+  opacity: 1,
+};
 
-function getClickSurfaceStyle(state) {
-  return {
-    visible: state.representBy !== "opaque",
-    color: clickColor,
-    opacity: 1,
-  };
-}
+const clickSurfaceStyle = {
+  color: clickColor,
+  opacity: 1,
+};
 
 function getGlobalSurfaceStyle(state, highlightResi) {
   return {
@@ -128,7 +122,6 @@ function updateGlobalSurface(state, highlightResi) {
 
 export function drawHandler(state) {
   const { viewer } = state;
-  const variantSurfaceStyle = getVariantSurfaceStyle(state);
   if (!viewer._variantSurfaceId) {  // first draw: create surfaces and labels
     viewer._variantSurfaceId = viewer.addSurface(
       "VDW",
@@ -170,7 +163,7 @@ export const clickAppearance = [
       const { viewer } = state;
       viewer._clickedSurfaceId = viewer.addSurface(
         "VDW",
-        getClickSurfaceStyle(state),
+        clickSurfaceStyle,
         { resi },
         undefined,
         undefined,
