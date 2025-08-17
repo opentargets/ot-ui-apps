@@ -1,18 +1,10 @@
 # Structure Viewer
 
-Exports the `Viewer` and `ViewerProvider` components.
-
-### Example Use Cases
-
-1. A single structure.
-2. Multiple structures in a single file that the user may wish to see all at once or move between - e.g. NMR data.
-3. A single structure from a single file shown at once, but where external actions change the structure and file - e.g. user can select from different experimentally-derived structures shown in a table.
-4. Multiple structures shown at once from different files, such as a target and a small molecule.
-5. As 4, but user can move between different pairs (or more) of structures.
+Exports the `Viewer` comoponent. Typically used with `ViewerProvider` and `ViewerInteractionProvider`.
 
 ## Data
 
-The viewer accepts data in the form
+The viewer accepts data in the form:
 
 ```js
 [
@@ -23,8 +15,6 @@ The viewer accepts data in the form
 ```
 
 The array should contain a single element unless multiple structures are being shown together, such as a target and a small molecule.
-
-**Note**: The viewer component does not fetch data.
 
 The `info` property can be used for any additional data that is needed to display the structure as desired.
 
@@ -37,7 +27,7 @@ Props:
 | Prop | Default | Type | Description |
 |-------|---------|------|-------------|
 | `initialState` | `{}` | `object`| |
-| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object. Should should return a new state object. |
+| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object. Should return a new state object. |
 
 **Note**: Reducer actions should start by shallow copying the state to ensure the extra state properties descibed below are not discarded.  
 
@@ -67,7 +57,7 @@ There is no built-in mechanism to handle derived state. For example, where the s
 
 ### Viewer Interaction Provider
 
-When a state property changes, the viewer redraws the structure using the `drawAppearance` prop passed to the viewer component. To modify the viewer appearance without a redraw, include a `ViewerInteractionProvider`. In particular, a `ViewerInteractionProvider` is needed for basic hover and click behavior, as well as any custom highlighting - such as adding arbitrary shapes to the viewer or using the viewer's builtin labels.
+When a state property changes, the viewer redraws the structure using the `drawAppearance` prop passed to the viewer component. To modify the viewer appearance without a redraw, include a `ViewerInteractionProvider`. In particular, a `ViewerInteractionProvider` is needed for hover and click interaction, as well as any custom highlighting - such as adding arbitrary shapes to the viewer or using the viewer's builtin labels.
 
 Like `ViewerProvider`, `ViewerInteractionProvider` takes `initialState` and `reducer` props. Any component inside a `<ViewerInteractionProvider>` can import the following (from the same file as the provider comes from):
 
@@ -84,9 +74,9 @@ When creating the interaction state, the initial state object is copied and the 
 The reducer function passed to the provider is augmented with corresponding action types:
 
 - `setHoveredResi`: Set hovered residue index.
-- `setClickedResi`: Sel clicked residue index.
+- `setClickedResi`: Set clicked residue index.
 
-These are automatically when hovering/clicked on the structure and track. They can also be set manually, e.g.
+These are used automatically when hovering/clicked on the structure and track. They can also be used manually, e.g.
 
 ```js
 const viewerInteractionDispatch = useViewerInteractionDispatch();
@@ -105,9 +95,9 @@ An `appearance` object is a description of what to show in the viewer and how:
 
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
-| `selection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
-| `style` | | 3dMol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
-| `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
+| `selection` | `{}` | 3Dmol `AtomSelectionSpec` \| `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
+| `style` | | 3Dmol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
+| `addStyle` | `false` | `boolean` | If `true`, use 3Dmol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
 ### Click and Hover
@@ -143,10 +133,10 @@ The `eventAppearance` objects passed in the `leave` array are slightly different
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
-| `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects - label properties are optional | 
+| `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects to highlight on the track - labels are optional. | 
 | `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
-| `topLeft` |  | `string` \| `component` | Component to show in the top-left - typically a warning. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
-| `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |
+| `topLeft` |  | `string` \| `component` | Component to show in the top-left. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
+| `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - see `topRight`.|
 | `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
 | `screenshotId` | `""` | `string` | ID to include in screenshot file name. |
 
@@ -157,17 +147,3 @@ Notes:
 - If used, the track represents the first structure and assumes residues are indexed from 1 and are contiguous - as with AlphaFold structures.
 
 - Example use case for `onData`: validate data loaded into the viewer - if there is a problem, use the dispatch function to set a flag.
-
-## Notes
-
-- We often show a message over the viewer such as "Loading Structure ...". There is no built-in message functionality in the viewer since we may want the message to cover related content such as legends - particularly if the message may not be cleared due to e.g. unavailability of data at runtime. To implement a message, include a appropriate component (e.g. an absolutely positioned box over all relevant content) and conditionally render the message versus the viewer and associated content based on a state property such as `message`.
-
-- If hover on residue at edge of canvas, leave canvas, hover on same residue, is not highlighted.
-
-## Checks
-
-- That no sluggish drag/rotate/pan/zoom even with zero `hoverDuration`. If slow with zoom but OK otherwise, can disable hover Ctrl down.
-
-- Check behavior with touch events and disable hover etc. as appropriate.
-
-- Passing multiple appearance objects(for draw, hover or click) work as expected.
