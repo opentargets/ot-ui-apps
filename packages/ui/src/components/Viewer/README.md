@@ -142,7 +142,8 @@ The `eventAppearance` objects passed in the `leave` array are slightly different
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |  
+| `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
+| `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects - label properties are optional | 
 | `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left - typically a warning. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
 | `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - typically details about hovered/clicked on part of the structure. Often shown conditinally based on the viewer state - the component should render `null` to be hidden. |

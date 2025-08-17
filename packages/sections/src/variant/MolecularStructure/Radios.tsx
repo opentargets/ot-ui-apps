@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useViewerState } from "ui";
 
-function Radios({ titleLabel, options, defaultValue, stateProperty, handleChange }) {
+function Radios({ titleLabel, options, defaultValue, stateProperty, onChange }) {
 
   const viewerState = useViewerState();
 
@@ -37,7 +37,7 @@ function Radios({ titleLabel, options, defaultValue, stateProperty, handleChange
             row
             defaultValue={defaultValue}
             value={viewerState[stateProperty]}
-            onChange={handleChange}
+            onChange={onChange}
           >
             {Object.entries(options).map(([label, value], index, array) => (              
                 <FormControlLabel

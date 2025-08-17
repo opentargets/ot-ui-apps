@@ -23,6 +23,7 @@ export default function Viewer({
   hoverAppearance = [],
   clickAppearance = [],
   trackColor,
+  trackTicks,
   usage = {},
   topLeft,
   bottomRight,
@@ -280,10 +281,20 @@ export default function Viewer({
     <Box sx={{ display: "flex", flexDirection: "column" }}>
      
       {/* track */}
-      {trackColor && <ViewerTrack trackColor={trackColor} />}
+      {trackColor && <ViewerTrack trackColor={trackColor} trackTicks={trackTicks} />}
      
       {/* viewer */}
-      <Box ref={viewerRef} position="relative" width="100%" height={height}>
+      <Box
+        ref={viewerRef}
+        sx={{
+          position: "relative",
+          width: "100%",
+          height, 
+          resize: "vertical",
+          overflow: "hidden"
+        }}
+      >
+        {/* // position="relative" width="100%" height={height} sx={{resize: "vertical", overflow: "hidden"}}> */}
         {/* info and screenshot button */}
         <Box
           sx={{

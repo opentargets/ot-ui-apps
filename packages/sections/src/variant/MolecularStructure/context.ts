@@ -1,10 +1,10 @@
 export const initialState = {
-  message: null,
+  message: "Loading data ...",
   nResidues: null,
   variantResidues: null,
   variantSummary: null,
   representBy: "cartoon",  // "cartoon" | "hybrid" | "trnsparent" | "opaque"
-  colorBy: "confidence",   // "confidence" | "pathogenicity" | "sequential | "secondary structure" | "distance to variant" | "residue type" | "none"
+  colorBy: "confidence",   // "confidence" | "pathogenicity" | "secondary structure" | "distance to variant" | "residue sequence" | "residue type" | "none"
   pathogenicityScores: null,
   variantPathogenicityScore: null,
 };

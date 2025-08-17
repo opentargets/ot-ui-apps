@@ -33,7 +33,7 @@ function Legend() {
           <tbody>
             <tr>
               <Typography component="td" variant="caption" textAlign="right">
-                <strong>Backbone:</strong>
+                <strong>Structure:</strong>
               </Typography>
               <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
                 mean AlphaMissense pathogenicity over possible amino acid substitutions

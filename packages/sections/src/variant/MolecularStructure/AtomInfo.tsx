@@ -1,7 +1,7 @@
 
 import { Box, Typography } from "@mui/material";
 import { useViewerState, useViewerInteractionState } from "ui";
-import { getAlphaFoldPathogenicity, getAlphaFoldConfidence } from "@ot/constants";
+import { getAlphaFoldPathogenicity, getAlphaFoldConfidence, naLabel } from "@ot/constants";
 
 function AtomInfo() {
   const viewerState = useViewerState();

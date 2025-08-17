@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Viewer, useViewerState, useViewerDispatch } from "ui";
 import {
   alphaFoldCifUrl,
@@ -15,10 +15,13 @@ import {
   clickAppearance,
   drawHandler,
   trackColor,
+  trackTicks,
 } from "./helpers";
 import AtomInfo from "./AtomInfo";
+import NoPathogenicityScores from "./NoPathogenicityScores";
 import Legend from "./Legend";
 import Radios from "./Radios";
+import Dropdown from "./Dropdown";
 import { initialState } from "./context";
 
 function StructureViewer({ row }) {
@@ -49,6 +52,10 @@ function StructureViewer({ row }) {
           value: new Set(
             row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
           )
+        });
+        viewerDispatch({
+          type: "setMessage",
+          value: null,
         });
       } else {
         viewerDispatch({
@@ -85,8 +92,6 @@ function StructureViewer({ row }) {
     }
   }, [row, structureData, viewerState.colorBy]);
 
-  if (!structureData) return null;
-
   // structure options
   const structureOptions = {
     cartoon: "cartoon",
@@ -106,9 +111,9 @@ function StructureViewer({ row }) {
   const colorOptions = {
     confidence: "confidence",
     pathogenicity: "pathogenicity",
-    sequential: "sequential",
     "secondary structure": "secondary structure",
     "distance to variant": "distance to variant",
+    "residue sequence": "residue sequence",
     "residue type": "residue type",
     none: "none",
   };
@@ -120,50 +125,83 @@ function StructureViewer({ row }) {
     });
   }
 
-
   return (
-    <Box>
-      
-      <Viewer
-        data={[{ structureData }]}
-        onData={(viewer, viewerStateDispatch) => {
-          dataHandler(viewer, viewerStateDispatch, row)
-        }}
-        drawAppearance={drawAppearance}
-        hoverAppearance={hoverAppearance}
-        clickAppearance={clickAppearance}
-        onDraw={drawHandler}
-        trackColor={trackColor}
-        bottomRight={<AtomInfo />}
-      />
-      
-      <Box
-        sx={{
-          mt: 0.5,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "start",
-          flexDirection: { xs: "column", lg: "row" },
-        }}
-      >
-        <Radios
-          titleLabel="Structure"
-          options={structureOptions}
-          defaultValue={initialState.representBy}
-          stateProperty="representBy"
-          handleChange={handleStructureChange}
-        />
-        <Box>
-          <Radios
-            titleLabel="Colour"
-            options={colorOptions}
-            defaultValue={initialState.colorBy}
-            stateProperty="colorBy"
-            handleChange={handleColorChange}
-          />
-          <Legend />
-        </Box>
-      </Box>
+    <Box sx={{ position: "relative" }}>
+      {structureData
+        ? (
+          <>
+            <Viewer
+              data={[{ structureData }]}
+              onData={(viewer, viewerStateDispatch) => {
+                dataHandler(viewer, viewerStateDispatch, row)
+              }}
+              drawAppearance={drawAppearance}
+              hoverAppearance={hoverAppearance}
+              clickAppearance={clickAppearance}
+              onDraw={drawHandler}
+              trackColor={trackColor}
+              trackTicks={trackTicks}
+              topLeft={<NoPathogenicityScores />}
+              bottomRight={<AtomInfo />}
+            />
+            <Box
+              sx={{
+                mt: 1,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "start",
+                flexDirection: { xs: "column", lg: "row" },
+              }}
+            >
+              <Radios
+                titleLabel="Structure"
+                options={structureOptions}
+                defaultValue={initialState.representBy}
+                stateProperty="representBy"
+                onChange={handleStructureChange}
+              />
+              <Box sx={{ 
+                mt: 1,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: { xs: "flex-start", lg: "flex-end" },
+              }}>
+                <Dropdown 
+                  titleLabel="Colour"
+                  options={colorOptions}
+                  stateProperty="colorBy"
+                  onChange={handleColorChange}
+                />
+                <Legend />
+              </Box>
+            </Box>
+          </>
+        ) : (
+          <Box sx={{ height: "590px", width: "100%" }} />
+        )
+      }
+
+      {/* message text */}
+      {viewerState.message && (
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            position: "absolute",
+            zIndex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#f8f8f8",
+          }}
+        >
+          {viewerState.message}
+        </Typography>
+      )}
     
     </Box>
   );

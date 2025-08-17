@@ -1,4 +1,4 @@
-import { max, mean, interpolateInferno, interpolatePlasma } from "d3";
+import { max, mean, interpolateYlOrBr, interpolateInferno } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
@@ -8,7 +8,7 @@ import {
 } from "@ot/constants";
 
 const sequentialColorFunction = interpolateInferno;
-const distanceColorFunction = interpolatePlasma;
+const distanceColorFunction = interpolateYlOrBr;
 
 const secondaryStructureColors = {
   h: "#008B8B",
@@ -69,9 +69,9 @@ function getResiColor(state, resi) {
     case "pathogenicity": return state.pathogenicityScores 
     ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
     : "#ddd"
-    case "sequential": return sequentialColorFunction(resi / state.nResidues);
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
     case "distance to variant": return distanceColorFunction(1 - state.viewer._resiDistances.get(resi));
+    case "residue sequence": return sequentialColorFunction(resi / state.nResidues);
     case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";
   }
@@ -215,6 +215,15 @@ export const clickAppearance = [
 export function trackColor(state, resi) {
   if (!state.viewer) return;
   return getResiColor(state, resi);
+}
+
+export function trackTicks(state) {
+  return [
+    {
+      resi: state.variantResidues.values().next().value,
+      label: state.variantSummary,
+    }
+  ];
 }
 
 // after load data into viewer, check variant's reference amino acid matches
