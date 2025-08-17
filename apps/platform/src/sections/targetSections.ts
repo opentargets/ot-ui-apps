@@ -7,7 +7,6 @@ const targetSections = new Map([
   ["expressions", Target.Expression.getBodyComponent()],
   ["depMapEssentiality", Target.DepMap.getBodyComponent()],
   ["geneOntology", Target.GeneOntology.getBodyComponent()],
-  ["viewerTest", Target.ViewerTest.getBodyComponent()],
   ["molecularStructure", Target.MolecularStructure.getBodyComponent()],
   ["pathways", Target.Pathways.getBodyComponent()],
   ["bibliography", Target.Bibliography.getBodyComponent()],

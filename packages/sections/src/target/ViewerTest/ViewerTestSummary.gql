@@ -1,3 +1,0 @@
-fragment ViewerTestSummaryFragment on Target {
-  id
-}
