@@ -40,27 +40,44 @@ const labelStyle =   {
 };
 
 function showOnHover(state, resi) {
-  if (state.representBy === "cartoon") {
-    if (!state.variantResidues.has(resi) &&
-        resi !== state.viewer._clickedResi) {
-      for (const atom of state.atomsByResi.get(resi)) {
-        state.viewer.addSphere({
-          center: {x: atom.x, y: atom.y, z: atom.z},
-          radius: 1.5,
-          color: getResiColor(state, resi),
-          opacity: 0.7,
-        });
-      }
+  let color, opacity, radius;
+  switch (state.representBy) {
+    case "cartoon":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 0.7;
+      break;
+    case "hybrid":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 1;
+      break;
+    case "transparent":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 1;
+      break;
+    case "opaque":
+      radius = 2;
+      color = clickColor;
+      opacity = 1;
+      break;
+  }
+
+  if (!state.variantResidues.has(resi) && resi !== state.viewer._clickedResi) {
+    for (const atom of state.atomsByResi.get(resi)) {
+      state.viewer.addSphere({
+        center: {x: atom.x, y: atom.y, z: atom.z},
+        radius,
+        color,
+        opacity,
+      });
     }
-  } else {
-    updateGlobalSurface(state, resi);
   }
 }
 
 function removeOnHover(state) {
-  state.representBy === "cartoon"
-    ? state.viewer.removeAllShapes()
-    : updateGlobalSurface(state);
+ state.viewer.removeAllShapes();
 }
 
 function getResiColor(state, resi) {
