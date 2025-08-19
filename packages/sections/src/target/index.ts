@@ -13,6 +13,7 @@ export * as MousePhenotypes from "./MousePhenotypes";
 export * as OverlappingVariants from "./OverlappingVariants";
 export * as Pathways from "./Pathways";
 export * as Pharmacogenomics from "./Pharmacogenomics";
+export * as QTLCredibleSets from "./QTLCredibleSets";
 export * as Safety from "./Safety";
 export * as SubcellularLocation from "./SubcellularLocation";
 export * as Tractability from "./Tractability"; 

@@ -28,6 +28,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.CancerHallmarks.definition.id, Target.CancerHallmarks],
   [Target.MousePhenotypes.definition.id, Target.MousePhenotypes],
   [Target.ComparativeGenomics.definition.id, Target.ComparativeGenomics],
+  [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.Bibliography.definition.id, Target.Bibliography],
   // [Target.OverlappingVariants.definition.id, Target.OverlappingVariants],
 ]);
