@@ -20,6 +20,7 @@ const variantProfileWidgets = new Map<string, Widget>([
   [Variant.GWASCredibleSets.definition.id, Variant.GWASCredibleSets],
   [Variant.QTLCredibleSets.definition.id, Variant.QTLCredibleSets],
   [Variant.Pharmacogenomics.definition.id, Variant.Pharmacogenomics],
+  [Variant.Intervals.definition.id, Variant.Intervals],
 ]);
 
 const VARIANT_WIDGETS = Array.from(variantProfileWidgets.values());
