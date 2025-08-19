@@ -15,4 +15,4 @@ export * as Pathways from "./Pathways";
 export * as Pharmacogenomics from "./Pharmacogenomics";
 export * as Safety from "./Safety";
 export * as SubcellularLocation from "./SubcellularLocation";
-export * as Tractability from "./Tractability"; 
+export * as Tractability from "./Tractability";

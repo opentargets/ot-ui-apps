@@ -35,8 +35,7 @@ export const alphaFoldPathogenicityBands = [
   { lowerLimit: 0, label: "Likely benign", sublabel: "score < 0.34", color: "rgb(61, 84, 147)" },
 ];
 
-export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") {
-  const score = scores[atom.resi];
+export function getAlphaFoldPathogenicity(score, propertyName = "label") {
   for (const obj of alphaFoldPathogenicityBands) {
     if (score > obj.lowerLimit) return obj[propertyName];
   }
@@ -60,8 +59,8 @@ export const alphaFoldPathogenicityColorScale = scaleLinear()
 // only some of the scale breakpoints are meaningful for the legend
 alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
-export function getAlphaFoldPathogenicityColor(atom, scores) {
-  return alphaFoldPathogenicityColorScale(scores[atom.resi]);
+export function getAlphaFoldPathogenicityColor(score) {
+  return alphaFoldPathogenicityColorScale(score);
 }
 
 export const aminoAcidLookup = {
@@ -85,4 +84,27 @@ export const aminoAcidLookup = {
   E: "GLU",
   N: "ASN",
   Q: "GLN",
+};
+
+export const aminoAcidTypeLookup = {
+  GLY: "nonpolar",
+  ALA: "nonpolar",
+  VAL: "nonpolar",
+  LEU: "nonpolar",
+  ILE: "nonpolar",
+  THR: "polar",
+  SER: "polar",
+  MET: "nonpolar",
+  CYS: "polar",
+  PRO: "nonpolar",
+  PHE: "nonpolar",
+  TYR: "polar",
+  TRP: "nonpolar",
+  HIS: "basic",
+  LYS: "basic",
+  ARG: "basic",
+  ASP: "acid",
+  GLU: "acid",
+  ASN: "polar",
+  GLN: "polar",
 };

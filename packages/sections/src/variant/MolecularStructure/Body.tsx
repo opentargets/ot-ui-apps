@@ -1,10 +1,11 @@
 import { ReactElement } from "react";
 import { useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
+import { SectionItem, ViewerProvider, ViewerInteractionProvider} from "ui";
 import { definition } from ".";
 import Description from "./Description";
 import MOLECULAR_STRUCTURE_QUERY from "./MolecularStructureQuery.gql";
-import Viewer from "./Viewer";
+import StructureViewer from "./StructureViewer";
+import { initialState, reducer } from "./context";
 
 type BodyProps = {
   id: string;
@@ -22,6 +23,8 @@ export function Body({ id, entity }: BodyProps): ReactElement {
   const variant = request.data?.variant;
   const proteinCodingCoordinatesRow = variant?.proteinCodingCoordinates?.rows?.[0];
 
+  if (!proteinCodingCoordinatesRow) return null;
+
   return (
     <SectionItem
       definition={definition}
@@ -37,9 +40,23 @@ export function Body({ id, entity }: BodyProps): ReactElement {
           uniprotAccession={proteinCodingCoordinatesRow?.uniprotAccessions?.[0]}
         />
       )}
-      renderBody={() => {
-        return <Viewer row={proteinCodingCoordinatesRow} />;
-      }}
+      renderBody={() => (
+        <ViewerProvider
+          initialState={{
+            ...initialState,
+            variantSummary: `${
+              proteinCodingCoordinatesRow.referenceAminoAcid}${
+              proteinCodingCoordinatesRow.aminoAcidPosition}${
+              proteinCodingCoordinatesRow.alternateAminoAcid
+            }`
+          }}
+          reducer={reducer}
+        >
+          <ViewerInteractionProvider>
+            <StructureViewer row={proteinCodingCoordinatesRow} />
+          </ViewerInteractionProvider>
+        </ViewerProvider>
+      )}
     />
   );
 }
