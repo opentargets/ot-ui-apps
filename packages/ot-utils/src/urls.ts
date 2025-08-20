@@ -118,3 +118,11 @@ export const referenceUrls: Record<string, (id: string) => string> = {
   EMA: emaUrl,
   USAN: usanUrl,
 };
+
+export function alphaFoldCifUrl(uniprotId: string) {
+  return `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
+}
+
+export function alphaFoldPathogenicityUrl(uniprotId: string) {
+  return `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`;
+}
