@@ -19,6 +19,7 @@ const aspectDescription = {
   I: "Inheritance",
   C: "Onset and clinical course",
   M: "Clinical modifier",
+  H: "Past medical history",
 };
 
 const columns = [
