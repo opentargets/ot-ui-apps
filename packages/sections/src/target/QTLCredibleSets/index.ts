@@ -6,7 +6,7 @@ export const definition = {
   name: "molQTL Credible Sets",
   shortName: "QT",
   // @ts-expect-error TODO: fix this
-  hasData: (data: Target) => (data.qtlCredibleSets?.count || 0) > 0,
+  hasData: (data: Target) => (data.credibleSets?.count || 0) > 0,
 };
 
 // Components
