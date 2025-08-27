@@ -1,4 +1,4 @@
-import { max, mean, interpolateYlOrBr, interpolateInferno } from "d3";
+import { max, mean } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
@@ -6,9 +6,6 @@ import {
   aminoAcidLookup,
   aminoAcidTypeLookup,
 } from "@ot/constants";
-
-const sequentialColorFunction = interpolateInferno;
-const distanceColorFunction = interpolateYlOrBr;
 
 const secondaryStructureColors = {
   h: "#008B8B",
@@ -87,8 +84,6 @@ function getResiColor(state, resi) {
     ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
     : "#ddd"
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
-    case "distance to variant": return distanceColorFunction(1 - state.viewer._resiDistances.get(resi));
-    case "residue sequence": return sequentialColorFunction(resi / state.nResidues);
     case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";
   }
@@ -269,20 +264,6 @@ export function dataHandler(viewer, dispatch, row) {
       x: mean(variantCAAtoms, atom => atom.x),
       y: mean(variantCAAtoms, atom => atom.y),
       z: mean(variantCAAtoms, atom => atom.z),
-    }
-    viewer._resiDistances = new Map();
-    for (const atom of allAtoms) {
-      if (atom.atom === "CA") {
-        viewer._resiDistances.set(atom.resi, Math.hypot(
-          atom.x - variantCentroid.x, 
-          atom.y - variantCentroid.y, 
-          atom.z - variantCentroid.z
-        ));
-      }
-    }
-    const maxDistance = max(viewer._resiDistances.values());
-    for (const [resi, distance] of viewer._resiDistances) {
-      viewer._resiDistances.set(resi, distance / maxDistance);
     }
   }
 }
