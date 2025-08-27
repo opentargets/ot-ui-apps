@@ -17,6 +17,7 @@ const targetSections = new Map([
   ["interactions", Target.MolecularInteractions.getBodyComponent()],
   ["mousePhenotypes", Target.MousePhenotypes.getBodyComponent()],
   ["compGenomics", Target.ComparativeGenomics.getBodyComponent()],
+  ["qtlCredibleSets", Target.QTLCredibleSets.getBodyComponent()],
 ]);
 
 export default targetSections;
