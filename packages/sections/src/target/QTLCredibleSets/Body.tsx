@@ -51,7 +51,7 @@ const columns = [
     exportValue: ({ variant }: any) => variant?.id,
   },
   {
-    id: "studyId",
+    id: "study.id",
     label: "Study",
     renderCell: ({ study }: any) => {
       if (!study) return naLabel;
@@ -77,10 +77,10 @@ const columns = [
         </>
       );
     },
-    exportValue: ({ study, isTrans }: any) => {
+    exportValue: ({ study, isTransQtl }: any) => {
       const type = study?.studyType;
       if (!type) return null;
-      return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}, isTrans:${isTrans}`;
+      return `${type.slice(0, -3)}${type.slice(-3).toUpperCase()}, isTrans:${isTransQtl}`;
     },
   },
   {
@@ -171,6 +171,9 @@ const columns = [
       </>
     ),
     sortable: true,
+    comparator: (a, b) => {
+      return credsetConfidenceMap[a.confidence] - credsetConfidenceMap[b.confidence];
+    },
     renderCell: ({ confidence }: any) => {
       if (!confidence) return naLabel;
       return (
@@ -179,7 +182,7 @@ const columns = [
         </Tooltip>
       );
     },
-    filterValue: ({ confidence }: any) => credsetConfidenceMap[confidence],
+    filterValue: false,
   },
   {
     id: "finemappingMethod",
