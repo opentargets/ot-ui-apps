@@ -16,6 +16,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.Tractability.definition.id, Target.Tractability],
   [Target.Safety.definition.id, Target.Safety],
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
+  [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.ChemicalProbes.definition.id, Target.ChemicalProbes],
   [Target.Expression.definition.id, Target.Expression],
   [Target.DepMap.definition.id, Target.DepMap],
@@ -28,7 +29,6 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.CancerHallmarks.definition.id, Target.CancerHallmarks],
   [Target.MousePhenotypes.definition.id, Target.MousePhenotypes],
   [Target.ComparativeGenomics.definition.id, Target.ComparativeGenomics],
-  [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.Bibliography.definition.id, Target.Bibliography],
   // [Target.OverlappingVariants.definition.id, Target.OverlappingVariants],
 ]);
