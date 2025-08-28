@@ -69,7 +69,6 @@ export const externalLinks = {
   network: [
     { label: "Science", url: "https://www.opentargets.org/science" },
     { label: "Publications", url: "https://www.opentargets.org/publications" },
-    { label: "Open Targets Genetics", url: "https://genetics.opentargets.org" },
     { label: "Jobs", url: "https://www.opentargets.org/jobs" },
     { label: "Blog", url: "https://blog.opentargets.org" },
   ] as ExternalLink[],
