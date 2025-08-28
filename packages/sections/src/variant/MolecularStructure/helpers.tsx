@@ -1,4 +1,4 @@
-import { max, mean } from "d3";
+import { max, mean, schemeDark2, schemeSet1 } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
@@ -12,6 +12,11 @@ const secondaryStructureColors = {
   s: "#e6ab02", 
   c: "#c0c0c0",
 }
+
+const domainColorScheme = [
+  ...[1, 2, 5, 0, 6].map(i => schemeDark2[i]),
+  ...[1, 0, 4, 7].map(i => schemeSet1[i]),
+];
 
 const residueTypeColors = {
   acid: "#ff1744",
@@ -81,8 +86,15 @@ function getResiColor(state, resi) {
   switch (state.colorBy) {
     case "confidence": return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
     case "pathogenicity": return state.pathogenicityScores 
-    ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
-    : "#ddd"
+      ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
+      : "#ddd"
+    case "domain": {
+      if (!state.domains) return "#ddd";
+      const domainIndex = state.domains.getDomainIndex(resi);
+      return domainIndex == null
+        ? "#ddd"
+        : domainColorScheme[domainIndex % domainColorScheme.length];
+    }
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
     case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";

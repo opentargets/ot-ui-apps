@@ -126,3 +126,7 @@ export function alphaFoldCifUrl(uniprotId: string) {
 export function alphaFoldPathogenicityUrl(uniprotId: string) {
   return `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`;
 }
+
+export function alphaFoldDomainsUrl(uniprotId: string) {
+  return `https://rest.uniprot.org/uniprotkb/${uniprotId}.json?fields=ft_domain`;
+}

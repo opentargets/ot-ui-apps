@@ -4,7 +4,9 @@ import {
   alphaFoldCifUrl,
   fetchPathogenicityScores,
   meanPathogenicityScores,
-  pickPathogenicityScore, 
+  pickPathogenicityScore,
+  fetchDomains,
+  processDomains,
   safeFetch,
 } from "@ot/utils";
 import { useEffect, useState } from "react";
@@ -18,7 +20,7 @@ import {
   trackTicks,
 } from "./helpers";
 import AtomInfo from "./AtomInfo";
-import NoPathogenicityScores from "./NoPathogenicityScores";
+import MissingColorWarning from "./MissingColorWarning";
 import Legend from "./Legend";
 import Radios from "./Radios";
 import Dropdown from "./Dropdown";
@@ -67,12 +69,12 @@ function StructureViewer({ row }) {
     fetchStructure();
   }, [row]);
 
-  // fetch pathogenicity data
+  // fetch pathogenicity or domains data if needed
   useEffect(() => {
     if (viewerState.colorBy === "pathogenicity" &&
         !viewerState.pathogenicityScores &&
         uniprotId) {
-      async function fetchScores() {
+      async function fetchInfo() {
         const [scoresByResi] = await fetchPathogenicityScores(uniprotId);
         if (!scoresByResi) return;
         viewerDispatch({
@@ -88,7 +90,19 @@ function StructureViewer({ row }) {
             : null
         });
       }
-      fetchScores();
+      fetchInfo();
+    } else if (viewerState.colorBy === "domain" &&
+        !viewerState.domains &&
+        uniprotId) {
+      async function fetchInfo() {
+        const [domains] = await fetchDomains(uniprotId);
+        if (!Array.isArray(domains?.features)) return;
+        viewerDispatch({
+          type: "setDomains",
+          value: processDomains(domains.features),
+        });
+      }
+      fetchInfo();
     }
   }, [row, structureData, viewerState.colorBy]);
 
@@ -111,6 +125,7 @@ function StructureViewer({ row }) {
   const colorOptions = {
     confidence: "confidence",
     pathogenicity: "pathogenicity",
+    domain: "domain",
     "secondary structure": "secondary structure",
     "residue type": "residue type",
     none: "none",
@@ -139,7 +154,7 @@ function StructureViewer({ row }) {
               onDraw={drawHandler}
               trackColor={trackColor}
               trackTicks={trackTicks}
-              topLeft={<NoPathogenicityScores />}
+              topLeft={<MissingColorWarning />}
               bottomRight={<AtomInfo />}
             />
             <Box

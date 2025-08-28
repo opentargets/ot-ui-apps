@@ -1,6 +1,6 @@
 import { csvParse, mean } from "d3";
 import { safeFetch } from "./fetch";
-import { alphaFoldPathogenicityUrl } from "./urls";
+import { alphaFoldPathogenicityUrl, alphaFoldDomainsUrl } from "./urls";
   
 // returns map of pathogenicity scores grouped by residue index (number). Each
 // group is an array of objects giving pathogencity scores for alternate amino
@@ -21,6 +21,11 @@ export async function fetchPathogenicityScores(uniprotId: string) {
   return [scores, undefined];
 };
 
+// returns array of domain objects
+export async function fetchDomains(uniprotId: string) {
+  return safeFetch(alphaFoldDomainsUrl(uniprotId), "json");
+};
+
 // returns map:
 // - key (number): residue index
 // - value (number): mean pathogenicity score over alternate amino acids
@@ -38,4 +43,22 @@ export function pickPathogenicityScore(pathogenicityScores, resi, alternateAmino
     .get(Number(resi))
     .find(row => row.protein_variant.at(-1) === alternateAminoAcid);
   return row ? Number(row.am_pathogenicity) : undefined;
+}
+
+export function processDomains(domains) {
+  const uniqueDescriptions = new Set(domains.map(domain => domain.description));
+  const descriptionToIndex = {};
+  const indexToDescription = [];
+  for (const [index, description] of [...uniqueDescriptions].entries()) {
+    descriptionToIndex[description] = index;
+    indexToDescription[index] = description;
+  }
+  const getDomainIndex = (resi) => {
+    for (const { location, description } of domains) {
+      if (resi < location.start.value) return null;
+      if (resi <= location.end.value) return descriptionToIndex[description];
+    }
+    return null;
+  };
+  return { domains, descriptionToIndex, indexToDescription, getDomainIndex};
 }

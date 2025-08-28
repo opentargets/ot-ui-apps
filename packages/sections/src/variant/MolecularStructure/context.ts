@@ -4,9 +4,10 @@ export const initialState = {
   variantResidues: null,
   variantSummary: null,
   representBy: "cartoon",  // "cartoon" | "hybrid" | "trnsparent" | "opaque"
-  colorBy: "confidence",   // "confidence" | "pathogenicity" | "secondary structure" | "residue type" | "none"
+  colorBy: "confidence",   // "confidence" | "pathogenicity" | "domain" | "secondary structure" | "residue type" | "none"
   pathogenicityScores: null,
   variantPathogenicityScore: null,
+  domains: null,
 };
 
 export function reducer(state, action) {
@@ -27,6 +28,8 @@ export function reducer(state, action) {
       return { ...state, variantPathogenicityScore: action.value };
     case "setPathogenicityScores":
       return { ...state, pathogenicityScores: action.value };
+    case "setDomains":
+      return { ...state, domains: action.value };
     default:
       throw Error(`Invalid action type: ${action.type}`);
   }

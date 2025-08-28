@@ -47,6 +47,14 @@ function AtomInfo() {
             )}
           </>
         ) : null
+      case "domain": {
+        const { domains } = viewerState;
+        if (!domains) return null;
+        const domainIndex = domains.getDomainIndex(resiAtom.resi);
+        return domainIndex == null
+          ? null
+          : `Domain: ${domains.indexToDescription[domainIndex]}`;
+      }
       default:
         return null;
     }

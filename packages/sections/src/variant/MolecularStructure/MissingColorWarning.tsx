@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { useViewerState } from "ui";
 
-function NoPathogenicityScores() {
+function MissingColorWarning() {
   const viewerState = useViewerState();
 
-  if (viewerState.colorBy !== "pathogenicity" ||
-      viewerState.pathogenicityScores) {
+  if (!(
+      (viewerState.colorBy === "pathogenicity" && !viewerState.pathogenicityScores) ||
+      (viewerState.colorBy === "domain" && !viewerState.domains)
+    )) {
     return null;
   }
   
@@ -23,10 +25,15 @@ function NoPathogenicityScores() {
     >
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <FontAwesomeIcon icon={faTriangleExclamation} />
-        <Typography variant="body2">Pathogenicity scores not available</Typography>
+        <Typography variant="body2">
+          {viewerState.colorBy === "pathogenicity"
+            ? "Pathogenicity scores not available"
+            : "Domain information not available"
+          }
+        </Typography>
       </Box>
     </Box>
   );
 }
 
-export default NoPathogenicityScores;
+export default MissingColorWarning;
