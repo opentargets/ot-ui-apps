@@ -2,17 +2,19 @@ import { Box, Typography } from "@mui/material";
 import {
   CompactAlphaFoldLegend,
   CompactAlphaFoldPathogenicityLegend,
+  CompactAlphaFoldDomainLegend,
   useViewerState
 } from "ui";
+import { domainColors } from "./helpers";
 
 function Legend() {
 
   const viewerState = useViewerState();
   const  {
     colorBy,
-    variantResidues,
     pathogenicityScores,
-    variantPathogenicityScore
+    variantPathogenicityScore,
+    domains,
   } = viewerState;
 
   return (
@@ -45,7 +47,7 @@ function Legend() {
                   <strong>Variant:</strong>
                 </Typography>
                 <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
-                  AlphaMissense pathogenicity for the substitution corresponding to the variant
+                  AlphaMissense pathogenicity for substitution corresponding to variant
                 </Typography>
               </tr>
             )}
@@ -62,29 +64,13 @@ function Legend() {
           ml: { xs: 1, lg: 0 },
         }}
       >
-        {(colorBy === "confidence") && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "end",
-              alignItems: "center",
-              gap: 0.75,
-              pr: 3,
-            }}
-          >
-            <Typography variant="caption" lineHeight={1}>
-              Reference amino acid{variantResidues.size > 1 ? "s" : ""}
-            </Typography>
-            <Box
-              sx={{ width: "11px", height: "11px", borderRadius: "5.5px", bgcolor: "#0d0" }}
-            />
-          </Box>
-        )}
         <Box>
           {colorBy === "confidence" ? (
               <CompactAlphaFoldLegend showTitle={false} />
             ) : colorBy === "pathogenicity" && pathogenicityScores ? (
               <CompactAlphaFoldPathogenicityLegend showTitle={false} />
+            ) : colorBy === "domain" && domains ? (
+              <CompactAlphaFoldDomainLegend domains={domains} colorScheme={domainColors} />
             ) : null
           }
         </Box>

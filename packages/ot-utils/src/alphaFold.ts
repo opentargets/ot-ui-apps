@@ -21,7 +21,6 @@ export async function fetchPathogenicityScores(uniprotId: string) {
   return [scores, undefined];
 };
 
-// returns array of domain objects
 export async function fetchDomains(uniprotId: string) {
   return safeFetch(alphaFoldDomainsUrl(uniprotId), "json");
 };
@@ -46,19 +45,22 @@ export function pickPathogenicityScore(pathogenicityScores, resi, alternateAmino
 }
 
 export function processDomains(domains) {
-  const uniqueDescriptions = new Set(domains.map(domain => domain.description));
+  const uniqueDescriptions =
+    [...new Set(domains.map(domain => domain.description))];
   const descriptionToIndex = {};
-  const indexToDescription = [];
-  for (const [index, description] of [...uniqueDescriptions].entries()) {
+  for (const [index, description] of uniqueDescriptions.entries()) {
     descriptionToIndex[description] = index;
-    indexToDescription[index] = description;
   }
-  const getDomainIndex = (resi) => {
+  const getDescription = (resi: number) => {
     for (const { location, description } of domains) {
       if (resi < location.start.value) return null;
-      if (resi <= location.end.value) return descriptionToIndex[description];
+      if (resi <= location.end.value) return description;
     }
     return null;
   };
-  return { domains, descriptionToIndex, indexToDescription, getDomainIndex};
+  return {
+    descriptions: uniqueDescriptions,
+    descriptionToIndex,
+    getDescription,
+  };
 }

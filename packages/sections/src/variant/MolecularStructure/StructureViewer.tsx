@@ -159,25 +159,28 @@ function StructureViewer({ row }) {
             />
             <Box
               sx={{
-                mt: 1,
+                mt: 1.5,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "start",
                 flexDirection: { xs: "column", lg: "row" },
               }}
             >
-              <Radios
-                titleLabel="Structure"
-                options={structureOptions}
-                defaultValue={initialState.representBy}
-                stateProperty="representBy"
-                onChange={handleStructureChange}
-              />
-              <Box sx={{ 
-                mt: 1,
+              <Box>
+                <Radios
+                  titleLabel="Structure"
+                  options={structureOptions}
+                  defaultValue={initialState.representBy}
+                  stateProperty="representBy"
+                  onChange={handleStructureChange}
+                />
+              </Box>
+              <Box sx={{
+                mt: { xs: 0.5, lg: 0 },
                 display: "flex",
                 flexDirection: "column",
                 alignItems: { xs: "flex-start", lg: "flex-end" },
+                maxWidth: { xs: "100%", lg: "50%" },
               }}>
                 <Dropdown 
                   titleLabel="Colour"

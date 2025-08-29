@@ -23,7 +23,7 @@ function Radios({ titleLabel, options, defaultValue, stateProperty, onChange }) 
       }}
     >
       <FormControl>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, ml: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2  }}>
           <FormLabel
             sx={{
               "&.Mui-focused": {
@@ -31,7 +31,7 @@ function Radios({ titleLabel, options, defaultValue, stateProperty, onChange }) 
               },
             }}
           >
-            <Typography variant="subtitle2">{titleLabel}:</Typography>
+            <Typography variant="subtitle2">{titleLabel}</Typography>
           </FormLabel>
           <RadioGroup
             row

@@ -50,10 +50,8 @@ function AtomInfo() {
       case "domain": {
         const { domains } = viewerState;
         if (!domains) return null;
-        const domainIndex = domains.getDomainIndex(resiAtom.resi);
-        return domainIndex == null
-          ? null
-          : `Domain: ${domains.indexToDescription[domainIndex]}`;
+        const description = domains.getDescription(resiAtom.resi);
+        return description ? `Domain: ${description}` : null;
       }
       default:
         return null;

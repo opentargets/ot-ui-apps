@@ -7,6 +7,7 @@ export { default as ChipList } from "./components/ChipList";
 export { default as ClinvarStars } from "./components/ClinvarStars";
 export { default as CompactAlphaFoldLegend } from "./components/CompactAlphaFoldLegend";
 export { default as CompactAlphaFoldPathogenicityLegend } from "./components/CompactAlphaFoldPathogenicityLegend";
+export { default as CompactAlphaFoldDomainLegend } from "./components/CompactAlphaFoldDomainLegend";
 export { default as CopyUrlButton } from "./components/CopyUrlButton";
 export { default as DataDownloader } from "./components/DataDownloader";
 export { default as DetailPopover } from "./components/DetailPopover";

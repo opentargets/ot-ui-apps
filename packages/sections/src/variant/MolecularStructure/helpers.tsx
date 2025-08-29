@@ -1,4 +1,4 @@
-import { max, mean, schemeDark2, schemeSet1 } from "d3";
+import { max, mean, schemeDark2, schemeSet1, schemeObservable10 } from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
@@ -13,9 +13,10 @@ const secondaryStructureColors = {
   c: "#c0c0c0",
 }
 
-const domainColorScheme = [
+export const domainColors = [
   ...[1, 2, 5, 0, 6].map(i => schemeDark2[i]),
   ...[1, 0, 4, 7].map(i => schemeSet1[i]),
+  ...[0, 3, 6].map(i => schemeObservable10[i]),
 ];
 
 const residueTypeColors = {
@@ -90,10 +91,10 @@ function getResiColor(state, resi) {
       : "#ddd"
     case "domain": {
       if (!state.domains) return "#ddd";
-      const domainIndex = state.domains.getDomainIndex(resi);
+      const domainIndex = state.domains.descriptionToIndex[state.domains.getDescription(resi)];
       return domainIndex == null
         ? "#ddd"
-        : domainColorScheme[domainIndex % domainColorScheme.length];
+        : domainColors[domainIndex % domainColors.length];
     }
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
     case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
@@ -265,18 +266,6 @@ export function dataHandler(viewer, dispatch, row) {
       type: "setMessage",
       value: "AlphaFold structure not available",
     });
-  } else {
-    const variantResidues = new Set(
-      row.referenceAminoAcid.split("").map((v, i) => i + row.aminoAcidPosition)
-    );
-    const variantCAAtoms = allAtoms.filter(atom => {
-      return variantResidues.has(atom.resi) && atom.atom === "CA";
-    });
-    const variantCentroid = {
-      x: mean(variantCAAtoms, atom => atom.x),
-      y: mean(variantCAAtoms, atom => atom.y),
-      z: mean(variantCAAtoms, atom => atom.z),
-    }
   }
 }
 
