@@ -1,7 +1,7 @@
 
 import { Box, Typography } from "@mui/material";
 import { useViewerState, useViewerInteractionState } from "ui";
-import { getAlphaFoldPathogenicity, getAlphaFoldConfidence, naLabel } from "@ot/constants";
+import { getAlphaFoldPathogenicity, getAlphaFoldConfidence, naLabel, aminoAcidHydrophobicity } from "@ot/constants";
 
 function AtomInfo() {
   const viewerState = useViewerState();
@@ -53,6 +53,10 @@ function AtomInfo() {
         const description = domains.getDescription(resiAtom.resi);
         return description ? `Domain: ${description}` : null;
       }
+      case "hydrophobicity":
+        return `Hydrophobicity index: ${
+          aminoAcidHydrophobicity[resiAtom.resn].value} (${
+            aminoAcidHydrophobicity[resiAtom.resn].label})`;
       default:
         return null;
     }

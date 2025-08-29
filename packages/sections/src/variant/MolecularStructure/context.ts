@@ -4,7 +4,7 @@ export const initialState = {
   variantResidues: null,
   variantSummary: null,
   representBy: "cartoon",  // "cartoon" | "hybrid" | "trnsparent" | "opaque"
-  colorBy: "confidence",   // "confidence" | "pathogenicity" | "domain" | "secondary structure" | "residue type" | "none"
+  colorBy: "confidence",   // "confidence" | "pathogenicity" | "domain" | "hydrophobicity" | "secondary structure" | "none"
   pathogenicityScores: null,
   variantPathogenicityScore: null,
   domains: null,

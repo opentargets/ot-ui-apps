@@ -126,8 +126,9 @@ function StructureViewer({ row }) {
     confidence: "confidence",
     pathogenicity: "pathogenicity",
     domain: "domain",
+    hydrophobicity: "hydrophobicity",
     "secondary structure": "secondary structure",
-    "residue type": "residue type",
+    // "residue type": "residue type",
     none: "none",
   };
 
@@ -176,7 +177,7 @@ function StructureViewer({ row }) {
                 />
               </Box>
               <Box sx={{
-                mt: { xs: 0.5, lg: 0 },
+                mt: { xs: 1, lg: 0 },
                 display: "flex",
                 flexDirection: "column",
                 alignItems: { xs: "flex-start", lg: "flex-end" },

@@ -1,10 +1,18 @@
-import { max, mean, schemeDark2, schemeSet1, schemeObservable10 } from "d3";
+import {
+  max,
+  scaleLinear,
+  schemeDark2,
+  schemeSet1,
+  schemeObservable10,
+  interpolateRdBu,
+} from "d3";
 import { Vector2 } from "3dmol";
 import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicityColor,
   aminoAcidLookup,
   aminoAcidTypeLookup,
+  aminoAcidHydrophobicity,
 } from "@ot/constants";
 
 const secondaryStructureColors = {
@@ -19,12 +27,24 @@ export const domainColors = [
   ...[0, 3, 6].map(i => schemeObservable10[i]),
 ];
 
-const residueTypeColors = {
-  acid: "#ff1744",
-  basic: "#0044ff",
-  nonpolar: "#ccc",
-  polar: "#17eeee",
-};
+export const hydrophobicityColorInterpolator = v => interpolateRdBu(1 - v);
+
+const hydrophobicityColorScale = scaleLinear()
+  .domain([-55, 100])
+  .range([0, 1]);
+
+export function getHydrophobicityColor(resn) {
+  return hydrophobicityColorInterpolator(
+    hydrophobicityColorScale(aminoAcidHydrophobicity[resn].value)
+  );
+}
+
+// const residueTypeColors = {
+//   acid: "#ff1744",
+//   basic: "#0044ff",
+//   nonpolar: "#ccc",
+//   polar: "#17eeee",
+// };
 
 const variantColor = "lime";
 const clickColor = "magenta";
@@ -96,8 +116,10 @@ function getResiColor(state, resi) {
         ? "#ddd"
         : domainColors[domainIndex % domainColors.length];
     }
+    case "hydrophobicity":
+      return getHydrophobicityColor(state.atomsByResi.get(resi)[0].resn);
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
-    case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
+    // case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";
   }
 }

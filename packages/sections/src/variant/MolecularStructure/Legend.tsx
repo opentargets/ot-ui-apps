@@ -3,9 +3,10 @@ import {
   CompactAlphaFoldLegend,
   CompactAlphaFoldPathogenicityLegend,
   CompactAlphaFoldDomainLegend,
+  CompactAlphaFoldHydrophobicityLegend,
   useViewerState
 } from "ui";
-import { domainColors } from "./helpers";
+import { domainColors, hydrophobicityColorInterpolator } from "./helpers";
 
 function Legend() {
 
@@ -71,6 +72,8 @@ function Legend() {
               <CompactAlphaFoldPathogenicityLegend showTitle={false} />
             ) : colorBy === "domain" && domains ? (
               <CompactAlphaFoldDomainLegend domains={domains} colorScheme={domainColors} />
+            ) : colorBy === "hydrophobicity" ? (
+              <CompactAlphaFoldHydrophobicityLegend colorInterpolator={hydrophobicityColorInterpolator} />
             ) : null
           }
         </Box>

@@ -108,3 +108,28 @@ export const aminoAcidTypeLookup = {
   ASN: "polar",
   GLN: "polar",
 };
+
+// hydrophobicity indices at ph7, from:
+// https://www.sigmaaldrich.com/GB/en/technical-documents/technical-article/protein-biology/protein-structural-analysis/amino-acid-reference-chart#hydrophobicity
+export const aminoAcidHydrophobicity = {
+  PHE: { value: 100, label: "very hydrophobic" },
+  ILE: { value: 99, label: "very hydrophobic" },
+  TRP: { value: 97, label: "very hydrophobic" },
+  LEU: { value: 97, label: "very hydrophobic" },
+  VAL: { value: 76, label: "very hydrophobic" },
+  MET: { value: 74, label: "very hydrophobic" },
+  TYR: { value: 63, label: "hydrophobic" },
+  CYS: { value: 49, label: "hydrophobic" },
+  ALA: { value: 41, label: "hydrophobic" },
+  THR: { value: 13, label: "neutral" },
+  HIS: { value: 8, label: "neutral" },
+  GLY: { value: 0, label: "neutral" },
+  SER: { value: -5, label: "neutral" },
+  GLN: { value: -10, label: "neutral" },
+  ARG: { value: -14, label: "hydrophilic" },
+  LYS: { value: -23, label: "hydrophilic" },
+  ASN: { value: -28, label: "hydrophilic" },
+  GLU: { value: -31, label: "hydrophilic" },
+  PRO: { value: -46, label: "hydrophilic" },
+  ASP: { value: -55, label: "hydrophilic" },
+};
