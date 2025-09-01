@@ -10,7 +10,6 @@ import {
   getAlphaFoldConfidence,
   getAlphaFoldPathogenicityColor,
   aminoAcidLookup,
-  aminoAcidTypeLookup,
   aminoAcidHydrophobicity,
 } from "@ot/constants";
 
@@ -36,13 +35,6 @@ export function getHydrophobicityColor(resn) {
     hydrophobicityColorScale(aminoAcidHydrophobicity[resn].value)
   );
 }
-
-// const residueTypeColors = {
-//   acid: "#ff1744",
-//   basic: "#0044ff",
-//   nonpolar: "#ccc",
-//   polar: "#17eeee",
-// };
 
 const variantColor = "lime";
 const clickColor = "magenta";
@@ -117,7 +109,6 @@ function getResiColor(state, resi) {
     case "hydrophobicity":
       return getHydrophobicityColor(state.atomsByResi.get(resi)[0].resn);
     case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
-    // case "residue type": return residueTypeColors[aminoAcidTypeLookup[state.atomsByResi.get(resi)[0].resn]];
     case "none": return "#ddd";
   }
 }

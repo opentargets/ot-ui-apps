@@ -128,7 +128,6 @@ function StructureViewer({ row }) {
     domain: "domain",
     hydrophobicity: "hydrophobicity",
     "secondary structure": "secondary structure",
-    // "residue type": "residue type",
     none: "none",
   };
 
