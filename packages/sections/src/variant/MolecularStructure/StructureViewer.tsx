@@ -164,7 +164,8 @@ function StructureViewer({ row }) {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "start",
-                flexDirection: { xs: "column", lg: "row" },
+                flexDirection: "column",
+                // flexDirection: { xs: "column", lg: "row" },
               }}
             >
               <Box>
