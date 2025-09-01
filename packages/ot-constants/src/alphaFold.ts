@@ -86,29 +86,6 @@ export const aminoAcidLookup = {
   Q: "GLN",
 };
 
-export const aminoAcidTypeLookup = {
-  GLY: "nonpolar",
-  ALA: "nonpolar",
-  VAL: "nonpolar",
-  LEU: "nonpolar",
-  ILE: "nonpolar",
-  THR: "polar",
-  SER: "polar",
-  MET: "nonpolar",
-  CYS: "polar",
-  PRO: "nonpolar",
-  PHE: "nonpolar",
-  TYR: "polar",
-  TRP: "nonpolar",
-  HIS: "basic",
-  LYS: "basic",
-  ARG: "basic",
-  ASP: "acid",
-  GLU: "acid",
-  ASN: "polar",
-  GLN: "polar",
-};
-
 // hydrophobicity indices at ph7, from:
 // https://www.sigmaaldrich.com/GB/en/technical-documents/technical-article/protein-biology/protein-structural-analysis/amino-acid-reference-chart#hydrophobicity
 export const aminoAcidHydrophobicity = {
