@@ -30,11 +30,7 @@ const ENV_GIT_VERSION: string | undefined = import.meta.env.VITE_GIT_VERSION;
 
 export const getConfig = (): Config => {
 	return {
-		urlApi:
-			"https://eeff.opentargets.xyz/api/v4/graphql" ??
-			window.configUrlApi ??
-			ENV_API_URL ??
-			"",
+		urlApi:window.configUrlApi ?? ENV_API_URL ?? "",
 		urlAiApi: window.configOTAiApi ?? ENV_AI_API_URL ?? "",
 		gitVersion: window.gitVersion ?? ENV_GIT_VERSION ?? "",
 		profile: window.configProfile ?? { isPartnerPreview: false },
