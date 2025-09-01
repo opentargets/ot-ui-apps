@@ -3,7 +3,6 @@ import {
   scaleLinear,
   schemeDark2,
   schemeSet1,
-  schemeObservable10,
   interpolateRdBu,
 } from "d3";
 import { Vector2 } from "3dmol";
@@ -23,8 +22,7 @@ const secondaryStructureColors = {
 
 export const domainColors = [
   ...[1, 2, 5, 0, 6].map(i => schemeDark2[i]),
-  ...[1, 0, 4, 7].map(i => schemeSet1[i]),
-  ...[0, 3, 6].map(i => schemeObservable10[i]),
+  ...[1, 0, 4, 7, 2].map(i => schemeSet1[i]),
 ];
 
 export const hydrophobicityColorInterpolator = v => interpolateRdBu(1 - v);
