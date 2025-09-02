@@ -155,9 +155,13 @@ function getColumns(label) {
       renderCell: ({
         variantFunctionalConsequence,
         variantFunctionalConsequenceFromQtlId,
-        variantId,
+        variant: {
+          chromosome,
+          position,
+          referenceAllele,
+          alternateAllele
+        }
       }) => {
-        const pvparams = variantId?.split("_") || [];
         return (
           <div style={{ display: "flex", gap: "5px" }}>
             {variantFunctionalConsequence && (
@@ -180,7 +184,7 @@ function getColumns(label) {
               variantFunctionalConsequence.id === "SO:0001587") && (
               <LabelChip
                 label={variantConsequenceSource.ProtVar.label}
-                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome}&genomic_position=${position}&reference_allele=${referenceAllele}&alternative_allele=${alternateAllele}`}
                 tooltip={variantConsequenceSource.ProtVar.tooltip}
               />
             )}

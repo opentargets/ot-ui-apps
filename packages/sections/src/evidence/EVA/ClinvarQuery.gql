@@ -22,6 +22,8 @@ query ClinvarQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: S
         variant {
           id
           hgvsId
+          chromosome
+          position
           referenceAllele
           alternateAllele
         }
@@ -31,6 +33,10 @@ query ClinvarQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: S
         variantRsId
         studyId
         variantFunctionalConsequence {
+          id
+          label
+        }
+        variantFunctionalConsequenceFromQtlId {
           id
           label
         }
