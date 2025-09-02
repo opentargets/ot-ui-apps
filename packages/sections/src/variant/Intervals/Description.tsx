@@ -1,4 +1,4 @@
-import { DisplayVariantId } from "ui";
+import { Link, DisplayVariantId } from "ui";
 
 type DescriptionProps = {
   variantId: string;
@@ -9,15 +9,17 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Genomic intervals associated with{" "}
+      Enhancer–gene regulatory region predictions overlapping with{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
           referenceAllele={referenceAllele}
           alternateAllele={alternateAllele}
         />
-      </strong>{" "}
-      showing regulatory regions, target genes, and functional annotations.
+      </strong>. Source:{" "}
+      <Link to="https://doi.org/10.1101/2023.11.09.563812" external>
+        ENCODE rE2G
+      </Link>
     </>
   );
 }

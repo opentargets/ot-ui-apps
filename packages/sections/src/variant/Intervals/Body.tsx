@@ -21,22 +21,10 @@ interface Biosample {
 
 const columns = [
   {
-    id: "biosample",
-    label: "Cell type",
-    renderCell: ({ biosample }: { biosample: Biosample }) => {
-      if (!biosample) return naLabel;
-      return (
-        <Link external to={`http://purl.obolibrary.org/obo/${biosample.biosampleId}`}>
-          {biosample.biosampleFromSource || biosample.biosampleId}
-        </Link>
-      );
-    },
-    filterValue: ({ biosample }: { biosample: Biosample }) => 
-      biosample?.biosampleFromSource || biosample?.biosampleId || "",
-  },
-  {
     id: "target",
     label: "Gene",
+    enableHiding: false,
+    sticky: true,
     renderCell: ({ target }: { target: Target }) => {
       if (!target) return naLabel;
       return (
@@ -48,17 +36,82 @@ const columns = [
     filterValue: ({ target }: { target: Target }) => target?.approvedSymbol || "",
   },
   {
-    id: "score",
-    label: "Score",
-    renderCell: ({ score }: { score: number }) => {
-      if (score === null || score === undefined) return naLabel;
-      return score.toFixed(3);
+    id: "biosample",
+    label: "Affected tissue/cell",
+    enableHiding: false,
+    renderCell: ({ biosample }: { biosample: Biosample }) => {
+      if (!biosample) return naLabel;
+      return (
+        <Link external to={`http://purl.obolibrary.org/obo/${biosample.biosampleId}`}>
+          {biosample.biosampleName || biosample.biosampleId}
+        </Link>
+      );
     },
-    filterValue: ({ score }: { score: number }) => score?.toString() || "",
+    filterValue: ({ biosample }: { biosample: Biosample }) => 
+      biosample?.biosampleFromSource || biosample?.biosampleId || "",
+  },
+  {
+    id: "intervalType",
+    label: "Interval type",
+    sortable: true,
+    renderCell: ({ intervalType }: { intervalType: string }) => {
+      if (!intervalType) return naLabel;
+      return intervalType;
+    },
+    filterValue: ({ intervalType }: { intervalType: string }) => intervalType || "",
+  },
+  {
+    id: "distanceToTss",
+    label: "Distance from start site (bp)",
+    numeric: true,
+    sortable: true,
+    renderCell: ({ distanceToTss }: { distanceToTss: number }) => {
+      if (distanceToTss === null || distanceToTss === undefined) return naLabel;
+      return `${distanceToTss.toLocaleString()}`;
+    },
+    filterValue: ({ distanceToTss }: { distanceToTss: number }) => distanceToTss?.toString() || "",
+  },
+  {
+    id: "size",
+    label: "Interval size (bp)",
+    numeric: true,
+    sortable: true,
+    renderCell: ({ start, end }: { start: number; end: number }) => {
+      if (
+        start === null ||
+        start === undefined ||
+        end === null ||
+        end === undefined
+      )
+        return naLabel;
+      return `${(end - start + 1).toLocaleString()}`;
+    },
+    filterValue: ({ start, end }: { start: number; end: number }) =>
+      start !== undefined && end !== undefined && start !== null && end !== null
+        ? `${start}-${end}`
+        : "",
+  },
+  {
+    id: "start_end",
+    label: "Interval range",
+    renderCell: ({ start, end }: { start: number; end: number }) => {
+      if (
+        start === null ||
+        start === undefined ||
+        end === null ||
+        end === undefined
+      )
+        return naLabel;
+      return `${start.toLocaleString()}-${end.toLocaleString()}`;
+    },
+    filterValue: ({ start, end }: { start: number; end: number }) =>
+      start !== undefined && end !== undefined && start !== null && end !== null
+        ? `${start}-${end}`
+        : "",
   },
   {
     id: "studyId",
-    label: "Dataset",
+    label: "Study",
     renderCell: ({ studyId }: { studyId: string }) => {
       if (!studyId) return naLabel;
       return (
@@ -70,32 +123,18 @@ const columns = [
     filterValue: ({ studyId }: { studyId: string }) => studyId || "",
   },
   {
-    id: "start",
-    label: "Interval Start",
-    renderCell: ({ start }: { start: number }) => {
-      if (!start) return naLabel;
-      return start.toLocaleString();
+    id: "score",
+    label: "Score",
+    numeric: true,
+    sortable: true,
+    tooltip: "Predictive model score ranging from 0 to 1",
+    renderCell: ({ score }: { score: number }) => {
+      if (score === null || score === undefined) return naLabel;
+      return score.toFixed(3);
     },
-    filterValue: ({ start }: { start: number }) => start?.toString() || "",
+    filterValue: ({ score }: { score: number }) => score?.toString() || "",
   },
-  {
-    id: "end",
-    label: "Interval End",
-    renderCell: ({ end }: { end: number }) => {
-      if (!end) return naLabel;
-      return end.toLocaleString();
-    },
-    filterValue: ({ end }: { end: number }) => end?.toString() || "",
-  },
-  {
-    id: "distanceToTSS",
-    label: "E-G Distance",
-    renderCell: ({ distanceToTSS }: { distanceToTSS: number }) => {
-      if (distanceToTSS === null || distanceToTSS === undefined) return naLabel;
-      return `${distanceToTSS.toLocaleString()} bp`;
-    },
-    filterValue: ({ distanceToTSS }: { distanceToTSS: number }) => distanceToTSS?.toString() || "",
-  },
+
   // {
   //   id: "pmid",
   //   label: "Publication",

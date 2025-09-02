@@ -4,7 +4,7 @@ query IntervalsQuery($variantId: String!) {
     rsIds
     referenceAllele
     alternateAllele
-    intervals(page: {size:3000, index : 1}) {
+    intervals(page: { size: 3000, index: 1 }) {
       count
       rows {
         chromosome
@@ -26,9 +26,10 @@ query IntervalsQuery($variantId: String!) {
           value
         }
         datasourceId
-        distanceToTSS
+        distanceToTss
         studyId
+        intervalType
       }
     }
   }
-} 
+}
