@@ -107,19 +107,23 @@ const columns = [
   {
     id: "start_end",
     label: "Interval range",
-    renderCell: ({ start, end }: { start: number; end: number }) => {
+    numeric: true,
+    renderCell: ({ chromosome, start, end }: { chromosome: string; start: number; end: number }) => {
       if (
+        chromosome === null ||
+        chromosome === undefined ||
         start === null ||
         start === undefined ||
         end === null ||
         end === undefined
       )
         return naLabel;
-      return `${start.toLocaleString()}-${end.toLocaleString()}`;
+      return `${chromosome}:${start.toLocaleString()}-${end.toLocaleString()}`;
     },
-    filterValue: ({ start, end }: { start: number; end: number }) =>
-      start !== undefined && end !== undefined && start !== null && end !== null
-        ? `${start}-${end}`
+    filterValue: ({ chromosome, start, end }: { chromosome: string; start: number; end: number }) =>
+      chromosome !== undefined && start !== undefined && end !== undefined && 
+      chromosome !== null && start !== null && end !== null
+        ? `${chromosome}:${start.toLocaleString()}-${end.toLocaleString()}`
         : "",
   },
   {
