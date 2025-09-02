@@ -61,6 +61,19 @@ const columns = [
     filterValue: ({ intervalType }: { intervalType: string }) => intervalType || "",
   },
   {
+    id: "studyId",
+    label: "Study",
+    renderCell: ({ studyId }: { studyId: string }) => {
+      if (!studyId) return naLabel;
+      return (
+        <Link external to={`https://www.encodeproject.org/experiments/${studyId}/`}>
+          {studyId}
+        </Link>
+      );
+    },
+    filterValue: ({ studyId }: { studyId: string }) => studyId || "",
+  },
+  {
     id: "distanceToTss",
     label: "Distance from start site (bp)",
     numeric: true,
@@ -108,19 +121,6 @@ const columns = [
       start !== undefined && end !== undefined && start !== null && end !== null
         ? `${start}-${end}`
         : "",
-  },
-  {
-    id: "studyId",
-    label: "Study",
-    renderCell: ({ studyId }: { studyId: string }) => {
-      if (!studyId) return naLabel;
-      return (
-        <Link external to={`https://www.encodeproject.org/experiments/${studyId}/`}>
-          {studyId}
-        </Link>
-      );
-    },
-    filterValue: ({ studyId }: { studyId: string }) => studyId || "",
   },
   {
     id: "score",
