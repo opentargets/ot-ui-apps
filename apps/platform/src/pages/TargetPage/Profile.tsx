@@ -17,6 +17,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.Safety.definition.id, Target.Safety],
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
   [Target.ChemicalProbes.definition.id, Target.ChemicalProbes],
+  [Target.BaselineExpression.definition.id, Target.BaselineExpression],
   [Target.Expression.definition.id, Target.Expression],
   [Target.DepMap.definition.id, Target.DepMap],
   [Target.SubcellularLocation.definition.id, Target.SubcellularLocation],
