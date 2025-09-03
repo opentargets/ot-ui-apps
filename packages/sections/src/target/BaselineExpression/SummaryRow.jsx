@@ -3,22 +3,7 @@ import classNames from "classnames";
 import { TableCell, TableRow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
-const proteinLevel = level => {
-  if (level === 0) {
-    return "Under expressed";
-  }
-  if (level === 1) {
-    return "Low";
-  }
-  if (level === 2) {
-    return "Medium";
-  }
-  return "High";
-};
-
-const rnaValueToPercent = (maxRnaValue, value) => (value * 100) / maxRnaValue;
-
-const proteinLevelToPercent = level => (level * 100) / 3;
+const valueToPercent = (maxValue, value) => (value * 100) / maxValue;
 
 const useStyles = makeStyles(theme => ({
   parentRow: {
@@ -55,11 +40,8 @@ const useStyles = makeStyles(theme => ({
     textTransform: "capitalize",
     paddingRight: "8px",
   },
-  rnaCell: {
+  medianCell: {
     paddingRight: "8px",
-  },
-  proteinCell: {
-    paddingLeft: "8px",
   },
   barContainer: {
     height: "12px",
@@ -71,13 +53,13 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.main,
     height: "12px",
   },
-  barTissue: {
+  barExpression: {
     backgroundColor: theme.palette.primary.light,
     height: "12px",
   },
 }));
 
-function SummaryRow({ parent, maxRnaValue }) {
+function SummaryRow({ parent, maxMedianValue }) {
   const [collapsed, setCollapsed] = useState(true);
   const classes = useStyles();
 
@@ -98,14 +80,17 @@ function SummaryRow({ parent, maxRnaValue }) {
         >
           {parent.parentLabel}
         </TableCell>
-        <TableCell className={classNames(classes.cell, classes.rnaCell)}>
+        <TableCell className={classNames(classes.cell)}>
+          {/* Cell type will be shown in child rows */}
+        </TableCell>
+        <TableCell className={classNames(classes.cell, classes.medianCell)}>
           <div className={classes.barContainer}>
-            {parent.maxRnaLevel >= 0 ? (
+            {parent.maxMedian >= 0 ? (
               <div
                 className={classes.barParent}
-                title={`${parent.maxRnaValue} (normalized count)`}
+                title={`${parent.maxMedian} (median expression)`}
                 style={{
-                  width: `${rnaValueToPercent(maxRnaValue, parent.maxRnaValue)}%`,
+                  width: `${valueToPercent(maxMedianValue, parent.maxMedian)}%`,
                   float: "right",
                 }}
               />
@@ -114,45 +99,38 @@ function SummaryRow({ parent, maxRnaValue }) {
             )}
           </div>
         </TableCell>
-        <TableCell className={classNames(classes.cell, classes.proteinCell)}>
-          <div className={classes.barContainer}>
-            {parent.maxProteinLevel >= 0 ? (
-              <div
-                className={classes.barParent}
-                title={proteinLevel(parent.maxProteinLevel)}
-                style={{
-                  width: `${proteinLevelToPercent(parent.maxProteinLevel)}%`,
-                }}
-              />
-            ) : (
-              "N/A"
-            )}
-          </div>
+        <TableCell className={classNames(classes.cell)}>
+          {/* Unit will be shown in child rows */}
+        </TableCell>
+        <TableCell className={classNames(classes.cell)}>
+          {/* Data source will be shown in child rows */}
         </TableCell>
       </TableRow>
-      {parent.tissues.map((tissue, index, tissues) => {
-        const rnaPercent = rnaValueToPercent(maxRnaValue, tissue.rna.value);
-        const proteinPercent = proteinLevelToPercent(tissue.protein.level);
+      {parent.expressions.map((expression, index, expressions) => {
+        const medianPercent = valueToPercent(maxMedianValue, expression.median || 0);
 
         return (
           <TableRow
             className={classNames(classes.row, {
-              [classes.lastChildRow]: index === tissues.length - 1,
+              [classes.lastChildRow]: index === expressions.length - 1,
             })}
-            key={tissue.tissue.label}
+            key={`${expression.tissueBiosample?.biosampleId || expression.tissueBiosampleFromSource}-${expression.celltypeBiosample?.biosampleId || expression.celltypeBiosampleFromSource}`}
             style={{ display: collapsed ? "none" : "table-row" }}
           >
             <TableCell className={classNames(classes.cell, classes.tissueCell)}>
-              {tissue.tissue.label}
+              {expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource || "N/A"}
             </TableCell>
-            <TableCell className={classNames(classes.cell, classes.rnaCell)}>
+            <TableCell className={classNames(classes.cell)}>
+              {expression.celltypeBiosample?.biosampleName || expression.celltypeBiosampleFromSource || "N/A"}
+            </TableCell>
+            <TableCell className={classNames(classes.cell, classes.medianCell)}>
               <div className={classes.barContainer}>
-                {tissue.rna.level >= 0 ? (
+                {expression.median >= 0 ? (
                   <div
-                    className={classes.barTissue}
-                    title={`${tissue.rna.value} (normalized count)`}
+                    className={classes.barExpression}
+                    title={`${expression.median} (median expression)`}
                     style={{
-                      width: `${rnaPercent}%`,
+                      width: `${medianPercent}%`,
                       float: "right",
                     }}
                   />
@@ -161,20 +139,11 @@ function SummaryRow({ parent, maxRnaValue }) {
                 )}
               </div>
             </TableCell>
-            <TableCell className={classNames(classes.cell, classes.proteinCell)}>
-              <div className={classes.barContainer}>
-                {tissue.protein.level >= 0 ? (
-                  <div
-                    className={classes.barTissue}
-                    title={proteinLevel(tissue.protein.level)}
-                    style={{
-                      width: `${proteinPercent}%`,
-                    }}
-                  />
-                ) : (
-                  "N/A"
-                )}
-              </div>
+            <TableCell className={classNames(classes.cell)}>
+              {expression.unit || "N/A"}
+            </TableCell>
+            <TableCell className={classNames(classes.cell)}>
+              {expression.datasourceId || "N/A"}
             </TableCell>
           </TableRow>
         );

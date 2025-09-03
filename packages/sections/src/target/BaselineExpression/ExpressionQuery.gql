@@ -1,6 +1,31 @@
 query ExpressionQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
+    baselineExpression (page: {index: 0, size: 1500}) {
+      count
+      rows {
+        targetId
+        targetFromSourceId
+        tissueBiosample {
+          biosampleId
+          biosampleName
+        }
+        tissueBiosampleFromSource
+        celltypeBiosample {
+          biosampleId
+          biosampleName
+        }
+        celltypeBiosampleFromSource
+        min
+        q1
+        median
+        q3
+        max
+        datasourceId
+        datatypeId
+        unit
+      }
+    }
     expressions {
       tissue {
         label

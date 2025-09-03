@@ -2,7 +2,6 @@ import { useState } from "react";
 import maxBy from "lodash/maxBy";
 import classNames from "classnames";
 import {
-  Typography,
   Table,
   TableHead,
   TableSortLabel,
@@ -10,166 +9,107 @@ import {
   TableRow,
   TableCell,
   Grid,
-  ToggleButtonGroup,
-  ToggleButton,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 import SummaryRow from "./SummaryRow";
 
-const getMaxRnaValue = expressions => {
-  if (expressions.length <= 0) return 0;
-  return maxBy(expressions, expression => (expression?.rna ? expression.rna.value : 0)).rna.value;
+const getMaxMedianValue = baselineExpressions => {
+  if (baselineExpressions.length <= 0) return 0;
+  return maxBy(baselineExpressions, expression => (expression?.median ? expression.median : 0)).median;
 };
 
-// function that transforms tissue data into an array of objects
-// where each object has the following shape and where tissues is
-// an array of tissues that belong to the parent category
+// function that transforms baseline expression data into an array of objects
+// where each object has the following shape and where expressions is
+// an array of expressions that belong to the parent category
 // {
 //   parentLabel: string
-//   tissues: []
-//   maxRnaValue: number
-//   maxRnaLevel: number
-//   maxProteinLevel: number
+//   expressions: []
+//   maxMedian: number
 // }
-const groupTissues = (expressions, groupBy) => {
+const groupTissues = (baselineExpressions, groupBy) => {
   const groupedTissues = {};
 
-  expressions.forEach(expression => {
-    const parentLabels = expression.tissue[groupBy];
-    parentLabels.forEach(label => {
-      if (!groupedTissues[label]) {
-        groupedTissues[label] = {
-          parentLabel: label,
-          tissues: [],
-          maxRnaValue: Number.NEGATIVE_INFINITY,
-          maxRnaLevel: Number.NEGATIVE_INFINITY,
-          maxProteinLevel: Number.NEGATIVE_INFINITY,
-        };
-      }
+  baselineExpressions.forEach(expression => {
+    // Use tissueBiosample name as the grouping key
+    const tissueName = expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource || "Unknown";
+    
+    if (!groupedTissues[tissueName]) {
+      groupedTissues[tissueName] = {
+        parentLabel: tissueName,
+        expressions: [],
+        maxMedian: Number.NEGATIVE_INFINITY,
+      };
+    }
 
-      const parent = groupedTissues[label];
+    const parent = groupedTissues[tissueName];
 
-      parent.tissues.push(expression);
-      parent.maxRnaValue = Math.max(parent.maxRnaValue, expression.rna.value);
-      parent.maxRnaLevel = Math.max(parent.maxRnaLevel, expression.rna.level);
-      parent.maxProteinLevel = Math.max(parent.maxProteinLevel, expression.protein.level);
-    });
+    parent.expressions.push(expression);
+    parent.maxMedian = Math.max(parent.maxMedian, expression.median || 0);
   });
 
   return Object.values(groupedTissues);
 };
 
-const tissueComparator = sortBy => {
-  if (sortBy === "rna") {
-    return (a, b) => b.rna.value - a.rna.value;
+const expressionComparator = sortBy => {
+  if (sortBy === "median") {
+    return (a, b) => (b.median || 0) - (a.median || 0);
   }
-
-  return (a, b) => b.protein.level - a.protein.level;
+  return (a, b) => (b.median || 0) - (a.median || 0);
 };
 
 const parentComparator = sortBy => {
-  if (sortBy === "rna") {
-    return (a, b) => b.maxRnaValue - a.maxRnaValue;
+  if (sortBy === "median") {
+    return (a, b) => b.maxMedian - a.maxMedian;
   }
-
-  return (a, b) => b.maxProteinLevel - a.maxProteinLevel;
+  return (a, b) => b.maxMedian - a.maxMedian;
 };
 
 const sort = (parents, sortBy) => {
   parents.forEach(parent => {
-    parent.tissues.sort(tissueComparator(sortBy));
+    parent.expressions.sort(expressionComparator(sortBy));
   });
   return parents.sort(parentComparator(sortBy));
 };
 
 const useStyles = makeStyles({
-  groupBy: {
-    marginBottom: "20px",
-    marginTop: "40px",
-  },
-  groupByText: {
-    marginRight: "7px !important",
-  },
   headerCell: {
     textAlign: "center !important",
-  },
-  rnaCell: {
-    paddingRight: "8px",
-  },
-  proteinCell: {
-    paddingLeft: "8px",
-  },
-  highLow: {
-    border: "none !important",
   },
 });
 
 function SummaryTable({ data }) {
-  const [groupBy, setGroupBy] = useState("organs");
-  const [sortBy, setSortBy] = useState("rna");
+  const [sortBy, setSortBy] = useState("median");
 
   const classes = useStyles();
-  const maxRnaValue = getMaxRnaValue(data);
-  const parents = sort(groupTissues(data, groupBy), sortBy);
+  const maxMedianValue = getMaxMedianValue(data);
+  const parents = sort(groupTissues(data, "tissue"), sortBy);
 
   // handlers
-  const handleChange = (e, group) => {
-    if (group) {
-      setGroupBy(group);
-    }
-  };
-
   const handleSort = sort => {
     setSortBy(sort);
   };
 
   return (
     <>
-      <Grid className={classes.groupBy} container justifyContent="center" alignItems="center">
-        <Typography className={classes.groupByText} variant="body2">
-          Group by
-        </Typography>
-        <ToggleButtonGroup size="small" value={groupBy} exclusive onChange={handleChange}>
-          <ToggleButton value="organs">Organs</ToggleButton>
-          <ToggleButton value="anatomicalSystems">Anatomical Systems</ToggleButton>
-        </ToggleButtonGroup>
-      </Grid>
       <Grid container justifyContent="center">
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell className={classes.headerCell}>Tissue</TableCell>
-              <TableCell className={classes.headerCell} onClick={() => handleSort("rna")}>
-                <TableSortLabel direction="desc" active={sortBy === "rna"}>
-                  RNA (Expression Atlas)
+              <TableCell className={classes.headerCell}>Cell Type</TableCell>
+              <TableCell className={classes.headerCell} onClick={() => handleSort("median")}>
+                <TableSortLabel direction="desc" active={sortBy === "median"}>
+                  Median Expression
                 </TableSortLabel>
               </TableCell>
-              <TableCell className={classes.headerCell} onClick={() => handleSort("protein")}>
-                <TableSortLabel direction="desc" active={sortBy === "protein"}>
-                  Protein (HPA)
-                </TableSortLabel>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className={classes.highLow} />
-              <TableCell className={classNames(classes.highLow, classes.rnaCell)}>
-                <Grid container justifyContent="space-between">
-                  <Grid item>High</Grid>
-                  <Grid item>Low</Grid>
-                </Grid>
-              </TableCell>
-              <TableCell className={classNames(classes.highLow, classes.proteinCell)}>
-                <Grid container justifyContent="space-between">
-                  <Grid item>Low</Grid>
-                  <Grid item>High</Grid>
-                </Grid>
-              </TableCell>
+              <TableCell className={classes.headerCell}>Unit</TableCell>
+              <TableCell className={classes.headerCell}>Data Source</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {parents.map(parent => (
-              <SummaryRow key={parent.parentLabel} maxRnaValue={maxRnaValue} parent={parent} />
+              <SummaryRow key={parent.parentLabel} maxMedianValue={maxMedianValue} parent={parent} />
             ))}
           </TableBody>
         </Table>

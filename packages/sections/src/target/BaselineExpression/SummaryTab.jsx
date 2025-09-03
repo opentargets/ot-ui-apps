@@ -12,20 +12,20 @@ export function getData(ensgId, client) {
 }
 
 const headers = [
-  { id: "label", label: "Tissue" },
-  { id: "organs", label: "Organs" },
-  { id: "anatomicalSystems", label: "Anatomical Systems" },
-  { id: "rna", label: "RNA" },
-  { id: "protein", label: "Protein" },
+  { id: "tissueBiosampleName", label: "Tissue" },
+  { id: "celltypeBiosampleName", label: "Cell Type" },
+  { id: "median", label: "Median Expression" },
+  { id: "unit", label: "Unit" },
+  { id: "datasourceId", label: "Data Source" },
 ];
 
-const getDownloadRows = expressions =>
-  expressions.map(expression => ({
-    label: expression.tissue.label,
-    organs: expression.tissue.organs.join(","),
-    anatomicalSystems: expression.tissue.anatomicalSystems.join(","),
-    rna: expression.rna.value,
-    protein: expression.protein.level,
+const getDownloadRows = baselineExpressions =>
+  baselineExpressions.map(expression => ({
+    tissueBiosampleName: expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource || "N/A",
+    celltypeBiosampleName: expression.celltypeBiosample?.biosampleName || expression.celltypeBiosampleFromSource || "N/A",
+    median: expression.median,
+    unit: expression.unit,
+    datasourceId: expression.datasourceId,
   }));
 
 function SummaryTab({ symbol, data }) {
@@ -33,11 +33,11 @@ function SummaryTab({ symbol, data }) {
     <Grid container justifyContent="center">
       <ExpressionDataDownloader
         tableHeaders={headers}
-        rows={getDownloadRows(data.target.expressions)}
-        fileStem={`${symbol}-expression`}
+        rows={getDownloadRows(data.target.baselineExpression.rows)}
+        fileStem={`${symbol}-baseline-expression`}
       />
       <Grid item xs={12} lg={8}>
-        <SummaryTable data={data.target.expressions} />
+        <SummaryTable data={data.target.baselineExpression.rows} />
       </Grid>
     </Grid>
   );
