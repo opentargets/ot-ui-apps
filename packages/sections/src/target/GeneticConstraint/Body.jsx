@@ -37,6 +37,46 @@ const constraintTypeMap = {
   lof: "pLoF",
 };
 
+/**
+ * Formats a number to show only the first 3 non-zero significant digits
+ * @param {number} value - The number to format
+ * @returns {string} - Formatted number string
+ */
+function formatSignificantDigits(value) {
+  if (value === null || value === undefined || isNaN(value)) {
+    return value;
+  }
+
+  // Convert to number if it's a string
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  
+  if (num === 0) return '0';
+  
+  // Handle scientific notation
+  if (Math.abs(num) < 0.001 || Math.abs(num) >= 10000) {
+    return num.toExponential(2);
+  }
+  
+  // For regular numbers, find the first 3 significant digits
+  const absNum = Math.abs(num);
+  const isNegative = num < 0;
+  
+  // Calculate the number of decimal places needed
+  const magnitude = Math.floor(Math.log10(absNum)) + 1;
+  const decimalPlaces = Math.max(0, 3 - magnitude);
+  
+  // Round to the appropriate decimal places
+  const rounded = Math.round(absNum * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+  
+  // Format with appropriate decimal places
+  const formatted = rounded.toFixed(decimalPlaces);
+  
+  // Remove trailing zeros after decimal point
+  const trimmed = formatted.replace(/\.?0+$/, '');
+  
+  return isNegative ? `-${trimmed}` : trimmed;
+}
+
 function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
   const classes = useStyles();
   const circles = [];
@@ -75,10 +115,13 @@ function getColumns(ensemblId, symbol) {
     {
       id: "exp",
       label: "Expected SNVs",
+      renderCell: ({ exp }) => formatSignificantDigits(exp),
+      tooltip: "Expected variant counts were predicted using a depth corrected probability of mutation for each gene. More details can be found in the gnomAD flagship paper. Note that the expected variant counts for bases with a median depth <1 were removed from the totals.",
     },
     {
       id: "obs",
       label: "Observed SNVs",
+      tooltip: "Includes single nucleotide changes that occurred in the canonical transcript that were found at a frequency of <0.1%, passed all filters, and at sites with a median depth ≥1. The counts represent the number of unique variants and not the allele count of these variants.",
     },
     {
       id: "metrics",
@@ -86,10 +129,10 @@ function getColumns(ensemblId, symbol) {
       renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => (
         <>
           <div>
-            {upperBin6 === null ? "Z" : "pLI"} = {score}
+            {upperBin6 === null ? "Z" : "pLI"} = {formatSignificantDigits(score)}
           </div>
           <div>
-            o/e = {oe} ({oeLower} - {oeUpper})
+            o/e = {formatSignificantDigits(oe)} ({formatSignificantDigits(oeLower)} - {formatSignificantDigits(oeUpper)})
           </div>
           {upperBin6 === null ? null : (
             <ConstraintAssessment ensemblId={ensemblId} symbol={symbol} upperBin6={upperBin6} />
