@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Popover, styled } from "@mui/material";
+import { Box, Button, Divider, Popover, styled, FormControlLabel, Checkbox } from "@mui/material";
 import { ReactElement, useState, MouseEvent } from "react";
 import { FacetsSelect } from "ui";
 
@@ -22,6 +22,8 @@ function FacetsSearch(): ReactElement {
     facetFilterSelect,
     id,
     state: { facetFilters },
+    excludeMeasurements,
+    toggleExcludeMeasurements,
   } = useAotfContext();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -67,6 +69,19 @@ function FacetsSearch(): ReactElement {
       >
         <Box sx={{ width: "450px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
           <DataUploader parentAction={handleClose} />
+
+          <Divider flexItem sx={{ my: 1 }} />
+          
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={excludeMeasurements}
+                onChange={(event) => toggleExcludeMeasurements(event.target.checked)}
+                color="primary"
+              />
+            }
+            label="Exclude measurements"
+          />
 
           <Divider flexItem sx={{ my: 1 }} />
           <FacetsSelect

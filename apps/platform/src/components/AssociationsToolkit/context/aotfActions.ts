@@ -61,3 +61,10 @@ export function setEntitySearch(entitySearch: string): Action {
     entitySearch,
   };
 }
+
+export function toggleExcludeMeasurementsAction(excludeMeasurements: boolean): Action {
+  return {
+    type: ActionType.TOGGLE_EXCLUDE_MEASUREMENTS,
+    excludeMeasurements,
+  };
+}

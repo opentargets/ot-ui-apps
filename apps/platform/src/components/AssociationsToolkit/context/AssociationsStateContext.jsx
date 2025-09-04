@@ -20,6 +20,7 @@ import {
   resetPagination,
   resetToInitialState,
   setDataSourceControl,
+  toggleExcludeMeasurementsAction,
 } from "./aotfActions";
 
 const AssociationsStateContext = createContext();
@@ -72,6 +73,45 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const entityToGet = rowEntity[entity];
 
+  // Process facetFilters based on excludeMeasurements checkbox
+  const processedFacetFilters = useMemo(() => {
+    if (state.excludeMeasurements) {
+      // When excluding measurements: include all therapeutic area facet IDs except measurement ID
+      const measurementId = "joI1aZcBIu-4UoxALIDa"; // Measurement therapeutic area ID
+      const allTherapeuticAreaIds = [
+        "F4I1aZcBIu-4UoxALGKu", // animal disease
+        "GII1aZcBIu-4UoxALGKu", // disorder of visual system
+        "XII1aZcBIu-4UoxALGKu", // immune system disease
+        "n4I1aZcBIu-4UoxALGKu", // reproductive system or breast disease
+        "DYI1aZcBIu-4UoxALKj9", // musculoskeletal or connective tissue disease
+        "_4I1aZcBIu-4UoxALK7-", // genetic, familial or congenital disease
+        "-II1aZcBIu-4UoxALLD-", // cancer or benign tumor
+        "jYI1aZcBIu-4UoxALIDa", // medical procedure
+        "EII1aZcBIu-4UoxALIHa", // cardiovascular disease
+        "iYI1aZcBIu-4UoxALIHa", // pancreas disease
+        "ioI1aZcBIu-4UoxALIHa", // hematologic disease
+        "D4I1aZcBIu-4UoxALILa", // endocrine system disease
+        "b4I1aZcBIu-4UoxALHPQ", // pregnancy or perinatal disease
+        "cII1aZcBIu-4UoxALHPQ", // phenotype
+        "LoI1aZcBIu-4UoxALHTQ", // injury, poisoning or other complication
+        "L4I1aZcBIu-4UoxALHTQ", // gastrointestinal disease
+        "cII1aZcBIu-4UoxALHTQ", // respiratory or thoracic disease
+        "tII1aZcBIu-4UoxALHTQ", // psychiatric disorder
+        "boI1aZcBIu-4UoxALHXQ", // nutritional or metabolic disease
+        "4oI1aZcBIu-4UoxALHXQ", // disorder of ear
+        "44I1aZcBIu-4UoxALHXQ", // integumentary system disease
+        "IYI1aZcBIu-4UoxALHbR", // infectious disease
+        "ooI1aZcBIu-4UoxALHbR", // urinary system disease
+        "o4I1aZcBIu-4UoxALHbR", // biological_process
+        // "joI1aZcBIu-4UoxALIDa", // measurement - EXCLUDED
+      ];
+      return allTherapeuticAreaIds;
+    } else {
+      // When including measurements: apply no facet filters (empty array)
+      return [];
+    }
+  }, [state.excludeMeasurements]);
+
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     client,
     query,
@@ -83,7 +123,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
-      facetFilters: state.facetFiltersIds,
+      facetFilters: processedFacetFilters,
       entitySearch: state.entitySearch,
     },
   });
@@ -104,7 +144,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
-      facetFilters: state.facetFiltersIds,
+      facetFilters: processedFacetFilters,
       entitySearch: state.entitySearch,
       laodingCount: pinnedEntries.length,
     },
@@ -126,7 +166,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       sortBy: sorting[0].id,
       datasources: state.dataSourceControls,
       rowsFilter: uploadedEntries.toSorted(),
-      facetFilters: state.facetFiltersIds,
+      facetFilters: processedFacetFilters,
       entitySearch: state.entitySearch,
       laodingCount: uploadedEntries.length,
     },
@@ -183,6 +223,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     dispatch(facetFilterSelectAction(facetFilters));
   };
 
+  const toggleExcludeMeasurements = excludeMeasurements => {
+    dispatch(toggleExcludeMeasurementsAction(excludeMeasurements));
+  };
+
   const contextVariables = useMemo(
     () => ({
       dispatch,
@@ -227,6 +271,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       uploadedCount,
       uploadedEntries,
       resetSorting,
+      excludeMeasurements: state.excludeMeasurements,
+      toggleExcludeMeasurements,
     }),
     [
       setUploadedEntries,
@@ -260,6 +306,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       uploadedCount,
       uploadedEntries,
       resetSorting,
+      state.excludeMeasurements,
+      toggleExcludeMeasurements,
     ]
   );
 

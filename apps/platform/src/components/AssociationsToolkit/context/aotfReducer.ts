@@ -33,6 +33,7 @@ export const initialState: State = {
   facetFilters: [],
   facetFiltersIds: [],
   entitySearch: "",
+  excludeMeasurements: true, // Default to true to exclude measurements by default
 };
 
 type InitialStateParams = {
@@ -130,6 +131,13 @@ export function aotfReducer(state: State = initialState, action: Action): State 
       return {
         ...state,
         entitySearch: action.entitySearch,
+        pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.TOGGLE_EXCLUDE_MEASUREMENTS: {
+      return {
+        ...state,
+        excludeMeasurements: action.excludeMeasurements,
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
       };
     }
