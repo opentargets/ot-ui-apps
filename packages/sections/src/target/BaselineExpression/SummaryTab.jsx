@@ -30,33 +30,22 @@ const getDownloadRows = baselineExpressions =>
 function SummaryTab({ symbol, ensgId, data }) {
   return (
     <Grid container justifyContent="center">
-      <Grid item xs={12}>
-      <Box
-      sx={{
-        borderColor: "grey.300",
-        borderRadius: 1,
-        display: "flex",
-        justifyContent: "flex-end",
-        gap: 1,
-        mb: 2,
-      }}
-    >
-      <DataDownloader
-        btnLabel="Export"
-        fileStem={`${symbol}-baseline-expression`}
-        rows={getDownloadRows(data.target.baselineExpression.rows)}
-        query={EXPRESSION_QUERY.loc.source.body}
-        variables={{ ensemblId: ensgId }}
-        columns={columns}
-        />
-        </Box>
-      </Grid>
-      <Grid item xs={12} md={10}>
+      
         <BaselineExpressionTable 
           data={data.target.baselineExpression.rows} 
           symbol={symbol}
+          DownloaderComponent={
+            <DataDownloader
+              btnLabel="Export"
+              fileStem={`${symbol}-baseline-expression`}
+              rows={getDownloadRows(data.target.baselineExpression.rows)}
+              query={EXPRESSION_QUERY.loc.source.body}
+              variables={{ ensemblId: ensgId }}
+              columns={columns}
+            />
+          }
         />
-      </Grid>
+      {/* </Grid> */}
     </Grid>
   );
 }
