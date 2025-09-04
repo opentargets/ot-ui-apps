@@ -108,7 +108,7 @@ interface IndividualExpressionData extends BaselineExpressionRow {
 
 interface BaselineExpressionTableProps {
   data: BaselineExpressionRow[];
-  symbol: string;
+  DownloaderComponent?: React.ReactNode;
 }
 
 type TableData = GroupedTissueData | GroupedCellTypeData | IndividualExpressionData;
@@ -122,7 +122,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%",
   },
   headerCell: {
-    // backgroundColor: theme.palette.grey[100],
     fontWeight: "bold",
     padding: "0px 8px",
     fontSize: "0.75rem",
@@ -132,14 +131,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: "0.75rem",
   },
   medianCell: {
-    textAlign: "center",
-    fontSize: "0.75rem",
-  },
-  unitCell: {
-    textAlign: "center",
-    fontSize: "0.75rem",
-  },
-  dataSourceCell: {
     textAlign: "center",
     fontSize: "0.75rem",
   },
@@ -162,26 +153,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: "2px",
     transition: "width 0.3s ease",
   },
-  barValue: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    fontSize: "5px",
-    fontWeight: "bold",
-    color: theme.palette.text.primary,
-  },
   groupRow: {
-    // backgroundColor: theme.palette.grey[50],
     cursor: "pointer",
     "&:hover": {
       backgroundColor: theme.palette.grey[100],
     },
-    "& td": {
-      padding: "0px 8px",
-    },
-  },
-  childRow: {
     "& td": {
       padding: "0px 8px",
     },
@@ -204,14 +180,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: "2px",
     minWidth: "24px",
     height: "24px",
-  },
-  compactTableCell: {
-    padding: "0px 8px",
-    fontSize: "0.75rem",
-  },
-  compactNestedTableCell: {
-    padding: "0px 8px",
-    fontSize: "0.75rem",
   },
 }));
 

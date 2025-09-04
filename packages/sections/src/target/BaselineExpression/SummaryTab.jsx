@@ -30,7 +30,6 @@ const getDownloadRows = baselineExpressions =>
 function SummaryTab({ symbol, ensgId, data }) {
   return (
     <Grid container justifyContent="center">
-      
         <BaselineExpressionTable 
           data={data.target.baselineExpression.rows} 
           symbol={symbol}
@@ -45,7 +44,6 @@ function SummaryTab({ symbol, ensgId, data }) {
             />
           }
         />
-      {/* </Grid> */}
     </Grid>
   );
 }

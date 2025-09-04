@@ -3,7 +3,6 @@ import { Tab, Tabs } from "@mui/material";
 import { SectionItem, useApolloClient } from "ui";
 
 import { definition } from ".";
-import AtlasTab from "./AtlasTab";
 import Description from "./Description";
 import GtexTab, { getData as getGtexData } from "./GtexTab";
 import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
