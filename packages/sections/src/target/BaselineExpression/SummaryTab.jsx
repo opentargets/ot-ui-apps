@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import ExpressionDataDownloader from "./ExpressionDataDownloader";
-
-import SummaryTable from "./SummaryTable";
+import BaselineExpressionTable from "./BaselineExpressionTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
 
 export function getData(ensgId, client) {
@@ -29,6 +28,7 @@ const getDownloadRows = baselineExpressions =>
   }));
 
 function SummaryTab({ symbol, data }) {
+  console.log("data", data);
   return (
     <Grid container justifyContent="center">
       <ExpressionDataDownloader
@@ -36,8 +36,11 @@ function SummaryTab({ symbol, data }) {
         rows={getDownloadRows(data.target.baselineExpression.rows)}
         fileStem={`${symbol}-baseline-expression`}
       />
-      <Grid item xs={12} lg={8}>
-        <SummaryTable data={data.target.baselineExpression.rows} />
+      <Grid item xs={12} md={10}>
+        <BaselineExpressionTable 
+          data={data.target.baselineExpression.rows} 
+          symbol={symbol}
+        />
       </Grid>
     </Grid>
   );

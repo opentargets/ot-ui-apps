@@ -2,6 +2,7 @@ import { useState } from "react";
 import classNames from "classnames";
 import { TableCell, TableRow } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import { v1 } from "uuid";
 
 const valueToPercent = (maxValue, value) => (value * 100) / maxValue;
 
@@ -114,7 +115,7 @@ function SummaryRow({ parent, maxMedianValue }) {
             className={classNames(classes.row, {
               [classes.lastChildRow]: index === expressions.length - 1,
             })}
-            key={`${expression.tissueBiosample?.biosampleId || expression.tissueBiosampleFromSource}-${expression.celltypeBiosample?.biosampleId || expression.celltypeBiosampleFromSource}`}
+            key={v1()}
             style={{ display: collapsed ? "none" : "table-row" }}
           >
             <TableCell className={classNames(classes.cell, classes.tissueCell)}>

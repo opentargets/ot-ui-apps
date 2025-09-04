@@ -85,6 +85,8 @@ function SummaryTable({ data }) {
   const maxMedianValue = getMaxMedianValue(data);
   const parents = sort(groupTissues(data, "tissue"), sortBy);
 
+  console.log("parents", parents);
+
   // handlers
   const handleSort = sort => {
     setSortBy(sort);
