@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { SectionItem, Link, Tooltip, OtTable } from "ui";
 
 import { definition } from ".";
+import { formatSignificantDigits } from "@ot/utils";
 import Description from "./Description";
 import upperBin6Map from "./upperBin6Map";
 import GENETIC_CONSTRAINT from "./GeneticConstraint.gql";
@@ -37,45 +38,6 @@ const constraintTypeMap = {
   lof: "pLoF",
 };
 
-/**
- * Formats a number to show only the first 3 non-zero significant digits
- * @param {number} value - The number to format
- * @returns {string} - Formatted number string
- */
-function formatSignificantDigits(value) {
-  if (value === null || value === undefined || isNaN(value)) {
-    return value;
-  }
-
-  // Convert to number if it's a string
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  
-  if (num === 0) return '0';
-  
-  // Handle scientific notation
-  if (Math.abs(num) < 0.001 || Math.abs(num) >= 10000) {
-    return num.toExponential(2);
-  }
-  
-  // For regular numbers, find the first 3 significant digits
-  const absNum = Math.abs(num);
-  const isNegative = num < 0;
-  
-  // Calculate the number of decimal places needed
-  const magnitude = Math.floor(Math.log10(absNum)) + 1;
-  const decimalPlaces = Math.max(0, 3 - magnitude);
-  
-  // Round to the appropriate decimal places
-  const rounded = Math.round(absNum * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
-  
-  // Format with appropriate decimal places
-  const formatted = rounded.toFixed(decimalPlaces);
-  
-  // Remove trailing zeros after decimal point
-  const trimmed = formatted.replace(/\.?0+$/, '');
-  
-  return isNegative ? `-${trimmed}` : trimmed;
-}
 
 function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
   const classes = useStyles();
