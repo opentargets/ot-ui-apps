@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -213,7 +213,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({ data 
   });
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
-
   // Get unique data sources with tabula_sapiens first
   const dataSources = useMemo(() => {
     const sources = new Set<string>();
@@ -233,6 +232,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({ data 
     
     return sortedSources;
   }, [data]);
+
+  // Set default sorting by tabula_sapiens (first data source)
+  useEffect(() => {
+    if (dataSources.length > 0 && sorting.length === 0) {
+      setSorting([{ id: `datasource_${dataSources[0]}`, desc: true }]);
+    }
+  }, [dataSources, sorting.length]);
 
   // Group data by tissue, then by cell type, then by data source
   const groupedData = useMemo(() => {

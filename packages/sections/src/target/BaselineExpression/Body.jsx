@@ -68,7 +68,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
             {/* <Tab value="atlas" label="Experiments (Expression Atlas)" /> */}
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
-          {tab === "summary" && <SummaryTab symbol={symbol} data={request.data} />}
+          {tab === "summary" && <SummaryTab symbol={symbol} ensgId={ensgId} data={request.data} />}
           {/* {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />} */}
           {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </>

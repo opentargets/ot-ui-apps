@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material";
-import ExpressionDataDownloader from "./ExpressionDataDownloader";
+import { Grid, Box } from "@mui/material";
+import { DataDownloader } from "ui";
 import BaselineExpressionTable from "./BaselineExpressionTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
 
@@ -10,7 +10,7 @@ export function getData(ensgId, client) {
   });
 }
 
-const headers = [
+const columns = [
   { id: "tissueBiosampleName", label: "Tissue" },
   { id: "celltypeBiosampleName", label: "Cell Type" },
   { id: "median", label: "Median Expression" },
@@ -27,15 +27,30 @@ const getDownloadRows = baselineExpressions =>
     datasourceId: expression.datasourceId,
   }));
 
-function SummaryTab({ symbol, data }) {
-  console.log("data", data);
+function SummaryTab({ symbol, ensgId, data }) {
   return (
     <Grid container justifyContent="center">
-      <ExpressionDataDownloader
-        tableHeaders={headers}
-        rows={getDownloadRows(data.target.baselineExpression.rows)}
+      <Grid item xs={12}>
+      <Box
+      sx={{
+        borderColor: "grey.300",
+        borderRadius: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 1,
+        mb: 2,
+      }}
+    >
+      <DataDownloader
+        btnLabel="Export"
         fileStem={`${symbol}-baseline-expression`}
-      />
+        rows={getDownloadRows(data.target.baselineExpression.rows)}
+        query={EXPRESSION_QUERY.loc.source.body}
+        variables={{ ensemblId: ensgId }}
+        columns={columns}
+        />
+        </Box>
+      </Grid>
       <Grid item xs={12} md={10}>
         <BaselineExpressionTable 
           data={data.target.baselineExpression.rows} 
