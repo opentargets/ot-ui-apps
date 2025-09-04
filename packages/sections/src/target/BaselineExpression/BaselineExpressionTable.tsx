@@ -143,6 +143,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderRadius: "2px",
     transition: "width 0.3s ease",
   },
+  childBar: {
+    height: "100%",
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: "2px",
+    transition: "width 0.3s ease",
+  },
   barValue: {
     position: "absolute",
     top: "50%",
@@ -556,15 +562,17 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({ data 
                                     {dataSources.map(dataSource => {
                                       const expression = expressions.find(expr => expr.datasourceId === dataSource);
                                       const value = expression?.median || 0;
-                                      const maxValue = dataSourceMaxValues[dataSource] || 1;
-                                      const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
+                                      
+                                      // Scale relative to parent tissue's max value for this data source
+                                      const parentMaxValue = (row.original as GroupedTissueData).dataSourceValues[dataSource] || 1;
+                                      const percentage = parentMaxValue > 0 ? (value / parentMaxValue) * 100 : 0;
                                       const dataSourceColumnWidth = dataSources.length > 0 ? `${60 / dataSources.length}%` : "60%";
                                       
                                       return (
                                         <TableCell key={dataSource} className={`${classes.medianCell} ${classes.nestedTableCell}`} style={{ width: dataSourceColumnWidth }}>
                                           <Box className={classes.barContainer}>
                                             <Box
-                                              className={classes.bar}
+                                              className={classes.childBar}
                                               style={{ width: `${percentage}%` }}
                                             />
                                           </Box>
