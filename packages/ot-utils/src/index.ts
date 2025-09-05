@@ -1,5 +1,6 @@
 export * from "./searchSuggestions";
 export * from "./downloads";
+export * from "./fetch";
 export * from "./interactors";
 export * from "./global";
 export * from "./urls";
@@ -7,4 +8,6 @@ export * from "./comparators";
 export * from "./study";
 export * from "./literature";
 export * from "./variant";
+export * from "./createScopedContext";
+export * from "./alphaFold";
 export * from "./formatters";
