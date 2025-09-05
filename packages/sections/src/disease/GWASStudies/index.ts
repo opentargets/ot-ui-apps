@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 export const definition = {
   id: "GWASStudies",
-  name: "GWAS Studies",
+  name: "GWAS",
   shortName: "GS",
   hasData: data =>
     data?.studies?.count > 0 || // summary

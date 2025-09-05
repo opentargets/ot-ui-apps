@@ -7,7 +7,7 @@ import { Link, DataDownloader } from "ui";
 
 const content = {
   mouseOrthologMaxIdentityPercentage:
-    "The Mouse Ortholog Identity visualization highlights the maximum sequence identity (%) of mouse orthologs for a given target, providing insight into its potential for in vivo assays. Data is sourced from the Ensembl Compara widget, and only orthologs with at least 80% identity are considered. Scores range from 0 to 1, where 1 indicates a mouse gene with 100% identity to the target, and 0 means no gene meets the 80% threshold. If multiple orthologs exist, the highest identity percentage is displayed.",
+    "The Mouse Orthologue Identity visualization highlights the maximum sequence identity (%) of mouse orthologues for a given target, providing insight into its potential for in vivo assays. Data is sourced from the Ensembl Compara widget, and only orthologues with at least 80% identity are considered. Scores range from 0 to 1, where 1 indicates a mouse gene with 100% identity to the target, and 0 means no gene meets the 80% threshold. If multiple orthologues exist, the highest identity percentage is displayed.",
   paralogMaxIdentityPercentage:
     "The Paralogues visualization displays the maximum sequence identity (%) of paralogues within the human genome, offering insights into functional redundancy or diversity. Data is sourced from the Ensembl Compara widget, focusing on paralogues with at least 60% identity to the target. Scores range from 0 to -1, where -1 represents paralogues with higher identity (≥60%), and 0 indicates paralogues with lower identity.",
 };

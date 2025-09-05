@@ -62,10 +62,10 @@ const hasPocket: Column = {
 
 const mouseOrthologMaxIdentityPercentage: Column = {
   id: "mouseOrthologMaxIdentityPercentage",
-  label: "Mouse ortholog identity",
+  label: "Mouse orthologue identity",
   aggregation: TargetPrioritisationAggregation.DOABILITY,
   sectionId: "compGenomics",
-  description: "Mouse ortholog maximum identity percentage",
+  description: "Mouse orthologue maximum identity percentage",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#mouse-ortholog-identity",
   sectionProps: { viewMode: "mouseOrthologMaxIdentityPercentage" },

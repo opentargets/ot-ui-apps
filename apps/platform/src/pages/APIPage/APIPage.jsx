@@ -183,7 +183,7 @@ function APIPage() {
                   Run sample query
                 </QueryButton>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  GWAS studies associated with a specified disease
+                  GWAS associated with a specified disease
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
@@ -264,7 +264,7 @@ function APIPage() {
             <AccordionDetails>
               <div>
                 <Typography variant="subtitle2" display="block" paragraph>
-                  Colocalisation metrics for overlapping credible sets from GWAS studies
+                  Colocalisation metrics for overlapping GWAS credible sets
                 </Typography>
                 <QueryButton
                   className={classes.buttonMargin}
