@@ -29,7 +29,7 @@ const exportColumns = [
   },
   {
     label: "variantId",
-    exportValue: row => row.variant.id,
+    exportValue: row => row.variant?.id,
   },
   {
     label: "variantRsId",
@@ -154,7 +154,6 @@ function getColumns(label) {
       label: "Variant Consequence",
       renderCell: ({
         variantFunctionalConsequence,
-        variantFunctionalConsequenceFromQtlId,
         variant: {
           chromosome,
           position,
@@ -172,14 +171,6 @@ function getColumns(label) {
                 to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
               />
             )}
-            {variantFunctionalConsequenceFromQtlId && (
-              <LabelChip
-                label={variantConsequenceSource.QTL.label}
-                value={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
-                to={identifiersOrgLink("SO", variantFunctionalConsequenceFromQtlId.id.slice(3))}
-                tooltip={variantConsequenceSource.QTL.tooltip}
-              />
-            )}
             {(variantFunctionalConsequence.id === "SO:0001583" ||
               variantFunctionalConsequence.id === "SO:0001587") && (
               <LabelChip
@@ -191,10 +182,9 @@ function getColumns(label) {
           </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
-          variantFunctionalConsequenceFromQtlId.label
-        )}`,
+      filterValue: ({ variantFunctionalConsequence }) => (
+        sentenceCase(variantFunctionalConsequence.label)
+      ),
     },
     {
       id: "directionOfVariantEffect",

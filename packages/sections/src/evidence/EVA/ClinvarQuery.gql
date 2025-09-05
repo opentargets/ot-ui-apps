@@ -36,10 +36,6 @@ query ClinvarQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: S
           id
           label
         }
-        variantFunctionalConsequenceFromQtlId {
-          id
-          label
-        }
         clinicalSignificances
         allelicRequirements
         alleleOrigins
