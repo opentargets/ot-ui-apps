@@ -68,20 +68,17 @@ function EmptyPage({
           404: Page not found
         </Typography>
         <div className={classes.messageBodyContainer}>
-          <div>{children}</div>
           <Typography>
-            You deserve a fresh start. Maybe our
+            We can't find the page you're looking for. You could try: searching for a target, disease, drug, variant, or study in the search bar; checking our{" "}
             <Link external to={documentationLink}>
-              {" "}
               Documentation
             </Link>{" "}
-            or{" "}
+            to see if we've moved the page you are looking for; get in touch on the{" "}
             <Link external to={communityLink}>
-              Community page
+              Community
             </Link>{" "}
-            can help!
+            to report the error. Thanks!
           </Typography>
-          <Typography className={`${classes.messageBottom} ${classes.marginTop}`}>or</Typography>
         </div>
         <div className={`${classes.messageBottom} `}>
           <Button href="/" variant="contained" color="primary">
