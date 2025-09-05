@@ -17,7 +17,7 @@ import {
   faPrescriptionBottleAlt,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { ErrorBoundary, BrokenSearchIcon } from "ui";
+import { ErrorBoundary, BrokenSearchIcon, Link } from "ui";
 
 import DiseaseDetail from "./DiseaseDetail";
 import DiseaseResult from "./DiseaseResult";
@@ -198,8 +198,33 @@ function NoResultsContainer({ q }) {
         <BrokenSearchIcon color={grey[400]} />
       </Box>
       <Box sx={{ typography: "h6", textAlign: "center" }}>
-        We could not find anything in the Platform database that matches{" "}
-        <strong> &quot;{q}&quot;</strong>.
+        We could not find anything in the Platform that matches{" "}
+        <strong> &quot;{q}&quot;</strong>
+      </Box>
+      <Box sx={{ typography: "body2", textAlign: "center", mt: 2 }}>
+        Note that you can only search for: targets, diseases/phenotypes, drugs, variants, or studies.
+        <br />
+        <br />
+        You could try:
+        <br />
+        • Checking for any accidentally misspelt terms
+        <br />
+        • Broadening your search by using more general terms
+        <br />
+        • Searching for a therapeutic area and refining from there
+        <br />
+        <br />
+        You can refer to our{" "}
+        <Link external to="https://platform-docs.opentargets.org">
+          Documentation
+        </Link>{" "}
+        to see how best to find the term you are looking for.
+        <br />
+        If you think we are missing a term, please get in touch on the{" "}
+        <Link external to="https://community.opentargets.org">
+          Open Targets Community
+        </Link>
+        .
       </Box>
     </Box>
   );
