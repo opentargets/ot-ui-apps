@@ -242,7 +242,7 @@ function OtTableSSP({
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
   }
 
-  const playgroundVariables = { variables: memoizedVariables, cursor: null, size: 10 };
+  const playgroundVariables = { ...memoizedVariables, cursor: null, size: 10 };
 
   return (
     <div>
