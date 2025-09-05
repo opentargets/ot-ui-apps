@@ -69,15 +69,24 @@ function EmptyPage({
         </Typography>
         <div className={classes.messageBodyContainer}>
           <Typography>
-            We can't find the page you're looking for. You could try: searching for a target, disease, drug, variant, or study in the search bar; checking our{" "}
+            We can't find the page you're looking for. 
+            
+            You could try: 
+            <ul>
+            <li>search for a target, disease, drug, variant, or study in the search bar</li>
+            <li>check our{" "}
             <Link external to={documentationLink}>
               Documentation
             </Link>{" "}
-            to see if we've moved the page you are looking for; get in touch on the{" "}
+            to see if we've moved the page you are looking for</li>
+            <li>get in touch on the{" "}
             <Link external to={communityLink}>
               Community
             </Link>{" "}
-            to report the error. Thanks!
+            to report the error</li>
+            </ul>
+            <br/>
+            Thanks!
           </Typography>
         </div>
         <div className={`${classes.messageBottom} `}>
