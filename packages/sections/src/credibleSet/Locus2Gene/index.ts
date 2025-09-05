@@ -3,7 +3,7 @@ import { CredibleSet } from "@ot/constants";
 
 export const definition = {
   id: "locus2gene",
-  name: "Locus to Gene",
+  name: "Locus-to-Gene",
   shortName: "LG",
   hasData: (data: CredibleSet) => (data.l2GPredictions?.count || 0) > 0,
 };
