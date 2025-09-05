@@ -16,6 +16,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.Tractability.definition.id, Target.Tractability],
   [Target.Safety.definition.id, Target.Safety],
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
+  [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.ChemicalProbes.definition.id, Target.ChemicalProbes],
   [Target.Expression.definition.id, Target.Expression],
   [Target.DepMap.definition.id, Target.DepMap],
