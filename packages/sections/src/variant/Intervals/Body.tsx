@@ -82,6 +82,18 @@ const columns = [
       return `${distanceToTss.toLocaleString()}`;
     },
     filterValue: ({ distanceToTss }: { distanceToTss: number }) => distanceToTss?.toString() || "",
+    exportValue: ({ distanceToTss }: { distanceToTss: number }) => distanceToTss?.toString() || "",
+    comparator: (a: any, b: any) => {
+      const distanceA = a.distanceToTss;
+      const distanceB = b.distanceToTss;
+      
+      // Handle null/undefined values - put them at the end
+      if (distanceA === null || distanceA === undefined) return 1;
+      if (distanceB === null || distanceB === undefined) return -1;
+      
+      // Numeric comparison
+      return distanceA - distanceB;
+    },
   },
   {
     id: "size",
@@ -102,6 +114,25 @@ const columns = [
       start !== undefined && end !== undefined && start !== null && end !== null
         ? `${start}-${end}`
         : "",
+    exportValue: ({ start, end }: { start: number; end: number }) =>
+      start !== undefined && end !== undefined && start !== null && end !== null
+        ? `${start}-${end}`
+        : "",
+    comparator: (a: any, b: any) => {
+      const sizeA = a.start !== null && a.start !== undefined && a.end !== null && a.end !== undefined 
+        ? a.end - a.start + 1 
+        : null;
+      const sizeB = b.start !== null && b.start !== undefined && b.end !== null && b.end !== undefined 
+        ? b.end - b.start + 1 
+        : null;
+      
+      // Handle null/undefined values - put them at the end
+      if (sizeA === null) return 1;
+      if (sizeB === null) return -1;
+      
+      // Numeric comparison
+      return sizeA - sizeB;
+    },
   },
   {
     id: "start_end",
