@@ -232,13 +232,15 @@ const baseCartoonStyle = state => ({
 export const drawAppearance = [
   { style: baseCartoonStyle },
   {
-    selection: state => (state.representBy === "cartoon"
-      ? { resi: [...state.variantResidues] }
-      : {}  // every atom has a hover sphere when show global surface
-    ),
-    style: { clicksphere: { radius: 1.5 } },
+    selection: state => {
+      if (state.representBy !== "cartoon") return {};
+      const resis = [...state.variantResidues];
+      if (state.viewer._clickedResi) resis.push(state.viewer._clickedResi);
+      return { resi: resis };
+    }, 
+    style: { clicksphere: { radius: 1.5 } },  
     addStyle: true,
-  }
+  },
 ];
 
 export const hoverAppearance = [
@@ -295,7 +297,12 @@ export const hoverAppearance = [
 
 export const clickAppearance = [
   {
+    style: (state, resi) => state.representBy === "cartoon"
+      ? { clicksphere: { radius: 1.5 } }
+      : {},
+    addStyle: true,
     onApply: (state, resi) => {
+      if (resiOnVariant(state, resi)) return;
       const { viewer } = state;
       viewer._clickedSurfaceId = viewer.addSurface(
         "VDW",
@@ -314,10 +321,11 @@ export const clickAppearance = [
       if (state.representBy !== "cartoon") updateGlobalSurface(state);
     },
     leave: [
-      drawAppearance[0],  // cartoon
-      {
-        ...drawAppearance[1],  // click spheres for hovering
+      { 
+        style: baseCartoonStyle,
+        addStyle: true,
         onApply: (state, resi) => {
+          if (resiOnVariant(state, resi)) return;
           state.viewer.removeSurface(state.viewer._clickedSurfaceId);
           state.viewer._clickedSurfaceId = null;
           state.viewer.removeLabel(state.viewer._clickedLabelId);
@@ -326,6 +334,12 @@ export const clickAppearance = [
           if (state.representBy !== "cartoon") updateGlobalSurface(state);
         },
       },
+      {
+        addStyle: true,
+        style: (state, resi) => state.representBy === "cartoon"
+          ? { clicksphere: { radius: 0 } }
+          : {},
+      }
     ],
   }
 ];
