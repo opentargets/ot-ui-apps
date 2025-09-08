@@ -57,7 +57,7 @@ function getColumns(label) {
       ),
     },
     {
-      id: "variantId",
+      id: "variant.id",
       label: "Variant",
       enableHiding: false,
       sortable: true,
@@ -103,19 +103,33 @@ function getColumns(label) {
         }
         return naLabel;
       },
+      exportValue: ({ variant }) => {
+        if (!variant) return null;
+        return variant.transcriptConsequences
+          ?.filter(d => d.aminoAcidChange != null)
+          .map(d => d.aminoAcidChange)
+          .join(", ");
+      }
     },
     {
       id: "variantConsequence",
       label: "Variant Consequence",
-      renderCell: ({ variantRsId }) => (
-        <div style={{ display: "flex", gap: "5px" }}>
-          <LabelChip
-            label={variantConsequenceSource.ProtVar.label}
-            to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-            tooltip={variantConsequenceSource.ProtVar.tooltip}
-          />
-        </div>
-      ),
+      renderCell: ({ variantRsId }) => {
+        if (!variantRsId) return null;
+        return (
+          <div style={{ display: "flex", gap: "5px" }}>
+            <LabelChip
+              label={variantConsequenceSource.ProtVar.label}
+              to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
+              tooltip={variantConsequenceSource.ProtVar.tooltip}
+            />
+          </div>
+        );
+      },
+      exportValue: ({ variantRsId }) => {
+        if (!variantRsId) return null;
+        return `https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`;
+      },
     },
     {
       id: "confidence",

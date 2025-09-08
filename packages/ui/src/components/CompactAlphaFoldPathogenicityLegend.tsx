@@ -3,7 +3,7 @@ import { alphaFoldPathogenicityColorScale } from "@ot/constants";
 import { DetailPopover, AlphaFoldPathogenicityLegend } from "ui";
 
 export default function CompactAlphaFoldPathogenicityLegend({ showTitle = true }) {
-  const barWidth = 70;
+  const barWidth = 100;
   const barHeight = 11;
 
   const stops = [];

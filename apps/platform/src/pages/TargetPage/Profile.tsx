@@ -29,7 +29,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.MousePhenotypes.definition.id, Target.MousePhenotypes],
   [Target.ComparativeGenomics.definition.id, Target.ComparativeGenomics],
   [Target.Bibliography.definition.id, Target.Bibliography],
-  // [Target.OverlappingVariants.definition.id, Target.OverlappingVariants],
+  [Target.OverlappingVariants.definition.id, Target.OverlappingVariants],
 ]);
 
 const TARGET_WIDGETS = Array.from(targetProfileWidgets.values());

@@ -4,7 +4,9 @@ import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { Box, Button, Typography } from "@mui/material";
 import { Tooltip } from "ui";
 
-function InfoPopper() {
+// !!!!! ADD TYPES !!!!!
+
+function Usage({ instructions }) {
   const [isClicked, setIsClicked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -23,6 +25,12 @@ function InfoPopper() {
 
   const tooltipOpen = isClicked || isHovered;
 
+  const baseInstructions = {
+    Rotate: "Drag",
+    Move: "Ctrl + Drag",
+    Zoom: "Ctrl + Scroll",
+  };
+
   return (
     <div>
       <Tooltip
@@ -32,38 +40,16 @@ function InfoPopper() {
           <Box onClick={handleClick} sx={{ cursor: "pointer" }}>
             <table style={{ borderSpacing: "0.3rem 0" }}>
               <tbody>
-                <tr>
-                  <Typography component="td" variant="caption">
-                    <strong>Rotate:</strong>
-                  </Typography>
-                  <Typography component="td" variant="caption">
-                    Drag
-                  </Typography>
-                </tr>
-                <tr>
-                  <Typography component="td" variant="caption">
-                    <strong>Move:</strong>
-                  </Typography>
-                  <Typography component="td" variant="caption">
-                    Ctrl + Drag
-                  </Typography>
-                </tr>
-                <tr>
-                  <Typography component="td" variant="caption">
-                    <strong>Zoom:</strong>
-                  </Typography>
-                  <Typography component="td" variant="caption">
-                    Ctrl + Scroll
-                  </Typography>
-                </tr>
-                <tr>
-                  <Typography component="td" variant="caption">
-                    <strong>Variant:</strong>
-                  </Typography>
-                  <Typography component="td" variant="caption">
-                    Double click
-                  </Typography>
-                </tr>
+                {Object.entries({ ...baseInstructions, ...instructions }).map(([label, text]) => (
+                  <tr key={label}>
+                    <Typography component="td" variant="caption">
+                      <strong>{label}:</strong>
+                    </Typography>
+                    <Typography component="td" variant="caption">
+                      {text}
+                    </Typography>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </Box>
@@ -90,4 +76,4 @@ function InfoPopper() {
   );
 }
 
-export default InfoPopper;
+export default Usage;
