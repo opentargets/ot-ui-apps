@@ -1,8 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, OtTable, PublicationsDrawer } from "ui";
+import { Link, SectionItem, OtTable } from "ui";
 import { naLabel } from "@ot/constants";
 import { definition } from ".";
-import { epmcUrl } from "@ot/utils";
 
 import Description from "./Description";
 import INTERVALS_QUERY from "./IntervalsQuery.gql";
@@ -131,35 +130,23 @@ const columns = [
     label: "Score",
     numeric: true,
     sortable: true,
-    tooltip: "Predictive model score ranging from 0 to 1",
+    filterValue: ({ score }: { score: number }) => score?.toString() || "",
+    comparator: (a: any, b: any) => {
+      const scoreA = a.score;
+      const scoreB = b.score;
+      
+      // Handle null/undefined values - put them at the end
+      if (scoreA === null || scoreA === undefined) return 1;
+      if (scoreB === null || scoreB === undefined) return -1;
+      
+      // Numeric comparison
+      return scoreA - scoreB;
+    },
     renderCell: ({ score }: { score: number }) => {
       if (score === null || score === undefined) return naLabel;
       return score.toFixed(3);
     },
-    filterValue: ({ score }: { score: number }) => score?.toString() || "",
   },
-
-  // {
-  //   id: "pmid",
-  //   label: "Publication",
-  //   renderCell: ({ pmid }: { pmid: string }) => {
-  //     if (!pmid) return naLabel;
-  //     const literatureList = [
-  //       {
-  //         name: pmid,
-  //         url: epmcUrl(pmid),
-  //         group: "literature",
-  //       },
-  //     ];
-  //     console.log(literatureList)
-  //     return (
-  //       <PublicationsDrawer 
-  //         entries={literatureList}
-  //       />
-  //     );
-  //   },
-  //   filterValue: ({ pmid }: { pmid: string }) => pmid || "",
-  // },
 ];
 
 type BodyProps = {
