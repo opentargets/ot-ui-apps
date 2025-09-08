@@ -7,7 +7,7 @@ export const definition = {
   id,
   name: "Europe PMC",
   shortName: "EP",
-  hasData: (data: EvidenceData) => (data.europePmcSummary?.count || 0) > 0,
+  hasData: (data: EvidenceData) => (data.europePmc?.count || 0) > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 
