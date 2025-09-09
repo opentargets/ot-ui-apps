@@ -59,13 +59,11 @@ function SmilesHelper({ smiles, chemblId }) {
       drawSmiles(smiles, `${chemblId}-modal`, {
         width: 750,
         height: 440,
-        padding: 10,
       });
     } else
       drawSmiles(smiles, chemblId, {
         width: 450,
         height: 240,
-        padding: 10,
       });
   });
 
