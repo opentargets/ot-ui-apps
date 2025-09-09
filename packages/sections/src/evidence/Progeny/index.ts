@@ -7,7 +7,7 @@ export const definition = {
   id,
   name: "PROGENy",
   shortName: "PG",
-  hasData: (data: EvidenceData) => (data.progenySummary?.count || 0) > 0,
+  hasData: (data: EvidenceData) => (data.progeny?.count || 0) > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 
