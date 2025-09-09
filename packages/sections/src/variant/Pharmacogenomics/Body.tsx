@@ -181,7 +181,7 @@ function Body({ id, entity }: BodyProps) {
           As defined by
           <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
             {" "}
-            PharmGKB ClinAnn Levels
+            ClinPGx ClinAnn Levels
           </Link>
         </>
       ),
@@ -204,7 +204,7 @@ function Body({ id, entity }: BodyProps) {
       renderCell: ({ studyId }) =>
         studyId ? (
           <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
-            PharmGKB
+            ClinPGx
           </Link>
         ) : (
           naLabel
