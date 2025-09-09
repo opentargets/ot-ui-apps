@@ -114,10 +114,16 @@ const columns = [
       start !== undefined && end !== undefined && start !== null && end !== null
         ? `${start}-${end}`
         : "",
-    exportValue: ({ start, end }: { start: number; end: number }) =>
-      start !== undefined && end !== undefined && start !== null && end !== null
-        ? `${start}-${end}`
-        : "",
+    exportValue: ({ start, end }: { start: number; end: number }) =>{
+      if (
+        start === null ||
+        start === undefined ||
+        end === null ||
+        end === undefined
+      )
+        return naLabel;
+      return `${(end - start + 1).toLocaleString()}`;
+    },
     comparator: (a: any, b: any) => {
       const sizeA = a.start !== null && a.start !== undefined && a.end !== null && a.end !== undefined 
         ? a.end - a.start + 1 
@@ -138,6 +144,10 @@ const columns = [
     id: "start_end",
     label: "Interval range",
     numeric: true,
+    exportValue: ({ start, end }: { start: number; end: number }) =>
+      start !== undefined && end !== undefined && start !== null && end !== null
+        ? `${start}-${end}`
+        : "",
     renderCell: ({ chromosome, start, end }: { chromosome: string; start: number; end: number }) => {
       if (
         chromosome === null ||
