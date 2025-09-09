@@ -241,6 +241,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         row.tissueBiosample?.biosampleName || row.tissueBiosampleFromSource || "Unknown";
       const cellTypeName =
         row.celltypeBiosample?.biosampleName || row.celltypeBiosampleFromSource || "Unknown";
+
+      // Do not include rows where tissue or cell type is Unknown
+      if (tissueName === "Unknown" || cellTypeName === "Unknown") {
+        return;
+      }
+
       const dataSource = row.datasourceId || "Unknown";
 
       // Group by tissue->celltype or celltype->tissue
