@@ -7,7 +7,7 @@ type DescriptionProps = {
 function Description({ studyId }: DescriptionProps) {
   return (
     <>
-      GWAS studies that share traits with study <strong>{studyId}</strong>. Source{" "}
+      GWAS sharing traits with study <strong>{studyId}</strong>. Source{" "}
       <Link external to="https://www.ebi.ac.uk/gwas/studies">
         GWAS Catalog
       </Link>

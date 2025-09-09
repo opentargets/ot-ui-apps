@@ -14,7 +14,7 @@ This repository holds the Open Targets web applications.
 
 This project contains the [Platform](https://platform.opentargets.org/) web application. To run in development mode, you can run: `yarn dev` in the root directory.
 
-To run only Platform `yarn dev:platfrom`
+To run only Platform `yarn dev:platform`
 
 ## Building production-ready bundle
 

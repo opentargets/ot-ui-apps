@@ -29,7 +29,7 @@ const exportColumns = [
   },
   {
     label: "variantId",
-    exportValue: row => row.variant.id,
+    exportValue: row => row.variant?.id,
   },
   {
     label: "variantRsId",
@@ -154,10 +154,13 @@ function getColumns(label) {
       label: "Variant Consequence",
       renderCell: ({
         variantFunctionalConsequence,
-        variantFunctionalConsequenceFromQtlId,
-        variantId,
+        variant: {
+          chromosome,
+          position,
+          referenceAllele,
+          alternateAllele
+        }
       }) => {
-        const pvparams = variantId?.split("_") || [];
         return (
           <div style={{ display: "flex", gap: "5px" }}>
             {variantFunctionalConsequence && (
@@ -168,29 +171,20 @@ function getColumns(label) {
                 to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
               />
             )}
-            {variantFunctionalConsequenceFromQtlId && (
-              <LabelChip
-                label={variantConsequenceSource.QTL.label}
-                value={sentenceCase(variantFunctionalConsequenceFromQtlId.label)}
-                to={identifiersOrgLink("SO", variantFunctionalConsequenceFromQtlId.id.slice(3))}
-                tooltip={variantConsequenceSource.QTL.tooltip}
-              />
-            )}
             {(variantFunctionalConsequence.id === "SO:0001583" ||
               variantFunctionalConsequence.id === "SO:0001587") && (
               <LabelChip
                 label={variantConsequenceSource.ProtVar.label}
-                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome}&genomic_position=${position}&reference_allele=${referenceAllele}&alternative_allele=${alternateAllele}`}
                 tooltip={variantConsequenceSource.ProtVar.tooltip}
               />
             )}
           </div>
         );
       },
-      filterValue: ({ variantFunctionalConsequence, variantFunctionalConsequenceFromQtlId }) =>
-        `${sentenceCase(variantFunctionalConsequence.label)}, ${sentenceCase(
-          variantFunctionalConsequenceFromQtlId.label
-        )}`,
+      filterValue: ({ variantFunctionalConsequence }) => (
+        sentenceCase(variantFunctionalConsequence.label)
+      ),
     },
     {
       id: "directionOfVariantEffect",

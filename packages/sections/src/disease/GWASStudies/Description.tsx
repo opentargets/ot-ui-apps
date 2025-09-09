@@ -1,9 +1,13 @@
 import { Link } from "ui";
 
-function Description({ name }) {
+type DescriptionProps = {
+  name: string;
+};
+
+function Description({ name }: DescriptionProps) {
   return (
     <>
-      GWAS studies associated with <strong>{name}</strong>. Source:{" "}
+      GWAS associated with <strong>{name}</strong>. Source:{" "}
       <Link external to="https://www.ebi.ac.uk/gwas/studies">
         GWAS Catalog
       </Link>
