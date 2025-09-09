@@ -7,7 +7,7 @@ export const definition = {
   id,
   name: "SLAPenrich",
   shortName: "SE",
-  hasData: (data: EvidenceData) => (data.slapEnrichSummary?.count || 0) > 0,
+  hasData: (data: EvidenceData) => (data.slapEnrich?.count || 0) > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 
