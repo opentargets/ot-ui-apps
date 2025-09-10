@@ -14,10 +14,10 @@ function Legend() {
   const  { colorBy, pathogenicityScores, domains } = viewerState;
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
       {/* explanatory text */}
       {colorBy === "pathogenicity" && pathogenicityScores && (
-        <Typography component="td" variant="caption" sx={{ pl: 0.4, pb: 0.5 }}>
+        <Typography variant="caption" sx={{ pl: 0.4 }}>
           Mean AlphaMissense pathogenicity over possible amino acid substitutions
         </Typography>
       )}

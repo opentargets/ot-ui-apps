@@ -41,7 +41,7 @@ function AtomInfo() {
             {onVariant && (
               <>
                 <br />
-                Variant Pathogenicity:{" "}
+                Variant ({viewerState.variantSummary}) Pathogenicity:{" "}
                 {variantPathogenicityScore === null ? naLabel : variantPathoText()}
               </>
             )}

@@ -18,6 +18,7 @@ export default function Viewer({
   data,
   onData,
   onDblClick,
+  onFirstDraw,
   onDraw,
   drawAppearance = [],
   hoverSelection = {},
@@ -92,13 +93,10 @@ export default function Viewer({
         upperZoomLimit: zoomLimit[1],
       });
 
+      _viewer._firstDraw = true;
+
       window._viewer = _viewer;  // !! REMOVE !!
 
-      if (onDblClick) {
-        _viewer.getCanvas().addEventListener("dblclick", event => {
-          onDblClick(viewerState);
-        });
-      }
       _viewer.setHoverDuration(hoverDuration);
 
       // disable wheel-zoom
@@ -209,6 +207,14 @@ export default function Viewer({
     return () => _viewer.clear();
   }, []);
 
+  // double click callback
+  useEffect(() => {
+    if (!viewer || !onDblClick) return;
+    viewer.getCanvas().addEventListener("dblclick", event => {
+      onDblClick(viewerState);
+    });
+  }, [viewer]);
+
   // update for change in clicked resi
   useEffect(() => {
     if (!viewer || !viewerInteractionState) return;
@@ -298,6 +304,10 @@ export default function Viewer({
       if (!appearance.use || appearance.use(viewerState)) {
         applyAppearance(appearance);
       }
+    }
+    if (onFirstDraw && viewer._firstDraw) {
+      onFirstDraw(viewerState);
+      viewer._firstDraw = false;
     }
     onDraw?.(viewerState);
     viewer.render();
