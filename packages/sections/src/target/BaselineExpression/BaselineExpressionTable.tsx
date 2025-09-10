@@ -237,30 +237,40 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       {};
 
     data.forEach((row) => {
-      const tissueName =
-        row.tissueBiosample?.biosampleName || row.tissueBiosampleFromSource || "Unknown";
-      const cellTypeName =
-        row.celltypeBiosample?.biosampleName || row.celltypeBiosampleFromSource || "Unknown";
+      const tissueName = row.tissueBiosample?.biosampleName || row.tissueBiosampleFromSource;
+      const cellTypeName = row.celltypeBiosample?.biosampleName || row.celltypeBiosampleFromSource;
+      
+      // Skip rows that don't have the primary grouping information
+      // When grouping by tissue, we need tissue info
+      // When grouping by cell type, we need cell type info
+      const primaryName = groupByTissue ? tissueName : cellTypeName;
+      if (!primaryName) {
+        return;
+      }
 
       const dataType = row.datatypeId || "Unknown";
 
       // Group by tissue->celltype or celltype->tissue
-      const primaryKey = groupByTissue ? tissueName : cellTypeName;
+      const primaryKey = primaryName; // We already checked this is not null/undefined
       const secondaryKey = groupByTissue ? cellTypeName : tissueName;
+      
+      // For main table: use a default key for missing secondary information
+      // For nested table: we'll filter out rows without both tissue and cell type later
+      const finalSecondaryKey = secondaryKey || "No secondary grouping";
 
       if (!grouped[primaryKey]) {
         grouped[primaryKey] = {};
       }
-      if (!grouped[primaryKey][secondaryKey]) {
-        grouped[primaryKey][secondaryKey] = {};
+      if (!grouped[primaryKey][finalSecondaryKey]) {
+        grouped[primaryKey][finalSecondaryKey] = {};
       }
 
       // Keep only one entry per combination per data source (take the one with highest median)
       if (
-        !grouped[primaryKey][secondaryKey][dataType] ||
-        (row.median || 0) > (grouped[primaryKey][secondaryKey][dataType].median || 0)
+        !grouped[primaryKey][finalSecondaryKey][dataType] ||
+        (row.median || 0) > (grouped[primaryKey][finalSecondaryKey][dataType].median || 0)
       ) {
-        grouped[primaryKey][secondaryKey][dataType] = row;
+        grouped[primaryKey][finalSecondaryKey][dataType] = row;
       }
     });
 
@@ -414,10 +424,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           return groupByTissue
             ? (row as IndividualExpressionData).celltypeBiosample?.biosampleName ||
                 (row as IndividualExpressionData).celltypeBiosampleFromSource ||
-                "Unknown"
+                "No cell type"
             : (row as IndividualExpressionData).tissueBiosample?.biosampleName ||
                 (row as IndividualExpressionData).tissueBiosampleFromSource ||
-                "Unknown";
+                "No tissue";
         },
         {
           id: "primary",
@@ -655,13 +665,16 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                       [key: string]: BaselineExpressionRow[];
                                     } = {};
                                     row.original.expressions.forEach((expression) => {
-                                      const secondaryName = groupByTissue
-                                        ? expression.celltypeBiosample?.biosampleName ||
-                                          expression.celltypeBiosampleFromSource ||
-                                          "Unknown"
-                                        : expression.tissueBiosample?.biosampleName ||
-                                          expression.tissueBiosampleFromSource ||
-                                          "Unknown";
+                                      const tissueName = expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource;
+                                      const cellTypeName = expression.celltypeBiosample?.biosampleName || expression.celltypeBiosampleFromSource;
+                                      
+                                      // For nested table: only show rows that have BOTH tissue and cell type information
+                                      if (!tissueName || !cellTypeName) {
+                                        return;
+                                      }
+                                      
+                                      const secondaryName = groupByTissue ? cellTypeName : tissueName;
+                                      
                                       if (!secondaryGroups[secondaryName]) {
                                         secondaryGroups[secondaryName] = [];
                                       }
