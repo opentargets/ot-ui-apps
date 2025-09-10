@@ -90,7 +90,7 @@ interface GroupedTissueData {
   tissueName: string;
   maxMedian: number;
   expressions: BaselineExpressionRow[];
-  dataSourceValues: { [key: string]: number };
+  dataTypeValues: { [key: string]: number };
   isGroup: true;
 }
 
@@ -98,7 +98,7 @@ interface GroupedCellTypeData {
   cellTypeName: string;
   maxMedian: number;
   expressions: BaselineExpressionRow[];
-  dataSourceValues: { [key: string]: number };
+  dataTypeValues: { [key: string]: number };
   isGroup: true;
 }
 
@@ -199,32 +199,32 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true); // true = tissue->celltype, false = celltype->tissue
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Get unique data sources with tabula_sapiens first
-  const dataSources = useMemo(() => {
-    const sources = new Set<string>();
+  // Get unique data types with scrna-seq first
+  const dataTypes = useMemo(() => {
+    const dtypes = new Set<string>();
     data.forEach((row) => {
-      if (row.datasourceId) {
-        sources.add(row.datasourceId);
+      if (row.datatypeId) {
+        dtypes.add(row.datatypeId);
       }
     });
-    const sortedSources = Array.from(sources).sort();
+    const sortedDtypes = Array.from(dtypes).sort();
 
-    // Move tabula_sapiens to the front if it exists
-    const tabulaIndex = sortedSources.indexOf("tabula_sapiens");
-    if (tabulaIndex > -1) {
-      sortedSources.splice(tabulaIndex, 1);
-      sortedSources.unshift("tabula_sapiens");
+    // Move scrna-seq to the front if it exists
+    const scrnaIndex = sortedDtypes.indexOf("scrna-seq");
+    if (scrnaIndex > -1) {
+      sortedDtypes.splice(scrnaIndex, 1);
+      sortedDtypes.unshift("scrna-seq");
     }
 
-    return sortedSources;
+    return sortedDtypes;
   }, [data]);
 
-  // Set default sorting by tabula_sapiens (first data source)
+  // Set default sorting by scrna-seq (first data type)
   useEffect(() => {
-    if (dataSources.length > 0 && sorting.length === 0) {
-      setSorting([{ id: `datasource_${dataSources[0]}`, desc: true }]);
+    if (dataTypes.length > 0 && sorting.length === 0) {
+      setSorting([{ id: `datatype_${dataTypes[0]}`, desc: true }]);
     }
-  }, [dataSources, sorting.length]);
+  }, [dataTypes, sorting.length]);
 
   // Reset pagination when search term changes
   useEffect(() => {
@@ -242,12 +242,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       const cellTypeName =
         row.celltypeBiosample?.biosampleName || row.celltypeBiosampleFromSource || "Unknown";
 
-      // Do not include rows where tissue or cell type is Unknown
-      if (tissueName === "Unknown" || cellTypeName === "Unknown") {
-        return;
-      }
-
-      const dataSource = row.datasourceId || "Unknown";
+      const dataType = row.datatypeId || "Unknown";
 
       // Group by tissue->celltype or celltype->tissue
       const primaryKey = groupByTissue ? tissueName : cellTypeName;
@@ -262,10 +257,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
       // Keep only one entry per combination per data source (take the one with highest median)
       if (
-        !grouped[primaryKey][secondaryKey][dataSource] ||
-        (row.median || 0) > (grouped[primaryKey][secondaryKey][dataSource].median || 0)
+        !grouped[primaryKey][secondaryKey][dataType] ||
+        (row.median || 0) > (grouped[primaryKey][secondaryKey][dataType].median || 0)
       ) {
-        grouped[primaryKey][secondaryKey][dataSource] = row;
+        grouped[primaryKey][secondaryKey][dataType] = row;
       }
     });
 
@@ -273,16 +268,16 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
     Object.entries(grouped).forEach(([primaryName, secondaryGroups]) => {
       const expressions: BaselineExpressionRow[] = [];
-      const dataSourceValues: { [key: string]: number } = {};
+      const dataTypeValues: { [key: string]: number } = {};
 
-      // Flatten all expressions and calculate max for each data source
-      Object.entries(secondaryGroups).forEach(([, dataSources]) => {
-        Object.entries(dataSources).forEach(([dataSource, row]) => {
+      // Flatten all expressions and calculate max for each data type
+      Object.entries(secondaryGroups).forEach(([, dataTypes]) => {
+        Object.entries(dataTypes).forEach(([dataType, row]) => {
           expressions.push(row);
-          if (!dataSourceValues[dataSource]) {
-            dataSourceValues[dataSource] = 0;
+          if (!dataTypeValues[dataType]) {
+            dataTypeValues[dataType] = 0;
           }
-          dataSourceValues[dataSource] = Math.max(dataSourceValues[dataSource], row.median || 0);
+          dataTypeValues[dataType] = Math.max(dataTypeValues[dataType], row.median || 0);
         });
       });
 
@@ -290,17 +285,17 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       if (groupByTissue) {
         result.push({
           tissueName: primaryName,
-          maxMedian: Math.max(...Object.values(dataSourceValues)),
+          maxMedian: Math.max(...Object.values(dataTypeValues)),
           expressions,
-          dataSourceValues,
+          dataTypeValues,
           isGroup: true,
         } as GroupedTissueData);
       } else {
         result.push({
           cellTypeName: primaryName,
-          maxMedian: Math.max(...Object.values(dataSourceValues)),
+          maxMedian: Math.max(...Object.values(dataTypeValues)),
           expressions,
-          dataSourceValues,
+          dataTypeValues,
           isGroup: true,
         } as GroupedCellTypeData);
       }
@@ -354,12 +349,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           });
           break;
         default:
-          // Handle data source columns
-          if (sortColumn.id.startsWith("datasource_")) {
-            const dataSource = sortColumn.id.replace("datasource_", "");
+          // Handle data type columns
+          if (sortColumn.id.startsWith("datatype_")) {
+            const dataType = sortColumn.id.replace("datatype_", "");
             sortedExpressions.sort((a, b) => {
-              const aValue = a.datasourceId === dataSource ? a.median || 0 : 0;
-              const bValue = b.datasourceId === dataSource ? b.median || 0 : 0;
+              const aValue = a.datatypeId === dataType ? a.median || 0 : 0;
+              const bValue = b.datatypeId === dataType ? b.median || 0 : 0;
               return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
             });
           }
@@ -374,15 +369,15 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   }, [filteredGroupedData, sorting, groupByTissue]);
 
   // Calculate max values for each data source for scaling
-  const dataSourceMaxValues = useMemo(() => {
+  const dataTypeMaxValues = useMemo(() => {
     const maxValues: { [key: string]: number } = {};
-    dataSources.forEach((source) => {
-      maxValues[source] = Math.max(
-        ...data.filter((row) => row.datasourceId === source).map((row) => row.median || 0)
+    dataTypes.forEach((dtype) => {
+      maxValues[dtype] = Math.max(
+        ...data.filter((row) => row.datatypeId === dtype).map((row) => row.median || 0)
       );
     });
     return maxValues;
-  }, [dataSources, data]);
+  }, [dataTypes, data]);
 
   // Define columns
   const columns = useMemo(() => {
@@ -440,21 +435,21 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       ),
     ];
 
-    // Add dynamic columns for each data source
-    const dataSourceColumns = dataSources.map((dataSource) =>
+    // Add dynamic columns for each data type
+    const dataTypeColumns = dataTypes.map((dataType) =>
       columnHelper.accessor(
         (row) => {
           if (row.isGroup) {
-            return (row as GroupedTissueData).dataSourceValues[dataSource] || 0;
+            return (row as GroupedTissueData).dataTypeValues[dataType] || 0;
           }
           return 0; // Child rows will be handled in rendering
         },
         {
-          id: `datasource_${dataSource}`,
-          header: dataSource,
+          id: `datatype_${dataType}`,
+          header: dataType,
           cell: (info) => {
             const value = info.getValue();
-            const maxValue = dataSourceMaxValues[dataSource] || 1;
+            const maxValue = dataTypeMaxValues[dataType] || 1;
             const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
 
             return (
@@ -469,8 +464,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       )
     );
 
-    return [...baseColumns, ...dataSourceColumns];
-  }, [classes, dataSources, dataSourceMaxValues, groupByTissue]);
+    return [...baseColumns, ...dataTypeColumns];
+  }, [classes, dataTypes, dataTypeMaxValues, groupByTissue]);
 
   // Create table instance
   const table = useReactTable({
@@ -563,9 +558,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         width = "35%"; // Tissue column
                       else {
                         // Data source columns - ensure equal width
-                        const dataSourceColumnWidth =
-                          dataSources.length > 0 ? `${60 / dataSources.length}%` : "60%";
-                        width = dataSourceColumnWidth;
+                        const dataTypeColumnWidth =
+                          dataTypes.length > 0 ? `${60 / dataTypes.length}%` : "60%";
+                        width = dataTypeColumnWidth;
                       }
 
                       return (
@@ -612,10 +607,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         else if (index === 1)
                           width = "35%"; // Tissue column
                         else {
-                          // Data source columns - ensure equal width
-                          const dataSourceColumnWidth =
-                            dataSources.length > 0 ? `${60 / dataSources.length}%` : "60%";
-                          width = dataSourceColumnWidth;
+                          // Data type columns - ensure equal width
+                          const dataTypeColumnWidth =
+                            dataTypes.length > 0 ? `${60 / dataTypes.length}%` : "60%";
+                          width = dataTypeColumnWidth;
                         }
 
                         return (
@@ -639,15 +634,15 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                   <TableRow>
                                     <TableCell style={{ width: "5%" }}></TableCell>
                                     <TableCell style={{ width: "35%" }}></TableCell>
-                                    {dataSources.map((dataSource) => {
-                                      const dataSourceColumnWidth =
-                                        dataSources.length > 0
-                                          ? `${60 / dataSources.length}%`
+                                    {dataTypes.map((dataType) => {
+                                      const dataTypeColumnWidth =
+                                        dataTypes.length > 0
+                                          ? `${60 / dataTypes.length}%`
                                           : "60%";
                                       return (
                                         <TableCell
-                                          key={dataSource}
-                                          style={{ width: dataSourceColumnWidth }}
+                                          key={dataType}
+                                          style={{ width: dataTypeColumnWidth }}
                                         ></TableCell>
                                       );
                                     })}
@@ -690,32 +685,32 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                               {secondaryName}
                                             </Typography>
                                           </TableCell>
-                                          {dataSources.map((dataSource) => {
+                                          {dataTypes.map((dataType) => {
                                             const expression = expressions.find(
-                                              (expr) => expr.datasourceId === dataSource
+                                              (expr) => expr.datatypeId === dataType
                                             );
                                             const value = expression?.median || 0;
 
-                                            // Scale relative to parent group's max value for this data source
+                                            // Scale relative to parent group's max value for this data type
                                             const parentMaxValue = groupByTissue
                                               ? (row.original as GroupedTissueData)
-                                                  .dataSourceValues[dataSource] || 1
+                                                  .dataTypeValues[dataType] || 1
                                               : (row.original as GroupedCellTypeData)
-                                                  .dataSourceValues[dataSource] || 1;
+                                                  .dataTypeValues[dataType] || 1;
                                             const percentage =
                                               parentMaxValue > 0
                                                 ? (value / parentMaxValue) * 100
                                                 : 0;
-                                            const dataSourceColumnWidth =
-                                              dataSources.length > 0
-                                                ? `${60 / dataSources.length}%`
+                                            const dataTypeColumnWidth =
+                                              dataTypes.length > 0
+                                                ? `${60 / dataTypes.length}%`
                                                 : "60%";
 
                                             return (
                                               <TableCell
-                                                key={dataSource}
+                                                key={dataType}
                                                 className={`${classes.medianCell} ${classes.nestedTableCell}`}
-                                                style={{ width: dataSourceColumnWidth }}
+                                                style={{ width: dataTypeColumnWidth }}
                                               >
                                                 <Box className={classes.barContainer}>
                                                   <Box
