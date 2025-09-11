@@ -128,6 +128,7 @@ Notes:
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. |
+| `onFirstDraw` |  | `function` | Called immediately after first draw (and before `onDraw`). Passed the viewer state. |
 | `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |

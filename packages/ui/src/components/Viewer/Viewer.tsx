@@ -92,11 +92,7 @@ export default function Viewer({
         lowerZoomLimit: zoomLimit[0],
         upperZoomLimit: zoomLimit[1],
       });
-
       _viewer._firstDraw = true;
-
-      window._viewer = _viewer;  // !! REMOVE !!
-
       _viewer.setHoverDuration(hoverDuration);
 
       // disable wheel-zoom
