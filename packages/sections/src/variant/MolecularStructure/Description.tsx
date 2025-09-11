@@ -30,6 +30,9 @@ function Description({
       <Link to={`/target/${targetId}`}>{targetApprovedSymbol}</Link>. Source:{" "}
       <Link external to={`https://alphafold.ebi.ac.uk/entry/${uniprotAccession}`}>
         AlphafoldDB
+      </Link>{", "}
+      <Link external to={`https://www.uniprot.org/uniprotkb/${uniprotAccession}/entry#family_and_domains`}>
+        UniProt
       </Link>{" "}
       and{" "}
       <Link external to="https://platform-docs.opentargets.org/variant">

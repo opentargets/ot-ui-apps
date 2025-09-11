@@ -192,6 +192,11 @@ function updateGlobalSurface(state, highlightResi) {
   );
 }
 
+export function firstDrawHandler(state) {
+  state.viewer.zoomTo({ resi: [...state.variantResidues] }, 0);
+  state.viewer.zoom(0.2);
+}
+
 export function drawHandler(state) {
   const { viewer } = state;
   if (!viewer._variantSurfaceId) {  // first draw: create surfaces and labels
@@ -297,6 +302,7 @@ export const hoverAppearance = [
 
 export const clickAppearance = [
   {
+    use: (state, resi) => !resiOnVariant(state, resi),
     style: (state, resi) => state.representBy === "cartoon"
       ? { clicksphere: { radius: 1.5 } }
       : {},
@@ -322,10 +328,10 @@ export const clickAppearance = [
     },
     leave: [
       { 
+        use: (state, resi) => !resiOnVariant(state, resi),
         style: baseCartoonStyle,
         addStyle: true,
         onApply: (state, resi) => {
-          if (resiOnVariant(state, resi)) return;
           state.viewer.removeSurface(state.viewer._clickedSurfaceId);
           state.viewer._clickedSurfaceId = null;
           state.viewer.removeLabel(state.viewer._clickedLabelId);
@@ -335,6 +341,7 @@ export const clickAppearance = [
         },
       },
       {
+        use: (state, resi) => !resiOnVariant(state, resi),
         addStyle: true,
         style: (state, resi) => state.representBy === "cartoon"
           ? { clicksphere: { radius: 0 } }
@@ -374,22 +381,4 @@ export function dataHandler(viewer, dispatch, row) {
       value: "AlphaFold structure not available",
     });
   }
-}
-
-// OLD /////////////////////////////////////////////////////////////////////////
-
-export function resetViewer(viewer, variantResidues, duration = 0) {
-  let cx = 0,
-    cy = 0,
-    cz = 0;
-  const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
-  for (let atom of residueAtoms) {
-    cx += atom.x;
-    cy += atom.y;
-    cz += atom.z;
-  }
-  cx /= residueAtoms.length;
-  cy /= residueAtoms.length;
-  cz /= residueAtoms.length;
-  viewer.zoomTo({ resi: [...variantResidues] }, duration);
 }

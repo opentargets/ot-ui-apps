@@ -128,14 +128,15 @@ Notes:
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. |
+| `onFirstDraw` |  | `function` | Called immediately after first draw (and before `onDraw`). Passed the viewer state. |
 | `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
-| `hoverSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function' | Hoverable atoms. If a function, is passed the viewer state and should return a `AtomSelectionSpec`. |
+| `hoverSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Hoverable atoms. If a function, is passed the viewer state and should return a `AtomSelectionSpec`. |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `clickSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function' | Clickable atoms. See `hoverSelection`. |
+| `clickSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Clickable atoms. See `hoverSelection`. |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
+| `trackColor` | | `function` | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
 | `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects to highlight on the track - labels are optional. | 
 | `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
