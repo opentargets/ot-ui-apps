@@ -159,8 +159,9 @@ function StructureViewer({ row }) {
               topLeft={<MissingColorWarning />}
               bottomRight={<AtomInfo />}
               usage={{
-                Highlight: "Click Residue",
-                Unhighlight: "Click Canvas",
+                Resize: "Drag bottom right corner",
+                Highlight: "Click residue",
+                Unhighlight: "Click canvas",
               }}
             />
             <Box
