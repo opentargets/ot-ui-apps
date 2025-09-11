@@ -308,6 +308,7 @@ export const clickAppearance = [
       : {},
     addStyle: true,
     onApply: (state, resi) => {
+      if (resiOnVariant(state, resi)) return;
       const { viewer } = state;
       viewer._clickedSurfaceId = viewer.addSurface(
         "VDW",
