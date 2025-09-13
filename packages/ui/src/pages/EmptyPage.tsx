@@ -1,11 +1,11 @@
-import { makeStyles } from "@mui/styles";
 import { Button, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import Link from "../components/Link";
 import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   hiddenMobile: {
     "@media (max-width: 767px)": {
       display: "none",
@@ -62,7 +62,7 @@ function EmptyPage({
       >
         <BrokenSearchIcon />
       </div>
-      <div className={`${classes.divider} ${classes.hiddenMobile}`}></div>
+      <div className={`${classes.divider} ${classes.hiddenMobile}`} />
       <div className="message-body-container">
         <Typography variant="h2" className={classes.messageBodyHeader}>
           404: Page not found

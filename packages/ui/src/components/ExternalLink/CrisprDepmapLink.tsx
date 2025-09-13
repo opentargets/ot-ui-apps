@@ -1,11 +1,11 @@
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { makeStyles } from "@mui/styles";
 import { Tooltip } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 import Link from "../Link";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   helpIcon: {
     fontSize: "0.875rem !important",
   },

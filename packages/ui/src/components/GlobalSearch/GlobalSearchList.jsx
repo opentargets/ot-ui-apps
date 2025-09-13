@@ -1,18 +1,18 @@
-import { useContext, useEffect, useState, memo, useCallback, Fragment, useMemo } from "react";
-import { Box, styled } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
+import { Box, styled } from "@mui/material";
+import { Fragment, memo, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import useListOption from "../../hooks/useListOption";
 import GlobalSearchListHeader from "./GlobalSearchListHeader";
 import GlobalSearchListItem from "./GlobalSearchListItem";
-import { defaultEntityFilterState, SearchContext } from "./SearchContext";
+import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
+import { SearchContext, defaultEntityFilterState } from "./SearchContext";
+import VariantMessage from "./VariantMessage";
 import {
-  formatSearchData,
-  getSelectedEntityFilterLength,
   TOTAL_ENTITIES,
   TOTAL_SEARCH_RESULTS,
+  formatSearchData,
+  getSelectedEntityFilterLength,
 } from "./utils/searchUtils";
-import useListOption from "../../hooks/useListOption";
-import GlobalSearchLoadingState from "./GlobalSearchLoadingState";
-import VariantMessage from "./VariantMessage";
 
 const VARIANT_COMPONENTS = {
   CHROMOSOME: "(?:chr)?(?:[1-9]|1[0-9]|2[0-2]|X|Y|MT)",
@@ -83,13 +83,15 @@ function GlobalSearchList({ inputValue }) {
     [filterState]
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   const focusOnItem = useCallback((index = 0) => {
     selected = index;
     const items = document.querySelectorAll(".search-list-item");
     if (items.length) {
-      items.forEach(el => {
+      for (let i = 0; i < items.length; i++) {
+        const el = items[i];
         el.classList.remove("search-list-item-active");
-      });
+      }
       items[index].classList.add("search-list-item-active");
       items[index].scrollIntoView({
         behavior: "smooth",
@@ -98,7 +100,8 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
-  const onKeyDownHandler = useCallback(e => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
+  const onKeyDownHandler = useCallback((e) => {
     if (e.key === "Escape") {
       setOpen(false);
       e.preventDefault();
@@ -121,8 +124,9 @@ function GlobalSearchList({ inputValue }) {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   const handleItemClick = useCallback(
-    item => {
+    (item) => {
       setOpen(false);
       openListItem(item, filterState);
       setFilterState(defaultEntityFilterState);
@@ -142,11 +146,11 @@ function GlobalSearchList({ inputValue }) {
         size: Math.ceil(TOTAL_SEARCH_RESULTS / selectedEntityFilterLength),
       },
     })
-      .then(res => {
+      .then((res) => {
         const formattedData = formatSearchData(res.data);
         setSearchResult({ ...formattedData });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   }
@@ -201,7 +205,7 @@ function GlobalSearchList({ inputValue }) {
     >
       <GlobalSearchListHeader listHeader="Search Suggestions" />
       <List tabIndex={-1} sx={{ display: "flex", flexWrap: "wrap" }}>
-        {searchSuggestions.map(item => (
+        {searchSuggestions.map((item) => (
           <GlobalSearchListItem
             key={item.id || item.symbol}
             item={item}
@@ -212,7 +216,7 @@ function GlobalSearchList({ inputValue }) {
       </List>
     </Box>
   );
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     if (loading) abortExistingRequest();
     else {
@@ -222,12 +226,14 @@ function GlobalSearchList({ inputValue }) {
     }
   }, [inputValue, selectedEntityFilterLength]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     focusOnItem();
     if (inputValue) fetchSearchResults();
     else setSearchResult({});
   }, [aborterRef]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: TODO: fix this
   useEffect(() => {
     document.addEventListener("keydown", onKeyDownHandler);
     window.addEventListener("storage", handleChangeInRecentItems);
@@ -270,7 +276,7 @@ function GlobalSearchList({ inputValue }) {
               >
                 <GlobalSearchListHeader listHeader={key} />
                 <List tabIndex={-1}>
-                  {value.map(item => (
+                  {value.map((item) => (
                     <GlobalSearchListItem
                       key={item.id || item.symbol}
                       item={item}
@@ -306,7 +312,7 @@ function GlobalSearchList({ inputValue }) {
         >
           <GlobalSearchListHeader listHeader="recent" />
           <List tabIndex={-1}>
-            {recentItems.map(item => (
+            {recentItems.map((item) => (
               <GlobalSearchListItem
                 key={item.id || item.symbol}
                 item={item}

@@ -2,18 +2,18 @@ import { Helmet } from "react-helmet";
 import Footer from "./Footer";
 import Page from "./Page";
 
-import NavBar from "./NavBar";
 import {
-  appTitle,
-  appDescription,
   appCanonicalUrl,
+  appDescription,
+  appTitle,
   externalLinks,
   mainMenuItems,
 } from "@ot/constants";
 import GlobalSearch from "./GlobalSearch/GlobalSearch";
+import NavBar from "./NavBar";
 
-import { ReactElement } from "react";
-import { Location } from "history";
+import type { Location } from "history";
+import type { ReactElement } from "react";
 
 type BasePageProps = {
   children: ReactElement;

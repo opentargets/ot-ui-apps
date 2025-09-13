@@ -8,7 +8,7 @@ import svgrPlugin from "vite-plugin-svgr";
 const getGitVersion = () => {
   try {
     return execSync("git describe --tags --always").toString().trim();
-  } catch (error) {
+  } catch {
     return "unknown";
   }
 };

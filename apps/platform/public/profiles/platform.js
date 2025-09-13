@@ -1,5 +1,6 @@
 // Configuration Object
 // biome-ignore lint/style/noVar: keep this as var for now
+// biome-ignore lint/correctness/noUnusedVariables: keep this as var for now
 var configProfile = {
   /* general items */
 
