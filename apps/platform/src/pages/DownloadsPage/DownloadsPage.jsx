@@ -1,25 +1,21 @@
-import { Fragment, useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import { gql, useQuery } from "@apollo/client";
-import {
-  Paper,
-  Box,
-  Chip,
-  Typography,
-  Alert,
-  AlertTitle,
-  IconButton,
-  CircularProgress,
-} from "@mui/material";
+import { Alert, Box, Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, DataTable } from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAlignLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link, OtInvalidResultFilters } from "ui";
+import { getConfig } from "@ot/config";
+import { v1 } from "uuid";
+import DownloadsCard from "./DownloadsCard";
+import DownloadsFilter from "./DownloadsFilter";
+import DownloadsLoading from "./DownloadsLoading";
+import { createInitialState, downloadsReducer, initialState } from "./context/downloadsReducer";
+import { setDownloadsData, setError, setLoading } from "./context/downloadsActions";
+import { DownloadsContext } from "./context/DownloadsContext";
+import DownloadsTags from "./DownloadsTags";
+import { Route, Routes } from "react-router-dom";
+import DownloadsDialog from "./DownloadsDialog";
 
-import { defaultRowsPerPageOptions, formatMap } from "../../constants";
-import DownloadsDrawer from "./DownloadsDrawer";
-import datasetMappings from "./dataset-mappings.json";
-import config from "../../config";
-import DownloadsSchemaDrawer from "./DownloadsSchemaDrawer";
+const config = getConfig();
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -27,190 +23,101 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function getFormats(id, downloadData) {
-  const formats = [];
-
-  downloadData.forEach(data => {
-    if (id === data.id) {
-      formats.push({
-        format: data.resource.format,
-        path: data.resource.path,
-      });
-    }
-  });
-
-  return formats;
-}
-
-function getSerialisedSchema(id, downloadData) {
-  let schemaObject;
-  downloadData.forEach(data => {
-    if (id === data.id) schemaObject = JSON.parse(data.serialisedSchema);
-  });
-  return schemaObject;
-}
-
-function getRows(downloadData, allDatasetMappings) {
-  const rows = [];
-
-  allDatasetMappings.forEach(mapping => {
-    if (mapping.include_in_fe) {
-      rows.push({
-        niceName: mapping.nice_name,
-        description: mapping.description,
-        formats: getFormats(mapping.id, downloadData),
-        serialisedSchema: getSerialisedSchema(mapping.id, downloadData),
-      });
-    }
-  });
-
-  return rows;
-}
-
-function getColumns(date) {
-  const columns = [
-    { id: "niceName", label: "Dataset" },
-    { id: "description", label: "Description" },
-    {
-      id: "formats",
-      label: "Format(s)",
-      renderCell: ({ niceName, formats }) =>
-        formats
-          .sort((a, b) => {
-            if (a.format > b.format) return 1;
-            return -1;
-          })
-          .map(format => (
-            <Fragment key={format.format + format.path + date.month + date.year}>
-              <DownloadsDrawer
-                title={niceName}
-                format={format.format}
-                path={format.path}
-                month={date.month}
-                year={date.year}
-              >
-                <Chip label={formatMap[format.format]} clickable size="small" />
-              </DownloadsDrawer>{" "}
-            </Fragment>
-          )),
-    },
-    {
-      id: "schemas",
-      label: "Schema",
-      renderCell: ({ niceName, serialisedSchema }) => (
-        <DownloadsSchemaDrawer title={niceName} serialisedSchema={serialisedSchema}>
-          <Chip clickable size="small" label={<FontAwesomeIcon icon={faAlignLeft} />} />
-        </DownloadsSchemaDrawer>
-      ),
-    },
-  ];
-  return columns;
-}
-
-const DATA_VERSION_QUERY = gql`
-  query DataVersion {
+// QUERY
+const DOWNLOADS_QUERY = gql`
+  query DownloadsQuery {
     meta {
-      dataVersion {
-        month
-        year
-      }
+      downloads
     }
   }
 `;
 
-function getVersion(data) {
-  if (!data) return null;
-  const { month, year } = data.meta.dataVersion;
-  return `${year}.${month}`;
-}
-
 function DownloadsPage() {
-  const { data, loading, error } = useQuery(DATA_VERSION_QUERY);
-  const [downloadsData, setDownloadsData] = useState(null);
-  const [loadingDownloadsData, setLoadingDownloadsData] = useState(false);
-  const rows = downloadsData ? getRows(downloadsData, datasetMappings) : [];
-  const columns = loading || error ? [] : getColumns(data.meta.dataVersion);
+  const { data, loading, error } = useQuery(DOWNLOADS_QUERY);
+  const [state, dispatch] = useReducer(downloadsReducer, initialState, createInitialState);
   const classes = useStyles();
 
   useEffect(() => {
-    let isCurrent = true;
-    setLoadingDownloadsData(true);
-    fetch(config.downloadsURL)
-      .then(res => res.text())
-      .then(lines => {
-        if (isCurrent) {
-          const nodes = lines.trim().split("\n").map(JSON.parse);
-          setDownloadsData(nodes);
-        }
-        setLoadingDownloadsData(false);
-      });
+    if (loading) {
+      dispatch(setLoading(true));
+    } else if (error) {
+      dispatch(setError(error));
+    } else if (data?.meta?.downloads) {
+      dispatch(setDownloadsData(JSON.parse(data.meta.downloads)));
+    }
+  }, [data, loading, error]);
 
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
+  if (state.loading) return <DownloadsLoading />;
 
   return (
-    <>
-      <Typography variant="h4" component="h1" paragraph>
-        Data downloads
-      </Typography>
-      <Typography paragraph>
-        The Open Targets Platform is committed to open data and open access research and all of our
-        data is publicly available for download and can be used for academic or commercial purposes.
-        Please see our{" "}
-        <Link external to="http://platform-docs.opentargets.org/licence">
-          License documentation
-        </Link>{" "}
-        for more information.
-      </Typography>
-      <Typography paragraph>
-        For sample scripts to download and parse datasets using Python or R, please visit our{" "}
-        <Link external to="http://platform-docs.opentargets.org/data-access/datasets">
-          Data Downloads documentation
-        </Link>
-      </Typography>
-      <Typography paragraph>Current data version: {error ? null : getVersion(data)}</Typography>
-      <Typography paragraph>
-        Access archived datasets via{" "}
-        <Link external to="http://ftp.ebi.ac.uk/pub/databases/opentargets/platform">
-          FTP
-        </Link>
-      </Typography>
+    <DownloadsContext.Provider value={{ state, dispatch }}>
+      <>
+        <Typography variant="h4" component="h1" paragraph>
+          {state.downloadsData?.name}
+        </Typography>
+        <Typography paragraph>{state.downloadsData?.description}</Typography>
 
-      {config.isPartnerPreview ? (
-        <Alert severity="warning" className={classes.alert}>
-          <AlertTitle>Important Note</AlertTitle>
-          These data files do not contain any of the custom data found in this version of the
-          Platform. They are the same files that are available from the public Platform. To download
-          the data for a specific project, please visit the{" "}
-          <Link external to="http://home.opentargets.org/">
-            Open Targets Intranet
-          </Link>{" "}
-          and submit a data request.
-        </Alert>
-      ) : null}
+        {config.profile.isPartnerPreview ? (
+          <Alert severity="info" className={classes.alert}>
+            This table provides data file paths that have been integrated into the Open Targets
+            Partner Preview Platform. This includes pre-publication data generated by the consortium
+            combined with{" "}
+            <Link
+              external
+              to="https://ftp.ebi.ac.uk/pub/databases/opentargets/platform/latest/output/"
+            >
+              {" "}
+              publicly available datasets
+            </Link>
+            . Please contact{" "}
+            <Link to={`mailto: ${config.profile.helpdeskEmail}`} external>
+              {config.profile.helpdeskEmail}
+            </Link>{" "}
+            to access the following datasets.
+          </Alert>
+        ) : null}
 
-      {loadingDownloadsData && (
-        <Box display="flex" justifyContent="center">
-          <CircularProgress />
-        </Box>
-      )}
+        <DownloadsTags />
 
-      {loadingDownloadsData || loading || error ? null : (
-        <Paper variant="outlined" elevation={0}>
-          <Box m={2}>
-            <DataTable
-              showGlobalFilter
-              columns={columns}
-              rows={rows}
-              loading={loadingDownloadsData}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
-            />
-          </Box>
-        </Paper>
-      )}
-    </>
+        <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Grid item xs={12} md={3} lg={2} sx={{ display: "flex", justifyContent: "center" }}>
+            <DownloadsFilter />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={9}
+            lg={10}
+            sx={{ display: "flex", flexDirection: "column", gap: 1, pl: { md: 2 } }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+              All Datasets ({state.count})
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                gap: 2,
+              }}
+            >
+              {state.count > 0 ? (
+                <>
+                  {state.filteredRows.map(e => (
+                    <DownloadsCard key={v1()} data={e} />
+                  ))}
+                </>
+              ) : (
+                <OtInvalidResultFilters />
+              )}
+            </Box>
+          </Grid>
+        </Grid>
+      </>
+      <Routes>
+        <Route path="/:downloadsRow/:downloadsView" element={<DownloadsDialog />} />
+      </Routes>
+    </DownloadsContext.Provider>
   );
 }
 

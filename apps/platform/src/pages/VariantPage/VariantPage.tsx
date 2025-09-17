@@ -1,35 +1,23 @@
-
-import { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { BasePage } from "ui";
+import { useQuery } from "@apollo/client";
+import { ReactElement } from "react";
+import { useLocation, useParams, Link } from "react-router-dom";
+import { Box, Tabs, Tab } from "@mui/material";
+import { BasePage, ScrollToTop } from "ui";
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import { MetadataType } from "./types";
+import VARIANT_PAGE_QUERY from "./VariantPage.gql";
+import Profile from "./Profile";
 
-// const Profile = lazy(() => import("./Profile"));
-
-function VariantPage() {
+function VariantPage(): ReactElement {
   const location = useLocation();
   const { varId } = useParams() as { varId: string };
-  const [metadata, setMetadata] =
-    useState<MetadataType | 'waiting' | undefined>('waiting');
 
-  // temp: loading is set by useQuery, set to false for now
-  const loading = false;
+  const { loading, data } = useQuery(VARIANT_PAGE_QUERY, {
+    variables: { variantId: varId },
+  });
 
-  // temp: data will come from gql, fetch local json file for now
-  useEffect(() => {
-    fetch('../data/variant-data-2.json')
-      .then(response => response.json())
-      .then((allData: MetadataType[]) =>
-        setMetadata(allData.find(v => v.variantId === varId)));
-  }, []);
-
-  // temp: revisit this (use same as other pages) once using gql to get data
-  if (!metadata) {
+  if (data && !data.variant) {
     return <NotFoundPage />;
-  } else if (metadata === 'waiting') {
-    return <b>Waiting</b>;
   }
 
   return (
@@ -38,7 +26,22 @@ function VariantPage() {
       description={`Annotation information for ${varId}`}
       location={location}
     >
-      <Header loading={loading} metadata={metadata} />
+      <>
+        <Header loading={loading} variantId={varId} variantPageData={data?.variant} />
+        <ScrollToTop />
+
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Tabs value={location.pathname}>
+            <Tab
+              label={<Box sx={{ textTransform: "capitalize" }}>Profile</Box>}
+              value={`/variant/${varId}`}
+              component={Link}
+              to={`/variant/${varId}`}
+            />
+          </Tabs>
+        </Box>
+        <Profile varId={varId} />
+      </>
     </BasePage>
   );
 }

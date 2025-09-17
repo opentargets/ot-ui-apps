@@ -6,7 +6,7 @@ const summaryStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.grey[300],
   },
   avatarHasData: {
-    backgroundColor: `${theme.palette.primary.main} !important`,
+    backgroundColor: `${theme.palette.primary.dark} !important`,
   },
   avatarError: {
     backgroundColor: theme.palette.secondary.main,
@@ -19,7 +19,8 @@ const summaryStyles = makeStyles(theme => ({
   cardHasData: {
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: theme.palette.primary.main,
+      transition: "background-color ease-in-out 300ms",
+      backgroundColor: theme.palette.primary.dark,
     },
     "&:hover $titleHasData": {
       color: "white",
@@ -31,7 +32,7 @@ const summaryStyles = makeStyles(theme => ({
       color: "white",
     },
     "&:hover $avatarHasData": {
-      color: theme.palette.primary.main,
+      color: theme.palette.primary.dark,
       backgroundColor: "white !important",
     },
   },
@@ -70,7 +71,7 @@ const summaryStyles = makeStyles(theme => ({
     wordBreak: "break-word",
   },
   titleHasData: {
-    color: theme.palette.primary.main,
+    color: theme.palette.text.primary,
     fontWeight: "bold",
   },
   subtitle: {

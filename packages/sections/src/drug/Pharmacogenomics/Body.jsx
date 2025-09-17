@@ -1,19 +1,21 @@
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, Tooltip, DataTable, LabelChip, PublicationsDrawer } from "ui";
+import {
+  Link,
+  SectionItem,
+  Tooltip,
+  LabelChip,
+  PublicationsDrawer,
+  OtTable,
+  DirectionalityDrawer,
+} from "ui";
 
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl, identifiersOrgLink, sentenceCase } from "@ot/utils";
 import { definition } from ".";
 import Description from "./Description";
 import PHARMACOGENOMICS_QUERY from "./Pharmacogenomics.gql";
-import {
-  naLabel,
-  defaultRowsPerPageOptions,
-  PHARM_GKB_COLOR,
-  variantConsequenceSource,
-} from "../../constants";
-import { identifiersOrgLink, sentenceCase } from "../../utils/global";
+import { naLabel, PHARM_GKB_COLOR, variantConsequenceSource } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -75,7 +77,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ target }) => {
         if (target) {
           return (
-            <Link to={`/target/${target.id}`}>
+            <Link asyncTooltip to={`/target/${target.id}`}>
               <span>{target.approvedSymbol}</span>
             </Link>
           );
@@ -87,6 +89,7 @@ function Body({ id: chemblId, label: name, entity }) {
     {
       id: "variantRsId",
       label: "rsID",
+      enableHiding: false,
       renderCell: ({ variantRsId }) =>
         variantRsId ? (
           <Link
@@ -149,12 +152,12 @@ function Body({ id: chemblId, label: name, entity }) {
             )}
             {(variantFunctionalConsequence?.id === "SO:0001583" ||
               variantFunctionalConsequence?.id === "SO:0001587") && (
-              <LabelChip
-                label={variantConsequenceSource.ProtVar.label}
-                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                tooltip={variantConsequenceSource.ProtVar.tooltip}
-              />
-            )}
+                <LabelChip
+                  label={variantConsequenceSource.ProtVar.label}
+                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                  tooltip={variantConsequenceSource.ProtVar.tooltip}
+                />
+              )}
           </div>
         );
       },
@@ -173,7 +176,9 @@ function Body({ id: chemblId, label: name, entity }) {
 
         if (phenotypeFromSourceId)
           phenotypeTextElement = (
-            <Link to={`/disease/${phenotypeFromSourceId}`}>{phenotypeTextElement}</Link>
+            <Link asyncTooltip to={`/disease/${phenotypeFromSourceId}`}>
+              {phenotypeTextElement}
+            </Link>
           );
 
         if (genotypeAnnotationText)
@@ -194,6 +199,13 @@ function Body({ id: chemblId, label: name, entity }) {
       filterValue: ({ pgxCategory }) => pgxCategory,
     },
     {
+      id: "directionality",
+      label: "Directionality",
+      renderCell: ({ variantAnnotation }) => (
+        <DirectionalityDrawer variantAnnotation={variantAnnotation} caption="Directionality" />
+      ),
+    },
+    {
       id: "isDirectTarget",
       label: "Direct Drug Target",
       renderCell: ({ isDirectTarget }) => {
@@ -202,7 +214,7 @@ function Body({ id: chemblId, label: name, entity }) {
       },
     },
     {
-      id: "confidenceLevel",
+      id: "evidenceLevel",
       label: "Confidence Level",
       sortable: true,
       tooltip: (
@@ -210,7 +222,7 @@ function Body({ id: chemblId, label: name, entity }) {
           As defined by
           <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
             {" "}
-            PharmGKB ClinAnn Levels
+            ClinPGx ClinAnn Levels
           </Link>
         </>
       ),
@@ -233,7 +245,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ studyId }) =>
         studyId ? (
           <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
-            PharmGKB
+            ClinPGx
           </Link>
         ) : (
           naLabel
@@ -272,16 +284,17 @@ function Body({ id: chemblId, label: name, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description name={name} />}
-      renderBody={({ drug }) => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           sortBy="evidenceLevel"
           showGlobalFilter
           dataDownloader
+          dataDownloaderFileStem={`${chemblId}-pharmacogenomics`}
           columns={columns}
-          rows={drug.pharmacogenomics}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.drug.pharmacogenomics}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

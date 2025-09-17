@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Drawer, Link as MuiLink, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
+import { Drawer, IconButton, Paper, Typography, ButtonBase } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tooltip, Link } from "ui";
-
-import { sentenceCase } from "../../utils/global";
+import { sentenceCase } from "@ot/utils";
 
 const useStyles = makeStyles(theme => ({
   drawerLink: {
@@ -75,15 +74,16 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             <FontAwesomeIcon icon={faXmark} />
           </IconButton>
         </Typography>
-        {biomarkers.variant ? (
+        {biomarkers.geneticVariation ? (
           <Paper className={classes.paper} variant="outlined">
             <Typography variant="subtitle2" paragraph>
               Variant:
             </Typography>
-            {biomarkers.variant.map(variant => (
+            {biomarkers.geneticVariation.map(variant => (
               <div key={variant.name} className={classes.biomarkerItem}>
                 <div>
-                  {variant.name} {variant.variantId ? `(ID: ${variant.variantId})` : null}
+                  {variant.name}{" "}
+                  {variant.geneticVariationId ? `(ID: ${variant.geneticVariationId})` : null}
                 </div>
                 {variant.functionalConsequenceId ? (
                   <Link

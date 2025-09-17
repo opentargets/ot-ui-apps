@@ -1,0 +1,5 @@
+fragment Locus2GeneQueryFragment on CredibleSet {
+  l2GPredictions {
+    count
+  }
+}

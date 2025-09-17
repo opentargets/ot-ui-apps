@@ -24,6 +24,7 @@ const FreeSearchListItem = styled("li")(({ theme }) => ({
   },
   "&.search-list-item-active": {
     background: theme.palette.grey["300"],
+    border: 1,
   },
 }));
 
@@ -35,7 +36,7 @@ function GlobalSearchFreeListItem() {
   const { inputValue } = useContext(SearchInputContext);
 
   const { setOpen } = useContext(SearchContext);
-  const [openListItem] = useListOption();
+  const [openListItem, filterState] = useListOption();
 
   const freeSearchTermObject = {
     symbol: `Search for: ${inputValue}`,
@@ -44,10 +45,13 @@ function GlobalSearchFreeListItem() {
     type: "",
   };
 
-  const handleItemClick = useCallback(item => {
-    setOpen(false);
-    openListItem(item);
-  }, []);
+  const handleItemClick = useCallback(
+    item => {
+      setOpen(false);
+      openListItem(item, filterState);
+    },
+    [filterState]
+  );
 
   if (!inputValue) return null;
   return (

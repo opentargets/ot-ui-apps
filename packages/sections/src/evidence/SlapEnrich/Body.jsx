@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
+import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
+import { dataTypesMap } from "@ot/constants";
 import SLAPENRICH_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { sentenceCase } from "@ot/utils";
+import { naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
@@ -29,7 +29,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
@@ -37,6 +39,7 @@ const columns = [
   {
     id: "pathwayName",
     label: "Significant pathway",
+    enableHiding: false,
     renderCell: ({ pathways }) =>
       pathways?.length >= 1 ? (
         <Link external to={reactomeUrl(pathways[0].id)}>
@@ -78,19 +81,18 @@ function Body({ id, label, entity }) {
       chipText={dataTypesMap.affected_pathway}
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`slap-enrich-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.slapEnrich.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.slapEnrich.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={SLAPENRICH_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

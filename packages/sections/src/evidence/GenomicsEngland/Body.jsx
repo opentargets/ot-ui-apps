@@ -3,15 +3,13 @@ import { faCheckSquare, faExclamationTriangle } from "@fortawesome/free-solid-sv
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { v1 } from "uuid";
-import { Tooltip, SectionItem, Link, PublicationsDrawer, DataTable } from "ui";
+import { Tooltip, SectionItem, Link, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { sentenceCase } from "../../utils/global";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 
-import { dataTypesMap } from "../../dataTypes";
 import GENOMICS_ENGLAND_QUERY from "./sectionQuery.gql";
 
 const geUrl = (id, approvedSymbol) =>
@@ -35,7 +33,7 @@ const confidenceMap = confidence =>
   ({
     green: 20,
     amber: 10,
-  }[confidence.toLowerCase()] || 0);
+  }[confidence?.toLowerCase()] || 0);
 
 const allelicRequirementsCaption = allelicRequirements => {
   const caption = sentenceCase(allelicRequirements.split(" ", 1)[0].replace(/[;:,]*/g, ""));
@@ -49,6 +47,7 @@ const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource, cohortPhenotypes }) => (
       <Tooltip
         title={
@@ -78,7 +77,9 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
@@ -102,6 +103,7 @@ const getColumns = label => [
   {
     id: "studyOverview",
     label: "Genomics England Panel",
+    enableHiding: false,
     renderCell: ({ studyOverview, studyId, target: { approvedSymbol } }) =>
       studyOverview && studyId && approvedSymbol ? (
         <Link external to={geUrl(studyId, approvedSymbol)}>
@@ -177,19 +179,18 @@ export function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`GEL-PanelApp-${ensgId}-${efoId}`}
           order="desc"
-          rows={data.disease.genomicsEngland.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.genomicsEngland.rows}
           showGlobalFilter
           sortBy="confidence"
           query={GENOMICS_ENGLAND_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

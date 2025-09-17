@@ -9,14 +9,13 @@ import {
   Tooltip,
   TooltipStyledLabel,
   ChipList,
-  DataTable,
+  OtTable,
   ScientificNotation,
 } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
 
@@ -37,7 +36,11 @@ const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    renderCell: row => (
+      <Link asyncTooltip to={`/disease/${row.disease.id}`}>
+        {row.disease.name}
+      </Link>
+    ),
     filterValue: row => `${row.disease.name}, ${row.disease.id}`,
   },
   {
@@ -49,6 +52,7 @@ const getColumns = classes => [
   {
     id: "interactingTargetFromSourceId",
     label: "Anchor gene",
+    enableHiding: false,
     sortable: true,
   },
   {
@@ -233,12 +237,11 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.otEncoreSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={getColumns(classes)}
-            rows={rows}
+            rows={request.data?.disease.otEncoreSummary.rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
             dataDownloaderFileStem={`${ensgId}-${efoId}-otencore`}
@@ -248,9 +251,9 @@ function Body({ id, label, entity }) {
             fixed
             noWrap={false}
             noWrapHeader={false}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={ENCORE_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { makeStyles } from "@mui/styles";
 import {
   Link,
@@ -6,20 +6,17 @@ import {
   Tooltip,
   ChipList,
   TableDrawer,
-  Table,
-  useCursorBatchDownloader,
-  getComparator,
-  getPage,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTableSSP,
 } from "ui";
-import { defaultRowsPerPageOptions, phaseMap, sourceMap, naLabel } from "../../constants";
-import { dataTypesMap } from "../../dataTypes";
+
+import { phaseMap, sourceMap, naLabel, dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
-import client from "../../client";
 
 import CHEMBL_QUERY from "./ChemblQuery.gql";
+import { Box, Typography } from "@mui/material";
 
 const useStyles = makeStyles(() => ({
   tooltipContainer: {
@@ -44,16 +41,52 @@ const exportColumns = [
     exportValue: row => row.disease.name,
   },
   {
-    label: "targets",
-    exportValue: row => row.target,
+    label: "targetId",
+    exportValue: row => row.target.id,
   },
   {
-    label: "drug",
-    exportValue: row => row.drug,
+    label: "targetApprovedSymbol",
+    exportValue: row => row.target.approvedSymbol,
   },
   {
-    label: "mechanismofAction",
-    exportValue: row => row.drug.mechanismsOfAction,
+    label: "drugId",
+    exportValue: row => row.drug.id,
+  },
+  {
+    label: "drugType",
+    exportValue: row => row.drug.drugType,
+  },
+  {
+    label: "mechanismsOfAction",
+    exportValue: ({ target, drug }) => {
+      const mechanismsOfAction = drug.mechanismsOfAction || {};
+      const { rows = [] } = mechanismsOfAction;
+
+      let anchorMa = null;
+
+      const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
+        if (anchorMa === null) {
+          let isAssociated = false;
+          for (let i = 0; i < targets.length; i++) {
+            if (targets[i].id === target.id) {
+              anchorMa = mechanismOfAction;
+              isAssociated = true;
+              break;
+            }
+          }
+
+          if (!isAssociated) {
+            acc.add(mechanismOfAction);
+          }
+        } else {
+          acc.add(mechanismOfAction);
+        }
+
+        return acc;
+      }, new Set());
+
+      return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
+    },
   },
   {
     label: "clinicalPhase",
@@ -78,7 +111,36 @@ function getColumns(classes) {
     {
       id: "disease.name",
       label: "Disease/phenotype",
-      renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+      enableHiding: false,
+      renderCell: ({ disease, cohortPhenotypes }) => {
+        let displayElement = naLabel;
+        if (disease)
+          displayElement = (
+            <Link asyncTooltip to={`/disease/${disease.id}`}>
+              {disease.name}
+            </Link>
+          );
+        if (cohortPhenotypes && cohortPhenotypes.length) {
+          displayElement = (
+            <Tooltip
+              showHelpIcon
+              title={
+                <Box>
+                  <Typography variant="subtitle2" display="block" align="center">
+                    All reported phenotypes:
+                  </Typography>
+                  {cohortPhenotypes.map(e => (
+                    <div key={e}>{e}</div>
+                  ))}
+                </Box>
+              }
+            >
+              {displayElement}
+            </Tooltip>
+          );
+        }
+        return displayElement;
+      },
     },
     {
       label: "Targets",
@@ -129,6 +191,7 @@ function getColumns(classes) {
     {
       id: "drug.name",
       label: "Drug",
+      enableHiding: false,
       renderCell: ({ drug }) => <Link to={`/drug/${drug.id}`}>{drug.name}</Link>,
     },
     {
@@ -248,145 +311,39 @@ function getColumns(classes) {
   ];
 }
 
-function fetchData({ ensemblId, efoId, cursor, size }) {
-  return client.query({
-    query: CHEMBL_QUERY,
-    fetchPolicy: "no-cache",
-    variables: {
-      ensemblId,
-      efoId,
-      cursor,
-      size,
-    },
-  });
-}
-
 function Body({ id, label, entity }) {
   const { ensgId: ensemblId, efoId } = id;
-  const [initialLoading, setInitialLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [count, setCount] = useState(0);
-  const [cursor, setCursor] = useState("");
-  const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [size, setPageSize] = useState(10);
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [request, setRequest] = useState({ loading: true, data: null, error: false });
 
   const classes = useStyles();
   const columns = getColumns(classes);
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    fetchData({ ensemblId, efoId, cursor: "", size }).then(res => {
-      const { cursor: newCursor, rows: newRows, count: newCount } = res.data.disease.chembl;
-      if (isCurrent) {
-        setInitialLoading(false);
-        setCursor(newCursor);
-        setCount(newCount);
-        setRows(newRows);
-      }
-    });
-
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
-
-  const getWholeDataset = useCursorBatchDownloader(
-    CHEMBL_QUERY,
-    {
-      ensemblId,
-      efoId,
-    },
-    `data.disease.chembl`
-  );
-
-  const handlePageChange = newPage => {
-    const newPageInt = Number(newPage);
-    if (size * newPageInt + size > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(newPageInt);
-      });
-    } else {
-      setPage(newPageInt);
-    }
-  };
-
-  const handleRowsPerPageChange = newPageSize => {
-    const newPageSizeInt = Number(newPageSize);
-    if (newPageSizeInt > rows.length && cursor !== null) {
-      setLoading(true);
-      fetchData({ ensemblId, efoId, cursor, size: newPageSizeInt }).then(res => {
-        const { cursor: newCursor, rows: newRows } = res.data.disease.chembl;
-        setRows([...rows, ...newRows]);
-        setLoading(false);
-        setCursor(newCursor);
-        setPage(0);
-        setPageSize(newPageSizeInt);
-      });
-    } else {
-      setPage(0);
-      setPageSize(newPageSizeInt);
-    }
-  };
-
-  const handleSortBy = sortBy => {
-    setSortColumn(sortBy);
-    setSortOrder(
-      // eslint-disable-next-line
-      sortColumn === sortBy ? (sortOrder === "asc" ? "desc" : "asc") : "asc"
-    );
-  };
-
-  const processedRows = [...rows];
-
-  if (sortColumn) {
-    processedRows.sort(getComparator(columns, sortOrder, sortColumn));
-  }
 
   return (
     <SectionItem
       definition={definition}
       chipText={dataTypesMap.known_drug}
       entity={entity}
-      request={{
-        loading: initialLoading,
-        data: { [entity]: { chembl: { rows, count: rows.length } } },
-      }}
+      request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={() => {
-        return (
-          <Table
-            loading={loading}
-            columns={columns}
-            rows={getPage(processedRows, page, size)}
-            rowCount={count}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
-            page={page}
-            pageSize={size}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            onSortBy={handleSortBy}
-            query={CHEMBL_QUERY.loc.source.body}
-            dataDownloader
-            dataDownloaderColumns={exportColumns}
-            dataDownloaderRows={getWholeDataset}
-            dataDownloaderFileStem="chembl-evidence"
-            variables={{
-              ensemblId,
-              efoId,
-              size,
-            }}
-          />
-        );
-      }}
+      renderBody={() => (
+        <OtTableSSP
+          query={CHEMBL_QUERY}
+          columns={columns}
+          dataDownloader
+          dataDownloaderColumns={exportColumns}
+          dataDownloaderFileStem={`chembl-evidence-${id}`}
+          entity={entity}
+          sectionName="chembl"
+          showGlobalFilter={false}
+          setInitialRequestData={req => {
+            setRequest(req);
+          }}
+          variables={{
+            ensemblId,
+            efoId,
+          }}
+        />
+      )}
     />
   );
 }

@@ -16,13 +16,14 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        return (
-          <>
-            <DepmapPlot data={data.target.depMapEssentiality} />
-          </>
-        );
-      }}
+      showContentLoading={true}
+      renderBody={() => (
+        <DepmapPlot
+          data={request.data?.target.depMapEssentiality}
+          variables={variables}
+          query={DEPMAP_QUERY.loc.source.body}
+        />
+      )}
     />
   );
 }

@@ -1,0 +1,33 @@
+name: Build bundle
+
+on:
+  workflow_call:
+
+jobs:
+  bundle:
+    name: Bundle 📦
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+
+      - uses: mskelton/setup-yarn@v3
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build:platform
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle
+          path: apps/platform/bundle-platform

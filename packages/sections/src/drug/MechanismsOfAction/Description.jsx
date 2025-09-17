@@ -3,7 +3,9 @@ import { Fragment } from "react";
 import { v1 } from "uuid";
 
 function Description({ name, parentMolecule, childMolecules }) {
-  const molecules = [...childMolecules, ...parentMolecule];
+  const parentMoleculesArray = Array.isArray(parentMolecule) ? parentMolecule : [parentMolecule];
+  const childMoleculesArray = Array.isArray(childMolecules) ? childMolecules : [childMolecules];
+  const molecules = [...childMoleculesArray, ...parentMoleculesArray];
 
   return (
     <>

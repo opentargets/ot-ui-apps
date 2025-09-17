@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { filter } from "graphql-anywhere";
 
-import { PlatformApiContext } from "../contexts/PlatformApiProvider";
+import { PlatformApiContext } from "../providers/PlatformApiProvider";
 
 function usePlatformApi(fragment) {
   const context = useContext(PlatformApiContext);

@@ -1,18 +1,24 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, LabelChip, DataTable } from "ui";
-
-import { definition } from ".";
-
-import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { identifiersOrgLink } from "../../utils/global";
 import {
+  Link,
+  SectionItem,
+  Tooltip,
+  PublicationsDrawer,
+  LabelChip,
+  OtTable,
+  DisplayVariantId,
+} from "ui";
+import { definition } from ".";
+import Description from "./Description";
+import { epmcUrl, identifiersOrgLink, nullishComparator, variantComparator } from "@ot/utils";
+import {
+  dataTypesMap,
   defaultRowsPerPageOptions,
   variantConsequenceSource,
   sectionsBaseSizeQuery,
-} from "../../constants";
+  naLabel,
+} from "@ot/constants";
 import UNIPROT_VARIANTS_QUERY from "./UniprotVariantsQuery.gql";
 
 function getColumns(label) {
@@ -20,6 +26,7 @@ function getColumns(label) {
     {
       id: "disease.name",
       label: "Disease/phenotype",
+      enableHiding: false,
       renderCell: ({ disease, diseaseFromSource }) => (
         <Tooltip
           title={
@@ -34,7 +41,9 @@ function getColumns(label) {
           }
           showHelpIcon
         >
-          <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+          <Link asyncTooltip to={`/disease/${disease.id}`}>
+            {disease.name}
+          </Link>
         </Tooltip>
       ),
     },
@@ -48,8 +57,30 @@ function getColumns(label) {
       ),
     },
     {
-      id: "variantRsId",
+      id: "variant.id",
       label: "Variant",
+      enableHiding: false,
+      sortable: true,
+      comparator: nullishComparator(variantComparator(), d => d?.variant),
+      filterValue: ({ variant: v }) =>
+        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
+      renderCell: ({ variant: v }) => {
+        if (!v) return naLabel;
+        return (
+          <Link to={`/variant/${v.id}`}>
+            <DisplayVariantId
+              variantId={v.id}
+              referenceAllele={v.referenceAllele}
+              alternateAllele={v.alternateAllele}
+              expand={false}
+            />
+          </Link>
+        );
+      },
+    },
+    {
+      id: "variantRsId",
+      label: "rsID",
       renderCell: ({ variantRsId }) => (
         <Link
           external
@@ -60,23 +91,52 @@ function getColumns(label) {
       ),
     },
     {
+      id: "aminoAcidConsequence",
+      label: "Amino acid",
+      renderCell: ({ variant }) => {
+        if (!variant) return naLabel;
+        const aaConsequences = variant.transcriptConsequences
+          ?.filter(d => d.aminoAcidChange != null)
+          .map(d => d.aminoAcidChange);
+        if (aaConsequences?.length) {
+          return aaConsequences.join(", ");
+        }
+        return naLabel;
+      },
+      exportValue: ({ variant }) => {
+        if (!variant) return null;
+        return variant.transcriptConsequences
+          ?.filter(d => d.aminoAcidChange != null)
+          .map(d => d.aminoAcidChange)
+          .join(", ");
+      }
+    },
+    {
       id: "variantConsequence",
       label: "Variant Consequence",
-      renderCell: ({ variantRsId }) => (
-        <div style={{ display: "flex", gap: "5px" }}>
-          <LabelChip
-            label={variantConsequenceSource.ProtVar.label}
-            to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
-            tooltip={variantConsequenceSource.ProtVar.tooltip}
-          />
-        </div>
-      ),
+      renderCell: ({ variantRsId }) => {
+        if (!variantRsId) return null;
+        return (
+          <div style={{ display: "flex", gap: "5px" }}>
+            <LabelChip
+              label={variantConsequenceSource.ProtVar.label}
+              to={`https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`}
+              tooltip={variantConsequenceSource.ProtVar.tooltip}
+            />
+          </div>
+        );
+      },
+      exportValue: ({ variantRsId }) => {
+        if (!variantRsId) return null;
+        return `https://www.ebi.ac.uk/ProtVar/query?search=${variantRsId}`;
+      },
     },
     {
       id: "confidence",
       label: "Confidence",
     },
     {
+      id: "literature",
       label: "Literature",
       renderCell: ({ literature }) => {
         const literatureList =
@@ -120,17 +180,18 @@ export function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} diseaseName={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.uniprotVariantsSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.uniprotVariantsSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`UniProt-variants-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={UNIPROT_VARIANTS_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

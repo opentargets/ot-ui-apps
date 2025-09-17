@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["bundle-genetics/**", "bundle-platform/**"]
+      "outputs": ["bundle-platform/**"]
     },
     "lint": {
       "outputs": []
@@ -15,6 +15,9 @@
       "dependsOn": ["^build"]
     },
     "prettier:all": {
+      "outputs": []
+    },
+    "prettier:check": {
       "outputs": []
     },
     "dev": {

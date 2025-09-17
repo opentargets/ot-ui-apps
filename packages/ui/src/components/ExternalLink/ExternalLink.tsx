@@ -1,9 +1,9 @@
 import Link from "../Link";
 
 type ExternalLinkProps = {
-  id: string | null,
-  title: string,
-  url: string,
+  id: string | null;
+  title: string;
+  url: string;
 };
 
 function ExternalLink({ title, id, url }: ExternalLinkProps) {

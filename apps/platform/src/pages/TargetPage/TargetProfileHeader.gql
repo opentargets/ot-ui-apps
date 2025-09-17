@@ -1,8 +1,14 @@
 fragment TargetProfileHeaderFragment on Target {
-  synonyms{
+  synonyms {
     label
     source
   }
   functionDescriptions
   isEssential
+  genomicLocation {
+    chromosome
+    start
+    end
+    strand
+  }
 }

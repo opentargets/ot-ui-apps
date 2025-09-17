@@ -2,14 +2,12 @@ import { useState, useEffect } from "react";
 import { makeStyles } from "@mui/styles";
 import { Grid } from "@mui/material";
 import { scaleQuantize } from "d3";
-import { Link, DataTable, Legend } from "ui";
-
-import client from "../../client";
-import { colorRange } from "../../constants";
+import { Link, Legend, OtTable, useApolloClient } from "ui";
+import { colorRange } from "@ot/constants";
 
 import INTERACTIONS_QUERY from "./InteractionsStringQuery.gql";
 
-const getData = (query, ensgId, sourceDatabase, index, size) =>
+const getData = (query, ensgId, sourceDatabase, index, size, client) =>
   client.query({
     query,
     variables: {
@@ -97,7 +95,7 @@ const useStyles = makeStyles({
 
 const id = "string";
 const index = 0;
-const size = 10000;
+const size = 3000;
 const color = scaleQuantize().domain([0, 1]).range(colorRange);
 
 const getScoreForColumn = (evidences, evidencesId) =>
@@ -124,7 +122,9 @@ function getColumns(classes) {
       renderCell: row => (
         <span className={classes.nameContainer}>
           {row.targetB ? (
-            <Link to={`/target/${row.targetB.id}`}>{row.targetB.approvedSymbol}</Link>
+            <Link asyncTooltip to={`/target/${row.targetB.id}`}>
+              {row.targetB.approvedSymbol}
+            </Link>
           ) : (
             <Link to={`http://uniprot.org/uniprot/${row.intB}`} external>
               {row.intB}
@@ -266,11 +266,11 @@ function StringTab({ ensgId, symbol }) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const columns = getColumns(classes);
-
+  const client = useApolloClient();
   // load tab data when new tab selected (also on first load)
   useEffect(() => {
     setLoading(true);
-    getData(INTERACTIONS_QUERY, ensgId, id, index, size).then(res => {
+    getData(INTERACTIONS_QUERY, ensgId, id, index, size, client).then(res => {
       if (res.data.target.interactions) {
         setLoading(false);
         setData(res.data.target.interactions.rows);
@@ -282,7 +282,7 @@ function StringTab({ ensgId, symbol }) {
     <Grid container spacing={4}>
       <Grid item xs={12}>
         {/* table 1: this is the only table and will need to be a HEATMAP */}
-        <DataTable
+        <OtTable
           showGlobalFilter
           columns={columns}
           rows={data}
@@ -290,7 +290,6 @@ function StringTab({ ensgId, symbol }) {
           dataDownloaderFileStem={`${symbol}-molecular-interactions-string`}
           fixed
           classes={{ root: classes.root, table: classes.table }}
-          rowsPerPageOptions={[10, 25, 50, 100]}
           loading={loading}
         />
         <Legend url="https://string-db.org/cgi/info" />

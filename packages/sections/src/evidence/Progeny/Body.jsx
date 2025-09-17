@@ -1,13 +1,13 @@
 import { useQuery } from "@apollo/client";
 import { Typography } from "@mui/material";
-import { Link, SectionItem, Tooltip, DataTable, ScientificNotation } from "ui";
+import { Link, SectionItem, Tooltip, OtTable, ScientificNotation } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
 import PROGENY_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+
+import { sentenceCase } from "@ot/utils";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const reactomeUrl = id => `https://identifiers.org/reactome:${id}`;
 
@@ -15,6 +15,7 @@ const columns = [
   {
     id: "disease",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -29,7 +30,9 @@ const columns = [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
     filterValue: ({ disease, diseaseFromSource }) => [disease.name, diseaseFromSource].join(),
@@ -37,6 +40,7 @@ const columns = [
   {
     id: "pathwayName",
     label: "Significant pathway",
+    enableHiding: false,
     renderCell: ({ pathways }) =>
       pathways?.length >= 1 ? (
         <Link external to={reactomeUrl(pathways[0].id)}>
@@ -80,18 +84,17 @@ function Body({ id, label, entity }) {
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={data => (
-        <DataTable
+        <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
+          dataDownloaderFileStem={`progeny-${ensgId}-${efoId}`}
           order="asc"
-          rows={data.disease.progeny.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.progeny.rows}
           showGlobalFilter
           sortBy="resourceScore"
           query={PROGENY_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

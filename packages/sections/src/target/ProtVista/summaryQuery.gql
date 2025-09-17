@@ -1,6 +1,0 @@
-fragment ProtVistaSummaryFragment on Target {
-  proteinIds {
-    id
-    source
-  }
-}

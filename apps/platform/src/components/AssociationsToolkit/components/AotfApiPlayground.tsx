@@ -10,11 +10,9 @@ function AotfApiPlayground() {
     enableIndirect,
     dataSourcesWeights,
     entity,
-    dataSourcesRequired,
     query,
+    entitySearch,
   } = useAotfContext();
-
-  const aggregationFilters = dataSourcesRequired.map(({ id, ...obj }) => ({ ...obj }));
 
   const variables = {
     id,
@@ -23,13 +21,23 @@ function AotfApiPlayground() {
     filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasources: dataSourcesWeights,
+    datasources: dataSourcesWeights.map(el => ({
+      id: el.id,
+      weight: el.weight,
+      propagate: el.propagate,
+      required: el.required,
+    })),
     entity,
-    aggregationFilters,
+    entitySearch,
   };
 
   return (
-    <ApiPlaygroundDrawer fullHeight={true} query={query.loc.source.body} variables={variables} />
+    <ApiPlaygroundDrawer
+      fullHeight={true}
+      query={query.loc.source.body}
+      variables={variables}
+      inMenu
+    />
   );
 }
 export default AotfApiPlayground;

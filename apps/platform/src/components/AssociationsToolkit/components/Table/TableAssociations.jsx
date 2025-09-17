@@ -1,43 +1,117 @@
-/* eslint-disable */
-import { useMemo } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  getExpandedRowModel,
-  createColumnHelper,
-} from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
+import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
 
-import { styled, Skeleton, Typography, Box } from "@mui/material";
+import { styled, Typography, Box, Collapse } from "@mui/material";
 
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 
 import AggregationsTooltip from "./AssocTooltip";
 import TableCell from "./TableCell";
-
 import HeaderControls from "../HeaderControls";
 import CellName from "./CellName";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableBody from "./TableBody";
+
 import useAotfContext from "../../hooks/useAotfContext";
 
-import { cellHasValue, getScale, isPartnerPreview, tableCSSVariables } from "../../utils";
+import {
+  getScale,
+  isPartnerPreview,
+  tableCSSVariables,
+  TABLE_PREFIX,
+} from "../../associationsUtils";
+import { grey } from "@mui/material/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 const TableElement = styled("main")({
-  maxWidth: "1600px",
+  maxWidth: "1800px",
   margin: "0 auto",
 });
 
-const TableDivider = styled("div")({
-  borderBottom: "1px solid #ececec",
-  marginBottom: 4,
+const TableSpacer = styled("div")({
+  marginBottom: 5,
 });
+
+const getIndicatorLabel = prefix => {
+  switch (prefix) {
+    case TABLE_PREFIX.CORE:
+      return "All";
+    case TABLE_PREFIX.PINNING:
+      return "Pinned";
+    case TABLE_PREFIX.UPLOADED:
+      return "Uploaded";
+    default:
+      return "";
+  }
+};
+
+const getIndicatorCount = (prefix, count, filteredCount) => {
+  switch (prefix) {
+    case TABLE_PREFIX.CORE:
+      return count;
+    default:
+      return `${filteredCount} of ${count}`;
+  }
+};
+
+const TableIndicatorControl = ({
+  prefix = "",
+  open = true,
+  count = 0,
+  filteredCount = 0,
+  onClickToggle,
+  onClickDelete,
+}) => {
+  const label = getIndicatorLabel(prefix);
+  const countLabel = getIndicatorCount(prefix, count, filteredCount);
+  return (
+    <Box sx={{ display: "flex", my: 1, gap: 1, alignItems: "center" }}>
+      {prefix !== TABLE_PREFIX.CORE && (
+        <Box onClick={onClickDelete} sx={{ color: grey[600], cursor: "pointer" }}>
+          <FontAwesomeIcon size="sm" icon={faTrash} />
+        </Box>
+      )}
+      <Box
+        onClick={onClickToggle}
+        sx={{
+          ml: prefix === TABLE_PREFIX.CORE ? "20px" : 0,
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: grey[300],
+          width: "150px",
+          px: "6px",
+          borderRadius: "2px",
+        }}
+      >
+        <Typography variant="caption" sx={{ fontWeight: 600 }}>
+          {`${label} (${countLabel})`}
+        </Typography>
+        <Box ml={1}>
+          {open ? <FontAwesomeIcon icon={faCaretDown} /> : <FontAwesomeIcon icon={faCaretRight} />}
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 const columnHelper = createColumnHelper();
 
+const evidenceViewColumns = getDatasources({
+  displayedTable: "associations",
+  colorScale: getScale(true),
+});
+const prioritisationViewColumns = getDatasources({
+  displayedTable: "prioritisations",
+  colorScale: getScale(false),
+});
+
 /* Build table columns bases on displayed table */
-function getDatasources({ expanderHandler, displayedTable, colorScale }) {
+function getDatasources({ displayedTable, colorScale }) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
@@ -46,6 +120,11 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
     if (isPrivate && isPrivate !== isPartnerPreview) return;
     const column = columnHelper.accessor(row => row[dataProp][id], {
       id,
+      sectionId,
+      enableSorting: isAssociations,
+      aggregation,
+      isPrivate,
+      docsLink,
       header: isAssociations ? (
         <Typography variant="assoc_header">{label}</Typography>
       ) : (
@@ -55,27 +134,9 @@ function getDatasources({ expanderHandler, displayedTable, colorScale }) {
           </div>
         </AggregationsTooltip>
       ),
-      sectionId,
-      enableSorting: isAssociations,
-      aggregation,
-      isPrivate,
-      docsLink,
-      cell: cell => {
-        const hasValue = cellHasValue(cell.getValue());
-        return hasValue ? (
-          <TableCell
-            hasValue
-            scoreId={id}
-            scoreValue={cell.getValue()}
-            onClick={expanderHandler(cell.row.getToggleExpandedHandler())}
-            cell={cell}
-            isAssociations={isAssociations}
-            colorScale={colorScale}
-          />
-        ) : (
-          <TableCell cell={cell} />
-        );
-      },
+      cell: cell => (
+        <TableCell cell={cell} colorScale={colorScale} displayedTable={displayedTable} />
+      ),
     });
     datasources.push(column);
   });
@@ -89,23 +150,27 @@ function TableAssociations() {
     data,
     count,
     loading: associationsLoading,
-    tableExpanded,
     pagination,
-    expanderHandler,
     handlePaginationChange,
-    setTableExpanded,
     displayedTable,
     sorting,
     handleSortingChange,
     pinnedData,
     pinnedLoading,
+    uploadedData,
+    uploadedLoading,
     pinnedEntries,
+    uploadedEntries,
+    setUploadedEntries,
+    setPinnedEntries,
   } = useAotfContext();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
-  const colorScale = getScale(isAssociations);
   const associationsColorScale = getScale(true);
+  const [coreOpen, setCoreOpen] = useState(true);
+  const [pinningOpen, setPinningOpen] = useState(true);
+  const [uploadedOpen, setUploadedOpen] = useState(true);
 
   const columns = useMemo(
     () => [
@@ -144,10 +209,10 @@ function TableAssociations() {
       columnHelper.group({
         header: "entities",
         id: "entity-cols",
-        columns: [...getDatasources({ expanderHandler, displayedTable, colorScale })],
+        columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
       }),
     ],
-    [expanderHandler, displayedTable, entityToGet, rowNameEntity]
+    [displayedTable, entityToGet, rowNameEntity]
   );
 
   /**
@@ -158,19 +223,15 @@ function TableAssociations() {
     data,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination,
       sorting,
-      prefix: "body",
+      prefix: TABLE_PREFIX.CORE,
       loading: associationsLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
@@ -180,29 +241,78 @@ function TableAssociations() {
     data: pinnedData,
     columns,
     state: {
-      expanded: tableExpanded,
       pagination: {
         pageIndex: 0,
         pageSize: 150,
       },
       sorting,
-      prefix: "pinned",
+      prefix: TABLE_PREFIX.PINNING,
       loading: pinnedLoading,
     },
     pageCount: count,
     onPaginationChange: handlePaginationChange,
-    onExpandedChange: setTableExpanded,
     onSortingChange: handleSortingChange,
-    getRowCanExpand: () => true,
     getCoreRowModel: getCoreRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
     getRowId: row => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
 
-  const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
+  const coreUploadedTable = useReactTable({
+    data: uploadedData,
+    columns,
+    state: {
+      pagination: {
+        pageIndex: 0,
+        pageSize: 150,
+      },
+      sorting,
+      prefix: TABLE_PREFIX.UPLOADED,
+      loading: uploadedLoading,
+    },
+    pageCount: count,
+    onPaginationChange: handlePaginationChange,
+    onSortingChange: handleSortingChange,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: row => row[entityToGet].id,
+    manualPagination: true,
+    manualSorting: true,
+  });
 
+  useEffect(() => {
+    if (uploadedEntries.length > 0) {
+      setCoreOpen(false);
+      setUploadedOpen(true);
+    }
+    if (uploadedEntries.length === 0) {
+      setCoreOpen(true);
+    }
+  }, [uploadedEntries]);
+
+  useEffect(() => {
+    if (pinnedData.length === 0 && uploadedData.length === 0) {
+      setCoreOpen(true);
+    }
+  }, [pinnedData, uploadedData]);
+
+  const onClickPinnedIndicator = () => {
+    setPinningOpen(!pinningOpen);
+  };
+  const onClickUploadedIndicator = () => {
+    setUploadedOpen(!uploadedOpen);
+  };
+  const onClickCoreIndicator = () => {
+    setCoreOpen(!coreOpen);
+  };
+
+  const onClickPinnedDeleteAll = () => {
+    setPinnedEntries([]);
+  };
+  const onClickUploadedDeleteAll = () => {
+    setUploadedEntries([]);
+  };
+
+  const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
     <div className="TAssociations" style={tableCSSVariables}>
       <TableElement>
@@ -212,17 +322,64 @@ function TableAssociations() {
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
 
-        {/* BODY CONTENT */}
+        <TableSpacer />
+
+        {/* Pinning */}
         {pinnedEntries.length > 0 && (
-          <TableBody core={corePinnedTable} prefix="pinned" cols={entitesHeaders} />
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.PINNING}
+            count={pinnedEntries.length}
+            filteredCount={corePinnedTable.getRowCount()}
+            open={pinningOpen}
+            onClickToggle={onClickPinnedIndicator}
+            onClickDelete={onClickPinnedDeleteAll}
+          />
+        )}
+        {pinnedData.length > 0 && pinnedEntries.length > 0 && (
+          <Collapse in={pinningOpen}>
+            <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
+          </Collapse>
+        )}
+        {/* Upload */}
+        {uploadedEntries.length > 0 && (
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.UPLOADED}
+            count={uploadedEntries.length}
+            filteredCount={coreUploadedTable.getRowCount()}
+            open={uploadedOpen}
+            onClickToggle={onClickUploadedIndicator}
+            onClickDelete={onClickUploadedDeleteAll}
+          />
+        )}
+        {coreUploadedTable.getRowCount() > 0 && uploadedEntries.length > 0 && (
+          <Collapse in={uploadedOpen}>
+            <TableBody
+              core={coreUploadedTable}
+              prefix={TABLE_PREFIX.UPLOADED}
+              cols={entitesHeaders}
+            />
+          </Collapse>
+        )}
+        {/* Core */}
+        {(uploadedEntries.length > 0 || pinnedEntries.length > 0) && (
+          <TableIndicatorControl
+            prefix={TABLE_PREFIX.CORE}
+            count={count}
+            open={coreOpen}
+            onClickToggle={onClickCoreIndicator}
+          />
         )}
 
-        {pinnedEntries.length > 0 && <TableDivider />}
-
-        <TableBody core={coreAssociationsTable} prefix="body" cols={entitesHeaders} />
+        {coreOpen && (
+          <TableBody
+            core={coreAssociationsTable}
+            prefix={TABLE_PREFIX.CORE}
+            cols={entitesHeaders}
+          />
+        )}
 
         {/* FOOTER */}
-        <TableFooter table={coreAssociationsTable} />
+        <TableFooter table={coreAssociationsTable} coreOpen={coreOpen} />
       </TableElement>
     </div>
   );

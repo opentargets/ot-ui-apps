@@ -1,23 +1,27 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, Tooltip, PublicationsDrawer, DataTable } from "ui";
+import { Link, SectionItem, Tooltip, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
+import { epmcUrl } from "@ot/utils";
 import SYSBIO_QUERY from "./sectionQuery.gql";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 const getColumns = label => [
   {
     id: "disease",
     label: "Disease/phenotype",
-    renderCell: ({ disease }) => <Link to={`/disease/${disease.id}`}>{disease.name}</Link>,
+    renderCell: ({ disease }) => (
+      <Link asyncTooltip to={`/disease/${disease.id}`}>
+        {disease.name}
+      </Link>
+    ),
     filterValue: ({ disease }) => disease.name,
   },
   {
     id: "pathwayName",
     label: "Gene set",
+    enableHiding: false,
     renderCell: ({ pathways, studyOverview }) => {
       if (pathways && pathways.length >= 1 && studyOverview) {
         return (
@@ -34,6 +38,7 @@ const getColumns = label => [
   },
   {
     id: "literature",
+    label: "Literature",
     renderCell: ({ literature }) => {
       const literatureList =
         literature?.reduce((acc, id) => {
@@ -75,17 +80,16 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
-          dataDownloaderFileStem={`otgenetics-${ensgId}-${efoId}`}
-          rows={data.disease.sysBio.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          dataDownloaderFileStem={`sys-bio-${ensgId}-${efoId}`}
+          rows={request.data?.disease.sysBio.rows}
           showGlobalFilter
           query={SYSBIO_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

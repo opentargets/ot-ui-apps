@@ -2,7 +2,7 @@ import { Paper, Box, Typography, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { DataTable, Link } from "ui";
+import { OtTable, Link } from "ui";
 import projectsData from "./projects-data.json";
 
 const useStyles = makeStyles(theme => ({
@@ -16,6 +16,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: "0.2rem",
   },
 }));
+
+const CURRENTLY_INTEGRATES_IN_PPP = {
+  Y: faCircleCheck,
+  N: faCircleNotch,
+};
 
 function ProjectPage() {
   const classes = useStyles();
@@ -34,14 +39,32 @@ function ProjectPage() {
     { id: "project_lead", label: "Project Lead" },
     { id: "generates_data", label: "Generates Data" },
     {
-      id: "currently_integrates_in_PPP",
-      label: "Currently integrates into PPP",
-      renderCell: ({ currently_integrates_in_PPP: currentlyIntegratesInPPP }) => {
-        const icon = currentlyIntegratesInPPP === "Y" ? faCircleCheck : faCircleNotch;
-        return <FontAwesomeIcon size="lg" icon={icon} className={classes.icon} />;
-      },
+      id: "integrated_into_PPP",
+      label: "Integrated into PPP",
+      filterValue: ({ integrated_into_PPP }) => `${integrated_into_PPP}`,
+      sortable: true,
+      renderCell: ({ integrated_into_PPP }) => (
+        <FontAwesomeIcon
+          size="lg"
+          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_PPP]}
+          className={classes.icon}
+        />
+      ),
     },
-    { id: "project_status", label: "Project Status" },
+    {
+      id: "integrated_into_Public",
+      label: "Integrated into Public",
+      filterValue: ({ integrated_into_Public }) => `${integrated_into_Public}`,
+      sortable: true,
+      renderCell: ({ integrated_into_Public }) => (
+        <FontAwesomeIcon
+          size="lg"
+          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_Public]}
+          className={classes.icon}
+        />
+      ),
+    },
+    { id: "project_status", label: "Project Status", sortable: true },
     { id: "open_targets_therapeutic_area", label: "Therapeutic Area" },
     {
       id: "disease_mapping",
@@ -51,7 +74,7 @@ function ProjectPage() {
         diseaseMapping.forEach(disease => {
           if (disease && disease.disease_id) {
             ALL_AVATARS.push(
-              <Link to={`disease/${disease.disease_id}`} key={disease.disease_id}>
+              <Link to={`/disease/${disease.disease_id}`} key={disease.disease_id}>
                 <Chip
                   size="small"
                   label={disease.label || disease.disease_id}
@@ -96,11 +119,12 @@ function ProjectPage() {
 
       <Paper variant="outlined" elevation={0}>
         <Box m={2}>
-          <DataTable
+          <OtTable
             showGlobalFilter
             columns={columns}
             rows={projectsData}
-            rowsPerPageOptions={[30]}
+            sortBy="integrated_into_PPP"
+            order="desc"
           />
         </Box>
       </Paper>

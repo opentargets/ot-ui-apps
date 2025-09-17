@@ -1,6 +1,9 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import useDebounce from "../../hooks/useDebounce";
 import { DocumentNode } from "@apollo/client";
+import { getSuggestedSearch } from "@ot/utils";
+
+const searchSuggestions = getSuggestedSearch();
 
 /**********************************
  * GLOBAL SEARCH CONTEXT/PROVIDER *
@@ -9,7 +12,22 @@ type GlobalSearchProviderProps = {
   children: React.ReactNode;
   searchQuery: DocumentNode;
   searchPlaceholder: string;
-  searchSuggestions: Array<unknown>;
+};
+
+type EntityFilterState = {
+  drug: boolean;
+  disease: boolean;
+  target: boolean;
+  study: boolean;
+  variant: boolean;
+};
+
+export const defaultEntityFilterState = {
+  target: false,
+  variant: false,
+  study: false,
+  disease: false,
+  drug: false,
 };
 
 export const SearchContext = createContext<{
@@ -18,21 +36,30 @@ export const SearchContext = createContext<{
   open: boolean;
   setOpen: (arg: boolean) => void;
   searchSuggestions: Array<any>;
+  filterState: EntityFilterState;
+  setFilterState: (arg) => void;
+  allSearchResults: Array<any>;
+  setAllSearchResults: (arg) => void;
 }>({
   searchQuery: "",
   searchPlaceholder: "Search...",
   open: false,
   setOpen: () => undefined,
   searchSuggestions: [],
+  filterState: defaultEntityFilterState,
+  setFilterState: () => undefined,
+  allSearchResults: [],
+  setAllSearchResults: () => undefined,
 });
 
 export function SearchProvider({
   children,
   searchQuery,
   searchPlaceholder = "Search...",
-  searchSuggestions,
 }: GlobalSearchProviderProps) {
   const [open, setOpen] = useState(false);
+  const [filterState, setFilterState] = useState(defaultEntityFilterState);
+  const [allSearchResults, setAllSearchResults] = useState([]);
 
   return (
     <SearchContext.Provider
@@ -42,11 +69,29 @@ export function SearchProvider({
         open,
         setOpen,
         searchSuggestions,
+        filterState,
+        setFilterState,
+        allSearchResults,
+        setAllSearchResults,
       }}
     >
       {children}
     </SearchContext.Provider>
   );
+}
+
+/**
+ * Hook to access and interact with the search state
+ * @returns Search context values and methods
+ */
+export function useSearchState() {
+  const context = useContext(SearchContext);
+
+  if (context === undefined) {
+    throw new Error("useSearch must be used within a SearchProvider");
+  }
+
+  return context;
 }
 
 /*********************************

@@ -28,6 +28,7 @@ export function createSummaryFragment(sections, entity, fragmentName) {
       ""
     )}
   `;
+
 }
 
 export function createShortName(definition) {

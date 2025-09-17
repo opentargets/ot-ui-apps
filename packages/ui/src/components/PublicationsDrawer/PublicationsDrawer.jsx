@@ -3,7 +3,6 @@ import {
   Box,
   IconButton,
   Drawer,
-  Link as MUILink,
   Typography,
   Paper,
   CircularProgress,
@@ -12,10 +11,10 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { naLabel } from "../../constants";
-import { europePmcSearchPOSTQuery } from "../../utils/urls";
+import { naLabel } from "@ot/constants";
+import { europePmcSearchPOSTQuery } from "@ot/utils";
 import PublicationWrapper from "./PublicationWrapper";
-import { DataTable } from "../Table";
+import OtTable from "../OtTable/OtTable";
 
 const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
@@ -31,6 +30,7 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     backgroundColor: theme.palette.grey[300],
+    maxWidth: "100%",
   },
   drawerTitle: {
     borderBottom: "1px solid #ccc",
@@ -189,11 +189,11 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
   ];
 
   return (
-    <DataTable
+    <OtTable
       columns={columns}
       rows={parsedPublications}
       showGlobalFilter={!hideSearch}
-      rowsPerPageOptions={[5, 10, 25, 100]}
+      showColumnVisibilityControl={false}
     />
   );
 }
@@ -228,7 +228,7 @@ function PublicationsDrawer({
 
   return (
     <>
-      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+      <ButtonBase disableRipple onClick={toggleDrawer} className={classes.drawerLink}>
         <Typography variant="body2">
           {" "}
           {customLabel ||
@@ -253,7 +253,7 @@ function PublicationsDrawer({
           </Box>
         </Paper>
 
-        <Box width={600} className={classes.drawerBody}>
+        <Box width={600} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
               <PublicationsList entriesIds={entriesIds} symbol={symbol} name={name} />

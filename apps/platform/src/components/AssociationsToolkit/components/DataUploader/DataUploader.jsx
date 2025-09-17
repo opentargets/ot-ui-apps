@@ -33,12 +33,11 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Tooltip } from "ui";
+import { Link, Tooltip, useApolloClient } from "ui";
 import * as XLSX from "xlsx";
 
 import useAotfContext from "../../hooks/useAotfContext";
 import ValidationQuery from "./ValidationQuery.gql";
-import client from "../../../../client";
 import NestedItem from "./NestedItem";
 
 const BorderAccordion = styled(Accordion)(({ theme }) => ({
@@ -96,6 +95,18 @@ const SuggestionContainer = styled("div")`
   border-top: none;
 `;
 
+const UploadButton = styled(Button)(({ theme }) => ({
+  border: theme.palette.primary.dark,
+  backgroundColor: theme.palette.primary.dark,
+  color: "#fff",
+  "&:hover": {
+    backgroundColor: theme.palette.secondary.main,
+  },
+  "& .MuiButton-startIcon": {
+    fontSize: "14px !important",
+  },
+}));
+
 const steps = ["Add a file", "Entity validation"];
 
 const getEntityToUploadLabel = {
@@ -103,7 +114,7 @@ const getEntityToUploadLabel = {
   disease: "diseases",
 };
 
-const getValidationResults = async (entity, queryTerms) =>
+const getValidationResults = async (entity, queryTerms, client) =>
   client.query({
     query: ValidationQuery,
     variables: { entity, queryTerms },
@@ -245,12 +256,13 @@ const FileExample = ({ entity = "target", runAction }) => {
   );
 };
 
-function DataUploader() {
+function DataUploader({ parentAction }) {
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
-  const { entityToGet, pinnedEntries, setPinnedEntries } = useAotfContext();
+  const { entityToGet, setUploadedEntries, uploadedEntries } = useAotfContext();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
+  const client = useApolloClient();
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
@@ -277,7 +289,7 @@ function DataUploader() {
         else if (fileType === "json") contents = JSON.parse(e.target.result);
         else setOpenErrorSnackbar(true);
 
-        const result = await getValidationResults([entityToGet], contents);
+        const result = await getValidationResults([entityToGet], contents, client);
         setQueryTermsResults(formatQueryTermsResults(result));
         setActiveStep(1);
       };
@@ -330,7 +342,7 @@ function DataUploader() {
   }
 
   const handleRunExample = async terms => {
-    const result = await getValidationResults([entityToGet], terms);
+    const result = await getValidationResults([entityToGet], terms, client);
     setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
   };
@@ -347,7 +359,7 @@ function DataUploader() {
         if (hit.checked) allHits.push(hit.id);
       }
     }
-    setPinnedEntries([...pinnedEntries, ...allHits]);
+    setUploadedEntries([...uploadedEntries, ...allHits]);
     handleClosePopover();
   };
 
@@ -364,6 +376,7 @@ function DataUploader() {
   const popoverId = open ? "downloader-popover" : undefined;
 
   const handleClickBTN = event => {
+    // parentAction();
     setAnchorEl(event.currentTarget);
   };
 
@@ -401,17 +414,18 @@ function DataUploader() {
 
   return (
     <div>
-      <Tooltip placement="bottom" title={`Upload list of ${entityToUploadLabel}`}>
-        <Button
-          aria-describedby={popoverId}
-          onClick={handleClickBTN}
-          variant="outlined"
-          disableElevation
-          sx={{ height: 1, maxHeight: "45px" }}
-        >
+      <UploadButton
+        aria-describedby={popoverId}
+        onClick={handleClickBTN}
+        disableElevation
+        sx={{ height: 1, maxHeight: "45px" }}
+        aria-label="Upload list of entities"
+      >
+        <Box component="span" sx={{ mr: 1 }}>
           <FontAwesomeIcon icon={faFileImport} size="lg" />
-        </Button>
-      </Tooltip>
+        </Box>
+        {`Upload list of ${entityToUploadLabel}`}
+      </UploadButton>
       <Dialog
         onClose={handleClosePopover}
         open={open}
@@ -515,7 +529,7 @@ function DataUploader() {
                 startIcon={<FontAwesomeIcon icon={faCheck} size="lg" />}
                 onClick={handlePinElements}
               >
-                Pin hits
+                Upload hits
               </Button>
             )}
           </Box>

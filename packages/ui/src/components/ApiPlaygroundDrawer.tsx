@@ -1,10 +1,22 @@
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Drawer, Grid, IconButton, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Drawer,
+  Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Paper,
+  styled,
+} from "@mui/material";
+
+import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
+import { fetcher } from "@ot/utils";
 
 import Link from "./Link";
-import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
-import { fetcher } from "../utils/global";
 
 // lazy load GraphiQL and remove Logo and Toolbar
 const GraphiQL = lazy(() =>
@@ -25,12 +37,20 @@ type ApiPlaygroundDrawerProps = {
   query: string;
   variables: any;
   fullHeight: boolean;
+  inMenu?: boolean;
 };
+
+const StyledMenuItem = styled(MenuItem)({
+  "&>.MuiListItemIcon-root>svg": {
+    fontSize: "1rem",
+  },
+});
 
 function ApiPlaygroundDrawer({
   query,
   variables,
   fullHeight,
+  inMenu = false,
 }: ApiPlaygroundDrawerProps): ReactElement {
   const [open, setOpen] = useState(false);
 
@@ -45,20 +65,29 @@ function ApiPlaygroundDrawer({
   return (
     <>
       {" "}
-      {query ? (
+      {inMenu && (
+        <StyledMenuItem onClick={() => togglePlayground()}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faPlay} />
+          </ListItemIcon>
+          <ListItemText>API query</ListItemText>
+        </StyledMenuItem>
+      )}
+      {query && !inMenu ? (
         <Grid item>
           <Button
-            sx={{ ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
+            sx={{ display: "flex", gap: 1, ...(fullHeight && { height: 1, maxHeight: "45px" }) }}
             variant="outlined"
             size="small"
             onClick={() => togglePlayground()}
           >
+            <FontAwesomeIcon icon={faPlay} />
             API query
           </Button>
         </Grid>
       ) : null}
       <Drawer
-        sx={{ width: "80%", overflowY: "hidden" }}
+        sx={{ width: "80%", overflowY: "hidden", zIndex: "10000" }}
         PaperProps={{
           sx: { width: "80%", overflowY: "hidden" },
         }}

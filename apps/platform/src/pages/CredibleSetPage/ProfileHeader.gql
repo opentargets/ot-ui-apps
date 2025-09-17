@@ -1,0 +1,69 @@
+fragment CredibleSetProfileHeaderFragment on CredibleSet {
+  pValueMantissa
+  pValueExponent
+  beta
+  standardError
+  effectAlleleFrequencyFromSource
+  qualityControls
+  locus(variantIds: $variantIds) {
+    count
+    rows {
+      posteriorProbability
+      pValueMantissa
+      pValueExponent
+      beta
+      standardError
+    }
+  }
+  locusSize: locus(page: { size: 1, index: 0 }) {
+    count
+  }
+  variant {
+    chromosome
+    position
+    rsIds
+  }
+  finemappingMethod
+  purityMinR2
+  locusStart
+  locusEnd
+  confidence
+  study {
+    projectId
+    publicationFirstAuthor
+    publicationDate
+    traitFromSource
+    diseases {
+      id
+      name
+    }
+    backgroundTraits {
+      id
+      name
+    }
+    target {
+      id
+      approvedSymbol
+    }
+    biosample {
+      biosampleId
+      biosampleName
+    }
+    publicationJournal
+    pubmedId
+    nSamples
+    cohorts
+    initialSampleSize
+    studyType
+    hasSumstats
+    analysisFlags
+    sumstatQCValues {
+      QCCheckName
+      QCCheckValue
+    }
+    ldPopulationStructure {
+      ldPopulation
+      relativeSampleSize
+    }
+  }
+}

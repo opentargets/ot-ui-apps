@@ -1,10 +1,12 @@
 import { format } from "d3-format";
 
-const mapStandardKeys = origionalKey => {
-  switch (origionalKey) {
+const mapStandardKeys = originalKey => {
+  switch (originalKey) {
     case "studyId":
       return "id";
     case "traitReported":
+      return "name";
+    case "traitFromSource":
       return "name";
     case "approvedName":
       return "name";
@@ -13,7 +15,7 @@ const mapStandardKeys = origionalKey => {
     case "functionDescriptions":
       return "description";
     default:
-      return origionalKey;
+      return originalKey;
   }
 };
 
@@ -32,14 +34,11 @@ const flattenObj = ob => {
       result[mapStandardKeys(key)] = value;
     }
   });
-
   return result;
 };
 
-const isArray = value => Array.isArray(value) && value.length > 0;
-
 const exceedsArrayLengthLimit = array => {
-  const limitLength = 4;
+  const limitLength = 7;
   let exceedsLimit = false;
 
   if (array.length > limitLength) {
@@ -53,23 +52,15 @@ export const formatSearchData = unformattedData => {
 
   Object.entries(unformattedData).forEach(([key, value]) => {
     const typesArray = [];
-    if (isArray(value)) {
-      value.map(i =>
-        typesArray.push({
-          type: key === "topHit" ? "topHit" : key,
-          entity: key,
-          ...flattenObj(i),
-        })
-      );
-    } else if (isArray(value.hits)) {
-      value.hits.map(i =>
-        typesArray.push({
-          type: key === "topHit" ? "topHit" : i.entity,
-          entity: i.entity,
-          ...flattenObj(i.object),
-        })
-      );
-    }
+
+    value.hits.map(i =>
+      typesArray.push({
+        type: key === "topHit" ? "topHit" : i.entity,
+        entity: i.entity,
+        ...flattenObj(i.object),
+      })
+    );
+
     if (typesArray.length > 0) formattedData[key] = typesArray;
   });
 
@@ -118,4 +109,23 @@ export const clearRecentItem = item => {
   return removedItems;
 };
 
+export const getSelectedEntityFilterLength = obj => {
+  if (!obj) return TOTAL_ENTITIES;
+  return Object.values(obj).filter(Boolean).length;
+};
+
+export const getSelectedEntityFilter = obj => {
+  if (!obj) return [];
+  return (
+    Object.entries(obj)
+      .map(([key, value]) => {
+        if (value) return key;
+      })
+      .filter(Boolean) || []
+  );
+};
+
 export const commaSeparate = format(",");
+
+export const TOTAL_SEARCH_RESULTS = 15;
+export const TOTAL_ENTITIES = 5;

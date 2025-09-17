@@ -4,13 +4,12 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import { Box, Chip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Link, SectionItem, ChipList, DataTable, Tooltip } from "ui";
+import { Link, SectionItem, ChipList, OtTable, Tooltip } from "ui";
 import { v1 } from "uuid";
 
 import { definition } from ".";
 import Description from "./Description";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import VALIDATION_QUERY from "./OTValidationQuery.gql";
 
 const useStyles = makeStyles(theme => ({
@@ -44,9 +43,13 @@ const getColumns = classes => [
   {
     id: "disease",
     label: "Reported disease",
-    renderCell: row => <Link to={`/disease/${row.disease.id}`}>{row.disease.name}</Link>,
+    renderCell: row => (
+      <Link asyncTooltip to={`/disease/${row.disease.id}`}>
+        {row.disease.name}
+      </Link>
+    ),
     sortable: true,
-    filterValue: row => `${row.diseaseLabel}, ${row.diseaseId}`,
+    filterValue: row => `${row.diseaseLabel}, ${row.disease.id}`,
   },
   {
     id: "diseaseCellLines",
@@ -70,6 +73,7 @@ const getColumns = classes => [
   {
     id: "biomarkerList",
     label: "Cell line biomarkers",
+    enableHiding: false,
     renderCell: row => (
       <ChipList
         small
@@ -143,14 +147,11 @@ const getColumns = classes => [
   {
     id: "assessment",
     label: "OTVL assessment",
-    renderCell: ({ assessment }) => {
-      // TODO: temp solution, assessment key should contain array
-      const regex =
-        /(Evidence of dependency)|(Evidence of toxicity)|(No evidence of dependency)|(No evidence of toxicity)|(Multiple evidence of dependency)/g;
-      const listOfValues = assessment.match(regex);
+    renderCell: ({ assessments }) => {
+      if (!assessments || !assessments.length) return naLabel;
       return (
         <>
-          {listOfValues.map(e => (
+          {assessments.map(e => (
             <Box sx={{ my: theme => theme.spacing(1) }} key={e}>
               {e}
             </Box>
@@ -224,25 +225,22 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.otValidationSummary;
+      renderBody={() => {
         return (
           <>
-            <DataTable
+            <OtTable
               columns={getColumns(classes)}
-              rows={rows}
+              rows={request.data?.disease.otValidationSummary.rows}
               dataDownloader
               dataDownloaderColumns={exportColumns}
               dataDownloaderFileStem={`${ensgId}-${efoId}-otvalidation`}
               showGlobalFilter
-              sortBy="resourceScore"
-              order="des"
               fixed
               noWrap={false}
               noWrapHeader={false}
-              rowsPerPageOptions={defaultRowsPerPageOptions}
               query={VALIDATION_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

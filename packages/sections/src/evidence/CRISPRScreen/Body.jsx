@@ -1,11 +1,13 @@
 import _ from "lodash";
 import { useQuery } from "@apollo/client";
-import { Tooltip, SectionItem, TooltipStyledLabel, Link, DataTable } from "ui";
-
-import { dataTypesMap } from "../../dataTypes";
+import { Tooltip, SectionItem, TooltipStyledLabel, OtTable, PublicationsDrawer, Link } from "ui";
 import Description from "./Description";
-import { PublicationsDrawer } from "ui";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 import { definition } from ".";
 
 import CRISPR_QUERY from "./CrisprScreenQuery.gql";
@@ -28,13 +30,18 @@ const getColumns = label => [
     label: "Reported disease",
     renderCell: row => {
       const disease = parseDiseaseName(row.diseaseFromSource);
-      return <Link to={`/disease/${row.diseaseFromSourceMappedId}`}>{_.capitalize(disease)}</Link>;
+      return (
+        <Link asyncTooltip to={`/disease/${row.diseaseFromSourceMappedId}`}>
+          {_.capitalize(disease)}
+        </Link>
+      );
     },
     filterValue: row => row.diseaseFromSource + ", " + row.diseaseFromSourceMappedId,
   },
   {
     id: "studyId",
     label: "Study Identifier",
+    enableHiding: false,
     renderCell: row => (
       <Link external to={`https://crisprbrain.org/simple-screen/?screen=${row.studyId}`}>
         {row.studyId}
@@ -87,6 +94,7 @@ const getColumns = label => [
   {
     id: "resourceScore",
     label: "Significance",
+    sortable: true,
     renderCell: row => {
       if (row.resourceScore && row.statisticalTestTail) {
         return (
@@ -106,7 +114,7 @@ const getColumns = label => [
         return row.resourceScore ? parseFloat(row.resourceScore.toFixed(6)) : naLabel;
       }
     },
-    filterValue: row => row.resourceScore + "; " + row.statisticalTestTail,
+    filterValue: row => `${parseFloat(row.resourceScore?.toFixed(6))} ${row.statisticalTestTail}`,
     width: "9%",
   },
   {
@@ -205,23 +213,23 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.CrisprScreenSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.CrisprScreenSummary.rows}
             dataDownloader
             dataDownloaderColumns={exportColumns}
             dataDownloaderFileStem={`${ensgId}-${efoId}-crisprscreen`}
             showGlobalFilter
             sortBy="resourceScore"
-            fixed
+            order="asc"
             noWrap={false}
             noWrapHeader={false}
             rowsPerPageOptions={defaultRowsPerPageOptions}
             query={CRISPR_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

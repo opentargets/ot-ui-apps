@@ -15,12 +15,19 @@ query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor
           id
           name
         }
+        variant {
+          hgvsId
+        }
         variantEffect
         directionOnTrait
         diseaseFromSource
-        variantId
+        variant {
+          id
+          hgvsId
+          referenceAllele
+          alternateAllele
+        }
         variantRsId
-        variantHgvsId
         studyId
         clinicalSignificances
         allelicRequirements

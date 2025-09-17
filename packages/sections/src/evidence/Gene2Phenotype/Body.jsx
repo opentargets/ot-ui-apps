@@ -6,26 +6,25 @@ import {
   Tooltip,
   Link,
   PublicationsDrawer,
-  DataTable,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { sentenceCase } from "../../utils/global";
+import { epmcUrl, sentenceCase } from "@ot/utils";
 import OPEN_TARGETS_GENETICS_QUERY from "./sectionQuery.gql";
 import { definition } from ".";
 
-const g2pUrl = (studyId, symbol) =>
-  `https://www.ebi.ac.uk/gene2phenotype/search?panel=${studyId}&search_term=${symbol}`;
+const g2pUrl = (targetFromSourceId, diseaseFromSource) =>
+  `https://www.ebi.ac.uk/gene2phenotype/search?query=${targetFromSourceId}-related%20${diseaseFromSource}`;
 
 const getColumns = label => [
   {
     id: "disease.name",
     label: "Disease/phenotype",
+    enableHiding: false,
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
         title={
@@ -40,7 +39,9 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },
@@ -96,8 +97,9 @@ const getColumns = label => [
   {
     id: "studyId",
     label: "Panel",
-    renderCell: ({ studyId, target: { approvedSymbol } }) => (
-      <Link external to={g2pUrl(studyId, approvedSymbol)}>
+    enableHiding: false,
+    renderCell: ({ studyId, targetFromSourceId, diseaseFromSource }) => (
+      <Link external to={g2pUrl(targetFromSourceId, diseaseFromSource)}>
         {studyId}
       </Link>
     ),
@@ -156,17 +158,16 @@ function Body({ id: { ensgId, efoId }, label: { symbol, name }, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={symbol} name={name} />}
-      renderBody={data => (
-        <DataTable
+      renderBody={() => (
+        <OtTable
           columns={columns}
           dataDownloader
           dataDownloaderFileStem={`${ensgId}-${efoId}-gene2phenotype`}
-          rows={data.disease.gene2Phenotype.rows}
-          pageSize={10}
-          rowsPerPageOptions={defaultRowsPerPageOptions}
+          rows={request.data?.disease.gene2Phenotype.rows}
           showGlobalFilter
           query={OPEN_TARGETS_GENETICS_QUERY.loc.source.body}
           variables={variables}
+          loading={request.loading}
         />
       )}
     />

@@ -1,11 +1,10 @@
 import { Grid } from "@mui/material";
-import { DataDownloader } from "ui";
+import ExpressionDataDownloader from "./ExpressionDataDownloader";
 
-import client from "../../client";
 import SummaryTable from "./SummaryTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
 
-export function getData(ensgId) {
+export function getData(ensgId, client) {
   return client.query({
     query: EXPRESSION_QUERY,
     variables: { ensemblId: ensgId },
@@ -32,7 +31,7 @@ const getDownloadRows = expressions =>
 function SummaryTab({ symbol, data }) {
   return (
     <Grid container justifyContent="center">
-      <DataDownloader
+      <ExpressionDataDownloader
         tableHeaders={headers}
         rows={getDownloadRows(data.target.expressions)}
         fileStem={`${symbol}-expression`}

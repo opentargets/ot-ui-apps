@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useQuery } from "@apollo/client";
-import { ChipList, SectionItem, PublicationsDrawer, DataTable } from "ui";
+import { ChipList, SectionItem, PublicationsDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { defaultRowsPerPageOptions } from "../../constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import HALLMARKS_QUERY from "./Hallmarks.gql";
 
@@ -13,6 +13,7 @@ const columns = [
   {
     id: "label",
     label: "Hallmark",
+    enableHiding: false,
     renderCell: row => row.label,
     exportLabel: "Hallmark",
   },
@@ -67,14 +68,15 @@ function Section({ id, label: symbol, entity }) {
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
-      renderBody={data => {
-        const roleInCancer = data.target.hallmarks.attributes
+      renderBody={() => {
+        if (request.data?.target.hallmarks === null) return null;
+        const roleInCancer = request.data?.target.hallmarks.attributes
           .filter(a => a.name === "role in cancer")
           .map(r => ({
             label: r.description,
             url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
           }));
-        const rows = data.target.hallmarks.cancerHallmarks.map(r => ({
+        const rows = request.data?.target.hallmarks.cancerHallmarks.map(r => ({
           label: r.label,
           activity: r.impact === "promotes" ? "promotes" : "suppresses",
           description: r.description,
@@ -85,9 +87,9 @@ function Section({ id, label: symbol, entity }) {
           <>
             <Box className={classes.roleInCancerBox}>
               <Typography className={classes.roleInCancerTitle}>Role in cancer:</Typography>
-              <ChipList items={roleInCancer.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
+              <ChipList items={roleInCancer?.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
             </Box>
-            <DataTable
+            <OtTable
               columns={columns}
               dataDownloader
               dataDownloaderFileStem={`${symbol}-hallmarks`}
@@ -96,6 +98,7 @@ function Section({ id, label: symbol, entity }) {
               rowsPerPageOptions={defaultRowsPerPageOptions}
               query={HALLMARKS_QUERY.loc.source.body}
               variables={variables}
+              loading={request.loading}
             />
           </>
         );

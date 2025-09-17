@@ -1,27 +1,42 @@
-import { useHistory } from "react-router-dom";
-import { addSearchToLocalStorage } from "../components/GlobalSearch/utils/searchUtils";
+import { useNavigate } from "react-router-dom";
+import {
+  addSearchToLocalStorage,
+  getSelectedEntityFilter,
+  TOTAL_ENTITIES,
+} from "../components/GlobalSearch/utils/searchUtils";
 
 function useListOption() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const openListItem = option => {
+  const entitiesWitAssociations = ["disease", "target"];
+
+  const openListItem = (option, filterState) => {
     if (!option) return;
+
+    const activeSearchEntities = getSelectedEntityFilter(filterState);
+
     const newOption = { ...option };
     newOption.type = "recent";
     addSearchToLocalStorage(newOption);
 
     if (newOption.entity === "search") {
-      history.push(`/search?q=${newOption.name}&page=1`);
-    } else if (newOption.entity === "study") {
-      history.push(`/${newOption.entity}/${newOption.studyId}`);
+      navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities });
     } else {
-      history.push(
-        `/${newOption.entity}/${newOption.id}${newOption.entity !== "drug" ? "/associations" : ""}`
+      navigate(
+        `/${newOption.entity}/${newOption.id}${
+          entitiesWitAssociations.indexOf(newOption.entity) > -1 ? "/associations" : ""
+        }`
       );
     }
   };
 
   return [openListItem];
+}
+
+function navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities = [] }) {
+  if (activeSearchEntities.length === TOTAL_ENTITIES || activeSearchEntities.length === 0)
+    navigate(`/search?q=${newOption.name}&page=1`);
+  else navigate(`/search?q=${newOption.name}&page=1&entities=${activeSearchEntities.join()}`);
 }
 
 export default useListOption;

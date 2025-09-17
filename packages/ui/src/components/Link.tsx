@@ -1,15 +1,15 @@
-import { ReactNode } from "react";
-import PropTypes from "prop-types";
+import { ReactElement, ReactNode } from "react";
 import classNames from "classnames";
 import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@mui/styles";
 import Tooltip from "./Tooltip";
+import OtAsyncTooltip from "./OtAsyncTooltip/OtAsyncTooltip";
 
 const useStyles = makeStyles(theme => ({
   base: {
     fontSize: "inherit",
-    "text-decoration-color": "white",
-    "-webkit-text-decoration-color": "white",
+    "text-decoration-color": "transparent",
+    "-webkit-text-decoration-color": "transparent",
   },
   baseDefault: {
     color: theme.palette.primary.main,
@@ -33,12 +33,34 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       color: theme.palette.primary.light,
       "text-decoration-color": theme.palette.primary.light,
-    "-webkit-text-decoration-color": theme.palette.primary.light,
+      "-webkit-text-decoration-color": theme.palette.primary.light,
     },
     display: "flex",
     alignItems: "center",
   },
 }));
+
+type LinkProptypes = {
+  className?: string;
+  to: string;
+  onClick?: () => void | null;
+  external?: boolean;
+  newTab?: boolean;
+  footer?: boolean;
+  tooltip?: unknown;
+  children: ReactNode;
+  ariaLabel?: string;
+  asyncTooltip?: boolean;
+};
+
+const defaultProps = {
+  external: false,
+  footer: false,
+  tooltip: false,
+  to: "/",
+  children: <></>,
+  asyncTooltip: false,
+};
 
 function Link({
   children,
@@ -50,39 +72,57 @@ function Link({
   tooltip,
   className,
   ariaLabel,
-}: {
-  className?: string;
-  to: string;
-  onClick?: () => void;
-  external: boolean;
-  newTab?: boolean;
-  footer: boolean;
-  tooltip?: unknown;
-  children: ReactNode;
-  ariaLabel?: string;
-}) {
+  asyncTooltip,
+}: LinkProptypes = defaultProps): ReactElement {
   const classes = useStyles();
   const ariaLabelProp = ariaLabel ? { "aria-label": ariaLabel } : {};
   const newTabProps = newTab ? { target: "_blank", rel: "noopener noreferrer" } : {};
-  return external ? (
-    <a
-      className={classNames(
-        classes.base,
-        {
-          [classes.baseDefault]: !footer && !tooltip,
-          [classes.baseFooter]: footer,
-          [classes.baseTooltip]: tooltip,
-        },
-        className
-      )}
-      href={to}
-      onClick={onClick}
-      {...newTabProps}
-      {...ariaLabelProp}
-    >
-      {children}
-    </a>
-  ) : (
+
+  if (external)
+    return (
+      <a
+        className={classNames(
+          classes.base,
+          {
+            [classes.baseDefault]: !footer && !tooltip,
+            [classes.baseFooter]: footer,
+            [classes.baseTooltip]: tooltip,
+          },
+          className
+        )}
+        href={to}
+        onClick={onClick}
+        {...newTabProps}
+        {...ariaLabelProp}
+      >
+        {children}
+      </a>
+    );
+
+  if (asyncTooltip && !external) {
+    const args = to.split("/");
+    return (
+      <RouterLink
+        className={classNames(
+          classes.base,
+          {
+            [classes.baseDefault]: !footer && !tooltip,
+            [classes.baseFooter]: footer,
+            [classes.baseTooltip]: tooltip,
+          },
+          className
+        )}
+        to={to}
+        onClick={onClick}
+      >
+        <OtAsyncTooltip entity={args[1]} id={args[2]}>
+          <span>{children}</span>
+        </OtAsyncTooltip>
+      </RouterLink>
+    );
+  }
+
+  return (
     <RouterLink
       className={classNames(
         classes.base,
@@ -100,26 +140,5 @@ function Link({
     </RouterLink>
   );
 }
-
-Link.propTypes = {
-  /** Whether the link directs to an external site. */
-  external: PropTypes.bool,
-  /** Whether the link is used within the footer section. */
-  footer: PropTypes.bool,
-  /** Whether the link is used within a tooltip. */
-  tooltip: PropTypes.bool,
-  /** The handler to call on click. */
-  onClick: PropTypes.func,
-  /** The url to visit on clicking the link. */
-  to: PropTypes.string.isRequired,
-};
-
-Link.defaultProps = {
-  external: false,
-  footer: false,
-  tooltip: false,
-  onClick: null,
-  to: "/",
-};
 
 export default Link;

@@ -1,0 +1,26 @@
+query QTLCredibleSetsQuery($studyId: String!) {
+  study(studyId: $studyId) {
+    id
+    credibleSets(page: { size: 2000, index: 0 }) {
+      count
+      rows {
+        studyLocusId
+        variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+        }
+        pValueMantissa
+        pValueExponent
+        beta
+        locus {
+          count
+        }
+        finemappingMethod
+        confidence
+      }
+    }
+  }
+}

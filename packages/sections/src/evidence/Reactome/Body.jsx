@@ -6,21 +6,25 @@ import {
   Tooltip,
   PublicationsDrawer,
   EllsWrapper,
-  DataTable,
+  OtTable,
   TableDrawer,
 } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
+import { epmcUrl, sentenceCase } from "@ot/utils";
+
 import REACTOME_QUERY from "./sectionQuery.gql";
-import { sentenceCase } from "../../utils/global";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import {
+  dataTypesMap,
+  defaultRowsPerPageOptions,
+  naLabel,
+  sectionsBaseSizeQuery,
+} from "@ot/constants";
 
 const getColumns = label => [
   {
-    id: "disease.name",
+    id: "disease",
     label: "Disease / phenotype",
     renderCell: ({ disease, diseaseFromSource }) => (
       <Tooltip
@@ -36,7 +40,7 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
           <EllsWrapper>{disease.name}</EllsWrapper>
         </Link>
       </Tooltip>
@@ -44,7 +48,7 @@ const getColumns = label => [
     width: "18%",
   },
   {
-    id: "pathwayName",
+    id: "pathways",
     label: "Pathway",
     renderCell: ({ pathways }) => {
       if (!pathways || pathways.length === 0) {
@@ -69,6 +73,7 @@ const getColumns = label => [
   {
     id: "reactionId",
     label: "Reaction",
+    enableHiding: false,
     renderCell: ({ reactionName, reactionId }) => (
       <Link external to={`https://identifiers.org/reactome/${reactionId}`}>
         <EllsWrapper>{reactionName}</EllsWrapper>
@@ -95,10 +100,7 @@ const getColumns = label => [
     width: "12%",
   },
   {
-    filterValue: ({ variantAminoacidDescriptions }) =>
-      variantAminoacidDescriptions
-        ?.map(variantAminoacidDescription => variantAminoacidDescription)
-        .join(),
+    id: "variantAminoacidDescriptions",
     label: "Amino acid variation",
     renderCell: ({ variantAminoacidDescriptions }) => {
       if (variantAminoacidDescriptions?.length === 1) {
@@ -162,19 +164,20 @@ function Body({ id, label, entity }) {
       request={request}
       entity={entity}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.reactomeSummary;
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.reactomeSummary.rows}
             dataDownloader
+            dataDownloaderFileStem={`reactome-${ensgId}-${efoId}`}
             showGlobalFilter
             rowsPerPageOptions={defaultRowsPerPageOptions}
             fixed
             noWrapHeader={false}
             query={REACTOME_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

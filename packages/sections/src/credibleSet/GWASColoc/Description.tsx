@@ -1,0 +1,14 @@
+import { Link } from "ui";
+
+function Description() {
+  return (
+    <>
+      Colocalisation metrics for overlapping GWAS credible sets. Source:{" "}
+      <Link to="https://platform-docs.opentargets.org/credible-set#colocalisation" external>
+        Open Targets
+      </Link>
+    </>
+  );
+}
+
+export default Description;

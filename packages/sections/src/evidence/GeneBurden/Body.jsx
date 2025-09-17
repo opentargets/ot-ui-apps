@@ -5,17 +5,16 @@ import {
   Tooltip,
   SectionItem,
   PublicationsDrawer,
-  DataTable,
   ScientificNotation,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
+  OtTable,
 } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
-import { epmcUrl } from "../../utils/urls";
-import { dataTypesMap } from "../../dataTypes";
-import { defaultRowsPerPageOptions, naLabel, sectionsBaseSizeQuery } from "../../constants";
+import { epmcUrl } from "@ot/utils";
+import { dataTypesMap, naLabel, sectionsBaseSizeQuery } from "@ot/constants";
 
 import GENE_BURDEN_QUERY from "./GeneBurdenQuery.gql";
 
@@ -41,6 +40,9 @@ const getSourceLink = (project, targetId, urls) => {
   if (project === "Genebass")
     return `https://app.genebass.org/gene/${targetId}?burdenSet=pLoF&phewasOpts=1&resultLayout=full`;
   if (project === "AstraZeneca PheWAS Portal") return urls[0].url;
+  if (project === "Autism Sequencing Consortium") return `https://asc.broadinstitute.org/gene/${targetId}`;
+  if (project === "AMP-PD") return `https://amp-pd.org/`;
+  if (project === "FinnGen") return `https://r12.finngen.fi/gene/{targetFromSourceId}`;
   return "";
 };
 
@@ -62,7 +64,9 @@ const getColumns = label => [
         }
         showHelpIcon
       >
-        <Link to={`/disease/${disease.id}`}>{disease.name}</Link>
+        <Link asyncTooltip to={`/disease/${disease.id}`}>
+          {disease.name}
+        </Link>
       </Tooltip>
     ),
   },
@@ -241,21 +245,22 @@ export function Body({ id, label, entity }) {
       chipText={dataTypesMap.genetic_association}
       entity={entity}
       request={request}
-      renderDescription={data => <Description symbol={label.symbol} diseaseName={label.name} data={data} />}
-      renderBody={({ disease }) => {
-        const { rows } = disease.geneBurdenSummary;
+      renderDescription={() => (
+        <Description symbol={label.symbol} diseaseName={label.name} data={request.data} />
+      )}
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             columns={columns}
-            rows={rows}
+            rows={request.data?.disease.geneBurdenSummary.rows}
             order="asc"
             sortBy="pValue"
             dataDownloader
             dataDownloaderFileStem={`geneburden-${ensgId}-${efoId}`}
             showGlobalFilter
-            rowsPerPageOptions={defaultRowsPerPageOptions}
             query={GENE_BURDEN_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}

@@ -1,5 +1,5 @@
-query searchInsulinCatCounts {
-  search(queryString:"insulin"){
+query searchTargetAggregations {
+  search(queryString: "PCSK9") {
     aggregations {
       total
       entities {

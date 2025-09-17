@@ -1,7 +1,7 @@
 import { v1 } from "uuid";
 import { Fragment } from "react";
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, DataTable, TableDrawer } from "ui";
+import { Link, SectionItem, TableDrawer, OtTable } from "ui";
 
 import { definition } from ".";
 import Description from "./Description";
@@ -12,6 +12,7 @@ const columns = [
   {
     id: "mechanismOfAction",
     label: "Mechanism of Action",
+    enableHiding: false,
   },
   {
     id: "targetName",
@@ -71,22 +72,21 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => (
         <Description
           name={name}
-          parentMolecule={request.parentMolecule || []}
-          childMolecules={request.childMolecules || []}
+          parentMolecule={request.data?.drug.parentMolecule || []}
+          childMolecules={request.data?.drug.childMolecules || []}
         />
       )}
-      renderBody={data => {
-        const { rows } = data.drug.mechanismsOfAction;
-
+      renderBody={() => {
         return (
-          <DataTable
+          <OtTable
             showGlobalFilter
             columns={columns}
-            rows={rows}
+            rows={request.data?.drug.mechanismsOfAction.rows}
             dataDownloader
             dataDownloaderFileStem={`${chemblId}-mechanisms-of-action`}
             query={MECHANISMS_OF_ACTION_QUERY.loc.source.body}
             variables={variables}
+            loading={request.loading}
           />
         );
       }}
