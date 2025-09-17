@@ -4,7 +4,7 @@ query IntervalsQuery($variantId: String!) {
     rsIds
     referenceAllele
     alternateAllele
-    intervals(page: { size: 3000, index: 1 }) {
+    intervals(page: { size: 3000, index: 0 }) {
       count
       rows {
         chromosome
