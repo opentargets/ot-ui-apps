@@ -6,7 +6,7 @@ function Description({ symbol }) {
       Genetic variants in <strong>{symbol}</strong> that have been associated with drug response
       (Gene may not be direct target of the drug). Source:{" "}
       <Link external to="https://www.pharmgkb.org/">
-        PharmGKB
+        ClinPGx
       </Link>
       .
     </>

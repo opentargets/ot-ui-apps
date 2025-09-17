@@ -52,7 +52,10 @@ const labelStyle =   {
   inFront: true,
 };
 
-function showOnHover(state, resi) {
+// hover on non-variant residue
+function showHoverSpheres(state, resi) {
+  if (resiOnVariant(state, resi)) return;
+
   let color, opacity, radius;
   switch (state.representBy) {
     case "cartoon":
@@ -77,7 +80,7 @@ function showOnHover(state, resi) {
       break;
   }
 
-  if (!state.variantResidues.has(resi) && resi !== state.viewer._clickedResi) {
+  if (resi !== state.viewer._clickedResi) {
     for (const atom of state.atomsByResi.get(resi)) {
       state.viewer.addSphere({
         center: {x: atom.x, y: atom.y, z: atom.z},
@@ -89,16 +92,22 @@ function showOnHover(state, resi) {
   }
 }
 
-function removeOnHover(state) {
- state.viewer.removeAllShapes();
+function removeHoverSpheres(state) {
+  state.viewer.removeAllShapes();
+}
+
+function resiOnVariant(state, resi) {
+  return state.variantResidues.has(resi);
 }
 
 function getResiColor(state, resi) {
   switch (state.colorBy) {
-    case "confidence": return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
-    case "pathogenicity": return state.pathogenicityScores 
-      ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
-      : "#ddd"
+    case "confidence":
+      return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
+    case "pathogenicity":
+      return state.pathogenicityScores 
+        ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
+        : "#ddd";
     case "domain": {
       if (!state.domains) return "#ddd";
       const domainIndex = state.domains.descriptionToIndex[state.domains.getDescription(resi)];
@@ -108,32 +117,41 @@ function getResiColor(state, resi) {
     }
     case "hydrophobicity":
       return getHydrophobicityColor(state.atomsByResi.get(resi)[0].resn);
-    case "secondary structure": return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
-    case "none": return "#ddd";
+    case "secondary structure":
+      return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
+    case "none":
+      return "#ddd";
   }
 }
 
-export const drawAppearance = [
-  // cartoon
-  {
-    style: state => ({
-      cartoon: {
-        hidden: state.representBy === "opaque" || state.representBy === "transparent",
-        colorfunc: atom => getResiColor(state, atom.resi),
-        arrows: true,
-      },
-    }),
-  },
+function getHighightVariantResiColor(state, resi) {
+  switch (state.colorBy) {
+    case "pathogenicity":
+      return state.variantPathogenicityScore
+        ? getAlphaFoldPathogenicityColor(state.variantPathogenicityScore)
+        : "lime";
+    case "hydrophobicity":
+      return getHydrophobicityColor(state.atomsByResi.get(resi)[0].resn);
+    case "none":
+      return "lime";
+    default:
+      return getResiColor(state, resi);
+  }
+}
 
-  // variant hover spheres
-  {
-    selection: state => state.representBy === "cartoon"
-      ? { resi: [...state.variantResidues] }
-      : {},  // every atom has a hover sphere when show global surface
-    style: { clicksphere: { radius: 1.5 } },
-    addStyle: true,
-  },
-];
+function highlightVariantSurface(state) {
+  state.viewer.setSurfaceMaterialStyle(
+    state.viewer._variantSurfaceId,
+    { colorfunc: atom => getHighightVariantResiColor(state, atom.resi) },
+  );
+}
+
+function unhighlightVariantSurface(state) {
+    state.viewer.setSurfaceMaterialStyle(
+    state.viewer._variantSurfaceId,
+    { color: "lime" },    
+  );
+}
 
 const variantSurfaceStyle = {
   color: variantColor,
@@ -150,7 +168,7 @@ function getGlobalSurfaceStyle(state, highlightResi) {
     visible: state.representBy !== "cartoon",
     opacity: state.representBy === "opaque" ? 1 : "transparent" ? 0.65 : 0.55,
     colorfunc: state.representBy === "hybrid"
-      ? atom => (state.variantResidues.has(atom.resi)
+      ? atom => (resiOnVariant(state, atom.resi)
         ? variantColor
         : atom.resi === state.viewer._clickedResi 
           ? clickColor
@@ -158,7 +176,7 @@ function getGlobalSurfaceStyle(state, highlightResi) {
             ? getResiColor(state, atom.resi)
             : "#fff"
       )
-      : atom => (state.variantResidues.has(atom.resi)
+      : atom => (resiOnVariant(state, atom.resi)
         ? variantColor
         : atom.resi === highlightResi || atom.resi === state.viewer._clickedResi
           ? clickColor
@@ -172,6 +190,11 @@ function updateGlobalSurface(state, highlightResi) {
     state.viewer._globalSurfaceId,
     getGlobalSurfaceStyle(state, highlightResi)
   );
+}
+
+export function firstDrawHandler(state) {
+  state.viewer.zoomTo({ resi: [...state.variantResidues] }, 0);
+  state.viewer.zoom(0.2);
 }
 
 export function drawHandler(state) {
@@ -203,17 +226,89 @@ export function drawHandler(state) {
   updateGlobalSurface(state);
 }
 
-export const hoverAppearance = [
+const baseCartoonStyle = state => ({
+  cartoon: {
+    hidden: state.representBy === "opaque" || state.representBy === "transparent",
+    colorfunc: atom => getResiColor(state, atom.resi),
+    arrows: true,
+  },
+});
+
+export const drawAppearance = [
+  { style: baseCartoonStyle },
   {
-    selection: { atom: "CA"},
-    onApply: showOnHover,
-    leave: [{ onApply: removeOnHover}],
-  }
+    selection: state => {
+      if (state.representBy !== "cartoon") return {};
+      const resis = [...state.variantResidues];
+      if (state.viewer._clickedResi) resis.push(state.viewer._clickedResi);
+      return { resi: resis };
+    }, 
+    style: { clicksphere: { radius: 1.5 } },  
+    addStyle: true,
+  },
+];
+
+export const hoverAppearance = [
+  { // show spheres 
+    selection: {},
+    onApply: showHoverSpheres,
+    leave: [{ onApply: removeHoverSpheres }],
+    addStyle: true,
+  },
+  { // if hovering on variant residue:
+    // - gray the cartoon or global surface
+    // - color variant surface (and variant on global sirface) based on color option
+    use: resiOnVariant,
+    selection: {},
+    addStyle: true,
+    style: state => ({
+      cartoon: {
+        colorfunc: () => "#fff",
+        hidden: state.representBy === "opaque" || state.representBy === "transparent",
+      }
+    }),
+    onApply: (state, resi, interactionState) => {
+      if (state.representBy !== "cartoon") {
+        state.viewer.setSurfaceMaterialStyle(
+          state.viewer._globalSurfaceId,
+          {
+            colorfunc: atom => resiOnVariant(state, atom.resi)
+              ? getHighightVariantResiColor(state, atom.resi)
+              : "#fff",
+            opacity: state.representBy === "opaque" ? 1 : state.representBy === "transparent" ? 0.65 : 0.55
+          },
+        );
+      }
+      highlightVariantSurface(state);
+    },
+    leave: [
+      { // update cartoon and/or global surface
+        use: resiOnVariant,
+        selection: {},
+        addStyle: true,
+        style: baseCartoonStyle,
+        onApply: (state, resi, interactionState) => {
+          if (!resiOnVariant(state, interactionState.hoveredResi)) {
+            if (state.representBy === "opaque" || state.representBy === "transparent") {
+              updateGlobalSurface(state);
+            }
+            unhighlightVariantSurface(state);
+          }
+        },
+      },
+    ],
+  },
 ];
 
 export const clickAppearance = [
   {
+    use: (state, resi) => !resiOnVariant(state, resi),
+    style: (state, resi) => state.representBy === "cartoon"
+      ? { clicksphere: { radius: 1.5 } }
+      : {},
+    addStyle: true,
     onApply: (state, resi) => {
+      if (resiOnVariant(state, resi)) return;
       const { viewer } = state;
       viewer._clickedSurfaceId = viewer.addSurface(
         "VDW",
@@ -232,18 +327,26 @@ export const clickAppearance = [
       if (state.representBy !== "cartoon") updateGlobalSurface(state);
     },
     leave: [
-      drawAppearance[0],  // cartoon
-      {
-        ...drawAppearance[1],  // click spheres for hovering
+      { 
+        use: (state, resi) => !resiOnVariant(state, resi),
+        style: baseCartoonStyle,
+        addStyle: true,
         onApply: (state, resi) => {
-         state.viewer.removeSurface(state.viewer._clickedSurfaceId);
-         state.viewer._clickedSurfaceId = null;
-         state.viewer.removeLabel(state.viewer._clickedLabelId);
-         state.viewer._clickedLabelId = null;
-         state.viewer._clickedResi = null;
-         if (state.representBy !== "cartoon") updateGlobalSurface(state);
+          state.viewer.removeSurface(state.viewer._clickedSurfaceId);
+          state.viewer._clickedSurfaceId = null;
+          state.viewer.removeLabel(state.viewer._clickedLabelId);
+          state.viewer._clickedLabelId = null;
+          state.viewer._clickedResi = null;
+          if (state.representBy !== "cartoon") updateGlobalSurface(state);
         },
       },
+      {
+        use: (state, resi) => !resiOnVariant(state, resi),
+        addStyle: true,
+        style: (state, resi) => state.representBy === "cartoon"
+          ? { clicksphere: { radius: 0 } }
+          : {},
+      }
     ],
   }
 ];
@@ -278,22 +381,4 @@ export function dataHandler(viewer, dispatch, row) {
       value: "AlphaFold structure not available",
     });
   }
-}
-
-// OLD /////////////////////////////////////////////////////////////////////////
-
-export function resetViewer(viewer, variantResidues, duration = 0) {
-  let cx = 0,
-    cy = 0,
-    cz = 0;
-  const residueAtoms = viewer.getModel().selectedAtoms({ resi: [...variantResidues] });
-  for (let atom of residueAtoms) {
-    cx += atom.x;
-    cy += atom.y;
-    cz += atom.z;
-  }
-  cx /= residueAtoms.length;
-  cy /= residueAtoms.length;
-  cz /= residueAtoms.length;
-  viewer.zoomTo({ resi: [...variantResidues] }, duration);
 }

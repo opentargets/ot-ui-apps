@@ -96,29 +96,30 @@ An `appearance` object is a description of what to show in the viewer and how:
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
 | `selection` | `{}` | 3Dmol `AtomSelectionSpec` \| `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
-| `style` | | 3Dmol `AtomStyleSpec`, function | If a function, is passed the state and should return a `AtomStyleSpec`. |
+| `style` | | 3Dmol `AtomStyleSpec` \| `function` | If a function, is passed the state and should return a `AtomStyleSpec`. |
 | `addStyle` | `false` | `boolean` | If `true`, use 3Dmol's `addStyle` rather than `setStyle`. |
 | `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
 ### Click and Hover
 
-An `eventAppearance` object describes a change triggered by changes to `hoveredResi` or `clickedResi` (see [Viewer Interaction Provider](#viewer-interaction-provider])): 
+`appearance` objects are also used to describe appearance when the user hovers/clicks on/off a residue, i.e. when `hoveredResi` or `clickedResi` changes (see [Viewer Interaction Provider](#viewer-interaction-provider])):
+
+Appearance objects used for hover/click can have additional properties:
 
 | Property | Default | Type | Description |
 |----------|---------|------|-------------|
-| `eventSelection` | `{}` | 3dMol `AtomSelectionSpec` | Selects atoms that listen for the event - whereas the `selection` property selects atoms whose appearance is changed by the event. |
-| `selection` | `{ resi: eventResi }` | 3dMol `AtomSelectionSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomSelectionSpec`. |
-| `style` | | 3dMol `AtomStyleSpec` \| `function` | If a function, is passed the state and the residue index of the atom that heard the event; should return a `AtomStyleSpec`. |
-| `addStyle` | `false` | `boolean` | If `true`, use 3dMol's `addStyle` rather than `setStyle`. |
 | `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
-| `leave` |  | `eventAppearance[]` | Appearance objects to apply when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi` - see below. |
+| `leave` |  | `eventAppearance[]` | Appearance objects to apply when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
 
-The `eventAppearance` objects passed in the `leave` array are slightly different:
+Notes:
 
-- They should not include an `eventSelection` property.
-- The residue index passed to functions is the 'outgoing' residue index.
+- For appearance objects used by hover/click:
+  
+  - `selection` defaults to `{ resi: theEventResi }` rather than `{}`. So explicitly specify `{}` to select all atoms for an appearance change on hover/click.
 
-**Note**: To call an arbitrary callback when `hoveredResi` or `clickedResi` changes without an appearance change, use the `onApply` property of an `eventAppearance` and omit the `style` property.
+  - `selection`, `style` and `use` callbacks are passed a second argument: the residue index of the atom that heard the event. For objects passed in the `leave` array, the residue index passed is the 'outgoing' residue index.
+
+- To call an arbitrary callback when `hoveredResi` or `clickedResi` changes without a style change, use the `onApply` property of an `eventAppearance` and omit the `style` property.
 
 ## Viewer Props
 
@@ -127,12 +128,15 @@ The `eventAppearance` objects passed in the `leave` array are slightly different
 | `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
 | `data` |  | `array` | See [Data](#data). |
 | `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. |
+| `onFirstDraw` |  | `function` | Called immediately after first draw (and before `onDraw`). Passed the viewer state. |
 | `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
 | `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
 | `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
+| `hoverSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Hoverable atoms. If a function, is passed the viewer state and should return a `AtomSelectionSpec`. |
 | `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
+| `clickSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Clickable atoms. See `hoverSelection`. |
 | `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackColor` | `function` | | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
+| `trackColor` | | `function` | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
 | `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects to highlight on the track - labels are optional. | 
 | `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
 | `topLeft` |  | `string` \| `component` | Component to show in the top-left. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
@@ -142,8 +146,4 @@ The `eventAppearance` objects passed in the `leave` array are slightly different
 
 Notes:
 
-- The viewer only tracks hovering of atoms that are selected by at least one appearance object in `hoverSelection`. Even `hoverAppearance: [{}]` is sufficient to include all atoms since appearance objects select all atoms by default. Similalarly, an atom must be selected by a `clickAppearance` object for the viewer to track clicks.
-
 - If used, the track represents the first structure and assumes residues are indexed from 1 and are contiguous - as with AlphaFold structures.
-
-- Example use case for `onData`: validate data loaded into the viewer - if there is a problem, use the dispatch function to set a flag.

@@ -11,49 +11,15 @@ import { domainColors, hydrophobicityColorInterpolator } from "./helpers";
 function Legend() {
 
   const viewerState = useViewerState();
-  const  {
-    colorBy,
-    pathogenicityScores,
-    variantPathogenicityScore,
-    domains,
-  } = viewerState;
+  const  { colorBy, pathogenicityScores, domains } = viewerState;
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
       {/* explanatory text */}
       {colorBy === "pathogenicity" && pathogenicityScores && (
-        <Box
-          component="table"
-          sx={{
-            display: "flex",
-            justifyContent: "end",
-            ml: { xs: 1, lg: 0 },
-            borderCollapse: "separate",
-            borderSpacing: "0",
-            mb: 0.2,
-          }}
-        >
-          <tbody>
-            <tr>
-              <Typography component="td" variant="caption" textAlign="right">
-                <strong>Structure:</strong>
-              </Typography>
-              <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
-                mean AlphaMissense pathogenicity over possible amino acid substitutions
-              </Typography>
-            </tr>
-            {variantPathogenicityScore && (
-              <tr>
-                <Typography component="td" variant="caption" textAlign="right">
-                  <strong>Variant:</strong>
-                </Typography>
-                <Typography component="td" variant="caption" sx={{ pl: 0.4 }}>
-                  AlphaMissense pathogenicity for substitution corresponding to variant
-                </Typography>
-              </tr>
-            )}
-          </tbody>
-        </Box>
+        <Typography variant="caption" sx={{ pl: 0.4 }}>
+          Mean AlphaMissense pathogenicity over possible amino acid substitutions
+        </Typography>
       )}
     
       <Box

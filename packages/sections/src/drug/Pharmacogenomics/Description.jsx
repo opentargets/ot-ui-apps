@@ -5,7 +5,7 @@ function Description({ name }) {
     <>
       Genetic variants that are associated with the response to <strong>{name}</strong> Source:{" "}
       <Link external to="https://www.pharmgkb.org/">
-        PharmGKB
+        ClinPGx
       </Link>
       .
     </>

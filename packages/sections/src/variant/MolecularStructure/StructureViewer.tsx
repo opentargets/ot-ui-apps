@@ -15,6 +15,7 @@ import {
   drawAppearance,
   hoverAppearance,
   clickAppearance,
+  firstDrawHandler,
   drawHandler,
   trackColor,
   trackTicks,
@@ -151,11 +152,17 @@ function StructureViewer({ row }) {
               drawAppearance={drawAppearance}
               hoverAppearance={hoverAppearance}
               clickAppearance={clickAppearance}
+              onFirstDraw={firstDrawHandler}
               onDraw={drawHandler}
               trackColor={trackColor}
               trackTicks={trackTicks}
               topLeft={<MissingColorWarning />}
               bottomRight={<AtomInfo />}
+              usage={{
+                Resize: "Drag bottom right corner",
+                Highlight: "Click residue",
+                Unhighlight: "Click canvas",
+              }}
             />
             <Box
               sx={{
@@ -164,6 +171,7 @@ function StructureViewer({ row }) {
                 justifyContent: "space-between",
                 alignItems: "start",
                 flexDirection: { xs: "column", lg: "row" },
+                gap: 2,
               }}
             >
               <Box>
