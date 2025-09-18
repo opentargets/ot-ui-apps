@@ -23,6 +23,8 @@
     "format:check": "biome ci",
     "check": "biome check --formatter-enabled=true .",
     "check:fix": "biome check --formatter-enabled=true --write .",
+    "dev:test:platform:e2e": "turbo run dev-test",
+    "test:platform:e2e": "turbo run test:platform:e2e",
     "prepare": "husky install"
   },
   "devDependencies": {
