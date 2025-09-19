@@ -9,8 +9,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      { "label": "", "disease_id": "EFO_0000676" },
-      { "label": "Psoriasis", "disease_id": "EFO_0000274" }
+      { "label": "psoriasis", "disease_id": "EFO_0000676" },
+      { "label": "atopic eczema", "disease_id": "EFO_0000274" }
     ]
   },
   {
@@ -23,8 +23,10 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0004975" },
-      { "label": "Alzheimer disease", "disease_id": "MONDO_0005180" }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" },
+      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" },
+      { "label": "frontotemporal dementia", "disease_id": "MONDO_0017276" },
+      { "label": "Young adult-onset Parkinsonism", "disease_id": "Orphanet_2828" }
     ]
   },
   {
@@ -37,8 +39,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0004975" },
-      { "label": "Alzheimer disease", "disease_id": "" }
+      { "label": "Alzheimer disease", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -51,8 +52,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Other Therapy Area",
     "disease_mapping": [
-      { "label": "", "disease_id": "EFO_1001951" },
-      { "label": "colorectal carcinoma", "disease_id": "EFO_0000305" }
+      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" },
+      { "label": "breast carcinoma", "disease_id": "EFO_0000305" }
     ]
   },
   {
@@ -65,8 +66,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0005575" },
-      { "label": "Colorectal cancer", "disease_id": "EFO_0000389" }
+      { "label": "colorectal cancer", "disease_id": "MONDO_0005575" },
+      { "label": "cutaneous melanoma", "disease_id": "EFO_0000389" }
     ]
   },
   {
@@ -79,8 +80,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
     "disease_mapping": [
-      { "label": "", "disease_id": "EFO_1001951" },
-      { "label": "colorectal carcinoma", "disease_id": "" }
+      { "label": "colorectal carcinoma", "disease_id": "EFO_1001951" },
+      { "label": "triple-negative breast cancer", "disease_id": "EFO_0005537" }
     ]
   },
   {
@@ -93,8 +94,8 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0004976" },
-      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004975" }
+      { "label": "amyotrophic lateral sclerosis, "disease_id": "MONDO_0004976" },
+      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
     ]
   },
   {
@@ -118,8 +119,7 @@
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0005180" },
-      { "label": "Parkinson disease", "disease_id": "" }
+      { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
     ]
   },
   {
@@ -132,8 +132,7 @@
     "project_status": "Closed",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "EFO_0003843" },
-      { "label": "Pain", "disease_id": "" }
+      { "label": "pain", "disease_id": "EFO_0003843" }
     ]
   },
   {
@@ -256,8 +255,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": [
-      { "label": "", "disease_id": "EFO_0003767" },
-      { "label": "inflammatory bowel disease ", "disease_id": "" }
+      { "label": "inflammatory bowel disease ", "disease_id": "EFO_0003767" }
     ]
   },
   {
@@ -314,8 +312,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "", "disease_id": "MONDO_0004975" },
-      { "label": "alzheimer disease", "disease_id": "" }
+      { "label": "alzheimer disease", "disease_id": "MONDO_0004975" }
     ]
   },
   {
@@ -979,3 +976,4 @@
     "disease_mapping": []
   }
 ]
+
