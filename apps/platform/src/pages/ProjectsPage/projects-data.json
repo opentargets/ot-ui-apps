@@ -94,7 +94,7 @@
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
     "disease_mapping": [
-      { "label": "amyotrophic lateral sclerosis, "disease_id": "MONDO_0004976" },
+      { "label": "amyotrophic lateral sclerosis", "disease_id": "MONDO_0004976"},
       { "label": "Parkinson disease", "disease_id": "MONDO_0005180" }
     ]
   },
@@ -976,4 +976,5 @@
     "disease_mapping": []
   }
 ]
+
 
