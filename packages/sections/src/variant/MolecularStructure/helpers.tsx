@@ -39,7 +39,7 @@ export function getHydrophobicityColor(resn) {
 const variantColor = "lime";
 const clickColor = "magenta";
 
-const labelStyle =   {
+const labelStyle = {
   alignment: "center",
   screenOffset: new Vector2(28, -28),
   backgroundColor: "#fff",
@@ -365,20 +365,23 @@ export function trackTicks(state) {
   ];
 }
 
-// after load data into viewer, check variant's reference amino acid matches
-// amino acid at same position in structure data
+// after load data into viewer, check variant's reference amino acids match
+// amino acids at same positions in structure data
 export function dataHandler(viewer, dispatch, row) {
   const allAtoms = viewer.getModel().selectedAtoms();
   dispatch({
     type: "setNResidues",
     value: max(allAtoms, atom => atom.resi),
   });
-  const structureReferenceAminoAcid = 
-    allAtoms.find(atom => atom.resi === row.aminoAcidPosition)?.resn;
-  if (aminoAcidLookup[row.referenceAminoAcid[0]] !== structureReferenceAminoAcid) {
-    dispatch({
-      type: "setMessage",
-      value: "AlphaFold structure not available",
-    });
+  for (const [j, residueChar] of [...row.referenceAminoAcid].entries()) {
+    const structureResidueName = allAtoms.find(atom => {
+      return atom.resi === row.aminoAcidPosition - row.referenceAminoAcid.length + 1 + j;
+    })?.resn;
+    if (aminoAcidLookup[residueChar] !== structureResidueName) {
+      dispatch({
+        type: "setMessage",
+        value: "AlphaFold structure not available",
+      });
+    }
   }
 }
