@@ -1,6 +1,5 @@
-import _ from "lodash";
-
 import { downloaderChunkSize } from "@ot/constants";
+import _ from "lodash";
 import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
 
 const getRows = (data, dataPath) => _.get(data, dataPath, []);
@@ -56,9 +55,9 @@ function useBatchDownloader(
 
     const remainingChunks = await Promise.all(chunkPromises);
 
-    remainingChunks.forEach(chunk => {
+    for (const chunk of remainingChunks) {
       data = [...data, ...getRows(chunk, rowPath)];
-    });
+    }
 
     return data;
   };

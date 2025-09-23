@@ -1,11 +1,11 @@
-import { makeStyles } from "@mui/styles";
 import { Button, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-import { ReactNode } from "react";
-import Link from "../components/Link";
+import type { ReactNode } from "react";
 import BrokenSearchIcon from "../components/icons/BrokenSearchIcon";
+import Link from "../components/Link";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   hiddenMobile: {
     "@media (max-width: 767px)": {
       display: "none",
@@ -68,24 +68,27 @@ function EmptyPage({
           404: Page not found
         </Typography>
         <div className={classes.messageBodyContainer}>
+          {children}
           <Typography>
-            We can't find the page you're looking for. 
-            
-            You could try: 
+            We can't find the page you're looking for. You could try:
             <ul>
-            <li>search for a target, disease, drug, variant, or study in the search bar</li>
-            <li>check our{" "}
-            <Link external to={documentationLink}>
-              Documentation
-            </Link>{" "}
-            to see if we've moved the page you are looking for</li>
-            <li>get in touch on the{" "}
-            <Link external to={communityLink}>
-              Community
-            </Link>{" "}
-            to report the error</li>
+              <li>search for a target, disease, drug, variant, or study in the search bar</li>
+              <li>
+                check our{" "}
+                <Link external to={documentationLink}>
+                  Documentation
+                </Link>{" "}
+                to see if we've moved the page you are looking for
+              </li>
+              <li>
+                get in touch on the{" "}
+                <Link external to={communityLink}>
+                  Community
+                </Link>{" "}
+                to report the error
+              </li>
             </ul>
-            <br/>
+            <br />
             Thanks!
           </Typography>
         </div>
