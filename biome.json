@@ -32,8 +32,7 @@
       "!**/packages/ui",
       "!**/packages/sections",
       "!**/packages/ot-config",
-      "!**/packages/ot-constants",
-      "!**/packages/ot-utils"
+      "!**/packages/ot-constants"
     ]
   },
   "formatter": {
