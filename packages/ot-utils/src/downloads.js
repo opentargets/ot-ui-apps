@@ -3,28 +3,26 @@ import _ from "lodash";
 const targetName = {
   id: "symbol",
   label: "Symbol",
-  exportValue: data => data.target.approvedSymbol,
+  exportValue: (data) => data.target.approvedSymbol,
 };
 
 const diseaseName = {
   id: "disease",
   label: "Disease",
-  exportValue: data => data.disease.name,
+  exportValue: (data) => data.disease.name,
 };
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row =>
+  const rowStrings = rows.map((row) =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
-      return {
-        ...accumulator,
-        [newLabel]: newKey.exportValue
-          ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ""),
-      };
+      accumulator[newLabel] = newKey.exportValue
+        ? newKey.exportValue(row)
+        : _.get(row, newKey.propertyPath || newKey.id, "");
+      return accumulator;
     }, {})
   );
 
@@ -38,12 +36,13 @@ const getHeaderString = ({ columns, quoteString, separator }) =>
 
       const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
-      return [...headerString, newLabel];
+      headerString.push(newLabel);
+      return headerString;
     }, [])
     .join(separator);
 
 const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
-  const quoteString = d => {
+  const quoteString = (d) => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
@@ -57,7 +56,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
   const headerString = getHeaderString({ columns, quoteString, separator });
 
   const rowStrings = rows
-    .map(row =>
+    .map((row) =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -68,7 +67,8 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
               : _.get(row, column.propertyPath || column.id, "")
           );
 
-          return [...rowString, newValue];
+          rowString.push(newValue);
+          return rowString;
         }, [])
         .join(separator)
     )
@@ -77,7 +77,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-export const getRowsQuerySelector = entityToGet =>
+export const getRowsQuerySelector = (entityToGet) =>
   entityToGet === "target" ? "data.disease.associatedTargets" : "data.target.associatedDiseases";
 
 export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) => {
@@ -88,8 +88,8 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) =>
     const isPinnedObj = [
       {
         id: "isPinned",
-        exportValue: data =>
-          pinnedArr.some(currentValue => currentValue.id === data[entityToGet].id),
+        exportValue: (data) =>
+          pinnedArr.some((currentValue) => currentValue.id === data[entityToGet].id),
       },
     ];
     exportedColumns = [...exportedColumns, ...isPinnedObj];
@@ -97,9 +97,9 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) =>
 
   const sources = assocArr.map(({ id }) => ({
     id,
-    exportValue: data => {
+    exportValue: (data) => {
       const datatypeScore = data.datasourceScores.find(
-        datasourceScore => datasourceScore.componentId === id
+        (datasourceScore) => datasourceScore.componentId === id
       );
       return datatypeScore ? parseFloat(datatypeScore.score) : "No data";
     },
@@ -110,9 +110,9 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) =>
   if (entityToGet === "target") {
     const prioritisationExportCols = prioArr.map(({ id }) => ({
       id,
-      exportValue: data => {
+      exportValue: (data) => {
         const prioritisationScore = data.target.prioritisation.items.find(
-          prioritisationItem => prioritisationItem.key === id
+          (prioritisationItem) => prioritisationItem.key === id
         );
         return prioritisationScore ? parseFloat(prioritisationScore.value) : "No data";
       },
@@ -126,7 +126,7 @@ export const getExportedColumns = (entityToGet, assocArr, prioArr, pinnedArr) =>
     {
       id: "globalScore",
       label: "Global Score",
-      exportValue: data => data.score,
+      exportValue: (data) => data.score,
     },
     ...exportedColumns,
   ];
@@ -139,8 +139,8 @@ export const getExportedPrioritisationColumns = (arr, pinnedArr, entityToGet) =>
     const isPinnedObj = [
       {
         id: "isPinned",
-        exportValue: data =>
-          pinnedArr.some(currentValue => currentValue.id === data[entityToGet].id),
+        exportValue: (data) =>
+          pinnedArr.some((currentValue) => currentValue.id === data[entityToGet].id),
       },
     ];
     exportedColumns = [...exportedColumns, ...isPinnedObj];
@@ -148,9 +148,9 @@ export const getExportedPrioritisationColumns = (arr, pinnedArr, entityToGet) =>
 
   const prioritisationExportCols = arr.map(({ id }) => ({
     id,
-    exportValue: data => {
+    exportValue: (data) => {
       const prioritisationScore = data.target.prioritisation.items.find(
-        prioritisationItem => prioritisationItem.key === id
+        (prioritisationItem) => prioritisationItem.key === id
       );
       return prioritisationScore ? parseFloat(prioritisationScore.value) : "No data";
     },
@@ -163,13 +163,13 @@ export const getExportedPrioritisationColumns = (arr, pinnedArr, entityToGet) =>
     {
       id: "globalScore",
       label: "Global Score",
-      exportValue: data => data.score,
+      exportValue: (data) => data.score,
     },
     ...exportedColumns,
   ];
 };
 
-export const createBlob = format =>
+export const createBlob = (format) =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -183,10 +183,10 @@ export const createBlob = format =>
       new Blob([asDSV(columns, rows, "\t", false)], {
         type: "text/tab-separated-values;charset=utf-8",
       }),
-  }[format]);
+  })[format];
 
 export const getFilteredColumnArray = (selectArray, requestArray) => {
-  const arr = selectArray.map(ag => requestArray.filter(e => e.aggregation === ag)).flat(1);
+  const arr = selectArray.flatMap((ag) => requestArray.filter((e) => e.aggregation === ag));
 
   return arr.length > 0 ? arr : [];
 };

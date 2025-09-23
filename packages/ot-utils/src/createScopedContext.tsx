@@ -1,31 +1,28 @@
-import { useReducer, useContext, createContext } from "react";
+import { createContext, useContext, useReducer } from "react";
 
 export function createScopedContext({
-    name,
-    extraStateProperties = {},  // key-value pairs are propertyName: initialValue 
-    extraActions = {},  // key-value pairs are actionType: (state, action) => newState
-  }) {
+  name,
+  extraStateProperties = {}, // key-value pairs are propertyName: initialValue
+  extraActions = {}, // key-value pairs are actionType: (state, action) => newState
+}) {
   const StateContext = createContext(null);
   const DispatchContext = createContext(null);
 
   const ScopedProvider = ({ reducer, initialState = {}, children }) => {
-
     function wrappedReducer(state, action) {
       return extraActions[action.type]
         ? extraActions[action.type](state, action)
-        : reducer(state, action); 
+        : reducer(state, action);
     }
 
-    const [state, dispatch] = useReducer(
-      wrappedReducer,
-      {...initialState, ...extraStateProperties}
-    );
+    const [state, dispatch] = useReducer(wrappedReducer, {
+      ...initialState,
+      ...extraStateProperties,
+    });
 
     return (
       <StateContext.Provider value={state}>
-        <DispatchContext.Provider value={dispatch}>
-          {children}
-        </DispatchContext.Provider>
+        <DispatchContext.Provider value={dispatch}>{children}</DispatchContext.Provider>
       </StateContext.Provider>
     );
   };
@@ -50,6 +47,5 @@ export function createScopedContext({
     ScopedProvider,
     useScopedState,
     useScopedDispatch,
-  }
+  };
 }
-

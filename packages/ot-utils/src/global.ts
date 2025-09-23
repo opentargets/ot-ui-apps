@@ -1,5 +1,5 @@
-import { format } from "d3-format";
 import { getConfig } from "@ot/config";
+import { format } from "d3-format";
 
 const config = getConfig();
 
@@ -35,8 +35,8 @@ export const formatComma = format(",");
 
 export function getUniprotIds(proteinIds: ProteinId[]): string[] {
   return proteinIds
-    .filter(proteinId => proteinId.source === "uniprot_swissprot")
-    .map(proteinId => proteinId.id);
+    .filter((proteinId) => proteinId.source === "uniprot_swissprot")
+    .map((proteinId) => proteinId.id);
 }
 
 const makePmidLink = (themeColor: string) => {
@@ -52,7 +52,7 @@ export function clearDescriptionCodes(
   themeColor: string
 ): string[] {
   if (!descriptions) return [];
-  return descriptions.map(desc => {
+  return descriptions.map((desc) => {
     const codeStart = desc.indexOf("{");
     const parsedDesc = desc.slice(0, codeStart);
     return parsedDesc.replace(/Pubmed:\d+/gi, makePmidLink(themeColor));

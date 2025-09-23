@@ -5,8 +5,8 @@ export function getStudyCategory(projectId) {
   return "QTL";
 }
 
-export const getStudyTypeDisplay = studyType => {
-  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, match => match.toUpperCase());
+export const getStudyTypeDisplay = (studyType) => {
+  if (studyType) return studyType?.replace(/(qtl|gwas)/gi, (match) => match.toUpperCase());
   return studyType;
 };
 

@@ -2,19 +2,25 @@
 Example usage:
 const comparatorDiseaseName = generateComparatorFromAccessor(d => d.disease.name);
  */
-export const generateComparatorFromAccessor = accessor => (a, b) => {
-  const aValue = accessor(a);
-  const bValue = accessor(b);
-  if (aValue > bValue) return 1;
-  if (aValue === bValue) return 0;
-  return -1;
-};
+export const generateComparatorFromAccessor =
+  <T>(accessor: (item: T) => string | number) =>
+  (a: T, b: T) => {
+    const aValue = accessor(a);
+    const bValue = accessor(b);
+    if (aValue > bValue) return 1;
+    if (aValue === bValue) return 0;
+    return -1;
+  };
 
 /*
 Return comparator that sorts nullish values to end
 */
-export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = true) => {
-  return (a, b) => {
+export const nullishComparator = <T>(
+  comparator: (a: unknown, b: unknown) => number,
+  accessor: (x: T) => unknown = (x: T) => x,
+  nullishIsMax = true
+) => {
+  return (a: T, b: T) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
     if (!aVal && aVal !== 0) {
@@ -29,8 +35,12 @@ export const nullishComparator = (comparator, accessor = x => x, nullishIsMax = 
 /*
 Return comparator that sorts NaNs to end
 */
-export const nanComparator = (comparator, accessor = x => x, nanIsMax = true) => {
-  return (a, b) => {
+export const nanComparator = <T>(
+  comparator: (a: unknown, b: unknown) => number,
+  accessor: (x: T) => unknown = (x: T) => x,
+  nanIsMax = true
+) => {
+  return (a: T, b: T) => {
     const aVal = accessor(a);
     const bVal = accessor(b);
     if (Number.isNaN(aVal)) {
@@ -45,13 +55,17 @@ export const nanComparator = (comparator, accessor = x => x, nanIsMax = true) =>
 /*
 Compares a breakpoint against a breakpoint helper.
 */
-export const breakpointMatch = (breakpoint, breakpointHelper) => {
-  const breakpointMap = { xs: 0, sm: 1, md: 2, lg: 3, xl: 4 };
+export const breakpointMatch = (breakpoint: string, breakpointHelper: string) => {
+  const breakpointMap: Record<string, number> = { xs: 0, sm: 1, md: 2, lg: 3, xl: 4 };
   const isDownComparator = breakpointHelper.includes("Down");
   const isUpComparator = breakpointHelper.includes("Up");
 
   const breakpointIndex = breakpointMap[breakpoint];
   const breakpointHelperIndex = breakpointMap[breakpointHelper.replace(/Down|Up|Only/g, "")];
+
+  if (breakpointIndex === undefined || breakpointHelperIndex === undefined) {
+    return false;
+  }
 
   if (breakpointIndex === breakpointHelperIndex) {
     return true;
@@ -85,8 +99,10 @@ type VariantType = {
   alternateAllele: string;
 };
 
-export function variantComparator(accessor: (arg: any) => VariantType = d => d) {
-  return function (obj1: any, obj2: any) {
+export function variantComparator(
+  accessor: (arg: unknown) => VariantType = (d: unknown) => d as VariantType
+) {
+  return (obj1: unknown, obj2: unknown) => {
     const v1 = accessor(obj1);
     const v2 = accessor(obj2);
 
@@ -107,7 +123,13 @@ export function variantComparator(accessor: (arg: any) => VariantType = d => d) 
   };
 }
 
-export function mantissaExponentComparator(m1, e1, m2, e2, nullishIsMax = true) {
+export function mantissaExponentComparator(
+  m1: number | null,
+  e1: number | null,
+  m2: number | null,
+  e2: number | null,
+  nullishIsMax = true
+) {
   if (m1 == null || e1 == null) {
     if (m2 == null || e2 == null) return 0;
     return nullishIsMax ? 1 : -1;

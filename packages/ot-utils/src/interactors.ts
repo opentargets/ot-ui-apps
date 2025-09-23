@@ -19,8 +19,21 @@ export const INTERACTORS_SOURCE_THRESHOLD = {
   [INTERACTORS_SOURCES.REACTOME]: null,
 };
 
-// TODO: refactor to remove any
-export function getInteractorIds(targetRowInteractorsRequest: any) {
+interface TargetRowInteractorsRequest {
+  data?: {
+    target?: {
+      interactions?: {
+        rows?: Array<{
+          targetB?: {
+            id: string;
+          };
+        }>;
+      };
+    };
+  };
+}
+
+export function getInteractorIds(targetRowInteractorsRequest: TargetRowInteractorsRequest) {
   if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
     return [];
   }
@@ -28,8 +41,8 @@ export function getInteractorIds(targetRowInteractorsRequest: any) {
   const interactorsIds = [
     ...new Set(
       targetRowInteractorsRequest.data.target.interactions.rows
-        .map(int => int.targetB?.id)
-        .filter(id => id !== null && id !== undefined)
+        .map((int) => int.targetB?.id)
+        .filter((id) => id !== null && id !== undefined)
     ),
   ];
 
