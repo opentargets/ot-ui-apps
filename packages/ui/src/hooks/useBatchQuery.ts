@@ -1,8 +1,8 @@
-import _ from "lodash";
-import { DocumentNode } from "@apollo/client";
+import type { DocumentNode } from "@apollo/client";
 import { tableChunkSize } from "@ot/constants";
+import _ from "lodash";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useApolloClient } from "../providers/OTApolloProvider/OTApolloProvider";
-import { useCallback, useEffect, useState, useMemo } from "react";
 
 type BatchQueryState<T = unknown> = {
   loading: boolean;
@@ -36,7 +36,7 @@ type UseBatchQueryProps = {
  *
  * @returns {BatchQueryState<T>} Current state of the batch query
  */
-function useBatchQuery<T = any>({
+function useBatchQuery<T = unknown>({
   query,
   variables,
   dataPath,
@@ -72,7 +72,7 @@ function useBatchQuery<T = any>({
 
   // Function to retrieve the entire dataset
   const fetchWholeDataset = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true }));
+    setState((prev) => ({ ...prev, loading: true }));
 
     try {
       // Fetch first chunk to get total count
@@ -99,11 +99,11 @@ function useBatchQuery<T = any>({
         const remainingChunks = await Promise.all(chunkPromises);
 
         // Combine all data
-        remainingChunks.forEach(chunk => {
+        for (const chunk of remainingChunks) {
           if (chunk.data) {
             allRows = [...allRows, ...getRows<T>(chunk.data, rowPath)];
           }
-        });
+        }
       }
 
       // Create a deep clone of the first chunk's complete response
@@ -133,11 +133,11 @@ function useBatchQuery<T = any>({
   // Fetch data when dependencies change
   useEffect(() => {
     if (!enabled || variables === null) {
-      setState(prev => ({ ...prev, loading: false }));
+      setState((prev) => ({ ...prev, loading: false }));
       return;
     }
 
-    fetchWholeDataset().catch(error => {
+    fetchWholeDataset().catch((error) => {
       console.error("Error fetching batch data:", error);
     });
   }, [fetchWholeDataset, id, enabled, variables.variantId]);
@@ -146,7 +146,7 @@ function useBatchQuery<T = any>({
 }
 
 // Helper function to get rows from data
-function getRows<T>(data: any, dataPath: string): T[] {
+function getRows<T>(data: unknown, dataPath: string): T[] {
   return _.get(data, dataPath, []);
 }
 

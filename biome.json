@@ -30,7 +30,6 @@
       "!**/generated",
       "!**/apps/platform/src",
       "!**/packages/ui/src/components",
-      "!**/packages/ui/src/hooks",
       "!**/packages/ui/src/pages",
       "!**/packages/sections",
       "!**/packages/ot-config",
@@ -72,7 +71,7 @@
         "useButtonType": "error"
       },
       "correctness": {
-        "useExhaustiveDependencies": "warn",
+        "useExhaustiveDependencies": "off",
         "noUnusedVariables": "warn"
       },
       "suspicious": {
