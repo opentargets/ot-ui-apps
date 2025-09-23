@@ -1,5 +1,5 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { gql, useQuery, ApolloError } from "@apollo/client";
+import { type ApolloError, gql, useQuery } from "@apollo/client";
+import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react";
 
 // QUERY
 const DATA_VERSION_QUERY = gql`
@@ -41,12 +41,12 @@ export const APIMetadataProvider = ({ children }: PropsWithChildren): JSX.Elemen
 
   useEffect(() => {
     if (loading) {
-      setVersion(v => ({ ...v, loading }));
+      setVersion((v) => ({ ...v, loading }));
       return;
     }
 
     if (error) {
-      setVersion(v => ({ ...v, error }));
+      setVersion((v) => ({ ...v, error }));
       return;
     }
     const {
