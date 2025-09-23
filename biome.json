@@ -30,7 +30,6 @@
       "!**/generated",
       "!**/apps/platform/src",
       "!**/packages/ui/src/components",
-      "!**/packages/ui/src/pages",
       "!**/packages/sections",
       "!**/packages/ot-config",
       "!**/packages/ot-constants",
