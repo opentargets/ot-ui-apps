@@ -1,13 +1,13 @@
-import { type DocumentNode, type QueryResult, useQuery } from "@apollo/client";
+import { type ApolloError, type DocumentNode, type QueryResult, useQuery } from "@apollo/client";
 import { createContext, type ReactNode, useMemo } from "react";
 
 interface PlatformApiContextValue {
   entity: string;
   loading: boolean;
-  error?: any;
-  data?: any;
-  refetch: () => Promise<any>;
-  fetchMore: (options: any) => Promise<any>;
+  error?: ApolloError;
+  data?: unknown;
+  refetch: () => Promise<QueryResult>;
+  fetchMore: (options: { variables?: Record<string, unknown> }) => Promise<QueryResult>;
 }
 
 const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(undefined);
@@ -15,7 +15,7 @@ const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(un
 interface PlatformApiProviderProps {
   entity: string;
   query: DocumentNode;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   children: ReactNode;
 }
 

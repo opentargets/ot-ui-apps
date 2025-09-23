@@ -9,9 +9,9 @@ export const createApolloClient = (config: Config) => {
   const errorLink = new ApolloLink((operation, forward) => {
     return forward(operation).map((response) => {
       if (response.errors) {
-        response.errors.forEach((error) => {
+        for (const error of response.errors) {
           console.error(`GraphQL Error: ${error.message}`);
-        });
+        }
       }
       return response;
     });
