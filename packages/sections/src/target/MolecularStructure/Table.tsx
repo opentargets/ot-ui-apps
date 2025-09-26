@@ -51,17 +51,17 @@ function Table({ uniprotId, rows, segments, setSelectedRow, request, query, vari
       exportValue: ({ id }) => segments[id].segmentsString,
     },
     {
-      id: "type",
+      id: "properties.database",
       label: "Source",
       sortable: true,
-      renderCell: ({ id, type }) => {
-        const url = isAlphaFold({ type })
+      renderCell: ({ id, database }) => {
+        const url = isAlphaFold({ database })
           ? `https://www.alphafold.ebi.ac.uk/entry/${uniprotId}`
           : `https://www.ebi.ac.uk/pdbe/entry/pdb/${id}`;
         return (
           <div onClick={event => event.stopPropagation()}>
             <Link external to={url}>
-              {type}
+              {database}
             </Link>
           </div>
         );
