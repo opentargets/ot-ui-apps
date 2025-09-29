@@ -1,4 +1,3 @@
-import classNames from "classnames";
 import {
   Avatar,
   Card,
@@ -8,11 +7,11 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
+import classNames from "classnames";
 import { scroller } from "react-scroll";
-
+import PartnerLockIcon from "../PartnerLockIcon";
 import summaryStyles from "./summaryStyles";
 import { createShortName } from "./utils";
-import PartnerLockIcon from "../PartnerLockIcon";
 
 function SummaryItem({ definition, request, subText }) {
   const classes = summaryStyles();

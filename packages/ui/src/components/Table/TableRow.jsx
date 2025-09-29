@@ -1,10 +1,10 @@
 /* eslint-disable */
-import classNames from "classnames";
-import { Hidden, TableCell, TableRow as MUITableRow } from "@mui/material";
-import _ from "lodash";
 
-import { getHiddenBreakpoints } from "./utils";
+import { Hidden, TableRow as MUITableRow, TableCell } from "@mui/material";
+import classNames from "classnames";
+import _ from "lodash";
 import { tableStyles } from "./tableStyles";
+import { getHiddenBreakpoints } from "./utils";
 
 function TableRow({ columns, hover, isFixedRow, noWrap, row, style, onClick, selected }) {
   const classes = tableStyles();

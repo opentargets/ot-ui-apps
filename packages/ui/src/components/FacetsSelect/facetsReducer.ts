@@ -1,10 +1,10 @@
 import {
-  Action,
+  type Action,
   ActionType,
   ALL_CATEGORY,
   DISEASE_CATEGORIES,
   ENTITY,
-  FacetState,
+  type FacetState,
   TARGET_CATEGORIES,
 } from "./facetsTypes";
 
@@ -26,7 +26,7 @@ export function createInitialState(entityToGet: string): FacetState {
 }
 
 export function facetsReducer(state: FacetState = initialFacetState, action: Action): FacetState {
-  if (typeof state === undefined) {
+  if (typeof state === "undefined") {
     throw Error("State provided to facetsReducer is undefined");
   }
   switch (action.type) {
@@ -75,8 +75,7 @@ export function facetsReducer(state: FacetState = initialFacetState, action: Act
       };
     }
     default: {
-      throw Error("Unknown action: " + action);
-      return state;
+      throw Error(`Unknown action: ${action}`);
     }
   }
 }

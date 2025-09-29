@@ -1,8 +1,8 @@
-import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
-import { makeStyles } from "@mui/styles";
 import { Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import { type PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -40,7 +40,7 @@ const OtLongText = ({
     const DOMLineHeight = document.defaultView
       ? document.defaultView.getComputedStyle(el, null).getPropertyValue("line-height")
       : "";
-    const lineHeight = Number.parseInt(DOMLineHeight);
+    const lineHeight = Number.parseInt(DOMLineHeight, 10);
     const numberOfLines = Math.round(height / lineHeight);
     container.style.height =
       numberOfLines <= lineLimit ? "auto" : showMore ? "auto" : `${lineLimit * lineHeight}px`;

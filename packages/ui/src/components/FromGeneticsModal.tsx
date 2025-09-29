@@ -1,4 +1,4 @@
-import { Modal, Box, Typography, Button, styled } from "@mui/material";
+import { Box, Button, Modal, styled, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Link } from "ui";

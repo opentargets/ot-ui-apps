@@ -1,4 +1,4 @@
-import { Typography, Paper, Grid, LinearProgress } from "@mui/material";
+import { Grid, LinearProgress, Paper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { v1 } from "uuid";
 
@@ -38,7 +38,7 @@ function PlotContainer({ loading, error, left, center, right, children }) {
         <PlotContainerSection>
           <div>
             <Typography variant="subtitle1" color="error">
-              {error.graphQLErrors.map(({ message }, i) => (
+              {error.graphQLErrors.map(({ message }, _i) => (
                 <span key={v1()}>{message}</span>
               ))}
             </Typography>

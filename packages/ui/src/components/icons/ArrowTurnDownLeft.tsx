@@ -1,7 +1,7 @@
 import { makeStyles } from "@mui/styles";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((_theme) => ({
   mainIcon: {
     width: "1em",
     display: "flex",

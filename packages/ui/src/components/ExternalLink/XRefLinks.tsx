@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { makeStyles } from "@mui/styles";
+import { useState } from "react";
 
 import Link from "../Link";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   showMore: {
     color: theme.palette.primary.main,
     cursor: "pointer",
@@ -40,9 +40,20 @@ function XRefLinks({ label, urlBuilder, urlStem, ids, names, limit }: XRefLinksP
       {ids.length > limit ? (
         <span>
           {showMore ? "" : "... "}[{" "}
-          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
+          <button
+            className={classes.showMore}
+            onClick={() => setShowMore(!showMore)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowMore(!showMore);
+              }
+            }}
+            aria-label={showMore ? "Hide additional links" : "Show more links"}
+            style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          >
             {showMore ? " hide" : " show more"}
-          </span>{" "}
+          </button>{" "}
           ]
         </span>
       ) : null}

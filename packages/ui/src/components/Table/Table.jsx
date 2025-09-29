@@ -1,17 +1,18 @@
 /* eslint-disable */
-import { useState } from "react";
-import classNames from "classnames";
+
 import {
+  Box,
   CircularProgress,
   Grid,
-  TableContainer,
+  TableRow as MUITableRow,
   Table as MuiTable,
   TableBody,
   TableCell,
+  TableContainer,
   TablePagination,
-  TableRow as MUITableRow,
-  Box,
 } from "@mui/material";
+import classNames from "classnames";
+import { useState } from "react";
 
 import DataDownloader from "../DataDownloader";
 import GlobalFilter from "./GlobalFilter";
@@ -56,7 +57,7 @@ const Table = ({
   const [selectedRow, setSelectedRow] = useState(0);
   const defaultClasses = tableStyles();
 
-  const handleGlobalFilterChange = newGlobalFilter => {
+  const handleGlobalFilterChange = (newGlobalFilter) => {
     if (newGlobalFilter !== globalFilter) {
       onGlobalFilterChange(newGlobalFilter);
     }
@@ -66,7 +67,7 @@ const Table = ({
     onSortBy(sortBy);
   };
 
-  const handleChangeRowsPerPage = event => {
+  const handleChangeRowsPerPage = (event) => {
     onRowsPerPageChange(Number(event.target.value));
   };
   const handleChangePage = (_, page) => {
@@ -75,7 +76,7 @@ const Table = ({
     setSelectedRow(0);
     onPageChange(page);
   };
-  const handleClick = (event, row, i) => {
+  const handleClick = (_event, row, i) => {
     setSelectedRow(i);
     onRowClick(row, i);
   };
@@ -128,7 +129,7 @@ const Table = ({
                 key={i}
                 row={row}
                 noWrap={noWrap}
-                onClick={event => handleClick(event, row, i)}
+                onClick={(event) => handleClick(event, row, i)}
                 selected={rowIsSelectable && selectedRow === i}
               />
             ))}

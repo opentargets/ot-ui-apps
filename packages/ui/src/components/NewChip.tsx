@@ -1,6 +1,6 @@
-import classNames from "classnames";
 import { Chip as MUIChip } from "@mui/material";
 import { makeStyles } from "@mui/styles";
+import classNames from "classnames";
 
 const useStyles = makeStyles({
   chip: {

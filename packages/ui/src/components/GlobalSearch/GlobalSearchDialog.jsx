@@ -1,14 +1,13 @@
-import { useContext, useState } from "react";
-import { Box, Dialog, DialogContent, DialogTitle, styled } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-
-import GlobalSearchList from "./GlobalSearchList";
-import { defaultEntityFilterState, SearchContext, SearchInputProvider } from "./SearchContext";
-import GlobalSearchInput from "./GlobalSearchInput";
-import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Dialog, DialogContent, DialogTitle, styled } from "@mui/material";
+import { useContext, useState } from "react";
 import ErrorBoundary from "../ErrorBoundary";
 import GlobalSearchEntityFilter from "./GlobalSearchEntityFilter";
+import GlobalSearchFreeListItem from "./GlobalSearchFreeListItem";
+import GlobalSearchInput from "./GlobalSearchInput";
+import GlobalSearchList from "./GlobalSearchList";
+import { defaultEntityFilterState, SearchContext, SearchInputProvider } from "./SearchContext";
 
 const EscButton = styled("button")(({ theme }) => ({
   display: "block",
@@ -45,8 +44,8 @@ function GlobalSearchDialog() {
           "& .MuiPaper-root": {
             width: "80vw",
             maxWidth: "800px",
-            borderRadius: theme => theme.spacing(0.5),
-            margin: theme => theme.spacing(6),
+            borderRadius: (theme) => theme.spacing(0.5),
+            margin: (theme) => theme.spacing(6),
           },
         },
       }}
@@ -59,8 +58,8 @@ function GlobalSearchDialog() {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: theme => `${theme.spacing(3.5)}`,
-                  color: theme => theme.palette.grey[500],
+                  fontSize: (theme) => `${theme.spacing(3.5)}`,
+                  color: (theme) => theme.palette.grey[500],
                 }}
               >
                 <FontAwesomeIcon icon={faMagnifyingGlass} size="xs" />

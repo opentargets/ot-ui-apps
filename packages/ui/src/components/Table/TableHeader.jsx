@@ -1,20 +1,20 @@
 /* eslint-disable */
-import classNames from "classnames";
-import _ from "lodash";
+
 import {
   Hidden, // note this is deprecated in MUI 5
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
   TableSortLabel,
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/styles";
-
-import { getHiddenBreakpoints } from "./utils";
-import { tableStyles } from "./tableStyles";
-import Tooltip from "../Tooltip";
+import classNames from "classnames";
+import _ from "lodash";
 import useDynamicColspan from "../../hooks/useDynamicColspans";
+import Tooltip from "../Tooltip";
+import { tableStyles } from "./tableStyles";
+import { getHiddenBreakpoints } from "./utils";
 
 function HeaderCell({
   classes = {},
@@ -80,10 +80,10 @@ function HeaderCell({
 function TableHeader({ columns, headerGroups, noWrapHeader, order, onRequestSort, sortBy }) {
   // workaround for the old withWidth hook
   const theme = useTheme();
-  const width = theme.breakpoints.keys.filter(k => useMediaQuery(theme.breakpoints.only(k)));
+  const width = theme.breakpoints.keys.filter((k) => useMediaQuery(theme.breakpoints.only(k)));
 
   const colspans = useDynamicColspan(headerGroups, columns, width);
-  const createSortHandler = property => event => {
+  const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
 

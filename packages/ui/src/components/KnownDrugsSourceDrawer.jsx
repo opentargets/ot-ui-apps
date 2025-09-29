@@ -1,26 +1,25 @@
-import { useState } from "react";
-import {
-  List,
-  ListItem,
-  Drawer,
-  AccordionSummary,
-  AccordionDetails,
-  Accordion,
-  Box,
-  Paper,
-  IconButton,
-  Link as MUILink,
-  Typography,
-  ButtonBase,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  ButtonBase,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import _ from "lodash";
+import { useState } from "react";
 
 import { Link } from "ui";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -70,7 +69,7 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-const tableSourceLabel = name =>
+const tableSourceLabel = (name) =>
   ({
     ATC: "ATC",
     ClinicalTrials: "ClinicalTrials.gov",
@@ -79,7 +78,7 @@ const tableSourceLabel = name =>
     EMA: "European Medicines Agency",
     INN: "International Nonproprietary Names",
     USAN: "United States Adopted Name",
-  }[name]);
+  })[name];
 
 const drawerSourceLabel = (name, url) => {
   if (name === "ClinicalTrials") {
@@ -115,7 +114,7 @@ function KnownDrugsSourceDrawer({ references }) {
 
   const groupedReferences = _.groupBy(references, "name");
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
@@ -139,7 +138,7 @@ function KnownDrugsSourceDrawer({ references }) {
       </Paper>
 
       <Box className={classes.drawerBody}>
-        {Object.keys(groupedReferences).map(group => (
+        {Object.keys(groupedReferences).map((group) => (
           <Accordion
             elevation={0}
             key={group}
@@ -163,7 +162,7 @@ function KnownDrugsSourceDrawer({ references }) {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedReferences[group].map(item => (
+                {groupedReferences[group].map((item) => (
                   <ListItem key={item.url}>
                     <Link external to={item.url}>
                       {drawerSourceLabel(item.name, item.url)}

@@ -1,7 +1,7 @@
-import { createContext, useState, useEffect, useContext } from "react";
-import useDebounce from "../../hooks/useDebounce";
-import { DocumentNode } from "@apollo/client";
+import type { DocumentNode } from "@apollo/client";
 import { getSuggestedSearch } from "@ot/utils";
+import { createContext, useContext, useEffect, useState } from "react";
+import useDebounce from "../../hooks/useDebounce";
 
 const searchSuggestions = getSuggestedSearch();
 
@@ -31,15 +31,15 @@ export const defaultEntityFilterState = {
 };
 
 export const SearchContext = createContext<{
-  searchQuery: any;
+  searchQuery: DocumentNode;
   searchPlaceholder: string;
   open: boolean;
   setOpen: (arg: boolean) => void;
-  searchSuggestions: Array<any>;
+  searchSuggestions: Array<unknown>;
   filterState: EntityFilterState;
-  setFilterState: (arg) => void;
-  allSearchResults: Array<any>;
-  setAllSearchResults: (arg) => void;
+  setFilterState: (arg: EntityFilterState) => void;
+  allSearchResults: Array<unknown>;
+  setAllSearchResults: (arg: Array<unknown>) => void;
 }>({
   searchQuery: "",
   searchPlaceholder: "Search...",

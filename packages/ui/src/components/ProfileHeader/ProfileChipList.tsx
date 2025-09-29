@@ -1,8 +1,7 @@
-import { Box, Skeleton, Typography, Tooltip, Theme } from "@mui/material";
+import { Box, Skeleton, type Theme, Tooltip, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { ReactNode } from "react";
-
 import _ from "lodash";
+import type { ReactNode } from "react";
 import Chip from "../Chip";
 import LongList from "../LongList";
 

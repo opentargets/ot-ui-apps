@@ -1,7 +1,6 @@
 import { Button, Grid } from "@mui/material";
-
-import downloadSvg from "./DownloadSvg";
 import PlotContainer from "../PlotContainer";
+import downloadSvg from "./DownloadSvg";
 
 const handleSvgDownload = (svgContainer, filenameStem) => {
   const svgNode = svgContainer.current;

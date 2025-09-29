@@ -5,7 +5,7 @@ import { makeStyles } from "@mui/styles";
 import { useState } from "react";
 import { Tooltip } from "ui";
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles((_theme) => ({
   snackbarContentMessage: {
     display: "flex",
     justifyContent: "center",

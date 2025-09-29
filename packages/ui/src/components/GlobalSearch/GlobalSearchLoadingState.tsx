@@ -1,4 +1,4 @@
-import { Collapse, Grid, Grow, Skeleton } from "@mui/material";
+import { Collapse, Grid, Skeleton } from "@mui/material";
 
 function GlobalSearchLoadingState() {
   const listItemsToShow = new Array<number>(4).fill(0);
@@ -19,7 +19,7 @@ function GlobalSearchLoadingState() {
           </Grid>
           {listItemsToShow.map((_item, index) => (
             <Grid
-              key={index}
+              key={`loading-skeleton-${index}`}
               container
               justifyContent="flex-start"
               alignItems="center"

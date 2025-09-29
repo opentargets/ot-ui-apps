@@ -1,6 +1,6 @@
 import { format } from "d3-format";
 
-const mapStandardKeys = originalKey => {
+const mapStandardKeys = (originalKey) => {
   switch (originalKey) {
     case "studyId":
       return "id";
@@ -19,25 +19,25 @@ const mapStandardKeys = originalKey => {
   }
 };
 
-const flattenObj = ob => {
+const flattenObj = (ob) => {
   const result = {};
 
-  Object.entries(ob).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(ob)) {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       const temp = flattenObj(value);
-      Object.entries(temp).forEach(([nestedKey, nestedValue]) => {
+      for (const [nestedKey, nestedValue] of Object.entries(temp)) {
         result[nestedKey] = nestedValue;
-      });
+      }
     } else if (key === "functionDescriptions") {
       result[mapStandardKeys(key)] = value[0];
     } else {
       result[mapStandardKeys(key)] = value;
     }
-  });
+  }
   return result;
 };
 
-const exceedsArrayLengthLimit = array => {
+const exceedsArrayLengthLimit = (array) => {
   const limitLength = 7;
   let exceedsLimit = false;
 
@@ -47,13 +47,13 @@ const exceedsArrayLengthLimit = array => {
   return exceedsLimit;
 };
 
-export const formatSearchData = unformattedData => {
+export const formatSearchData = (unformattedData) => {
   const formattedData = {};
 
-  Object.entries(unformattedData).forEach(([key, value]) => {
+  for (const [key, value] of Object.entries(unformattedData)) {
     const typesArray = [];
 
-    value.hits.map(i =>
+    value.hits.map((i) =>
       typesArray.push({
         type: key === "topHit" ? "topHit" : i.entity,
         entity: i.entity,
@@ -62,7 +62,7 @@ export const formatSearchData = unformattedData => {
     );
 
     if (typesArray.length > 0) formattedData[key] = typesArray;
-  });
+  }
 
   return formattedData;
 };
@@ -77,7 +77,7 @@ export const containsObject = (obj, list) => {
   return -1;
 };
 
-export const addSearchToLocalStorage = item => {
+export const addSearchToLocalStorage = (item) => {
   const recentItems = JSON.parse(localStorage.getItem("search-history")) || [];
   const newItem = { ...item };
   delete newItem.description;
@@ -99,7 +99,7 @@ export const clearAllRecent = () => {
   window.dispatchEvent(new Event("storage"));
 };
 
-export const clearRecentItem = item => {
+export const clearRecentItem = (item) => {
   const recentItems = JSON.parse(localStorage.getItem("search-history"));
   const removedItems = [...recentItems];
   const existingIndex = containsObject(item, removedItems);
@@ -109,17 +109,18 @@ export const clearRecentItem = item => {
   return removedItems;
 };
 
-export const getSelectedEntityFilterLength = obj => {
+export const getSelectedEntityFilterLength = (obj) => {
   if (!obj) return TOTAL_ENTITIES;
   return Object.values(obj).filter(Boolean).length;
 };
 
-export const getSelectedEntityFilter = obj => {
+export const getSelectedEntityFilter = (obj) => {
   if (!obj) return [];
   return (
     Object.entries(obj)
       .map(([key, value]) => {
         if (value) return key;
+        return null;
       })
       .filter(Boolean) || []
   );

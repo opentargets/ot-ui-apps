@@ -1,4 +1,4 @@
-import { Action, ActionType, OtTableSSPState } from "../types/tableTypes";
+import { type Action, ActionType, type OtTableSSPState } from "../types/tableTypes";
 import { getLoadingRows } from "../utils/tableUtils";
 
 export const initialState: OtTableSSPState = {
@@ -10,7 +10,7 @@ export const initialState: OtTableSSPState = {
   initialLoading: true,
 };
 
-export function createInitialState(str: string): OtTableSSPState {
+export function createInitialState(_str: string): OtTableSSPState {
   return initialState;
 }
 
@@ -55,7 +55,7 @@ export function otTableReducer(
       };
     }
     default: {
-      throw Error("Unknown action: " + action);
+      throw Error(`Unknown action: ${action}`);
       return state;
     }
   }

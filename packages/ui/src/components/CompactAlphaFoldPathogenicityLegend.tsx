@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { alphaFoldPathogenicityColorScale } from "@ot/constants";
-import { DetailPopover, AlphaFoldPathogenicityLegend } from "ui";
+import { AlphaFoldPathogenicityLegend, DetailPopover } from "ui";
 
 export default function CompactAlphaFoldPathogenicityLegend({ showTitle = true }) {
   const barWidth = 100;
@@ -22,11 +22,21 @@ export default function CompactAlphaFoldPathogenicityLegend({ showTitle = true }
         {showTitle && <Typography variant="caption">AlphaFold model pathogenicity:</Typography>}
         <Box sx={{ display: "flex", gap: 0.75, alignItems: "center" }}>
           <Typography variant="caption">likely benign</Typography>
-          <svg width={barWidth} height={barHeight} style={{ borderRadius: "2px" }}>
+          <svg
+            width={barWidth}
+            height={barHeight}
+            style={{ borderRadius: "2px" }}
+            role="img"
+            aria-label="AlphaFold pathogenicity model confidence scale"
+          >
             <defs>
               <linearGradient id={gradientId} x1="0%" x2="100%" y1="0%" y2="0%">
-                {stops.map((stop, i) => (
-                  <stop key={i} offset={stop.offset} stopColor={stop.color} />
+                {stops.map((stop, _i) => (
+                  <stop
+                    key={`stop-${stop.offset}-${stop.color}`}
+                    offset={stop.offset}
+                    stopColor={stop.color}
+                  />
                 ))}
               </linearGradient>
             </defs>

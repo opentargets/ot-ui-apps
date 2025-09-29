@@ -1,14 +1,13 @@
-import { memo } from "react";
-import { styled } from "@mui/styles";
-import { Typography, Chip, Box } from "@mui/material";
+import { faClockRotateLeft, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faClockRotateLeft, faArrowTrendUp } from "@fortawesome/free-solid-svg-icons";
-
-import { clearRecentItem } from "./utils/searchUtils";
-import DisplayVariantId from "../DisplayVariantId";
+import { Box, Chip, Typography } from "@mui/material";
+import { styled } from "@mui/styles";
 import { getStudyItemMetaData } from "@ot/utils";
+import { memo } from "react";
+import DisplayVariantId from "../DisplayVariantId";
 import StudyPublication from "../StudyPublication";
 import GlobalSearchIcon from "./GlobalSearchIcon";
+import { clearRecentItem } from "./utils/searchUtils";
 
 const ListItem = styled("li")(({ theme }) => ({
   cursor: "pointer",
@@ -161,7 +160,7 @@ function RecentListItem({ item, onItemClick }) {
 
       <FontAwesomeIcon
         icon={faXmark}
-        onClick={event => {
+        onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
           clearRecentItem(item);
@@ -190,7 +189,7 @@ function TopHitListItem({ item, onItemClick }) {
               <Box
                 sx={{
                   fontWeight: "bold",
-                  color: theme => theme.palette.primary.main,
+                  color: (theme) => theme.palette.primary.main,
                 }}
               >
                 {symbolNameOrId(item)}
@@ -295,11 +294,7 @@ function GlobalSearchListItem({ item, isTopHit = false, onItemClick }) {
           <Typography variant="subtitle2">{item.name}</Typography>
         </>
       );
-    return (
-      <>
-        <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>
-      </>
-    );
+    return <Typography variant="subtitle1">{symbolNameOrId(item)}</Typography>;
   };
 
   function getVariantRsIds() {

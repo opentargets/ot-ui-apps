@@ -1,44 +1,44 @@
-import { ReactElement, ReactNode, useMemo, useState, useEffect } from "react";
-import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
-import {
-  useReactTable,
-  ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  FilterFn,
-  flexRender,
-  getFacetedUniqueValues,
-  Row,
-} from "@tanstack/react-table";
 import {
   faAngleLeft,
   faAngleRight,
-  faArrowUp,
   faArrowDown,
-  faForwardStep,
+  faArrowUp,
   faBackwardStep,
+  faForwardStep,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import { Box, Grid, IconButton, NativeSelect, Skeleton } from "@mui/material";
+import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
+import {
+  type ColumnFiltersState,
+  type FilterFn,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  type Row,
+  useReactTable,
+} from "@tanstack/react-table";
+import { type ReactElement, type ReactNode, useEffect, useMemo, useState } from "react";
+import DataDownloader from "../DataDownloader";
+import Tooltip from "../Tooltip";
 import OtTableColumnFilter from "./OtTableColumnFilter";
+import OtTableColumnVisibility from "./OtTableColumnVisibility";
 // import { naLabel } from "@ot/constants";
 import OtTableSearch from "./OtTableSearch";
-import { OtTableProps } from "./types/tableTypes";
 import {
   FontAwesomeIconPadded,
+  OtTableCellContainer,
   OtTableContainer,
   OtTableHeader,
-  OtTH,
   OtTableHeaderText,
   OtTD,
-  OtTableCellContainer,
+  OtTH,
   OtTR,
 } from "./otTableLayout";
-import DataDownloader from "../DataDownloader";
+import type { OtTableProps } from "./types/tableTypes";
 import {
   getCurrentPagePosition,
   getDefaultSortObj,
@@ -47,8 +47,6 @@ import {
   isNestedColumns,
   mapTableColumnToTanstackColumns,
 } from "./utils/tableUtils";
-import Tooltip from "../Tooltip";
-import OtTableColumnVisibility from "./OtTableColumnVisibility";
 
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -144,7 +142,7 @@ function OtTable({
     onRowSelectionChange: setRowSelection,
   });
 
-  function onRowSelection(e: any, row: Row<any>) {
+  function onRowSelection(_e: any, row: Row<any>) {
     enableRowSelection && row.toggleSelected();
   }
 
@@ -197,13 +195,13 @@ function OtTable({
         </Grid>
       </Grid>
       {/* Table component container */}
-      <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
+      <Box sx={{ w: 1, overflowX: "auto", marginTop: (theme) => theme.spacing(3) }}>
         {/* Table component */}
         <OtTableContainer>
           <thead>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
+                {headerGroup.headers.map((header) => {
                   return (
                     <OtTH
                       key={header.id}
@@ -253,17 +251,17 @@ function OtTable({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map(row => {
+            {table.getRowModel().rows.map((row) => {
               return (
                 <OtTR
                   key={row.id}
-                  onClick={e => onRowSelection(e, row)}
+                  onClick={(e) => onRowSelection(e, row)}
                   enableRowSelection={enableRowSelection}
                   isSelected={row.getIsSelected()}
                   onMouseEnter={getEnteredRow ? () => getEnteredRow(row) : null}
                   onMouseLeave={getExitedRow ? () => getExitedRow(row) : null}
                 >
-                  {row.getVisibleCells().map(cell => {
+                  {row.getVisibleCells().map((cell) => {
                     return (
                       <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                         <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
@@ -294,7 +292,7 @@ function OtTable({
           display: "flex",
           justifyContent: "end",
           alignItems: "center",
-          padding: theme => `${theme.spacing(2)} 0 `,
+          padding: (theme) => `${theme.spacing(2)} 0 `,
         }}
       >
         <div>
@@ -303,13 +301,13 @@ function OtTable({
             id="paginationSelect"
             disableUnderline
             disabled={loading}
-            sx={{ pl: theme => theme.spacing(2) }}
+            sx={{ pl: (theme) => theme.spacing(2) }}
             value={table.getState().pagination.pageSize}
-            onChange={e => {
+            onChange={(e) => {
               table.setPageSize(Number(e.target.value));
             }}
           >
-            {[10, 25, 100].map(pageSize => (
+            {[10, 25, 100].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>
@@ -321,8 +319,8 @@ function OtTable({
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: theme => theme.spacing(3),
-            marginLeft: theme => theme.spacing(3),
+            gap: (theme) => theme.spacing(3),
+            marginLeft: (theme) => theme.spacing(3),
           }}
         >
           <div>
@@ -374,7 +372,7 @@ function OtTable({
 
 function getLoadingCells(columms: Array<Record<string, unknown>>) {
   const arr: Record<string, unknown>[] = [];
-  columms.forEach(e => {
+  columms.forEach((e) => {
     if (isNestedColumns(e)) {
       const headerObj = {
         header: e.header || e.label,
