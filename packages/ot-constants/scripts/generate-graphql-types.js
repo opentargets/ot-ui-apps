@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -148,7 +148,7 @@ function generateTypeScriptInterface(type) {
 
   let interfaceCode = `export interface ${type.name} {\n`;
 
-  fields.forEach(field => {
+  for (const field of fields) {
     const fieldType = graphqlTypeToTypeScript(field.type);
     const isOptional = field.type.kind !== "NON_NULL";
     const optionalMarker = isOptional ? "?" : "";
@@ -157,7 +157,7 @@ function generateTypeScriptInterface(type) {
       interfaceCode += `  /** ${field.description} */\n`;
     }
     interfaceCode += `  ${field.name}${optionalMarker}: ${fieldType};\n`;
-  });
+  }
 
   interfaceCode += "}\n\n";
   return interfaceCode;
@@ -171,12 +171,12 @@ function generateTypeScriptEnum(type) {
 
   let enumCode = `export enum ${type.name} {\n`;
 
-  type.enumValues.forEach(enumValue => {
+  for (const enumValue of type.enumValues) {
     if (enumValue.description) {
       enumCode += `  /** ${enumValue.description} */\n`;
     }
     enumCode += `  ${enumValue.name} = '${enumValue.name}',\n`;
-  });
+  }
 
   enumCode += "}\n\n";
   return enumCode;
@@ -188,7 +188,7 @@ function generateTypeScriptUnion(type) {
     return null;
   }
 
-  const possibleTypes = type.possibleTypes.map(t => t.name).join(" | ");
+  const possibleTypes = type.possibleTypes.map((t) => t.name).join(" | ");
   return `export type ${type.name} = ${possibleTypes};\n\n`;
 }
 
@@ -209,7 +209,7 @@ async function testEndpoint(endpoint) {
 
     if (response.ok) {
       const result = await response.json();
-      if (result.data && result.data.__schema) {
+      if (result.data?.__schema) {
         console.log(`✅ Endpoint working: ${endpoint}`);
         return result;
       }
@@ -246,7 +246,7 @@ async function generateGraphQLTypes() {
 
     const schema = result.data.__schema;
     const types = schema.types.filter(
-      type =>
+      (type) =>
         !type.name.startsWith("__") &&
         type.name !== "Query" &&
         type.name !== "Mutation" &&
@@ -263,32 +263,32 @@ async function generateGraphQLTypes() {
 
     // Generate interfaces and input types
     const objectTypes = types.filter(
-      type => type.kind === "OBJECT" || type.kind === "INPUT_OBJECT"
+      (type) => type.kind === "OBJECT" || type.kind === "INPUT_OBJECT"
     );
-    objectTypes.forEach(type => {
+    for (const type of objectTypes) {
       const interfaceCode = generateTypeScriptInterface(type);
       if (interfaceCode) {
         generatedCode += interfaceCode;
       }
-    });
+    }
 
     // Generate enums
-    const enumTypes = types.filter(type => type.kind === "ENUM");
-    enumTypes.forEach(type => {
+    const enumTypes = types.filter((type) => type.kind === "ENUM");
+    for (const type of enumTypes) {
       const enumCode = generateTypeScriptEnum(type);
       if (enumCode) {
         generatedCode += enumCode;
       }
-    });
+    }
 
     // Generate union types
-    const unionTypes = types.filter(type => type.kind === "UNION");
-    unionTypes.forEach(type => {
+    const unionTypes = types.filter((type) => type.kind === "UNION");
+    for (const type of unionTypes) {
       const unionCode = generateTypeScriptUnion(type);
       if (unionCode) {
         generatedCode += unionCode;
       }
-    });
+    }
 
     // Write the generated types to a file in the types folder
     const outputPath = path.join(__dirname, "..", "src", "types", "graphql-types.ts");

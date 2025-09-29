@@ -1438,16 +1438,15 @@ export interface geneticVariation {
 }
 
 export enum StudyTypeEnum {
-  eqtl = 'eqtl',
-  gwas = 'gwas',
-  pqtl = 'pqtl',
-  sceqtl = 'sceqtl',
-  scpqtl = 'scpqtl',
-  scsqtl = 'scsqtl',
-  sctuqtl = 'sctuqtl',
-  sqtl = 'sqtl',
-  tuqtl = 'tuqtl',
+  eqtl = "eqtl",
+  gwas = "gwas",
+  pqtl = "pqtl",
+  sceqtl = "sceqtl",
+  scpqtl = "scpqtl",
+  scsqtl = "scsqtl",
+  sctuqtl = "sctuqtl",
+  sqtl = "sqtl",
+  tuqtl = "tuqtl",
 }
 
 export type EntityUnionType = Target | Drug | Disease | Variant | Study;
-
