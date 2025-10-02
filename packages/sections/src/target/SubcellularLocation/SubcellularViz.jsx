@@ -6,9 +6,10 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
+import SwissBioVisSVG from "./SwissbioVizSVG";
 
-const SwissbioViz =
-  "customElements" in window ? lazy(() => import("./SwissbioViz")) : ({ children }) => children;
+// const SwissbioViz =
+//   "customElements" in window ? lazy(() => import("./SwissbioViz")) : ({ children }) => children;
 
 const useStyles = makeStyles(theme => ({
   locationIcon: {
@@ -160,18 +161,19 @@ function SubcellularViz({ data: target }) {
             className={classes.tabPanel}
           >
             <Suspense fallback={<Skeleton height={400} />}>
-              <SwissbioViz
-                taxonId="9606"
-                locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
-                sourceId={s.id.toLowerCase()}
-              >
+              <Box sx={{ display: "flex" }} >
+                <SwissBioVisSVG             
+                  taxonId="9606"
+                  locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
+                  sourceId={s.id.toLowerCase()}
+                />
                 <Box ml={4} key={s.id}>
                   <Typography variant="h6">{s.label}</Typography>
                   Location for{" "}
                   <LocationLink sourceId={s.id} id={s.id === "uniprot" ? uniprotId : target.id} />
                   <LocationsList sls={sourcesLocations[s.id]} />
                 </Box>
-              </SwissbioViz>
+              </Box>
             </Suspense>
           </div>
         ))}
