@@ -1,32 +1,11 @@
 import { lazy, useEffect, useRef, Suspense, useState } from "react";
 import { Typography, List, ListItem, Box, Tabs, Tab, Skeleton } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
-import SwissBioVisSVG from "./SwissbioVizSVG";
-
-// const SwissbioViz =
-//   "customElements" in window ? lazy(() => import("./SwissbioViz")) : ({ children }) => children;
-
-const useStyles = makeStyles(theme => ({
-  locationIcon: {
-    paddingRight: "0.5em",
-  },
-  locationsList: {
-    cursor: "pointer",
-    fontWeight: "bold",
-    color: theme.palette.primary.main,
-    "& .inpicture.lookedAt": {
-      color: theme.palette.primary.dark,
-    },
-  },
-  tabPanel: {
-    marginTop: "30px",
-  },
-}));
+import SwissBioVis from "./SwissbioViz";
 
 // Remove the 'SL-' from a location termSL (e.g. "SL-0097")
 // The sib-swissbiopics component (different from what is documented)
@@ -68,16 +47,31 @@ function LocationLink({ sourceId, id }) {
 /**
  * The text list of locations displayed to the right of the visualiztion
  */
-function LocationsList({ sls }) {
-  const classes = useStyles();
+function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
+  // const classes = useStyles();
   return (
-    <List className={classes.locationsList}>
+    <List>
       {sls.map(({ location, termSL }) => (
-        <ListItem key={location} id={parseTermToTextId(termSL)}>
-          <span className={classes.locationIcon}>
+        <ListItem
+          key={location}
+          sx={{
+            display: "flex",
+            alignItems: "baseline",
+            gap: 1,
+            cursor: "default",
+            color: (theme) => theme.palette.primary[
+              hoveredCellPart === parseLocationTerm(termSL) ? "dark" : "main"
+            ]
+          }}
+          onMouseEnter={() => setHoveredCellPart(parseLocationTerm(termSL))}
+          onMouseLeave={() => setHoveredCellPart(null)}
+        >
+          <span>
             <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
           </span>
-          {location}
+          <Typography variant="body2">
+            <strong>{location}</strong>
+          </Typography>
         </ListItem>
       ))}
     </List>
@@ -121,7 +115,9 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
  * @param {*} data the target object as returned by the API
  */
 function SubcellularViz({ data: target }) {
-  const classes = useStyles();
+  const [hoveredCellPart, setHoveredCellPart] = useState(null);
+
+  // const classes = useStyles();
   // define the sources here so we can have call useRef() and then pass it to the tabs panels
   const sources = [
     {
@@ -158,20 +154,28 @@ function SubcellularViz({ data: target }) {
             id={getTabId(s.id)}
             ref={s.ref}
             key={s.id}
-            className={classes.tabPanel}
           >
             <Suspense fallback={<Skeleton height={400} />}>
-              <Box sx={{ display: "flex" }} >
-                <SwissBioVisSVG             
+              <Box sx={{ display: "flex", gap: 4, mt: 4 }} >
+                <SwissBioVis
                   taxonId="9606"
                   locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
                   sourceId={s.id.toLowerCase()}
+                  hoveredCellPart={hoveredCellPart}
+                  setHoveredCellPart={setHoveredCellPart}
                 />
-                <Box ml={4} key={s.id}>
+                <Box
+                  key={s.id}
+                  sx={{ width: { xs: "55%", sm: "45%" }, flexGrow: 0 }}
+                >
                   <Typography variant="h6">{s.label}</Typography>
                   Location for{" "}
                   <LocationLink sourceId={s.id} id={s.id === "uniprot" ? uniprotId : target.id} />
-                  <LocationsList sls={sourcesLocations[s.id]} />
+                  <LocationsList
+                    sls={sourcesLocations[s.id]}
+                    hoveredCellPart={hoveredCellPart}
+                    setHoveredCellPart={setHoveredCellPart}
+                  />
                 </Box>
               </Box>
             </Suspense>
