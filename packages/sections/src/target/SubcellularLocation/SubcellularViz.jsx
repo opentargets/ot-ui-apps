@@ -6,6 +6,7 @@ import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
 import SwissBioVis from "./SwissbioViz";
+import membraneCodes from "./membrane-codes";
 
 // Remove the 'SL-' from a location termSL (e.g. "SL-0097")
 // The sib-swissbiopics component (different from what is documented)
@@ -48,32 +49,34 @@ function LocationLink({ sourceId, id }) {
  * The text list of locations displayed to the right of the visualiztion
  */
 function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
-  // const classes = useStyles();
   return (
     <List>
-      {sls.map(({ location, termSL }) => (
-        <ListItem
-          key={location}
-          sx={{
-            display: "flex",
-            alignItems: "baseline",
-            gap: 1,
-            cursor: "default",
-            color: (theme) => theme.palette.primary[
-              hoveredCellPart === parseLocationTerm(termSL) ? "dark" : "main"
-            ]
-          }}
-          onMouseEnter={() => setHoveredCellPart(parseLocationTerm(termSL))}
-          onMouseLeave={() => setHoveredCellPart(null)}
-        >
-          <span>
-            <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-          </span>
-          <Typography variant="body2">
-            <strong>{location}</strong>
-          </Typography>
-        </ListItem>
-      ))}
+      {sls.map(({ location, termSL }) => {
+        const locationCode = parseLocationTerm(membraneCodes[termSL]?.parentCode ?? termSL);
+        return (
+          <ListItem
+            key={location}
+            sx={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 1,
+              cursor: "default",
+              color: (theme) => theme.palette.primary[
+                hoveredCellPart === locationCode ? "dark" : "main"
+              ]
+            }}
+            onMouseEnter={() => setHoveredCellPart(locationCode)}
+            onMouseLeave={() => setHoveredCellPart(null)}
+          >
+            <span>
+              <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
+            </span>
+            <Typography variant="body2">
+              <strong>{location}</strong>
+            </Typography>
+          </ListItem>
+        );
+      })}
     </List>
   );
 }
@@ -154,6 +157,7 @@ function SubcellularViz({ data: target }) {
             id={getTabId(s.id)}
             ref={s.ref}
             key={s.id}
+            role="tabpanel"
           >
             <Suspense fallback={<Skeleton height={400} />}>
               <Box sx={{ display: "flex", gap: 4, mt: 4 }} >

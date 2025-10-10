@@ -20,7 +20,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
     }
   }
 
-  // fetch svg, add style and event listeners and it to the DOM
+  // fetch SVG, add style and event listeners, add SVG to the DOM
   useEffect(() => {
     if (!wrapperRef.current) return;
 
@@ -38,7 +38,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
       ) || [];
 
       for (const elmt of subcellularPresentSVGs) {
-        let topLevelId = elmt.id.replace(/^[a-zA-Z]*/, "");
+        const topLevelId = elmt.closest('.subcellular_location').id.replace(/^[a-zA-Z]*/, "");
         elmt.addEventListener("mouseenter", () => setHoveredCellPart(topLevelId));
         elmt.addEventListener("mouseleave", () => setHoveredCellPart(null));
         styleCellPart(elmt, basicHighlightStyles);
@@ -49,12 +49,19 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
   
   // hover updates
   useEffect(() => {
+
     if (!wrapperRef.current) return;
     
     const svg = wrapperRef.current.querySelector("svg");
     if (!svg) return;
+
+    // skip if this tab is not visible
+    const tabPanel = wrapperRef.current.closest('[role="tabpanel"]');
+    if (tabPanel && getComputedStyle(tabPanel).display === 'none') {
+      return;
+    }
     
-    // remove existing hover highkight if exists
+    // remove existing hover highlight if exists
     for (const elmt of svg.querySelectorAll('.hovered')) {
       elmt.classList.remove('hovered');
       styleCellPart(elmt, basicHighlightStyles);
@@ -67,7 +74,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
         targetElement.classList.add('hovered');
         styleCellPart(targetElement, {
           fill: config.profile.primaryColor,
-          "fill-opacity": "1",
+          "fill-opacity": "0.7",
           stroke: config.profile.primaryColor,
         });
       }
