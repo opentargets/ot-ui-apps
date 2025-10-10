@@ -38,9 +38,18 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
       ) || [];
 
       for (const elmt of subcellularPresentSVGs) {
-        const topLevelId = elmt.closest('.subcellular_location').id.replace(/^[a-zA-Z]*/, "");
-        elmt.addEventListener("mouseenter", () => setHoveredCellPart(topLevelId));
-        elmt.addEventListener("mouseleave", () => setHoveredCellPart(null));
+        const topLevelId = (
+          elmt.closest('.subcellular_present') ??
+          elmt.closest('.subcellular_location')
+        )?.id.replace(/^[a-zA-Z]*/, "");
+        elmt.addEventListener("mouseover", (e) => {
+          e.stopPropagation();
+          setHoveredCellPart(topLevelId);
+        });
+        elmt.addEventListener("mouseout", (e) => {
+          e.stopPropagation();
+          setHoveredCellPart(null);
+        });
         styleCellPart(elmt, basicHighlightStyles);
       }
     }
