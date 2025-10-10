@@ -49,9 +49,15 @@ function LocationLink({ sourceId, id }) {
  * The text list of locations displayed to the right of the visualiztion
  */
 function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
+  const sortedSls = sls.toSorted((a, b) => {
+    // ignore possible [XXXX]: at start when sorting
+    const aLocationMain = a.location.replace(/^\[.*\][^a-zA-Z]*/, "");
+    const bLocationMain = b.location.replace(/^\[.*\][^a-zA-Z]*/, "");
+    return aLocationMain.localeCompare(bLocationMain);
+  });
   return (
     <List>
-      {sls.map(({ location, termSL }) => {
+      {sortedSls.map(({ location, termSL }) => {
         const locationCode = parseLocationTerm(membraneCodes[termSL]?.parentCode ?? termSL);
         return (
           <ListItem
