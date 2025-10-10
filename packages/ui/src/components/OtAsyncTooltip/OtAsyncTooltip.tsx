@@ -185,18 +185,19 @@ function AsyncTooltipDataView({
           <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)}></FontAwesomeIcon>
         </Box>
         <Box sx={{ pt: 0.4, flex: 1 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
-            <Box
-              sx={{
-                typography: "subtitle2",
-                color: theme => theme.palette.grey[900],
-                textTransform: "capitalize",
-                fontWeight: "bold",
-              }}
-            >
-              {getLabel()}
-            </Box>
-            {showChromosome && data.genomicLocation?.chromosome && (
+          <Box
+            sx={{
+              typography: "subtitle2",
+              color: theme => theme.palette.grey[900],
+              textTransform: "capitalize",
+              fontWeight: "bold",
+              mb: 0.5,
+            }}
+          >
+            {getLabel()}
+          </Box>
+          {showChromosome && data.genomicLocation?.chromosome && (
+            <Box sx={{ mb: 0.5 }}>
               <Chip
                 label={`Chr ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
                 size="small"
@@ -208,8 +209,8 @@ function AsyncTooltipDataView({
                   borderColor: theme => theme.palette.primary.main,
                 }}
               />
-            )}
-          </Box>
+            </Box>
+          )}
           <Box sx={{ typography: "body2", color: theme => theme.palette.grey[800] }}>
             {getEntityDescription(entity, data as Record<string, unknown>)}
           </Box>
