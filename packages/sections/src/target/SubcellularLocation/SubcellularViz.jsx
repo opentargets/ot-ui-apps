@@ -1,4 +1,4 @@
-import { lazy, useEffect, useRef, Suspense, useState } from "react";
+import { useState } from "react";
 import { Typography, List, ListItem, Box, Tabs, Tab, Skeleton } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +7,25 @@ import { Link } from "ui";
 import { identifiersOrgLink, getUniprotIds } from "@ot/utils";
 import SwissBioVis from "./SwissbioViz";
 import membraneCodes from "./membrane-codes";
+
+const sources = [
+  {
+    id: "HPA_main",
+    label: "HPA main location",
+  },
+  {
+    id: "HPA_additional",
+    label: "HPA additional location",
+  },
+  {
+    id: "HPA_extracellular_location",
+    label: "HPA extracellular location",
+  },
+  {
+    id: "uniprot",
+    label: "UniProt",
+  },
+];
 
 // Remove the 'SL-' from a location termSL (e.g. "SL-0097")
 // The sib-swissbiopics component (different from what is documented)
@@ -87,35 +106,41 @@ function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
   );
 }
 
-/**
- * SubcellularVizTabs wraps the MUI tabs to separate the state and
- * trigger tab panels visibility on/off without using the state
- * as this crashes the swissbiopic widget - see note below
- * @param {*} sources the array of source to show in the tabs (i.e. those with data)
- */
-function SubcellularVizTabs({ sources: activeSources, children }) {
-  const [activeTab, setActiveTab] = useState(0);
-  const onTabChange = (event, tabId) => {
-    setActiveTab(tabId);
-  };
-  useEffect(() => {
-    // update tab panels visibility: we change the style of the DOM element directly
-    // to avoid any re-rendering as that causes the swissbiopic component to crash
-    children.forEach(child => {
-      child.ref.current.setAttribute("style", "display:none");
-    });
-    children[activeTab].ref.current.setAttribute("style", "display:block");
-  });
+function SubcellularTabPanel({ target, source, sourcesLocations, uniprotId, value, index }) {
+  const [hoveredCellPart, setHoveredCellPart] = useState(null);
 
   return (
-    <>
-      <Tabs value={activeTab} onChange={onTabChange} aria-label="Subcellular location sources">
-        {activeSources.map((s, i) => (
-          <Tab label={s.label} value={i} key={s.id} />
-        ))}
-      </Tabs>
-      {children}
-    </>
+    <Box
+      role="tabpanel"
+      hidden={value !== index}
+      id={`subcellular-tabpanel-${index}`}
+      aria-labelledby={`subcellular-tab-${index}`}
+      sx={{ display: "flex", gap: 4 }}
+    >{value === index && (
+        <>
+          <SwissBioVis
+            taxonId="9606"
+            locationIds={sourcesLocations[source.id].map(l => parseLocationTerm(l.termSL)).join()}
+            sourceId={source.id.toLowerCase()}
+            hoveredCellPart={hoveredCellPart}
+            setHoveredCellPart={setHoveredCellPart}
+          />
+          <Box
+            key={source.id}
+            sx={{ width: { xs: "55%", sm: "45%" }, flexGrow: 0 }}
+          >
+            <Typography variant="h6">{source.label}</Typography>
+            Location for{" "}
+            <LocationLink sourceId={source.id} id={source.id === "uniprot" ? uniprotId : target.id} />
+            <LocationsList
+              sls={sourcesLocations[source.id]}
+              hoveredCellPart={hoveredCellPart}
+              setHoveredCellPart={setHoveredCellPart}
+            />
+          </Box>
+        </>
+      )}
+    </Box>
   );
 }
 
@@ -124,75 +149,37 @@ function SubcellularVizTabs({ sources: activeSources, children }) {
  * @param {*} data the target object as returned by the API
  */
 function SubcellularViz({ data: target }) {
-  const [hoveredCellPart, setHoveredCellPart] = useState(null);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const onTabChange = (event, newTabIndex) => {
+    setActiveTabIndex(newTabIndex);
+  };
 
-  // const classes = useStyles();
-  // define the sources here so we can have call useRef() and then pass it to the tabs panels
-  const sources = [
-    {
-      id: "HPA_main",
-      label: "HPA main location",
-      ref: useRef(),
-    },
-    {
-      id: "HPA_additional",
-      label: "HPA additional location",
-      ref: useRef(),
-    },
-    {
-      id: "HPA_extracellular_location",
-      label: "HPA extracellular location",
-      ref: useRef(),
-    },
-    {
-      id: "uniprot",
-      label: "UniProt",
-      ref: useRef(),
-    },
-  ];
   const uniprotId = getUniprotIds(target.proteinIds)[0];
   const sourcesLocations = parseLocationData(target.subcellularLocations);
   const activeSources = filterSourcesWithData(sources, sourcesLocations);
 
   return (
-    <div>
-      <SubcellularVizTabs sources={activeSources}>
-        {activeSources.map(s => (
-          <div
-            value={getTabId(s.id)}
-            id={getTabId(s.id)}
-            ref={s.ref}
-            key={s.id}
-            role="tabpanel"
-          >
-            <Suspense fallback={<Skeleton height={400} />}>
-              <Box sx={{ display: "flex", gap: 4, mt: 4 }} >
-                <SwissBioVis
-                  taxonId="9606"
-                  locationIds={sourcesLocations[s.id].map(l => parseLocationTerm(l.termSL)).join()}
-                  sourceId={s.id.toLowerCase()}
-                  hoveredCellPart={hoveredCellPart}
-                  setHoveredCellPart={setHoveredCellPart}
-                />
-                <Box
-                  key={s.id}
-                  sx={{ width: { xs: "55%", sm: "45%" }, flexGrow: 0 }}
-                >
-                  <Typography variant="h6">{s.label}</Typography>
-                  Location for{" "}
-                  <LocationLink sourceId={s.id} id={s.id === "uniprot" ? uniprotId : target.id} />
-                  <LocationsList
-                    sls={sourcesLocations[s.id]}
-                    hoveredCellPart={hoveredCellPart}
-                    setHoveredCellPart={setHoveredCellPart}
-                  />
-                </Box>
-              </Box>
-            </Suspense>
-          </div>
+    <>
+      <Tabs value={activeTabIndex} onChange={onTabChange} aria-label="Subcellular location sources">
+        {activeSources.map((source) => (
+          <Tab label={source.label} key={source.id} />
         ))}
-      </SubcellularVizTabs>
-    </div>
+      </Tabs>
+
+      <Box sx={{ mt: 4 }}>
+        {activeSources.map((source, index) => (
+          <SubcellularTabPanel
+            target={target}
+            source={source}
+            sourcesLocations={sourcesLocations}
+            uniprotId={uniprotId}
+            value={activeTabIndex}
+            index={index}
+            key={source.id}
+          />
+        ))}
+      </Box>
+    </>
   );
 }
 

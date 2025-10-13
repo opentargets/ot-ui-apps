@@ -1,8 +1,9 @@
-import { Box } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Box, Skeleton } from "@mui/material";
+import { useState, useEffect, useRef } from "react";
 import { useConfigContext } from "ui";
 
 function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHoveredCellPart}) {
+  const [loading, setLoading] = useState(true);
   const { config } = useConfigContext();
   const wrapperRef = useRef();
 
@@ -52,6 +53,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
         });
         styleCellPart(elmt, basicHighlightStyles);
       }
+      setLoading(false);
     }
     fetchSVG();
   }, [taxonId, sourceId, locationIds]);
@@ -63,12 +65,6 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
     
     const svg = wrapperRef.current.querySelector("svg");
     if (!svg) return;
-
-    // skip if this tab is not visible
-    const tabPanel = wrapperRef.current.closest('[role="tabpanel"]');
-    if (tabPanel && getComputedStyle(tabPanel).display === 'none') {
-      return;
-    }
     
     // remove existing hover highlight if exists
     for (const elmt of svg.querySelectorAll('.hovered')) {
@@ -91,7 +87,10 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
   }, [hoveredCellPart]);
 
   return (
-    <Box ref={wrapperRef} sx={{ flexGrow: 1, maxWidth: "600px" }} />
+    <Box sx={{ flexGrow: 1, maxWidth: "600px", display: "flex", flexDirection: "column", justifyContent: "start" }}>
+      {loading && <Skeleton width="100%" height={400} />}
+      <Box ref={wrapperRef} />
+    </Box>
   );
 }
 
