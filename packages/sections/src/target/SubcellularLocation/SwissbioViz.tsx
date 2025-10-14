@@ -1,9 +1,29 @@
-import { Box, Skeleton } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useConfigContext } from "ui";
+import { safeFetch } from "@ot/utils";
+
+function Message({ text }: { text: string }) {
+  return (
+    <Typography
+      component="div"
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "400px",
+        height: "100%",
+        width: "100%",
+        backgroundColor: "#f8f8f8",
+      }}
+    >
+      {text}
+    </Typography>
+  );
+}
 
 function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHoveredCellPart}) {
-  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("Loading cell diagram ...");
   const { config } = useConfigContext();
   const wrapperRef = useRef();
 
@@ -26,10 +46,14 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
     if (!wrapperRef.current) return;
 
     const fetchSVG = async () => {
-      const response = await fetch(
-        `https://www.swissbiopics.org//api/${taxonId}/sl/${locationIds}`
+      let [svgString, error] = await safeFetch(
+        `https://www.swissbiopics.org//api/${taxonId}/sl/${locationIds}`,
+        "text"
       );
-      const svgString = await response.text();
+      if (error) {
+        setMessage("Problem downloading cell diagram");
+        return;
+      }
       wrapperRef.current.innerHTML = svgString;
       const svg = wrapperRef.current.querySelector("svg");
 
@@ -53,7 +77,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
         });
         styleCellPart(elmt, basicHighlightStyles);
       }
-      setLoading(false);
+      setMessage("");
     }
     fetchSVG();
   }, [taxonId, sourceId, locationIds]);
@@ -88,7 +112,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
 
   return (
     <Box sx={{ flexGrow: 1, maxWidth: "600px", display: "flex", flexDirection: "column", justifyContent: "start" }}>
-      {loading && <Skeleton width="100%" height={400} />}
+      {message && <Message text={message} />}
       <Box ref={wrapperRef} />
     </Box>
   );
