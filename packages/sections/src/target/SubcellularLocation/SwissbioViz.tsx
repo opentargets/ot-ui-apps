@@ -22,7 +22,7 @@ function Message({ text }: { text: string }) {
   );
 }
 
-function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHoveredCellPart}) {
+function SwissBioVis({ locationIds, taxonId, sourceId, hoveredCellPart, setHoveredCellPart}) {
   const [message, setMessage] = useState("Loading cell diagram ...");
   const { config } = useConfigContext();
   const wrapperRef = useRef();
@@ -118,4 +118,4 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
   );
 }
 
-export default SwissBioVisSVG;
+export default SwissBioVis;
