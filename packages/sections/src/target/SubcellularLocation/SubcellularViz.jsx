@@ -86,6 +86,7 @@ function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
               alignItems: "baseline",
               gap: 1,
               cursor: "default",
+              width: "fit-content",
               color: (theme) => theme.palette.primary[
                 hoveredCellPart === locationCode ? "dark" : "main"
               ]
