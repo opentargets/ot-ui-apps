@@ -103,7 +103,7 @@ function SwissBioVisSVG({ locationIds, taxonId, sourceId, hoveredCellPart, setHo
         targetElement.classList.add('hovered');
         styleCellPart(targetElement, {
           fill: config.profile.primaryColor,
-          "fill-opacity": "1",
+          "fill-opacity": "0.85",
           stroke: config.profile.primaryColor,
         });
       }
