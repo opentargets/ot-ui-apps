@@ -14,6 +14,8 @@
     "dev": "turbo run dev --parallel",
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
+    "dev:docs": "turbo run dev --filter=docs",
+    "build:docs": "turbo run build --filter=docs",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
     "lint": "biome check .",
