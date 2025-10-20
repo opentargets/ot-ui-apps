@@ -32,9 +32,6 @@ const sources = [
 // actually doesn't accept the "SL-" part of the term
 const parseLocationTerm = term => term?.substring(3);
 
-// Parse termSL to specific id format used by the text for rollovers
-const parseTermToTextId = term => (term ? `${term.replace("-", "")}term` : "");
-
 // Parse API response and split locations based on sources. Example:
 // { HPA_main: [], uniprot: [], }
 const parseLocationData = subcellularLocations => {

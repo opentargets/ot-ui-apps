@@ -84,7 +84,6 @@ function SwissBioVis({ locationIds, taxonId, sourceId, hoveredCellPart, setHover
   
   // hover updates
   useEffect(() => {
-
     if (!wrapperRef.current) return;
     
     const svg = wrapperRef.current.querySelector("svg");
@@ -111,8 +110,16 @@ function SwissBioVis({ locationIds, taxonId, sourceId, hoveredCellPart, setHover
   }, [hoveredCellPart]);
 
   return (
-    <Box sx={{ flexGrow: 1, maxWidth: "600px", display: "flex", flexDirection: "column", justifyContent: "start" }}>
-      {message && <Message text={message} />}
+    <Box
+        sx={{
+          flexGrow: 1,
+          maxWidth: "600px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "start"
+        }}
+      >
+        {message && <Message text={message} />}
       <Box ref={wrapperRef} />
     </Box>
   );
