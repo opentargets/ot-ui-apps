@@ -50,7 +50,7 @@ function CredibleSetPage(): ReactElement {
             />
           </Tabs>
         </Box>
-        <Profile studyLocusId={studyLocusId} variantId={variantId} />
+        {variantId && <Profile studyLocusId={studyLocusId} variantId={variantId} />}
       </>
     </BasePage>
   );
