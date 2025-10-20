@@ -18,7 +18,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
       request={request}
       renderDescription={() => <Description symbol={symbol} />}
       showContentLoading={true}
-      renderBody={() => <SubcellularViz data={request.data?.target} />}
+      renderBody={() => <SubcellularViz key={request.data?.target?.id} data={request.data?.target} />}
     />
   );
 }
