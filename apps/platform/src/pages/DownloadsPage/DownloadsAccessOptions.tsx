@@ -88,6 +88,26 @@ function HttpLocation({ link }: { link: string }) {
   );
 }
 
+function GcpLocationMemo() {
+  return (
+    <Typography
+      variant="caption"
+      sx={{ 
+        mb: 1, 
+        display: "block",
+        fontWeight: "medium",
+        borderColor: "#1f5279",
+        backgroundColor: "#1f5279",
+        color: "white",
+        p: 1,
+        borderRadius: 1,
+        border: "1px solid",
+      }}
+    >
+    You need to specify <b>billing project</b> when accessing the data from the Google Cloud.
+    </Typography>
+  )
+}
 function GcpLocation({ link }: { link: string }) {
   return (
     <Box sx={{ p: 2 }}>
@@ -95,6 +115,8 @@ function GcpLocation({ link }: { link: string }) {
     </Box>
   );
 }
+
+
 
 function FtpLocation({ link }: { link: string }) {
   return (
@@ -126,9 +148,10 @@ function RsyncScript({ version, path, link }: { version: string; path: string; l
 }
 
 function GcpScript({ link }: { link: string }) {
-  const cmd = `gcloud storage cp -r ${link}/ .`;
+  const cmd = `gcloud storage cp -r --billing-project $\{PROJECT_ID\} ${link}/ .`;
   return (
     <Box sx={{ p: 2 }}>
+      <GcpLocationMemo/>
       <OtCodeBlock textToCopy={cmd}>{cmd}</OtCodeBlock>
     </Box>
   );
