@@ -4,7 +4,6 @@ query ExpressionQuery($ensemblId: String!) {
     baselineExpression (page: {index: 0, size: 1500}) {
       count
       rows {
-        targetId
         targetFromSourceId
         tissueBiosample {
           biosampleId
@@ -16,28 +15,9 @@ query ExpressionQuery($ensemblId: String!) {
           biosampleName
         }
         celltypeBiosampleFromSource
-        min
-        q1
         median
-        q3
-        max
         datasourceId
         datatypeId
-        unit
-      }
-    }
-    expressions {
-      tissue {
-        label
-        organs
-        anatomicalSystems
-      }
-      rna {
-        value
-        level
-      }
-      protein {
-        level
       }
     }
   }
