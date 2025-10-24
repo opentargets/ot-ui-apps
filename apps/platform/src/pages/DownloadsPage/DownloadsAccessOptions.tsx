@@ -151,7 +151,7 @@ function GcpScript({ link }: { link: string }) {
   const cmd = `gcloud storage cp -r --billing-project $\{PROJECT_ID\} ${link}/ .`;
   return (
     <Box sx={{ p: 2 }}>
-      <GcpLocationMemo/>
+      <GcpLocationMemo />
       <OtCodeBlock textToCopy={cmd}>{cmd}</OtCodeBlock>
     </Box>
   );
