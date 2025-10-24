@@ -233,8 +233,7 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
     secondLevel[bioSampleId] = Object.values(obj);
   }
 
-  // add _normalisedMedian to each orignal data row - medians are normalised
-  // by level (2md or 3rd) and datatypeid
+  // add _normalisedMedian to each 2nd level object - normalised by max median per datatypeid
   {
     const maxMedians =  { "scrna-seq": 0, "bulk rna-seq": 0, "mass-spectrometry proteomics": 0 };
     for (const arr of Object.values(secondLevel)) {
@@ -249,19 +248,27 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
     for (const arr of Object.values(secondLevel)) {
       for (const obj of arr) {
         for (const row of Object.values(obj)) {
-          row.median /= maxMedians[row.datatypeId];
+          row._normalisedMedian = row.median / maxMedians[row.datatypeId];
         }
       }
     }
-    !!!!!! HERE - CHECK ABOVE AND DO 3ED LEVEL!!!!!!!
-
-
-    if (maxMedians[row.datatypeId] < row.median) {
-      maxMedians[row.datatypeId] = row.median;
-    }
   }
-  for (const row of data) {
-    row._normalisedMedian = row.median / maxMedians[row.datatypeId];
+
+  // add _normalisedMedian to each 3rd level object - all 3rd level objects are scrna-seq 
+  {
+    let maxMedian = 0;
+    for (const arr of Object.values(thirdLevel)) {
+      for (const row of arr) {
+        if (maxMedian < row.median) {
+          maxMedian = row.median;
+        }
+      }
+    }
+    for (const arr of Object.values(thirdLevel)) {
+      for (const row of arr) {
+        row._normalisedMedian = row.median / maxMedian;
+      }
+    }
   }
 
   // 1st level
@@ -309,7 +316,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const processedData = useMemo(() => prepareData(data, false)); // groupByTissue));
+  const processedData = useMemo(() => prepareData(data, true)); // groupByTissue));
   console.log(processedData);
   // console.log(prepareData(data).firstLevel.map(r => r["scrna-seq"]?.median));
   // console.log(groupData(data).firstLevel.map(r => Object.values(r)[0].tissueBiosample.biosampleName));
