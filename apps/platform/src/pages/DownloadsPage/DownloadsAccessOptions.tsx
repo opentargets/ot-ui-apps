@@ -104,7 +104,7 @@ function GcpLocationMemo() {
         border: "1px solid",
       }}
     >
-    You need to specify <b>billing project</b> when accessing the data from the Google Cloud.
+    You need to specify <b>a billing project</b> when accessing the data from the Google Cloud.
     </Typography>
   )
 }
