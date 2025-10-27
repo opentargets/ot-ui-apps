@@ -1,7 +1,11 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "vcs": {
     "enabled": true,
@@ -9,29 +13,27 @@
     "useIgnoreFile": true
   },
   "files": {
-    "include": [
+    "includes": [
       "**/*.js",
       "**/*.jsx",
       "**/*.ts",
       "**/*.tsx",
       "**/*.json",
       "**/*.gql",
-      "**/*.graphql"
-    ],
-    "ignore": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/.next/**",
-      "**/coverage/**",
-      "**/*.d.ts",
-      "**/generated/**",
-      "**/apps/platform/src/**",
-      "**/packages/ui/**",
-      "**/packages/sections/**",
-      "**/packages/ot-config/**",
-      "**/packages/ot-constants/**",
-      "**/packages/ot-utils/**"
+      "**/*.graphql",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.next",
+      "!**/coverage",
+      "!**/*.d.ts",
+      "!**/generated",
+      "!**/apps/platform/src",
+      "!**/packages/ui",
+      "!**/packages/sections",
+      "!**/packages/ot-config",
+      "!**/packages/ot-constants",
+      "!**/packages/ot-utils"
     ]
   },
   "formatter": {
@@ -44,15 +46,16 @@
     "lineWidth": 100,
     "attributePosition": "auto",
     "bracketSpacing": true,
-    "ignore": [
-      "**/bundle-genetics",
-      "**/bundle-platform",
-      "**/node_modules",
-      "**/.github",
-      "**/.husky",
-      "**/public",
-      "**/__generated__",
-      "packages/tsconfig"
+    "includes": [
+      "**",
+      "!**/bundle-genetics",
+      "!**/bundle-platform",
+      "!**/node_modules",
+      "!**/.github",
+      "!**/.husky",
+      "!**/public",
+      "!**/__generated__",
+      "!**/packages/tsconfig"
     ]
   },
   "linter": {
