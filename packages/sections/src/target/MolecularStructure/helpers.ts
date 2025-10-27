@@ -1,5 +1,5 @@
 export function isAlphaFold(selectedRow) {
-  return selectedRow?.type?.toLowerCase?.() === "alphafold";
+  return selectedRow?.database?.toLowerCase?.() === "alphafold";
 }
 
 export function zipToObject(arr1, arr2) {
@@ -12,6 +12,15 @@ export function zipToObject(arr1, arr2) {
 
 export function modulo(n, d) {
   return ((n % d) + d) % d;
+}
+
+// convert (in place) the 'properties' property from an array to an object
+export function restructureRowProperties(row) {
+  const obj = {};
+  for (const { key, value } of row?.properties ?? []) {
+    obj[key.toLowerCase()] = value;
+  }
+  row.properties = obj;
 }
 
 export function getSegments(chainsAndPositions) {
