@@ -40,6 +40,8 @@ import React, { useMemo, useCallback, useState, useEffect, Fragment } from "reac
 import { nullishComparator } from "@ot/utils";
 import { naLabel } from "@ot/constants";
 
+const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
+
 // Declare module for TanStack Table
 declare module "@tanstack/table-core" {
   interface FilterFns {
@@ -64,7 +66,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed || containsSubstr;
 };
 
-// Types for the baseline expression data
 interface BaselineExpressionDataRow {
   targetFromSourceId: string;
   tissueBiosample?: {
@@ -82,33 +83,9 @@ interface BaselineExpressionDataRow {
   datatypeId: string;
 }
 
-interface BaselineExpressionTableRow {
-  "scrna-seq"?: BaselineExpressionDataRow,
-  "bulk rna-seq"?: BaselineExpressionDataRow,
-  "mass-spectrometry proteomics"?: BaselineExpressionDataRow,
-  
-}
-
-// Types for grouped data structure
-interface GroupedTissueData {
-  tissueName: string;
-  maxMedian: number;
-  expressions: BaselineExpressionRow[];
-  dataTypeValues: { [key: string]: number };
-  isGroup: true;
-}
-
-interface GroupedCellTypeData {
-  cellTypeName: string;
-  maxMedian: number;
-  expressions: BaselineExpressionRow[];
-  dataTypeValues: { [key: string]: number };
-  isGroup: true;
-}
-
-interface IndividualExpressionData extends BaselineExpressionRow {
-  isGroup: false;
-}
+type BaselineExpressionTableRow = {
+  [K in typeof datatypes[number]]: BaselineExpressionDataRow; 
+};
 
 interface BaselineExpressionTableProps {
   data: BaselineExpressionRow[];
@@ -198,7 +175,7 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
 
   let firstLevel = [];     // array of data rows - unique biosample ids
   const secondLevel = {};  // object of array of objects, top-level keys: biosampleIds, bottom-level keys: datatypeIds
-  const thirdLevel = {};   // each entry is an array of data rows where datatypeId is always "scrna-seq"
+  const thirdLevel = {};   // each entry is an array of data rows where datatypeId is always datatypes[0]
 
   // 2nd and 3rd levels
   for (const row of data) {
@@ -222,8 +199,8 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
       }
       secondLevel[topLevelBiosampleId][topLevelBiosampleFromSource][row.datatypeId] = row;
     } else {  // 3rd level
-      if (row.datatypeId !== "scrna-seq") {
-        throw Error("Expected all third level rows to have datatypeid 'scrna-seq'");
+      if (row.datatypeId !== datatypes[0]) {
+        throw Error(`Expected all third level rows to have datatypeid '${datatypes[0]}'`);
       }
       thirdLevel[topLevelBiosampleFromSource] ??= [];
       thirdLevel[topLevelBiosampleFromSource].push(row);
@@ -237,7 +214,8 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
 
   // add _normalisedMedian to each 2nd level object - normalised by max median per datatypeid
   {
-    const maxMedians =  { "scrna-seq": 0, "bulk rna-seq": 0, "mass-spectrometry proteomics": 0 };
+    const maxMedians =  {};
+    for (const datatype of datatypes) maxMedians[datatype] = 0;
     for (const arr of Object.values(secondLevel)) {
       for (const obj of arr) {
         for (const [datatypeId, row] of Object.entries(obj)) {
@@ -256,7 +234,7 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
     }
   }
 
-  // add _normalisedMedian to each 3rd level object - all 3rd level objects are scrna-seq 
+  // add _normalisedMedian to each 3rd level object - all 3rd level objects have datatypeId === datatypes[0]
   {
     let maxMedian = 0;
     for (const arr of Object.values(thirdLevel)) {
@@ -296,13 +274,13 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
   }
 
   // sort all levels
-  const scrnaSeqComparator = nullishComparator(
+  const firstColumnComparator = nullishComparator(
     (a, b) => b - a,
-    a => a["scrna-seq"]?.median
+    a => a[datatypes[0]]?.median
   );
-  firstLevel.sort(scrnaSeqComparator);  // prob unnec since handled by table
+  firstLevel.sort(firstColumnComparator);  // prob unnec since handled by table
   for (const array of Object.values(secondLevel)) {
-    array.sort(scrnaSeqComparator);
+    array.sort(firstColumnComparator);
   }
   for (const array of Object.values(thirdLevel)) {
     array.sort(nullishComparator((a, b) => b - a, a => a.median));
@@ -317,7 +295,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   DownloaderComponent,
 }) => {
 
-  // const classes = useStyles();
+  const classes = useStyles();
   // const [sorting, setSorting] = useState<SortingState>([]);
   // const [pagination, setPagination] = useState<PaginationState>({
   //   pageIndex: 0,
@@ -329,54 +307,79 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   const { firstLevel, secondLevel, thirdLevel } = useMemo(() => prepareData(data, true), [data, groupByTissue]); // groupByTissue));
 
-
   const getRowCanExpand = useCallback((row) => {
-    return true; // !! NEED TO ACTUALLY ONLY MAKE THIS TRUE IF CAN BE EXPANDED - ALWAYS FOR 1ST->2ND LEVEL ANYWAY?
+    return true; // !! CAN ALWAYS EXPEND 1ST,->2ND LEVEL, WHAT ABOUT 2ND->3RD?
   }, []);
 
   const getSubRows = useCallback((row) => {
     return secondLevel[row._firstLevelId] ?? [];
-    // return row._firsLevelId
-    //   ? (secondLevel[row._firstLevelId] ?? [])
-    //   : (thirdLevel[row._secondLevelName] ?? []);
   }, [secondLevel]);
 
   const getName = useCallback((obj) => {
-    const dataRow = obj["scrna-seq"] ?? obj["bulk rna-seq"] ?? obj["mass-spectrometry proteomics"];
+    let dataRow;
+    for (const datatype of datatypes) {
+      dataRow = obj[datatype];
+      if (dataRow) break;
+    }
     return dataRow._secondLevelName ?? dataRow._firstLevelName;
   }, [groupByTissue]);
 
+  const getColumnWidth = (index) => {
+    return index === 0 ? "5%" : index === 1 ? "35%" : `${60 / datatypes.length}%`;
+  };
+
   const columns = [
     columnHelper.display({
-      id: 'expander',
-      header: () => null,
-      cell: ({ row }) => (
-        row.getCanExpand() ? (
-          <button
-            onClick={row.getToggleExpandedHandler()}
-            className="text-blue-600"
-          >
-            {row.getIsExpanded() ? '▼' : '▶'}
-          </button>
-        ) : null
+      id: 'expand',
+      header: "",
+      cell: ({ row }) => row.getCanExpand() ? (
+        <IconButton
+          size="small"
+          className={classes.expandButton}
+          onClick={() => row.toggleExpanded()}  // !! NEED TO MAKE WORK !!
+        >
+          {row.getIsExpanded() ? (
+            <FontAwesomeIcon icon={faChevronUp} size="xs" />
+          ) : (
+            <FontAwesomeIcon icon={faChevronDown} size="xs" />
+          )}
+        </IconButton>
+      ) : (
+        null
       ),
     }),
     columnHelper.accessor(
       row => getName(row), {
       header: groupByTissue ? "Tissue" : "Cell Type",
-    }),
-    columnHelper.accessor(row => row["scrna-seq"]?._normalisedMedian?.toFixed?.(2) ?? naLabel, {
-      header: "scrna-seq",
-    }),
-    columnHelper.accessor(row => row["bulk rna-seq"]?._normalisedMedian?.toFixed?.(2) ?? naLabel, {
-      header: "bulk rna-seq",
-    }),
-    columnHelper.accessor(row => row["mass-spectrometry proteomics"]?._normalisedMedian?.toFixed?.(2) ?? naLabel, {
-      header: "mass-spectrometry proteomics",
+      cell: (info) => (
+        <Typography
+          variant="caption"
+          style={{ fontWeight: info.row.original._firstLevelId ? "bold" : "normal" }}
+        >
+          {info.getValue()}
+        </Typography>
+      )
     }),
   ];
-
-
+  for (const datatype of datatypes) {
+    columns.push(
+      columnHelper.accessor((row) => row[datatype]?._normalisedMedian, {
+          header: datatype,
+          cell: (info) => {
+            const value = info.getValue();
+            const percent = value ? value * 100 : 0;
+            return (
+              <Box className={classes.medianCell}>
+                <Box className={classes.barContainer}>
+                  <Box className={classes.bar} style={{ width: `${percent}%` }} />
+                </Box>
+              </Box>
+            );
+          },
+        }
+      )
+    );
+  }
 
   // create table instance
   const table = useReactTable({
@@ -387,14 +390,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     getExpandedRowModel: getExpandedRowModel(),
     getSubRows,
     state: {
-    //   sorting,
-    //   pagination,
+      // sorting,
+      // pagination,
       expanded,
     },
     // onSortingChange: setSorting,
     // onPaginationChange: setPagination,
     onExpandedChange: setExpanded,
-    // getCoreRowModel: getCoreRowModel(),
     // getSortedRowModel: getSortedRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
     // manualPagination: false,
@@ -403,74 +405,303 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     // },
   });
 
-  return (
-    <Box>
-      <table>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <Fragment key={row.id}>
-              <tr key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
+  // return (
+  //   <Box>
+  //     <table>
+  //       <thead>
+  //         {table.getHeaderGroups().map(headerGroup => (
+  //           <tr key={headerGroup.id}>
+  //             {headerGroup.headers.map(header => (
+  //               <th key={header.id}>
+  //                 {header.isPlaceholder
+  //                   ? null
+  //                   : flexRender(
+  //                       header.column.columnDef.header,
+  //                       header.getContext()
+  //                     )}
+  //               </th>
+  //             ))}
+  //           </tr>
+  //         ))}
+  //       </thead>
+  //       <tbody>
+  //         {table.getRowModel().rows.map(row => (
+  //           <Fragment key={row.id}>
+  //             {/* 1st and 2nd level rows */}
+  //             <tr key={row.id}>
+  //               {row.getVisibleCells().map(cell => (
+  //                 <td key={cell.id}>
+  //                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
+  //                 </td>
+  //               ))}
+  //             </tr>
 
-              {/* 3rd level rows */}
-              {row.getIsExpanded() && row.original._secondLevelName && (
-                <tr>
-                  <td colSpan={row.getAllCells().length}>
-                    {/* {console.log(thirdLevel[row._secondLevelName]), JSON.stringify(thirdLevel[row._secondLevelName])}  */}
-                    {console.log(thirdLevel[row.original._secondLevelName]), JSON.stringify(thirdLevel[row.original._secondLevelName].map(r => `${r.celltypeBiosampleFromSource}: ${r.median.toFixed(2)}`))} 
-                  </td>
-                </tr>
-              )}
-              {/* {row.getIsExpanded() && (
-                <tr>
-                  <td colSpan={row.getAllCells().length}>
-                  </td>
-                </tr>
-              )} */}
-            </Fragment>
-          ))}
-        </tbody>
-        {/* <tfoot>
-          {table.getFooterGroups().map(footerGroup => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot> */}
-      </table>
+  //             {/* 3rd level rows */}
+  //             {row.getIsExpanded() && row.original._secondLevelName && (
+  //               <tr>
+  //                 <td colSpan={row.getAllCells().length}>
+  //                   {JSON.stringify(thirdLevel[row.original._secondLevelName].map(r => `${r.celltypeBiosampleFromSource}: ${r.median.toFixed(2)}`))} 
+  //                 </td>
+  //               </tr>
+  //             )}
+  //           </Fragment>
+  //         ))}
+  //       </tbody>
+  //     </table>
+  //   </Box>
+  // );
+
+   return (
+    <Box className={classes.tableContainer}>
+      {/* <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+          <TextField
+            size="small"
+            placeholder={`Search ${groupByTissue ? "tissues" : "cell types"}...`}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FontAwesomeIcon icon={faSearch} size="xs" />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ minWidth: 200 }}
+          />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Select
+              value={groupByTissue ? "tissue" : "celltype"}
+              onChange={(e) => setGroupByTissue(e.target.value === "tissue")}
+              variant="standard"
+              disableUnderline
+              sx={{
+                "& .MuiSelect-select": {
+                  border: "none",
+                  padding: "4px 8px",
+                  fontSize: "0.75rem",
+                  minWidth: "auto",
+                  "&:focus": {
+                    backgroundColor: "transparent",
+                  },
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  border: "none",
+                },
+              }}
+            >
+              <MenuItem value="tissue">Group by Tissue → Cell Type</MenuItem>
+              <MenuItem value="celltype">Group by Cell Type → Tissue</MenuItem>
+            </Select>
+          </Box>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
+      </Box> */}
+      <Grid justifyContent="center" container>
+        <Grid item xs={12} md={10}>
+          <TableContainer component={Paper} elevation={0}>
+            <Table size="small" className={classes.mainTable} style={{ fontSize: "0.75rem" }}>
+
+              <TableHead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header, index) => {
+                      return (
+                        <TableCell
+                          key={header.id}
+                          className={classes.headerCell}
+                          // onClick={header.column.getToggleSortingHandler()}
+                          style={{
+                            // cursor: header.column.getCanSort() ? "pointer" : "default",
+                            width: getColumnWidth(index)
+                          }}
+                        >
+                          {header.isPlaceholder ? null : (
+                            <Box display="flex" alignItems="center">
+                              <Typography variant="caption" style={{ fontWeight: "bold" }}>
+                                {flexRender(header.column.columnDef.header, header.getContext())}
+                              </Typography>
+                              {/* {header.column.getCanSort() && (
+                                <TableSortLabel
+                                  active={!!header.column.getIsSorted()}
+                                  direction={header.column.getIsSorted() === "asc" ? "asc" : "desc"}
+                                />
+                              )} */}
+                            </Box>
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHead>
+
+              <TableBody>
+                {table.getRowModel().rows.map((row) => (
+                  <Fragment key={row.id}>
+
+                    {/* 1st and 2nd level rows */}
+                    <TableRow
+                      hover
+                      className={classes.groupRow}
+                      // onClick={() => row.toggleExpanded()}
+                    >
+                      {row.getVisibleCells().map((cell, index) => {
+                        return (
+                          <TableCell key={cell.id} style={{ width: getColumnWidth(index) }}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    
+                    {/* 3rd level rows */}
+                    {
+                    // row.getIsExpanded() && row.original._secondLevelName && (
+                    //   <TableRow>
+                    //     <TableCell colSpan={columns.length} style={{ padding: 0 }}>
+                    //       <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
+                    //         <Box mx={1} mb={1}>
+                    //           <Table
+                    //             size="small"
+                    //             className={classes.nestedTable}
+                    //             style={{ fontSize: "0.75rem" }}
+                    //           >
+                    //             <TableHead sx={{ display: "none" }}>
+                    //               <TableRow>
+                    //                 <TableCell style={{ width: "5%" }}></TableCell>
+                    //                 <TableCell style={{ width: "35%" }}></TableCell>
+                    //                 {dataTypes.map((dataType) => {
+                    //                   const dataTypeColumnWidth =
+                    //                     dataTypes.length > 0
+                    //                       ? `${60 / dataTypes.length}%`
+                    //                       : "60%";
+                    //                   return (
+                    //                     <TableCell
+                    //                       key={dataType}
+                    //                       style={{ width: dataTypeColumnWidth }}
+                    //                     ></TableCell>
+                    //                   );
+                    //                 })}
+                    //               </TableRow>
+                    //             </TableHead>
+                    //             <TableBody>
+                    //               {(() => {
+                    //                 // Group expressions by secondary key (cell type or tissue)
+                    //                 const secondaryGroups: {
+                    //                   [key: string]: BaselineExpressionRow[];
+                    //                 } = {};
+                    //                 row.original.expressions.forEach((expression) => {
+                    //                   const tissueName = expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource;
+                    //                   const cellTypeName = expression.celltypeBiosample?.biosampleName || expression.celltypeBiosampleFromSource;
+                                      
+                    //                   // For nested table: only show rows that have BOTH tissue and cell type information
+                    //                   if (!tissueName || !cellTypeName) {
+                    //                     return;
+                    //                   }
+                                      
+                    //                   const secondaryName = groupByTissue ? cellTypeName : tissueName;
+                                      
+                    //                   if (!secondaryGroups[secondaryName]) {
+                    //                     secondaryGroups[secondaryName] = [];
+                    //                   }
+                    //                   secondaryGroups[secondaryName].push(expression);
+                    //                 });
+
+                    //                 return Object.entries(secondaryGroups).map(
+                    //                   ([secondaryName, expressions]) => (
+                    //                     <TableRow key={secondaryName} className={classes.nestedRow}>
+                    //                       <TableCell
+                    //                         className={classes.nestedTableCell}
+                    //                         style={{ width: "5%" }}
+                    //                       >
+                    //                         {/* Empty cell to align with expand column */}
+                    //                       </TableCell>
+                    //                       <TableCell
+                    //                         className={classes.nestedTableCell}
+                    //                         style={{ paddingLeft: 40, width: "35%" }}
+                    //                       >
+                    //                         <Typography variant="caption">
+                    //                           {secondaryName}
+                    //                         </Typography>
+                    //                       </TableCell>
+                    //                       {dataTypes.map((dataType) => {
+                    //                         const expression = expressions.find(
+                    //                           (expr) => expr.datatypeId === dataType
+                    //                         );
+                    //                         const value = expression?.median || 0;
+
+                    //                         // Scale relative to parent group's max value for this data type
+                    //                         const parentMaxValue = groupByTissue
+                    //                           ? (row.original as GroupedTissueData)
+                    //                               .dataTypeValues[dataType] || 1
+                    //                           : (row.original as GroupedCellTypeData)
+                    //                               .dataTypeValues[dataType] || 1;
+                    //                         const percentage =
+                    //                           parentMaxValue > 0
+                    //                             ? (value / parentMaxValue) * 100
+                    //                             : 0;
+                    //                         const dataTypeColumnWidth =
+                    //                           dataTypes.length > 0
+                    //                             ? `${60 / dataTypes.length}%`
+                    //                             : "60%";
+
+                    //                         return (
+                    //                           <TableCell
+                    //                             key={dataType}
+                    //                             className={`${classes.medianCell} ${classes.nestedTableCell}`}
+                    //                             style={{ width: dataTypeColumnWidth }}
+                    //                           >
+                    //                             <Box className={classes.barContainer}>
+                    //                               <Box
+                    //                                 className={classes.childBar}
+                    //                                 style={{ width: `${percentage}%` }}
+                    //                               />
+                    //                             </Box>
+                    //                           </TableCell>
+                    //                         );
+                    //                       })}
+                    //                     </TableRow>
+                    //                   )
+                    //                 );
+                    //               })()}
+                    //             </TableBody>
+                    //           </Table>
+                    //         </Box>
+                    //       </Collapse>
+                    //     </TableCell>
+                    //   </TableRow>
+                    // )
+                    }
+                  </Fragment>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {/* <TablePagination
+            component="div"
+            count={table.getFilteredRowModel().rows.length}
+            page={pagination.pageIndex}
+            onPageChange={(_, newPage) => {
+              table.setPageIndex(newPage);
+            }}
+            rowsPerPage={pagination.pageSize}
+            onRowsPerPageChange={(event) => {
+              table.setPageSize(Number(event.target.value));
+            }}
+            rowsPerPageOptions={[10, 25, 30, 50, 100]}
+          /> */}
+        </Grid>
+      </Grid>
     </Box>
   );
-
-}
+};
 
 export default BaselineExpressionTable;
