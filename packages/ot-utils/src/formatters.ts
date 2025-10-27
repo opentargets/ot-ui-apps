@@ -22,11 +22,9 @@ export function formatSignificantDigits(
   const magnitude = Math.floor(Math.log10(absNum)) + 1; // digits before decimal
   const decimalPlaces = Math.max(0, 3 - magnitude);
 
-  const rounded = Math.round(absNum * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
+  const rounded = Math.round(absNum * 10 ** decimalPlaces) / 10 ** decimalPlaces;
   const formatted = rounded.toFixed(decimalPlaces);
   const trimmed = formatted.replace(/\.?0+$/, "");
 
   return num < 0 ? `-${trimmed}` : trimmed;
 }
-
-

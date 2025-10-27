@@ -31,7 +31,8 @@
       "!**/apps/platform/src",
       "!**/packages/sections",
       "!**/packages/ot-config",
-      "!**/packages/ot-constants",
+      "**/packages/ot-constants",
+      "!**/packages/ot-constants/src/types",
       "!**/packages/ot-utils"
     ]
   },

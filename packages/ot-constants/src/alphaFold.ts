@@ -1,4 +1,4 @@
-import { scaleLinear, interpolateLab, rgb, scaleQuantize } from "d3";
+import { interpolateLab, rgb, scaleLinear } from "d3";
 
 export const alphaFoldConfidenceBands = [
   { lowerLimit: 90, label: "Very high", sublabel: "90 > pLDDT", color: "rgb(0, 83, 214)" },
@@ -12,7 +12,10 @@ export const alphaFoldConfidenceBands = [
   { lowerLimit: 0, label: "Very low ", sublabel: "50 > pLDDT", color: "rgb(255, 125, 69)" },
 ];
 
-export function getAlphaFoldConfidence(atom, propertyName = "label") {
+export function getAlphaFoldConfidence(
+  atom: { b: number },
+  propertyName: "label" | "sublabel" | "color" = "label"
+): string {
   for (const obj of alphaFoldConfidenceBands) {
     if (atom.b > obj.lowerLimit) return obj[propertyName];
   }
@@ -35,7 +38,10 @@ export const alphaFoldPathogenicityBands = [
   { lowerLimit: 0, label: "Likely benign", sublabel: "score < 0.34", color: "rgb(61, 84, 147)" },
 ];
 
-export function getAlphaFoldPathogenicity(score, propertyName = "label") {
+export function getAlphaFoldPathogenicity(
+  score: number,
+  propertyName: "label" | "sublabel" | "color" = "label"
+): string {
   for (const obj of alphaFoldPathogenicityBands) {
     if (score > obj.lowerLimit) return obj[propertyName];
   }
@@ -59,7 +65,7 @@ export const alphaFoldPathogenicityColorScale = scaleLinear()
 // only some of the scale breakpoints are meaningful for the legend
 alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
-export function getAlphaFoldPathogenicityColor(score) {
+export function getAlphaFoldPathogenicityColor(score: number) {
   return alphaFoldPathogenicityColorScale(score);
 }
 

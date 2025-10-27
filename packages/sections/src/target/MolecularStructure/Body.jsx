@@ -8,9 +8,9 @@ import MOLECULAR_STRUCTURE_QUERY from "./MolecularStructure.gql";
 import { useState, useEffect } from "react";
 import Table from "./Table";
 import Viewer from "./Viewer";
-import { getSegments } from "./helpers";
+import { getSegments, restructureRowProperties } from "./helpers";
 
-const experimentalResultsStem = "https://www.ebi.ac.uk/proteins/api/proteins/";
+const experimentalResultsStem = "https://rest.uniprot.org/uniprotkb/";
 const alphaFoldResultsStem = "https://alphafold.ebi.ac.uk/api/prediction/";
 
 function Body({ id: ensemblId, label: symbol, entity }) {
@@ -41,7 +41,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             if (json.length > 0) {
               results.unshift({
                 id: json[0].entryId,
-                type: "AlphaFold",
+                database: "AlphaFold",
                 properties: {
                   chains: `A=${json[0].uniprotStart}-${json[0].uniprotEnd}`,
                   method: "Prediction",
@@ -63,7 +63,8 @@ function Body({ id: ensemblId, label: symbol, entity }) {
             console.error(`Response status (PDB request): ${response.status}`);
           } else {
             const json = await response.json();
-            const pdbResults = json?.dbReferences?.filter(row => row.type === "PDB") ?? [];
+            const pdbResults = json?.uniProtKBCrossReferences?.filter(row => row.database === "PDB") ?? [];
+            for (const row of pdbResults) restructureRowProperties(row);
             results.push(...pdbResults);
           }
         } catch (error) {

@@ -4,7 +4,7 @@ import {
   filterDownloadCardsForFilter,
   filterDownloadCardsForTextSearch,
   getAllLocationUrl,
-  getAllRows,
+  prepareDataRows,
   getSchemaRows,
 } from "../utils";
 
@@ -21,7 +21,9 @@ export const initialState: DownloadsState = {
   locationURLs: {},
 };
 
-export function createInitialState(initialState: DownloadsState): DownloadsState {
+export function createInitialState(
+  initialState: DownloadsState
+): DownloadsState {
   return initialState;
 }
 
@@ -44,7 +46,10 @@ export function downloadsReducer(
         ? filterDownloadCardsForFilter(state.selectedFilters, state.rows)
         : state.rows;
       const filteredRows =
-        filterDownloadCardsForTextSearch(action.freeQueryText, preFilteredRows) || preFilteredRows;
+        filterDownloadCardsForTextSearch(
+          action.freeQueryText,
+          preFilteredRows
+        ) || preFilteredRows;
       return {
         ...state,
         freeTextQuery: action.freeQueryText,
@@ -76,7 +81,9 @@ export function downloadsReducer(
       };
     }
     case ActionType.SET_ACTIVE_FILTER: {
-      const preFilteredRows = state.freeTextQuery ? state.filteredRows : state.rows;
+      const preFilteredRows = state.freeTextQuery
+        ? state.filteredRows
+        : state.rows;
       const filteredRows = action.selectedFilters.length
         ? filterDownloadCardsForFilter(action.selectedFilters, preFilteredRows)
         : preFilteredRows;
@@ -94,18 +101,23 @@ export function downloadsReducer(
       };
     }
     case ActionType.SET_DOWNLOADS_DATA: {
-      const ALL_ROWS = [...getAllRows(action.downloadsData)];
-      const { allDisplayRows, allUniqueCategories } = addCategoriesToData(ALL_ROWS);
-      const locationURLs: Record<string, string> = getAllLocationUrl(action.downloadsData);
+      const downloadsData = JSON.parse(JSON.stringify(action.downloadsData));
+      const parsedData = prepareDataRows(action.downloadsData);
+      const { allDisplayRows, allUniqueCategories } =
+        addCategoriesToData(parsedData);
+      const locationURLs: Record<string, string> = getAllLocationUrl(
+        action.downloadsData
+      );
+      const schemaRows = getSchemaRows(action.downloadsData);
       return {
         ...state,
         loading: false,
-        downloadsData: action.downloadsData,
+        downloadsData,
         rows: allDisplayRows,
         filteredRows: allDisplayRows,
         count: allDisplayRows.length,
-        schemaRows: getSchemaRows(action.downloadsData),
         allUniqueCategories,
+        schemaRows,
         locationURLs,
       };
     }
