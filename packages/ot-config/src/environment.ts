@@ -24,18 +24,18 @@ export const getEnvironmentConfig = (env: Environment): Config => {
 };
 
 // Vite environment variables
-const ENV_API_URL: string | undefined = import.meta.env.VITE_API_URL;
-const ENV_AI_API_URL: string | undefined = import.meta.env.VITE_AI_API_URL;
+const ENV_API_URL: string | undefined = import.meta.env.OT_API_URL;
+const ENV_AI_API_URL: string | undefined = import.meta.env.OT_AI_API_URL;
 const ENV_GIT_VERSION: string | undefined = import.meta.env.VITE_GIT_VERSION;
 
 export const getConfig = (): Config => {
+	console.log("import.meta.env", import.meta.env);
 	return {
-		urlApi:window.configUrlApi ?? ENV_API_URL ?? "",
+		urlApi: window.configUrlApi ?? ENV_API_URL ?? "",
 		urlAiApi: window.configOTAiApi ?? ENV_AI_API_URL ?? "",
 		gitVersion: window.gitVersion ?? ENV_GIT_VERSION ?? "",
 		profile: window.configProfile ?? { isPartnerPreview: false },
 		googleTagManagerID: window.configGoogleTagManagerID ?? null,
-		geneticsPortalUrl:
-			window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
+		geneticsPortalUrl: window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
 	};
 };
