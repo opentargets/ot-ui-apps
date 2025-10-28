@@ -39,6 +39,7 @@ import {
 import React, { useMemo, useCallback, useState, useEffect, Fragment } from "react";
 import { nullishComparator } from "@ot/utils";
 import { naLabel } from "@ot/constants";
+import DetailPlot from "./DetailPlot";
 
 const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
 
@@ -166,7 +167,8 @@ const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
 // group and sort data at 1st, 2nd and 3rd levels
 // - currently preparing all data here, whereas a lot could be done on demand
-function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = true) {
+function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
+
   const [topLevelName, otherName] = groupByTissue ? ["tissue", "celltype"] : ["celltype", "tissue"];
 
   data = structuredClone(data);
@@ -305,7 +307,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
 
-  const { firstLevel, secondLevel, thirdLevel } = useMemo(() => prepareData(data, true), [data, groupByTissue]); // groupByTissue));
+  const { firstLevel, secondLevel, thirdLevel } =
+    useMemo(() => prepareData(data, groupByTissue), [data, groupByTissue]);
 
   const getRowCanExpand = useCallback((row) => {
     return true; // !! CAN ALWAYS EXPEND 1ST,->2ND LEVEL, WHAT ABOUT 2ND->3RD?
@@ -371,11 +374,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           enableSorting: true,
           sortingFn: nullishComparator(
             (a, b) => a - b,
-            row => (console.log(row.original[datatype]?.median), row.original[datatype]?.median),
-            false
+            row => row.original[datatype]?.median,
+            true
           ),
-            // return rowA.original.name.localeCompare(rowB.original.name)
-          
           cell: (info) => {
             const value = info.getValue();
             const percent = value ? value * 100 : 0;
@@ -529,8 +530,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     {/* 3rd level rows */}
                     {row.getIsExpanded() && row.original._secondLevelName && (
                     <tr>
-                      <td colSpan={row.getAllCells().length}>
-                        {JSON.stringify(thirdLevel[row.original._secondLevelName].map(r => `${r.celltypeBiosampleFromSource}: ${r.median.toFixed(2)}`))} 
+                      <td colspan={2}></td>
+                      <td colSpan={datatypes.length}>
+                        <DetailPlot
+                          data={thirdLevel[row.original._secondLevelName]}
+                          show={groupByTissue ? "celltype" : "tissue" }
+                        />
                       </td>
                     </tr>
                     )}
