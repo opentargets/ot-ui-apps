@@ -290,7 +290,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   ]); 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 15,
   });
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [groupByTissue, setGroupByTissue] = useState(true);
@@ -301,11 +301,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   const getRowCanExpand = useCallback((row) => {
     return row.original._firstLevelId || thirdLevel[row.original._secondLevelName];
-  }, []);
+  }, [firstLevel, secondLevel, thirdLevel]);
 
   const getSubRows = useCallback((row) => {
     return secondLevel[row._firstLevelId] ?? [];
-  }, [secondLevel]);
+  }, [firstLevel, secondLevel]);
 
   const getName = useCallback((obj) => {
     let dataRow;
@@ -406,9 +406,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
    return (
     <Box className={classes.tableContainer}>
-      {/* <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-          <TextField
+          {/* <TextField
             size="small"
             placeholder={`Search ${groupByTissue ? "tissues" : "cell types"}...`}
             value={searchTerm}
@@ -421,7 +421,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               ),
             }}
             sx={{ minWidth: 200 }}
-          />
+          /> */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Select
               value={groupByTissue ? "tissue" : "celltype"}
@@ -449,13 +449,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 },
               }}
             >
-              <MenuItem value="tissue">Group by Tissue → Cell Type</MenuItem>
-              <MenuItem value="celltype">Group by Cell Type → Tissue</MenuItem>
+              <MenuItem value="tissue">Tissue → Tissue Detail → Cell Detail</MenuItem>
+              <MenuItem value="celltype">Cell → Cell Detail → Tissue Detail</MenuItem>
             </Select>
           </Box>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
-      </Box> */}
+      </Box>
       <Grid justifyContent="center" container>
         <Grid item xs={12} md={10}>
           <TableContainer component={Paper} elevation={0}>
@@ -544,7 +544,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             onRowsPerPageChange={(event) => {
               table.setPageSize(Number(event.target.value));
             }}
-            rowsPerPageOptions={[10, 25, 50, 100]}
+            rowsPerPageOptions={[15, 25, 50, 100]}
           />
         </Grid>
       </Grid>
