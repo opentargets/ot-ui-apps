@@ -288,10 +288,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [sorting, setSorting] = useState<SortingState>([
     { id: datatypes[0], desc: true }
   ]); 
-  // const [pagination, setPagination] = useState<PaginationState>({
-  //   pageIndex: 0,
-  //   pageSize: 30,
-  // });
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
@@ -393,12 +393,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     onExpandedChange: setExpanded,
     state: {
       sorting,
-      // pagination,
+      pagination,
       expanded,
     },
-    // onPaginationChange: setPagination,
-    // getPaginationRowModel: getPaginationRowModel(),
-    // manualPagination: false,
+    onPaginationChange: setPagination,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: false,
     // filterFns: {
     //   searchFilterFn: searchFilter,
     // },
@@ -533,7 +533,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             </Table>
           </TableContainer>
 
-          {/* <TablePagination
+          <TablePagination
             component="div"
             count={table.getFilteredRowModel().rows.length}
             page={pagination.pageIndex}
@@ -544,8 +544,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             onRowsPerPageChange={(event) => {
               table.setPageSize(Number(event.target.value));
             }}
-            rowsPerPageOptions={[10, 25, 30, 50, 100]}
-          /> */}
+            rowsPerPageOptions={[10, 25, 50, 100]}
+          />
         </Grid>
       </Grid>
     </Box>

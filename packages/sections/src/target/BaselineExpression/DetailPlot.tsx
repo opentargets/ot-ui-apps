@@ -48,7 +48,7 @@ function renderChart({
     height,
     marginLeft: 0,
     marginRight: 100,
-    marginTop: 30,
+    marginTop: 16,
     marginBottom: 200,
     x: { domain: data.map(xAccessor) },  // preserve input order
     y: { axis: null },
