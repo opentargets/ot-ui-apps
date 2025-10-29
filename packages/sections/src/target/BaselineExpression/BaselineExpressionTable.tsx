@@ -37,8 +37,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useMemo, useCallback, useState, useEffect, Fragment } from "react";
-import { nullishComparator } from "@ot/utils";
-import { naLabel } from "@ot/constants";
 import DetailPlot from "./DetailPlot";
 
 const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
@@ -143,10 +141,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   nestedRow: {
+    cursor: "pointer",
     backgroundColor: theme.palette.grey[50],
     "& td": {
       padding: "0px 8px",
     },
+  },
+  cursorAuto: {
+    cursor: "auto !important",
   },
   nestedTable: {
     width: "100%",
@@ -273,19 +275,6 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
     firstLevel.push(firstLevelRow);
   }
 
-  // // sort all levels
-  // const firstColumnComparator = nullishComparator(
-  //   (a, b) => b - a,
-  //   a => a[datatypes[0]]?.median
-  // );
-  // firstLevel.sort(firstColumnComparator);  // prob unnec since handled by table
-  // for (const array of Object.values(secondLevel)) {
-  //   array.sort(firstColumnComparator);
-  // }
-  // for (const array of Object.values(thirdLevel)) {
-  //   array.sort(nullishComparator((a, b) => b - a, a => a.median));
-  // }
-
   console.log({ firstLevel, secondLevel, thirdLevel });
   return { firstLevel, secondLevel, thirdLevel };
 }
@@ -311,7 +300,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     useMemo(() => prepareData(data, groupByTissue), [data, groupByTissue]);
 
   const getRowCanExpand = useCallback((row) => {
-    return true; // !! CAN ALWAYS EXPEND 1ST,->2ND LEVEL, WHAT ABOUT 2ND->3RD?
+    return row.original._firstLevelId || thirdLevel[row.original._secondLevelName];
   }, []);
 
   const getSubRows = useCallback((row) => {
@@ -369,28 +358,25 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   ];
   for (const datatype of datatypes) {
     columns.push(
-      columnHelper.accessor((row) => row[datatype]?._normalisedMedian, {
-          header: datatype,
-          enableSorting: true,
-          sortingFn: nullishComparator(
-            (a, b) => a - b,
-            row => row.original[datatype]?.median,
-            true
-          ),
-          cell: (info) => {
-            const value = info.getValue();
-            const percent = value ? value * 100 : 0;
-            return (
-              <Box className={classes.medianCell}>
-                <Box className={classes.barContainer}>
-                  {/* <Box className={classes.bar} style={{ width: `${percent}%` }} /> */}
-                  <Box className={info.row.original._firstLevelId ? classes.bar : classes.childBar} style={{ width: `${percent}%` }} />
-                </Box>
+      // use -1 for missing value to make sorting work
+      // - could not get nullish values to bottom with sortingFn: nullishComparator(...
+      columnHelper.accessor((row) => row[datatype]?._normalisedMedian ?? -1, {
+        header: datatype,
+        enableSorting: true,
+        cell: (info) => {
+          const value = info.getValue();
+          const percent = value >= 0 ? value * 100 : 0;  // normalised median is -1 if absent
+          return (
+            <Box className={classes.medianCell}>
+              <Box className={classes.barContainer}>
+                <Box 
+                  className={info.row.original._firstLevelId ? classes.bar : classes.childBar}
+                  style={{ width: `${percent}%` }} />
               </Box>
-            );
-          },
-        }
-      )
+            </Box>
+          );
+        },
+      })
     );
   }
 
@@ -401,16 +387,16 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     getRowCanExpand,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getSubRows,
+    onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
     state: {
       sorting,
       // pagination,
       expanded,
     },
-    onSortingChange: setSorting,
     // onPaginationChange: setPagination,
-    onExpandedChange: setExpanded,
-    getSortedRowModel: getSortedRowModel(),
     // getPaginationRowModel: getPaginationRowModel(),
     // manualPagination: false,
     // filterFns: {
@@ -515,8 +501,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     {/* 1st and 2nd level rows */}
                     <TableRow
                       hover
-                      className={row.original._firstLevelId ? classes.groupRow : classes.nestedRow}
-                      onClick={() => row.toggleExpanded()}
+                      className={`${row.original._firstLevelId ? classes.groupRow : classes.nestedRow} ${row.getCanExpand() ? "" : classes.cursorAuto }`}
+                      onClick={() => {
+                        if (row.getCanExpand()) row.toggleExpanded();
+                      }}
                     >
                       {row.getVisibleCells().map((cell, index) => {
                         return (
@@ -530,7 +518,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     {/* 3rd level rows */}
                     {row.getIsExpanded() && row.original._secondLevelName && (
                     <tr>
-                      <td colspan={2}></td>
+                      <td colSpan={2}></td>
                       <td colSpan={datatypes.length}>
                         <DetailPlot
                           data={thirdLevel[row.original._secondLevelName]}
