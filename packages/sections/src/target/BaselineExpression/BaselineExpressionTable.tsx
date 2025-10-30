@@ -518,8 +518,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     {/* 3rd level rows */}
                     {row.getIsExpanded() && row.original._secondLevelName && (
                     <tr>
-                      <td colSpan={2}></td>
-                      <td colSpan={datatypes.length}>
+                      <td colSpan={table.getVisibleLeafColumns().length}>
                         <DetailPlot
                           data={thirdLevel[row.original._secondLevelName]}
                           show={groupByTissue ? "celltype" : "tissue" }

@@ -55,16 +55,18 @@ function renderChart({
     return `${s.slice(0, maxLabelChars)}${s.length > maxLabelChars ? "..." : ""}`;
   }
 
-  const barWidth = 24;
+  const barWidth = 23;
   const gapWidth = 3;
-  const plotWidth = data.length * (barWidth + gapWidth) + 100;  // (barWidth + gap) * number of bars + right margin
+  const marginLeft = 160;
+  const marginRight = 90;
+  const plotWidth = data.length * (barWidth + gapWidth) + marginLeft + marginRight;
 
   return PlotLib.plot({
     width: plotWidth,
     height,
-    marginLeft: 0,
-    marginRight: 100,
-    marginTop: 16,
+    marginLeft: marginLeft,
+    marginRight: marginRight,
+    marginTop: 20,
     marginBottom: 130,
     style: { cursor: "default" },
     x: { 
