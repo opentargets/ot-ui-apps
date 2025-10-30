@@ -36,7 +36,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React, { useMemo, useCallback, useState, useEffect, Fragment } from "react";
+import React, { useMemo, useCallback, useState, Fragment } from "react";
 import DetailPlot from "./DetailPlot";
 
 const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
