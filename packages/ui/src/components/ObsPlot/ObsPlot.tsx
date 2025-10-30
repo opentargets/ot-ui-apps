@@ -91,6 +91,7 @@ function ObsPlot({
               renderTooltip={renderTooltip}
               chart={chart}
               datum={datum}
+              otherData={otherData}
             />
           )}
         </div>
