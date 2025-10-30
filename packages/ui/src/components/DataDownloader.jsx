@@ -1,37 +1,35 @@
-import _ from "lodash";
-import { useState } from "react";
-import FileSaver from "file-saver";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode, faFileArrowDown, faTable } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  Box,
   Button,
   CircularProgress,
-  Snackbar,
-  Slide,
-  Menu,
-  MenuItem,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
+  Slide,
+  Snackbar,
   Typography,
-  Box,
 } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import FileSaver from "file-saver";
+import _ from "lodash";
+import { useId, useState } from "react";
 import "graphiql/graphiql.min.css";
 import ApiPlaygroundDrawer from "./ApiPlaygroundDrawer";
 
 const asJSON = (columns, rows) => {
-  const rowStrings = rows.map(row =>
+  const rowStrings = rows.map((row) =>
     columns.reduce((accumulator, newKey) => {
       if (newKey.exportValue === false) return accumulator;
 
       const newLabel = _.camelCase(newKey.exportLabel || newKey.label || newKey.id);
 
-      return {
-        ...accumulator,
-        [newLabel]: newKey.exportValue
-          ? newKey.exportValue(row)
-          : _.get(row, newKey.propertyPath || newKey.id, ""),
-      };
+      accumulator[newLabel] = newKey.exportValue
+        ? newKey.exportValue(row)
+        : _.get(row, newKey.propertyPath || newKey.id, "");
+      return accumulator;
     }, {})
   );
 
@@ -39,7 +37,7 @@ const asJSON = (columns, rows) => {
 };
 
 const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
-  const quoteString = d => {
+  const quoteString = (d) => {
     let result = d;
     // converts arrays to strings
     if (Array.isArray(d)) {
@@ -56,12 +54,13 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
 
       const newLabel = quoteString(_.camelCase(column.exportLabel || column.label || column.id));
 
-      return [...accHeaderString, newLabel];
+      accHeaderString.push(newLabel);
+      return accHeaderString;
     }, [])
     .join(separator);
 
   const rowStrings = rows
-    .map(row =>
+    .map((row) =>
       columns
         .reduce((rowString, column) => {
           if (column.exportValue === false) return rowString;
@@ -72,7 +71,8 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
               : _.get(row, column.propertyPath || column.id, "")
           );
 
-          return [...rowString, newValue];
+          rowString.push(newValue);
+          return rowString;
         }, [])
         .join(separator)
     )
@@ -81,7 +81,7 @@ const asDSV = (columns, rows, separator = ",", quoteStrings = true) => {
   return [headerString, rowStrings].join(lineSeparator);
 };
 
-const createBlob = format =>
+const createBlob = (format) =>
   ({
     json: (columns, rows) =>
       new Blob([asJSON(columns, rows)], {
@@ -95,9 +95,9 @@ const createBlob = format =>
       new Blob([asDSV(columns, rows, "\t", false)], {
         type: "text/tab-separated-values;charset=utf-8",
       }),
-  }[format]);
+  })[format];
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles((_theme) => ({
   messageProgress: {
     marginRight: "1rem",
     color: "white !important",
@@ -117,11 +117,12 @@ const styles = makeStyles(theme => ({
 function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = "Export" }) {
   const [downloading, setDownloading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const menuId = useId();
 
   const classes = styles();
   const open = Boolean(anchorEl);
 
-  const handleClickExportButton = event => {
+  const handleClickExportButton = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -173,7 +174,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = 
       </Box>
       {query ? <ApiPlaygroundDrawer query={query} variables={variables} /> : null}
 
-      <Menu id="export-data-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu id={menuId} anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem onClick={handleClickDownloadJSON}>
           <ListItemIcon>
             <FontAwesomeIcon icon={faCode} size="sm" />

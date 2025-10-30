@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import OtCopyToClipboard from "./OtCopyToClipboard";
 import type { ReactNode } from "react";
+import OtCopyToClipboard from "./OtCopyToClipboard";
 
 type OtCodeBlockPropTypes = {
   children: ReactNode;
@@ -11,7 +11,7 @@ function OtCodeBlock({ children, textToCopy }: OtCodeBlockPropTypes) {
   return (
     <Box
       sx={{
-        background: theme => theme.palette.grey[100],
+        background: (theme) => theme.palette.grey[100],
         pb: textToCopy ? 3 : 1,
         borderRadius: 3,
         px: 3,

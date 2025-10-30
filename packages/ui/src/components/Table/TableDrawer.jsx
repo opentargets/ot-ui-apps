@@ -1,28 +1,27 @@
-import { useState } from "react";
+import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  AccordionSummary,
-  AccordionDetails,
   Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
+  ButtonBase,
+  Drawer,
   IconButton,
   List,
   ListItem,
-  Drawer,
-  Typography,
   Paper,
-  Button,
-  ButtonBase,
+  Typography,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { faXmark, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import _ from "lodash";
-import { v1 } from "uuid";
 import { naLabel } from "@ot/constants";
+import _ from "lodash";
+import { useState } from "react";
+import { v1 } from "uuid";
 
 import Link from "../Link";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -90,11 +89,11 @@ function TableDrawer({ entries, message, caption = "Records", showSingle = true 
         {entries[0].name}
       </Link>
     ) : (
-      entries[0].name ?? naLabel
+      (entries[0].name ?? naLabel)
     );
   }
 
-  const toggleDrawer = event => {
+  const toggleDrawer = (event) => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
@@ -120,7 +119,7 @@ function TableDrawer({ entries, message, caption = "Records", showSingle = true 
       </Paper>
 
       <Box className={classes.drawerBody}>
-        {Object.keys(groupedEntries).map(group => (
+        {Object.keys(groupedEntries).map((group) => (
           <Accordion
             elevation={0}
             key={group}
@@ -142,7 +141,7 @@ function TableDrawer({ entries, message, caption = "Records", showSingle = true 
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedEntries[group].map(entry => (
+                {groupedEntries[group].map((entry) => (
                   <ListItem key={v1()}>
                     {entry.url ? (
                       <Link external to={entry.url}>

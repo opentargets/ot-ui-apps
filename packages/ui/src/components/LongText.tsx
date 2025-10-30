@@ -1,8 +1,8 @@
-import { useState, useLayoutEffect, useRef, PropsWithChildren } from "react";
+import { type Theme, Typography, type TypographyProps } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Typography } from "@mui/material";
+import { type PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   textContainer: {
     display: "flex",
     flexDirection: "column",
@@ -11,12 +11,17 @@ const useStyles = makeStyles(theme => ({
   showMore: {
     color: theme.palette.primary.main,
     cursor: "pointer",
+    textDecoration: "underline",
+    background: "none",
+    border: "none",
+    padding: 0,
+    font: "inherit",
   },
 }));
 
 type LongTextProps = {
   lineLimit: number;
-  variant: string;
+  variant: TypographyProps["variant"];
 };
 
 const LongText = ({ lineLimit, variant = "body2", children }: PropsWithChildren<LongTextProps>) => {
@@ -34,7 +39,7 @@ const LongText = ({ lineLimit, variant = "body2", children }: PropsWithChildren<
     const DOMLineHeight = document.defaultView
       ? document.defaultView.getComputedStyle(el, null).getPropertyValue("line-height")
       : "";
-    const lineHeight = Number.parseInt(DOMLineHeight);
+    const lineHeight = Number.parseInt(DOMLineHeight, 10);
     const numberOfLines = Math.round(height / lineHeight);
     container.style.height =
       numberOfLines <= lineLimit ? "auto" : showMore ? "auto" : `${lineLimit * lineHeight}px`;
@@ -47,12 +52,22 @@ const LongText = ({ lineLimit, variant = "body2", children }: PropsWithChildren<
       <span ref={containerRef} className={classes.textContainer}>
         <span ref={textRef}>{children}</span>
       </span>
-      {numberOfLines > lineLimit && (
+      {numberOfLines && numberOfLines > lineLimit && (
         <span>
           {showMore ? "" : "... "}[{" "}
-          <span className={classes.showMore} onClick={() => setShowMore(!showMore)}>
+          <button
+            type="button"
+            className={classes.showMore}
+            onClick={() => setShowMore(!showMore)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                setShowMore(!showMore);
+              }
+            }}
+          >
             {showMore ? " hide" : " show more"}
-          </span>{" "}
+          </button>{" "}
           ]
         </span>
       )}

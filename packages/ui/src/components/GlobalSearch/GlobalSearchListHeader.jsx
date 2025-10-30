@@ -1,19 +1,9 @@
+import { Button, Chip, styled, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { Button, Chip, Typography, styled } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPrescriptionBottleAlt,
-  faStethoscope,
-  faDna,
-  faChartBar,
-  faMapPin,
-  faStar,
-  faTag,
-} from "@fortawesome/free-solid-svg-icons";
-import { clearAllRecent } from "./utils/searchUtils";
 import GlobalSearchIcon from "./GlobalSearchIcon";
+import { clearAllRecent } from "./utils/searchUtils";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   sectionHeader: {
     textTransform: "capitalize",
     color: theme.palette.grey[600],

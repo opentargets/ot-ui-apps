@@ -44,7 +44,7 @@ export const featureToGroup = {
 
 export const groupToFeature = Object.groupBy(
   Object.entries(featureToGroup),
-  ([feature, group]) => group
+  ([_feature, group]) => group
 );
 
 export const groupNames = Object.keys(groupToFeature);

@@ -1,7 +1,7 @@
-import { ReactNode, useState } from "react";
-import { Typography, Popover, Box } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Popover, Typography } from "@mui/material";
+import { type ReactNode, useState } from "react";
 
 type DetailPopoverProps = {
   title: string;

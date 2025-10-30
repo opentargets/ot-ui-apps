@@ -5,7 +5,7 @@ import Link from "../Link";
 
 const docsLink = "https://platform-docs.opentargets.org/variant";
 
-function VariantMessage({ inputValue }: { inputValue: string }) {
+function VariantMessage({ inputValue: _inputValue }: { inputValue: string }) {
   return (
     <Box
       sx={{

@@ -1,9 +1,9 @@
-import { Box, Grid, Skeleton, SxProps, Theme, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ReactElement, ReactNode } from "react";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Box, Grid, Skeleton, type SxProps, type Theme, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import type { ReactElement, ReactNode } from "react";
+import { useId } from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   externalLinks: {
@@ -74,9 +74,10 @@ function Header({
   rightContent = null,
 }: HeaderProps): ReactElement {
   const classes = useStyles();
+  const headerId = useId();
 
   return (
-    <Grid className={classes.titleContainer} container id="profile-page-header-block">
+    <Grid className={classes.titleContainer} container id={headerId}>
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap">
           <Box sx={iconHeaderStyles}>

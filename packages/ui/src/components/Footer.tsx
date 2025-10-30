@@ -1,13 +1,12 @@
-import { Grid, Typography } from "@mui/material";
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Grid, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-
-import Link from "./Link";
-import { EmailLink } from "./EmailLink";
-
-import PrivateWrapper from "./PrivateWrapper";
 import { useConfigContext } from "../providers/ConfigurationProvider";
+import { EmailLink } from "./EmailLink";
+import Link from "./Link";
+import PrivateWrapper from "./PrivateWrapper";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
@@ -80,15 +79,15 @@ type FooterSocialProps = {
 };
 const FooterSocial = ({ social }: FooterSocialProps) => {
   const classes = useSocialLinkStyle();
-  const socialsWithIcons = social.filter(s => s.icon);
+  const socialsWithIcons = social.filter((s) => s.icon);
   return (
     <>
       <FooterSectionHeading>Follow us</FooterSectionHeading>
       <Grid className={classes.iconsContainer} container justifyContent="space-between">
         {socialsWithIcons.map(({ icon, url, label }, i) => (
-          <Grid item key={i}>
+          <Grid item key={`social-${url}-${label}`}>
             <Link external footer to={url} ariaLabel={label}>
-              <FontAwesomeIcon className={classes.socialIcon} icon={icon!} />
+              <FontAwesomeIcon className={classes.socialIcon} icon={icon || faQuestion} />
             </Link>
           </Grid>
         ))}
@@ -118,12 +117,19 @@ const FooterSection = ({ heading, links, social, children }: FooterSectionProps)
         {links.map((link, i) => {
           if (link.showOnlyPartner) {
             return (
-              <PrivateWrapper key={i}>
+              <PrivateWrapper key={`footer-link-${link.url}-${link.label}`}>
                 <FooterLink label={link.label} url={link.url} icon={link.icon} />
               </PrivateWrapper>
             );
           } else {
-            return <FooterLink key={i} label={link.label} url={link.url} icon={link.icon} />;
+            return (
+              <FooterLink
+                key={`footer-link-${link.url}-${link.label}`}
+                label={link.label}
+                url={link.url}
+                icon={link.icon}
+              />
+            );
           }
         })}
       </Grid>
@@ -176,16 +182,16 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
         >
           CC0 1.0
           <img
-            alt="cc0 license image 1"
-            aria-label="cc0 license image 1"
+            alt="Creative Commons CC logo"
+            aria-label="Creative Commons CC logo"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
             height="22px"
             width="22px"
           />
           <img
-            alt="cc0 license image 2"
-            aria-label="cc0 license image 2"
+            alt="Creative Commons Zero logo"
+            aria-label="Creative Commons Zero logo"
             className={classes.icon}
             src="https://mirrors.creativecommons.org/presskit/icons/zero.svg?ref=chooser-v1"
             height="22px"

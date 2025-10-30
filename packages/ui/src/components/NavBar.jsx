@@ -1,13 +1,12 @@
-import { Link as ReactRouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Button, Typography, useMediaQuery, Box } from "@mui/material";
-import { makeStyles, useTheme } from "@mui/styles";
+import { AppBar, Box, Button, Toolbar, Typography, useMediaQuery } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { makeStyles, useTheme } from "@mui/styles";
 import classNames from "classnames";
+import { Link as ReactRouterLink } from "react-router-dom";
 import { v1 } from "uuid";
-
+import HeaderMenu from "./HeaderMenu";
 import Link from "./Link";
 import OpenTargetsTitle from "./OpenTargetsTitle";
-import HeaderMenu from "./HeaderMenu";
 import PrivateWrapper from "./PrivateWrapper";
 
 const LogoBTN = styled(Button)`
@@ -15,7 +14,7 @@ const LogoBTN = styled(Button)`
   color: white;
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   navbar: {
     backgroundColor: `${theme.palette.primary.dark} !important`,
     margin: 0,
@@ -172,7 +171,7 @@ function NavBar({ name, search, api, downloads, docs, contact, homepage, items, 
 
           {isHomePageRegular && (
             <Box sx={{ display: "flex" }}>
-              {items.map(item => {
+              {items.map((item) => {
                 if (item.showOnlyPartner) {
                   return (
                     <PrivateWrapper key={v1()}>

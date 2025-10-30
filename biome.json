@@ -29,7 +29,6 @@
       "!**/*.d.ts",
       "!**/generated",
       "!**/apps/platform/src",
-      "!**/packages/ui",
       "!**/packages/sections",
       "!**/packages/ot-config",
       "**/packages/ot-constants",
@@ -71,7 +70,7 @@
         "useButtonType": "error"
       },
       "correctness": {
-        "useExhaustiveDependencies": "warn",
+        "useExhaustiveDependencies": "off",
         "noUnusedVariables": "warn"
       },
       "suspicious": {
