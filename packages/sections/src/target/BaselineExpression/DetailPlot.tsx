@@ -55,15 +55,24 @@ function renderChart({
     return `${s.slice(0, maxLabelChars)}${s.length > maxLabelChars ? "..." : ""}`;
   }
 
+  const barWidth = 24;
+  const gapWidth = 3;
+  const plotWidth = data.length * (barWidth + gapWidth) + 100;  // (barWidth + gap) * number of bars + right margin
+
   return PlotLib.plot({
-    width: 500,
+    width: plotWidth,
     height,
     marginLeft: 0,
     marginRight: 100,
     marginTop: 16,
     marginBottom: 130,
     style: { cursor: "default" },
-    x: { axis: null, domain: data.map(xAccessor) },  // preserve input order
+    x: { 
+      axis: null, 
+      domain: data.map(xAccessor), 
+      paddingInner: gapWidth / (barWidth + gapWidth), // padding is ratio of gap to total space
+      paddingOuter: 0 
+    },  // preserve input order
     y: { axis: null, domain: [0, 1] },
     marks: [
       // text mark for x labels for more control and so can add tooltip
@@ -85,6 +94,7 @@ function renderChart({
         y: 1,
         fill: barBackground,
         className: "obs-tooltip",
+        inset: 0,
       }),
 
       // median value bars
@@ -93,6 +103,7 @@ function renderChart({
         y: d => d.median / maxMedian,
         fill: barFill,
         className: "obs-tooltip",
+        inset: 0,
       }),
     ],
   });
