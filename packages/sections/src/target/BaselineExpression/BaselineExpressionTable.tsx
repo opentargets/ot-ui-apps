@@ -324,17 +324,19 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     columnHelper.display({
       id: 'expand',
       header: "",
-      cell: ({ row }) => row.getCanExpand() ? (
-        <IconButton size="small" className={classes.expandButton}>
+      cell: ({ row }) => (
+        <IconButton
+          size="small"
+          className={classes.expandButton}
+          sx={{ visibility: row.getCanExpand() ? "visible" : "hidden" }}  // keeps all rows same height
+        >
           {row.getIsExpanded() ? (
             <FontAwesomeIcon icon={faChevronUp} size="xs" />
           ) : (
             <FontAwesomeIcon icon={faChevronDown} size="xs" />
           )}
         </IconButton>
-      ) : (
-        null
-      ),
+      )
     }),
     columnHelper.accessor(
       row => getName(row), {
