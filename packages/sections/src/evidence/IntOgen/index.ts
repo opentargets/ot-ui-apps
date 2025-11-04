@@ -7,7 +7,7 @@ export const definition = {
   id,
   name: "IntOGen",
   shortName: "IO",
-  hasData: (data: EvidenceData) => (data.intOgenSummary?.count || 0) > 0,
+  hasData: (data: EvidenceData) => (data.intOgen?.count || 0) > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 

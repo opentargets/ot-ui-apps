@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { SectionItem, Link, Tooltip, OtTable } from "ui";
 
 import { definition } from ".";
+import { formatSignificantDigits } from "@ot/utils";
 import Description from "./Description";
 import upperBin6Map from "./upperBin6Map";
 import GENETIC_CONSTRAINT from "./GeneticConstraint.gql";
@@ -36,6 +37,7 @@ const constraintTypeMap = {
   mis: "Missense",
   lof: "pLoF",
 };
+
 
 function ConstraintAssessment({ ensemblId, symbol, upperBin6 }) {
   const classes = useStyles();
@@ -75,10 +77,13 @@ function getColumns(ensemblId, symbol) {
     {
       id: "exp",
       label: "Expected SNVs",
+      renderCell: ({ exp }) => formatSignificantDigits(exp),
+      tooltip: "Expected variant counts were predicted using a depth corrected probability of mutation for each gene. More details can be found in the gnomAD flagship paper. Note that the expected variant counts for bases with a median depth <1 were removed from the totals.",
     },
     {
       id: "obs",
       label: "Observed SNVs",
+      tooltip: "Includes single nucleotide changes that occurred in the canonical transcript that were found at a frequency of <0.1%, passed all filters, and at sites with a median depth ≥1. The counts represent the number of unique variants and not the allele count of these variants.",
     },
     {
       id: "metrics",
@@ -86,10 +91,10 @@ function getColumns(ensemblId, symbol) {
       renderCell: ({ score, oe, oeLower, oeUpper, upperBin6 }) => (
         <>
           <div>
-            {upperBin6 === null ? "Z" : "pLI"} = {score}
+            {upperBin6 === null ? "Z" : "pLI"} = {formatSignificantDigits(score)}
           </div>
           <div>
-            o/e = {oe} ({oeLower} - {oeUpper})
+            o/e = {formatSignificantDigits(oe)} ({formatSignificantDigits(oeLower)} - {formatSignificantDigits(oeUpper)})
           </div>
           {upperBin6 === null ? null : (
             <ConstraintAssessment ensemblId={ensemblId} symbol={symbol} upperBin6={upperBin6} />

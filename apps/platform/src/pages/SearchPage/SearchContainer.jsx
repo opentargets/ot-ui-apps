@@ -17,7 +17,7 @@ import {
   faPrescriptionBottleAlt,
   faStethoscope,
 } from "@fortawesome/free-solid-svg-icons";
-import { ErrorBoundary, BrokenSearchIcon } from "ui";
+import { ErrorBoundary, BrokenSearchIcon, Link } from "ui";
 
 import DiseaseDetail from "./DiseaseDetail";
 import DiseaseResult from "./DiseaseResult";
@@ -190,16 +190,40 @@ function NoResultsContainer({ q }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "left",
         mb: 10,
       }}
     >
-      <Box sx={{ fontSize: "10em", mb: 5 }}>
+      <Box sx={{ fontSize: "5em", mb: 5 }}>
         <BrokenSearchIcon color={grey[400]} />
       </Box>
-      <Box sx={{ typography: "h6", textAlign: "center" }}>
-        We could not find anything in the Platform database that matches{" "}
-        <strong> &quot;{q}&quot;</strong>.
+      <Box sx={{ typography: "h6", textAlign: "left", mb: 5 }}>
+        We could not find a match in the Platform for {" "}
+        <strong> &quot;{q}&quot;</strong>
+      </Box>
+      <Box sx={{ typography: "body2", textAlign: "left", mt: 2 }}>
+        Note that you can only search for: targets, diseases/phenotypes, drugs, variants, or studies.
+        <br />
+        <br />
+        You could try:
+        <ul>
+          <li>Checking for any accidentally misspelt terms</li>
+          <li>Broadening your search by using more general terms</li>
+          <li>Searching for a therapeutic area and refining from there</li>
+        </ul>
+        <br />
+        You can refer to our{" "}
+        <Link external to="https://platform-docs.opentargets.org">
+          Documentation
+        </Link>{" "}
+        to see how best to find the term you are looking for.
+        <br />
+        <br/>
+        If you think we are missing a term, please get in touch on the{" "}
+        <Link external to="https://community.opentargets.org">
+          Open Targets Community
+        </Link>
+        .
       </Box>
     </Box>
   );

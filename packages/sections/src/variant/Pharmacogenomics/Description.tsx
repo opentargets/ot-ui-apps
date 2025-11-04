@@ -19,7 +19,7 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
       </strong>{" "}
       known to affect drug response. Source:{" "}
       <Link external to="https://www.pharmgkb.org/">
-        PharmGKB
+        ClinPGx
       </Link>
       .
     </>

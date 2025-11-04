@@ -152,12 +152,12 @@ function Body({ id: chemblId, label: name, entity }) {
             )}
             {(variantFunctionalConsequence?.id === "SO:0001583" ||
               variantFunctionalConsequence?.id === "SO:0001587") && (
-              <LabelChip
-                label={variantConsequenceSource.ProtVar.label}
-                to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
-                tooltip={variantConsequenceSource.ProtVar.tooltip}
-              />
-            )}
+                <LabelChip
+                  label={variantConsequenceSource.ProtVar.label}
+                  to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${pvparams[0]}&genomic_position=${pvparams[1]}&reference_allele=${pvparams[2]}&alternative_allele=${pvparams[3]}`}
+                  tooltip={variantConsequenceSource.ProtVar.tooltip}
+                />
+              )}
           </div>
         );
       },
@@ -222,7 +222,7 @@ function Body({ id: chemblId, label: name, entity }) {
           As defined by
           <Link external to={`https://www.pharmgkb.org/page/clinAnnLevels`}>
             {" "}
-            PharmGKB ClinAnn Levels
+            ClinPGx ClinAnn Levels
           </Link>
         </>
       ),
@@ -245,7 +245,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderCell: ({ studyId }) =>
         studyId ? (
           <Link external to={`https://www.pharmgkb.org/clinicalAnnotation/${studyId}`}>
-            PharmGKB
+            ClinPGx
           </Link>
         ) : (
           naLabel

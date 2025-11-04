@@ -1,6 +1,6 @@
-export * from "./types";
 export * from "./environment";
 export * from "./theme";
+export * from "./types";
 
 // Add window augmentation
 declare global {

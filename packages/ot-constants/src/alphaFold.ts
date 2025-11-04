@@ -1,4 +1,4 @@
-import { scaleLinear, interpolateLab, rgb, scaleQuantize } from "d3";
+import { interpolateLab, rgb, scaleLinear } from "d3";
 
 export const alphaFoldConfidenceBands = [
   { lowerLimit: 90, label: "Very high", sublabel: "90 > pLDDT", color: "rgb(0, 83, 214)" },
@@ -12,7 +12,10 @@ export const alphaFoldConfidenceBands = [
   { lowerLimit: 0, label: "Very low ", sublabel: "50 > pLDDT", color: "rgb(255, 125, 69)" },
 ];
 
-export function getAlphaFoldConfidence(atom, propertyName = "label") {
+export function getAlphaFoldConfidence(
+  atom: { b: number },
+  propertyName: "label" | "sublabel" | "color" = "label"
+): string {
   for (const obj of alphaFoldConfidenceBands) {
     if (atom.b > obj.lowerLimit) return obj[propertyName];
   }
@@ -35,8 +38,10 @@ export const alphaFoldPathogenicityBands = [
   { lowerLimit: 0, label: "Likely benign", sublabel: "score < 0.34", color: "rgb(61, 84, 147)" },
 ];
 
-export function getAlphaFoldPathogenicity(atom, scores, propertyName = "label") {
-  const score = scores[atom.resi];
+export function getAlphaFoldPathogenicity(
+  score: number,
+  propertyName: "label" | "sublabel" | "color" = "label"
+): string {
   for (const obj of alphaFoldPathogenicityBands) {
     if (score > obj.lowerLimit) return obj[propertyName];
   }
@@ -60,8 +65,8 @@ export const alphaFoldPathogenicityColorScale = scaleLinear()
 // only some of the scale breakpoints are meaningful for the legend
 alphaFoldPathogenicityColorScale._primaryDomain = [0, 0.34, 0.564, 1];
 
-export function getAlphaFoldPathogenicityColor(atom, scores) {
-  return alphaFoldPathogenicityColorScale(scores[atom.resi]);
+export function getAlphaFoldPathogenicityColor(score: number) {
+  return alphaFoldPathogenicityColorScale(score);
 }
 
 export const aminoAcidLookup = {
@@ -85,4 +90,29 @@ export const aminoAcidLookup = {
   E: "GLU",
   N: "ASN",
   Q: "GLN",
+};
+
+// hydrophobicity indices at ph7, from:
+// https://www.sigmaaldrich.com/GB/en/technical-documents/technical-article/protein-biology/protein-structural-analysis/amino-acid-reference-chart#hydrophobicity
+export const aminoAcidHydrophobicity = {
+  PHE: { value: 100, label: "very hydrophobic" },
+  ILE: { value: 99, label: "very hydrophobic" },
+  TRP: { value: 97, label: "very hydrophobic" },
+  LEU: { value: 97, label: "very hydrophobic" },
+  VAL: { value: 76, label: "very hydrophobic" },
+  MET: { value: 74, label: "very hydrophobic" },
+  TYR: { value: 63, label: "hydrophobic" },
+  CYS: { value: 49, label: "hydrophobic" },
+  ALA: { value: 41, label: "hydrophobic" },
+  THR: { value: 13, label: "neutral" },
+  HIS: { value: 8, label: "neutral" },
+  GLY: { value: 0, label: "neutral" },
+  SER: { value: -5, label: "neutral" },
+  GLN: { value: -10, label: "neutral" },
+  ARG: { value: -14, label: "hydrophilic" },
+  LYS: { value: -23, label: "hydrophilic" },
+  ASN: { value: -28, label: "hydrophilic" },
+  GLU: { value: -31, label: "hydrophilic" },
+  PRO: { value: -46, label: "hydrophilic" },
+  ASP: { value: -55, label: "hydrophilic" },
 };

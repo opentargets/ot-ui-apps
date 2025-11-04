@@ -1,6 +1,6 @@
-import { lighten, darken } from "polished";
 import { grey } from "@mui/material/colors";
-import { ThemeOptions, createTheme } from "@mui/material/styles";
+import { createTheme, type ThemeOptions } from "@mui/material/styles";
+import { darken, lighten } from "polished";
 import { getConfig } from "./environment";
 
 const config = getConfig();
@@ -70,6 +70,21 @@ const themeOptions: ThemeOptions = {
           textTransform: "none",
           color: "#5A5F5F",
           borderColor: "rgb(196,196,196)",
+        },
+        contained: {
+          backgroundColor: SECONDARY,
+          color: "#fff",
+          border: "none",
+          "&:hover": {
+            backgroundColor: darken(0.1, SECONDARY),
+          },
+          "&:active": {
+            backgroundColor: darken(0.2, SECONDARY),
+          },
+          "&:disabled": {
+            backgroundColor: grey[300],
+            color: grey[500],
+          },
         },
       },
     },

@@ -14,12 +14,6 @@ interface SearchPostResult {
   requestOptions?: RequestOptions;
 }
 
-interface PublicationSummaryParams {
-  pmcId: string;
-  symbol: string;
-  name: string;
-}
-
 export function epmcUrl(id: string): string {
   return `https://europepmc.org/article/MED/${id}`;
 }
@@ -39,11 +33,11 @@ export function europePmcLiteratureQuery(ids: string[]): string {
 
 export const encodeParams = (params: Record<string, string>): string => {
   const formBody: string[] = [];
-  Object.keys(params).forEach(key => {
+  for (const key of Object.keys(params)) {
     const encodedKey = encodeURIComponent(key);
-    const encodedValue = encodeURIComponent(params[key]);
+    const encodedValue = encodeURIComponent(params[key] ?? "");
     formBody.push(`${encodedKey}=${encodedValue}`);
-  });
+  }
   return formBody.join("&");
 };
 
@@ -89,7 +83,7 @@ function emaUrl() {
   return "https://www.ema.europa.eu/en/medicines";
 }
 
-function usanUrl(id) {
+function usanUrl(id: string) {
   return `https://searchusan.ama-assn.org/finder/usan/search/${id}/relevant/1`;
 }
 
@@ -118,3 +112,15 @@ export const referenceUrls: Record<string, (id: string) => string> = {
   EMA: emaUrl,
   USAN: usanUrl,
 };
+
+export function alphaFoldCifUrl(uniprotId: string) {
+  return `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v6.cif`;
+}
+
+export function alphaFoldPathogenicityUrl(uniprotId: string) {
+  return `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-aa-substitutions.csv`;
+}
+
+export function alphaFoldDomainsUrl(uniprotId: string) {
+  return `https://rest.uniprot.org/uniprotkb/${uniprotId}.json?fields=ft_domain`;
+}
