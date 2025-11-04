@@ -1,5 +1,5 @@
 import { useRef, useEffect, Dispatch, SetStateAction } from "react";
-import { Box } from "@mui/material";
+import { Box, BoxProps } from "@mui/material";
 
 type ObsChartProps = {
   data: any;
@@ -19,6 +19,7 @@ type ObsChartProps = {
   setChart: Dispatch<SetStateAction<SVGSVGElement>>;
   setDatum: Dispatch<SetStateAction<any>>;
   renderSVGOverlay: (chart: SVGSVGElement) => SVGElement | null;
+  containerProps?: BoxProps;
 };
 
 function ObsChart({
@@ -34,6 +35,7 @@ function ObsChart({
   setChart,
   setDatum,
   renderSVGOverlay,
+  containerProps,
 }: ObsChartProps) {
   const headerRef = useRef();
 
@@ -120,7 +122,7 @@ function ObsChart({
     setDatum,
   ]);
 
-  return <Box ref={headerRef}></Box>;
+  return <Box {...containerProps} ref={headerRef}></Box>;
 }
 
 export default ObsChart;

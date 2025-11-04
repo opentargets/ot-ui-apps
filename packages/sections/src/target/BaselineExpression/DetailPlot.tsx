@@ -27,13 +27,14 @@ function DetailPlot({
         data={sortedData}
         otherData={{ barBackground, barFill, xAccessor }}
         height={height}
-        renderChart={renderChart}
         xTooltip={xAccessor}
         yTooltip={d => 1}
         xAnchorTooltip="left"
         yAnchorTooltip="bottom"
+        containerProps={{ width: "100%", textAlign: "center" }}
         // dxTooltip={10}
         // dyTooltip={10}
+        renderChart={renderChart}
         renderTooltip={renderTooltip}
       />
     </Box>
@@ -57,7 +58,7 @@ function renderChart({
 
   const barWidth = 23;
   const gapWidth = 3;
-  const marginLeft = 160;
+  const marginLeft = 0;
   const marginRight = 90;
   const plotWidth = data.length * (barWidth + gapWidth) + marginLeft + marginRight;
 
