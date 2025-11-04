@@ -1,7 +1,12 @@
 import { Navigate } from "react-router-dom";
 import usePermissions from "../hooks/usePermissions";
+import { ReactNode } from "react";
 
-function PrivateRoute({ children }) {
+type PrivateRouteProps = {
+  children: ReactNode;
+}
+
+function PrivateRoute({ children }: PrivateRouteProps) {
   const { isPartnerPreview } = usePermissions();
 
   if (!isPartnerPreview) {

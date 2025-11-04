@@ -13,7 +13,7 @@ import InfoPopper from "./InfoPopper";
 const experimentalStructureStem = "https://www.ebi.ac.uk/pdbe/entry-files/download/";
 const experimentalStructureSuffix = ".cif";
 const alphaFoldStructureStem = "https://alphafold.ebi.ac.uk/files/";
-const alphaFoldStructureSuffix = "-model_v4.cif";
+const alphaFoldStructureSuffix = "-model_v6.cif";
 
 const chainColorScheme = [
   ...schemeDark2.slice(0, -1),
