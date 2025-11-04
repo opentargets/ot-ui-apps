@@ -28,3 +28,35 @@ export function formatSignificantDigits(
 
   return num < 0 ? `-${trimmed}` : trimmed;
 }
+
+/**
+ * Formats a decimal value as a percentage string (without the % symbol).
+ * - Values >= 0.01 (1%) are shown as integers
+ * - Values < 0.01 show decimal places up to the first non-zero digit
+ * - Zero is shown as '0'
+ */
+export function formatPercentage(value: number) {
+  const percentage = value * 100;
+  
+  // If >= 1, show as integer
+  if (percentage >= 1) {
+    return percentage.toFixed(0);
+  }
+ 
+  // If 0, return '0'
+  if (percentage === 0) {
+    return '0';
+  }
+  
+  // For values < 1, find the first non-zero decimal digit
+  const str = percentage.toString();
+  const match = str.match(/\.0*[1-9]/);
+  
+  if (match) {
+    // Calculate number of decimal places needed to show first non-zero digit
+    const decimals = match[0].length - 1; // subtract 1 for the decimal point
+    return percentage.toFixed(decimals);
+  }
+  
+  return percentage.toString();
+}
