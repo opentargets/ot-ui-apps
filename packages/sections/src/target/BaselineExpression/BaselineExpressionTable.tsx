@@ -36,9 +36,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React, { useMemo, useCallback, useState, useEffect, Fragment } from "react";
-import { nullishComparator } from "@ot/utils";
-import { naLabel } from "@ot/constants";
+import React, { useMemo, useCallback, useState, Fragment } from "react";
+import DetailPlot from "./DetailPlot";
 
 const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
 
@@ -92,8 +91,6 @@ interface BaselineExpressionTableProps {
   DownloaderComponent?: React.ReactNode;
 }
 
-type TableData = GroupedTissueData | GroupedCellTypeData | IndividualExpressionData;
-
 const useStyles = makeStyles((theme: Theme) => ({
   tableContainer: {
     marginTop: theme.spacing(1),
@@ -144,10 +141,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   nestedRow: {
+    cursor: "pointer",
     backgroundColor: theme.palette.grey[50],
     "& td": {
       padding: "0px 8px",
     },
+  },
+  cursorAuto: {
+    cursor: "auto !important",
   },
   nestedTable: {
     width: "100%",
@@ -168,7 +169,8 @@ const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
 // group and sort data at 1st, 2nd and 3rd levels
 // - currently preparing all data here, whereas a lot could be done on demand
-function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = true) {
+function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
+
   const [topLevelName, otherName] = groupByTissue ? ["tissue", "celltype"] : ["celltype", "tissue"];
 
   data = structuredClone(data);
@@ -273,19 +275,6 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean = tru
     firstLevel.push(firstLevelRow);
   }
 
-  // sort all levels
-  const firstColumnComparator = nullishComparator(
-    (a, b) => b - a,
-    a => a[datatypes[0]]?.median
-  );
-  firstLevel.sort(firstColumnComparator);  // prob unnec since handled by table
-  for (const array of Object.values(secondLevel)) {
-    array.sort(firstColumnComparator);
-  }
-  for (const array of Object.values(thirdLevel)) {
-    array.sort(nullishComparator((a, b) => b - a, a => a.median));
-  }
-
   console.log({ firstLevel, secondLevel, thirdLevel });
   return { firstLevel, secondLevel, thirdLevel };
 }
@@ -296,24 +285,27 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 }) => {
 
   const classes = useStyles();
-  // const [sorting, setSorting] = useState<SortingState>([]);
-  // const [pagination, setPagination] = useState<PaginationState>({
-  //   pageIndex: 0,
-  //   pageSize: 30,
-  // });
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: datatypes[0], desc: true }
+  ]); 
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 15,
+  });
   const [expanded, setExpanded] = useState<ExpandedState>({});
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
 
-  const { firstLevel, secondLevel, thirdLevel } = useMemo(() => prepareData(data, true), [data, groupByTissue]); // groupByTissue));
+  const { firstLevel, secondLevel, thirdLevel } =
+    useMemo(() => prepareData(data, groupByTissue), [data, groupByTissue]);
 
   const getRowCanExpand = useCallback((row) => {
-    return true; // !! CAN ALWAYS EXPEND 1ST,->2ND LEVEL, WHAT ABOUT 2ND->3RD?
-  }, []);
+    return row.original._firstLevelId || thirdLevel[row.original._secondLevelName];
+  }, [firstLevel, secondLevel, thirdLevel]);
 
   const getSubRows = useCallback((row) => {
     return secondLevel[row._firstLevelId] ?? [];
-  }, [secondLevel]);
+  }, [firstLevel, secondLevel]);
 
   const getName = useCallback((obj) => {
     let dataRow;
@@ -332,11 +324,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     columnHelper.display({
       id: 'expand',
       header: "",
-      cell: ({ row }) => row.getCanExpand() ? (
+      cell: ({ row }) => (
         <IconButton
           size="small"
           className={classes.expandButton}
-          onClick={() => row.toggleExpanded()}  // !! NEED TO MAKE WORK !!
+          sx={{ visibility: row.getCanExpand() ? "visible" : "hidden" }}  // keeps all rows same height
         >
           {row.getIsExpanded() ? (
             <FontAwesomeIcon icon={faChevronUp} size="xs" />
@@ -344,40 +336,49 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             <FontAwesomeIcon icon={faChevronDown} size="xs" />
           )}
         </IconButton>
-      ) : (
-        null
-      ),
+      )
     }),
     columnHelper.accessor(
       row => getName(row), {
-      header: groupByTissue ? "Tissue" : "Cell Type",
-      cell: (info) => (
-        <Typography
-          variant="caption"
-          style={{ fontWeight: info.row.original._firstLevelId ? "bold" : "normal" }}
-        >
-          {info.getValue()}
-        </Typography>
-      )
-    }),
+        header: groupByTissue ? "Tissue" : "Cell Type",
+        cell: (info) => {
+          const isFirstLevel = info.row.original._firstLevelId;
+          return (
+            <Typography
+              variant="caption"
+              sx={{
+                fontWeight: isFirstLevel ? "bold" : "normal",
+                pl: isFirstLevel ? null: 4,
+              }}
+            >
+              {info.getValue()}
+            </Typography>
+          );
+        },
+      }
+    ),
   ];
   for (const datatype of datatypes) {
     columns.push(
-      columnHelper.accessor((row) => row[datatype]?._normalisedMedian, {
-          header: datatype,
-          cell: (info) => {
-            const value = info.getValue();
-            const percent = value ? value * 100 : 0;
-            return (
-              <Box className={classes.medianCell}>
-                <Box className={classes.barContainer}>
-                  <Box className={classes.bar} style={{ width: `${percent}%` }} />
-                </Box>
+      // use -1 for missing value to make sorting work
+      // - could not get nullish values to bottom with sortingFn: nullishComparator(...
+      columnHelper.accessor((row) => row[datatype]?._normalisedMedian ?? -1, {
+        header: datatype,
+        enableSorting: true,
+        cell: (info) => {
+          const value = info.getValue();
+          const percent = value >= 0 ? value * 100 : 0;  // normalised median is -1 if absent
+          return (
+            <Box className={classes.medianCell}>
+              <Box className={classes.barContainer}>
+                <Box 
+                  className={info.row.original._firstLevelId ? classes.bar : classes.childBar}
+                  style={{ width: `${percent}%` }} />
               </Box>
-            );
-          },
-        }
-      )
+            </Box>
+          );
+        },
+      })
     );
   }
 
@@ -388,74 +389,28 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     getRowCanExpand,
     getCoreRowModel: getCoreRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getSubRows,
+    onSortingChange: setSorting,
+    onExpandedChange: setExpanded,
     state: {
-      // sorting,
-      // pagination,
+      sorting,
+      pagination,
       expanded,
     },
-    // onSortingChange: setSorting,
-    // onPaginationChange: setPagination,
-    onExpandedChange: setExpanded,
-    // getSortedRowModel: getSortedRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
-    // manualPagination: false,
+    onPaginationChange: setPagination,
+    getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: false,
     // filterFns: {
     //   searchFilterFn: searchFilter,
     // },
   });
 
-  // return (
-  //   <Box>
-  //     <table>
-  //       <thead>
-  //         {table.getHeaderGroups().map(headerGroup => (
-  //           <tr key={headerGroup.id}>
-  //             {headerGroup.headers.map(header => (
-  //               <th key={header.id}>
-  //                 {header.isPlaceholder
-  //                   ? null
-  //                   : flexRender(
-  //                       header.column.columnDef.header,
-  //                       header.getContext()
-  //                     )}
-  //               </th>
-  //             ))}
-  //           </tr>
-  //         ))}
-  //       </thead>
-  //       <tbody>
-  //         {table.getRowModel().rows.map(row => (
-  //           <Fragment key={row.id}>
-  //             {/* 1st and 2nd level rows */}
-  //             <tr key={row.id}>
-  //               {row.getVisibleCells().map(cell => (
-  //                 <td key={cell.id}>
-  //                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-  //                 </td>
-  //               ))}
-  //             </tr>
-
-  //             {/* 3rd level rows */}
-  //             {row.getIsExpanded() && row.original._secondLevelName && (
-  //               <tr>
-  //                 <td colSpan={row.getAllCells().length}>
-  //                   {JSON.stringify(thirdLevel[row.original._secondLevelName].map(r => `${r.celltypeBiosampleFromSource}: ${r.median.toFixed(2)}`))} 
-  //                 </td>
-  //               </tr>
-  //             )}
-  //           </Fragment>
-  //         ))}
-  //       </tbody>
-  //     </table>
-  //   </Box>
-  // );
-
    return (
     <Box className={classes.tableContainer}>
-      {/* <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
+      <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-          <TextField
+          {/* <TextField
             size="small"
             placeholder={`Search ${groupByTissue ? "tissues" : "cell types"}...`}
             value={searchTerm}
@@ -468,7 +423,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               ),
             }}
             sx={{ minWidth: 200 }}
-          />
+          /> */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Select
               value={groupByTissue ? "tissue" : "celltype"}
@@ -496,13 +451,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 },
               }}
             >
-              <MenuItem value="tissue">Group by Tissue → Cell Type</MenuItem>
-              <MenuItem value="celltype">Group by Cell Type → Tissue</MenuItem>
+              <MenuItem value="tissue">Tissue → Tissue Detail → Cell Detail</MenuItem>
+              <MenuItem value="celltype">Cell → Cell Detail → Tissue Detail</MenuItem>
             </Select>
           </Box>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
-      </Box> */}
+      </Box>
       <Grid justifyContent="center" container>
         <Grid item xs={12} md={10}>
           <TableContainer component={Paper} elevation={0}>
@@ -516,9 +471,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         <TableCell
                           key={header.id}
                           className={classes.headerCell}
-                          // onClick={header.column.getToggleSortingHandler()}
+                          onClick={header.column.getToggleSortingHandler()}
                           style={{
-                            // cursor: header.column.getCanSort() ? "pointer" : "default",
+                            cursor: header.column.getCanSort() ? "pointer" : "default",
                             width: getColumnWidth(index)
                           }}
                         >
@@ -527,12 +482,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               <Typography variant="caption" style={{ fontWeight: "bold" }}>
                                 {flexRender(header.column.columnDef.header, header.getContext())}
                               </Typography>
-                              {/* {header.column.getCanSort() && (
+                              {header.column.getCanSort() && (
                                 <TableSortLabel
                                   active={!!header.column.getIsSorted()}
                                   direction={header.column.getIsSorted() === "asc" ? "asc" : "desc"}
                                 />
-                              )} */}
+                              )}
                             </Box>
                           )}
                         </TableCell>
@@ -545,12 +500,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               <TableBody>
                 {table.getRowModel().rows.map((row) => (
                   <Fragment key={row.id}>
-
                     {/* 1st and 2nd level rows */}
                     <TableRow
                       hover
-                      className={classes.groupRow}
-                      // onClick={() => row.toggleExpanded()}
+                      className={`${row.original._firstLevelId ? classes.groupRow : classes.nestedRow} ${row.getCanExpand() ? "" : classes.cursorAuto }`}
+                      onClick={() => {
+                        if (row.getCanExpand()) row.toggleExpanded();
+                      }}
                     >
                       {row.getVisibleCells().map((cell, index) => {
                         return (
@@ -562,130 +518,23 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     </TableRow>
                     
                     {/* 3rd level rows */}
-                    {
-                    // row.getIsExpanded() && row.original._secondLevelName && (
-                    //   <TableRow>
-                    //     <TableCell colSpan={columns.length} style={{ padding: 0 }}>
-                    //       <Collapse in={row.getIsExpanded()} timeout="auto" unmountOnExit>
-                    //         <Box mx={1} mb={1}>
-                    //           <Table
-                    //             size="small"
-                    //             className={classes.nestedTable}
-                    //             style={{ fontSize: "0.75rem" }}
-                    //           >
-                    //             <TableHead sx={{ display: "none" }}>
-                    //               <TableRow>
-                    //                 <TableCell style={{ width: "5%" }}></TableCell>
-                    //                 <TableCell style={{ width: "35%" }}></TableCell>
-                    //                 {dataTypes.map((dataType) => {
-                    //                   const dataTypeColumnWidth =
-                    //                     dataTypes.length > 0
-                    //                       ? `${60 / dataTypes.length}%`
-                    //                       : "60%";
-                    //                   return (
-                    //                     <TableCell
-                    //                       key={dataType}
-                    //                       style={{ width: dataTypeColumnWidth }}
-                    //                     ></TableCell>
-                    //                   );
-                    //                 })}
-                    //               </TableRow>
-                    //             </TableHead>
-                    //             <TableBody>
-                    //               {(() => {
-                    //                 // Group expressions by secondary key (cell type or tissue)
-                    //                 const secondaryGroups: {
-                    //                   [key: string]: BaselineExpressionRow[];
-                    //                 } = {};
-                    //                 row.original.expressions.forEach((expression) => {
-                    //                   const tissueName = expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource;
-                    //                   const cellTypeName = expression.celltypeBiosample?.biosampleName || expression.celltypeBiosampleFromSource;
-                                      
-                    //                   // For nested table: only show rows that have BOTH tissue and cell type information
-                    //                   if (!tissueName || !cellTypeName) {
-                    //                     return;
-                    //                   }
-                                      
-                    //                   const secondaryName = groupByTissue ? cellTypeName : tissueName;
-                                      
-                    //                   if (!secondaryGroups[secondaryName]) {
-                    //                     secondaryGroups[secondaryName] = [];
-                    //                   }
-                    //                   secondaryGroups[secondaryName].push(expression);
-                    //                 });
-
-                    //                 return Object.entries(secondaryGroups).map(
-                    //                   ([secondaryName, expressions]) => (
-                    //                     <TableRow key={secondaryName} className={classes.nestedRow}>
-                    //                       <TableCell
-                    //                         className={classes.nestedTableCell}
-                    //                         style={{ width: "5%" }}
-                    //                       >
-                    //                         {/* Empty cell to align with expand column */}
-                    //                       </TableCell>
-                    //                       <TableCell
-                    //                         className={classes.nestedTableCell}
-                    //                         style={{ paddingLeft: 40, width: "35%" }}
-                    //                       >
-                    //                         <Typography variant="caption">
-                    //                           {secondaryName}
-                    //                         </Typography>
-                    //                       </TableCell>
-                    //                       {dataTypes.map((dataType) => {
-                    //                         const expression = expressions.find(
-                    //                           (expr) => expr.datatypeId === dataType
-                    //                         );
-                    //                         const value = expression?.median || 0;
-
-                    //                         // Scale relative to parent group's max value for this data type
-                    //                         const parentMaxValue = groupByTissue
-                    //                           ? (row.original as GroupedTissueData)
-                    //                               .dataTypeValues[dataType] || 1
-                    //                           : (row.original as GroupedCellTypeData)
-                    //                               .dataTypeValues[dataType] || 1;
-                    //                         const percentage =
-                    //                           parentMaxValue > 0
-                    //                             ? (value / parentMaxValue) * 100
-                    //                             : 0;
-                    //                         const dataTypeColumnWidth =
-                    //                           dataTypes.length > 0
-                    //                             ? `${60 / dataTypes.length}%`
-                    //                             : "60%";
-
-                    //                         return (
-                    //                           <TableCell
-                    //                             key={dataType}
-                    //                             className={`${classes.medianCell} ${classes.nestedTableCell}`}
-                    //                             style={{ width: dataTypeColumnWidth }}
-                    //                           >
-                    //                             <Box className={classes.barContainer}>
-                    //                               <Box
-                    //                                 className={classes.childBar}
-                    //                                 style={{ width: `${percentage}%` }}
-                    //                               />
-                    //                             </Box>
-                    //                           </TableCell>
-                    //                         );
-                    //                       })}
-                    //                     </TableRow>
-                    //                   )
-                    //                 );
-                    //               })()}
-                    //             </TableBody>
-                    //           </Table>
-                    //         </Box>
-                    //       </Collapse>
-                    //     </TableCell>
-                    //   </TableRow>
-                    // )
-                    }
+                    {row.getIsExpanded() && row.original._secondLevelName && (
+                    <tr>
+                      <td colSpan={table.getVisibleLeafColumns().length}>
+                        <DetailPlot
+                          data={thirdLevel[row.original._secondLevelName]}
+                          show={groupByTissue ? "celltype" : "tissue" }
+                        />
+                      </td>
+                    </tr>
+                    )}
                   </Fragment>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
 
-          {/* <TablePagination
+          <TablePagination
             component="div"
             count={table.getFilteredRowModel().rows.length}
             page={pagination.pageIndex}
@@ -696,8 +545,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             onRowsPerPageChange={(event) => {
               table.setPageSize(Number(event.target.value));
             }}
-            rowsPerPageOptions={[10, 25, 30, 50, 100]}
-          /> */}
+            rowsPerPageOptions={[15, 25, 50, 100]}
+          />
         </Grid>
       </Grid>
     </Box>
