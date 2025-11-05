@@ -113,38 +113,41 @@ const useStyles = makeStyles((theme: Theme) => ({
   medianCell: {
     textAlign: "center",
     fontSize: "0.75rem",
+    marginRight: "8px",
   },
   barContainer: {
     height: "12px",
-    // backgroundColor: theme.palette.grey[100],
+    backgroundColor: theme.palette.grey[200],
     // borderRadius: "2px",
     position: "relative",
-    margin: "2px 0",
+    margin: "2px 0px",
+    // padding: "0px 4px",
   },
   bar: {
     height: "100%",
-    backgroundColor: theme.palette.primary.main,
+    // backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
     // borderRadius: "2px",
     transition: "width 0.3s ease",
   },
   childBar: {
     height: "100%",
-    backgroundColor: "#BFDAEE",
-    // backgroundColor: theme.palette.primary.dark,
-    borderRadius: "2px",
+    // backgroundColor: "#BFDAEE",
+    backgroundColor: theme.palette.primary.main,
+    // borderRadius: "2px",
     transition: "width 0.3s ease",
   },
   groupRow: {
     cursor: "pointer",
     "& td": {
-      padding: "0px 8px",
+      // padding: "0px 8px",
     },
   },
   nestedRow: {
     cursor: "pointer",
     // backgroundColor: theme.palette.grey[50]
     "& td": {
-      padding: "0px 8px",
+      // padding: "0px 8px",
     },
   },
   cursorAuto: {
@@ -376,6 +379,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   const columns = [
     columnHelper.accessor((row) => getName(row), {
+      id: "name",
       header: groupByTissue ? "Tissue" : "Cell Type",
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
@@ -411,7 +415,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       header: "",
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
-        if (isFirstLevel) return null;
+        if (isFirstLevel) return <Box sx={{ width: "24px", height: "24px" }}></Box>;
         return (
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <IconButton
@@ -440,10 +444,21 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         // cell: (info) => {
         cell: (cellContext) => {
           const isFirstLevel = cellContext.row.original._firstLevelId;
+          const isSecondLevel = !isFirstLevel && cellContext.row.depth === 1;
+          const isExpanded = cellContext.row.getIsExpanded();
+          const backgroundColor =
+            datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
           const value = cellContext.getValue();
+          console.log({ value });
+          if (value === -1) return <Box className={classes.medianCell}></Box>;
           const percent = value >= 0 ? value * 100 : 0; // normalised median is -1 if absent
           return (
-            <Box className={classes.medianCell}>
+            <Box
+              className={classes.medianCell}
+              // sx={{
+              //   backgroundColor,
+              // }}
+            >
               {/* {isFirstLevel && (
                 <IconButton
                   size="small"
@@ -589,6 +604,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               <TableBody>
                 {table.getRowModel().rows.map((row) => {
                   const isFirstLevel = row.original._firstLevelId;
+                  const _isSecondLevel = row.depth === 1;
+
+                  console.log({ row });
                   const isExpanded = row.getIsExpanded();
 
                   return (
@@ -601,24 +619,36 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                         sx={{
                           "&:hover": {
-                            backgroundColor: "grey.100",
+                            backgroundColor: "grey.200",
                           },
                           ...(row.getCanExpand() && {
                             "&:hover": {
-                              backgroundColor: "grey.100",
+                              backgroundColor: "grey.200",
                               cursor: "pointer",
                             },
                           }),
                           ...(isFirstLevel &&
                             isExpanded && {
-                              backgroundColor: "grey.200",
+                              backgroundColor: "grey.300",
                             }),
                         }}
                       >
                         {row.getVisibleCells().map((cell, index) => {
                           return (
                             <TableCell
-                              sx={{ width: getColumnWidth(index), borderBottom: "none" }}
+                              sx={{
+                                width: getColumnWidth(index),
+                                border: "none",
+                                padding: 0,
+                                backgroundColor:
+                                  _isSecondLevel &&
+                                  isExpanded &&
+                                  (cell.column.id === datatypes[0] ||
+                                    cell.column.id === "expand" ||
+                                    cell.column.id === "name")
+                                    ? "grey.300"
+                                    : null,
+                              }}
                               key={cell.id}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -634,13 +664,22 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             colSpan={table.getVisibleLeafColumns().length}
                             sx={{
                               border: "none",
-                              padding: 0,
+                              p: 0,
                             }}
                           >
-                            <DetailPlot
-                              data={thirdLevel[row.original._secondLevelName]}
-                              show={groupByTissue ? "celltype" : "tissue"}
-                            />
+                            <Box
+                              sx={{
+                                width: "100%",
+                                height: "100%",
+                                // mx: 1,
+                                // backgroundColor: "grey.200",
+                              }}
+                            >
+                              <DetailPlot
+                                data={thirdLevel[row.original._secondLevelName]}
+                                show={groupByTissue ? "celltype" : "tissue"}
+                              />
+                            </Box>
                           </TableCell>
                         </TableRow>
                       )}
