@@ -609,6 +609,21 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   console.log({ row });
                   const isExpanded = row.getIsExpanded();
 
+                  // Check if this second-level row is the last child of its parent
+                  const isLastChildOfParent =
+                    _isSecondLevel &&
+                    (() => {
+                      const parentRow = table.getRowModel().rows.find((r) => r.id === row.parentId);
+                      if (!parentRow) return false;
+                      const subRows = parentRow.subRows;
+                      return subRows && subRows[subRows.length - 1]?.id === row.id;
+                    })();
+
+                  // Show bottom border only if: it's the last child AND NOT expanded
+                  // (when expanded, the third-level row will handle the bottom border)
+                  const shouldShowBottomBorder =
+                    _isSecondLevel && isLastChildOfParent && !isExpanded;
+
                   return (
                     <Fragment key={row.id}>
                       {/* 1st and 2nd level rows */}
@@ -648,6 +663,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                     cell.column.id === "name")
                                     ? "grey.300"
                                     : null,
+                                borderLeft: index === 0 && _isSecondLevel ? "1px solid" : "none",
+                                borderRight:
+                                  index === table.getVisibleLeafColumns().length - 1 &&
+                                  _isSecondLevel
+                                    ? "1px solid"
+                                    : "none",
+                                borderBottom: shouldShowBottomBorder ? "1px solid" : "none",
+                                borderColor: "grey.300",
                               }}
                               key={cell.id}
                             >
@@ -659,13 +682,18 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
                       {/* 3rd level rows */}
                       {row.getIsExpanded() && row.original._secondLevelName && (
-                        <TableRow>
+                        <TableRow sx={{ "& > *": { marginBottom: 5 } }}>
                           <TableCell
                             colSpan={table.getVisibleLeafColumns().length}
                             sx={{
                               border: "none",
                               p: 0,
+                              borderLeft: _isSecondLevel ? "1px solid" : "none",
+                              borderRight: _isSecondLevel ? "1px solid" : "none",
+                              borderBottom: isLastChildOfParent ? "1px solid" : "none",
+                              borderColor: "grey.300",
                             }}
+                            key={row.id}
                           >
                             <Box
                               sx={{
