@@ -1,26 +1,26 @@
 import type { Config, Environment } from "./types";
 
 export const getEnvironmentConfig = (env: Environment): Config => {
-	const configs: Record<Environment, Config> = {
-		development: {
-			urlApi: "http://localhost:8080",
-			urlAiApi: "http://localhost:8081",
-			profile: {},
-			googleTagManagerID: null,
-			geneticsPortalUrl: "https://genetics.opentargets.org",
-			gitVersion: "",
-		},
-		production: {
-			urlApi: "https://api.platform.opentargets.org",
-			urlAiApi: "https://ai.platform.opentargets.org",
-			profile: {},
-			googleTagManagerID: "GTM-XXXXX",
-			geneticsPortalUrl: "https://genetics.opentargets.org",
-			gitVersion: "",
-		},
-	};
+  const configs: Record<Environment, Config> = {
+    development: {
+      urlApi: "http://localhost:8080",
+      urlAiApi: "http://localhost:8081",
+      profile: {},
+      googleTagManagerID: null,
+      geneticsPortalUrl: "https://genetics.opentargets.org",
+      gitVersion: "",
+    },
+    production: {
+      urlApi: "https://api.platform.opentargets.org",
+      urlAiApi: "https://ai.platform.opentargets.org",
+      profile: {},
+      googleTagManagerID: "GTM-XXXXX",
+      geneticsPortalUrl: "https://genetics.opentargets.org",
+      gitVersion: "",
+    },
+  };
 
-	return configs[env];
+  return configs[env];
 };
 
 // Vite environment variables

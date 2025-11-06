@@ -1,4 +1,4 @@
-import { searchSuggestions, SearchSuggestions, Suggestion } from "@ot/constants";
+import { type SearchSuggestions, type Suggestion, searchSuggestions } from "@ot/constants";
 
 /**
  * Efficiently selects n random elements from an array without modifying the original.

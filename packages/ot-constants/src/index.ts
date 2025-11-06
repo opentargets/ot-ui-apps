@@ -1,12 +1,12 @@
-import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faDiscourse,
-  faTwitterSquare,
-  faLinkedin,
   faGithubSquare,
+  faLinkedin,
+  faTwitterSquare,
   faYoutubeSquare,
 } from "@fortawesome/free-brands-svg-icons";
+import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
 
 const config = getConfig();
@@ -303,7 +303,9 @@ export const VIEW = {
   table: "Table",
 };
 
-export const getStudyTypeDisplay = (studyType: string | null | undefined): string | null | undefined => {
+export const getStudyTypeDisplay = (
+  studyType: string | null | undefined
+): string | null | undefined => {
   if (studyType) return studyType?.replace(/(qtl|gwas)/gi, (match: string) => match.toUpperCase());
   return studyType;
 };
@@ -311,7 +313,7 @@ export const getStudyTypeDisplay = (studyType: string | null | undefined): strin
 export const getStudyItemMetaData = ({
   studyType,
   credibleSetsCount,
-  nSamples
+  nSamples,
 }: {
   studyType?: string;
   credibleSetsCount: number;
@@ -326,26 +328,32 @@ export const getStudyItemMetaData = ({
   return metaData;
 };
 
-export const getGenomicLocation = (genomicLocation: {
-  chromosome?: string;
-  start?: number;
-  end?: number;
-  strand?: number;
-} | null | undefined) => {
+export const getGenomicLocation = (
+  genomicLocation:
+    | {
+        chromosome?: string;
+        start?: number;
+        end?: number;
+        strand?: number;
+      }
+    | null
+    | undefined
+) => {
   /****
    * TODO: add GRCh38 to this function
    * check all the locations we are using this
    * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
    * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
    ****/
-  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${Math.sign(genomicLocation?.strand) === 1 ? "+" : "-"
-    }`;
+  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
+    Math.sign(genomicLocation?.strand ?? 1) === 1 ? "+" : "-"
+  }`;
 };
-export * from "./dataTypes";
-export * from "./types/response";
-export * from "./types/graphql-types";
-export * from "./searchSuggestions";
-export * from "./partnerPreviewUtils";
 export * from "./alphaFold";
+export * from "./dataTypes";
 export * from "./particlesBackground";
+export * from "./partnerPreviewUtils";
+export * from "./searchSuggestions";
+export * from "./types/graphql-types";
+export * from "./types/response";
 export * from "./variant";
