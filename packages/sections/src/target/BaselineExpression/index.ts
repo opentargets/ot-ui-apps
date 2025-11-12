@@ -1,12 +1,12 @@
 import { lazy } from "react";
-import { TargetData } from "../../types/target";
+import type { TargetData } from "../../types/target";
 
 export const definition = {
   id: "baselineExpression",
   name: "Baseline Expression",
   shortName: "BE",
   hasData: (data: TargetData) => {
-    return true;
+    return true; // !! NEEDS UPDATED !!
     // const hasRNA = data.expressions?.some(d => (d.rna?.level || 0) >= 0) || false;
     // const hasProtein = data.expressions?.some(d => (d.protein?.level || 0) >= 0) || false;
     // // TODO:
@@ -19,4 +19,4 @@ export const definition = {
 
 // Components
 export { default as Summary } from "./Summary";
-export const getBodyComponent = () => lazy(() => import("./Body")); 
+export const getBodyComponent = () => lazy(() => import("./Body"));

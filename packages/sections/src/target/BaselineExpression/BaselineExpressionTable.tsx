@@ -74,12 +74,18 @@ interface BaselineExpressionDataRow {
     biosampleId: string;
     biosampleName: string;
   };
-  tissueBiosampleFromSource?: string;
+  tissueBiosampleParent?: {
+    biosampleId: string;
+    biosampleName: string;
+  };
   celltypeBiosample?: {
     biosampleId: string;
     biosampleName: string;
   };
-  celltypeBiosampleFromSource?: string;
+  celltypeBiosampleParent?: {
+    biosampleId: string;
+    biosampleName: string;
+  };
   median: number;
   datasourceId: string;
   datatypeId: string;
@@ -181,39 +187,39 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
 
   data = structuredClone(data);
 
-  const firstLevel = []; // array of data rows - unique biosample ids
+  const firstLevel = []; // array of data rows - unique parent biosample ids
   const secondLevel = {}; // object of array of objects, top-level keys: biosampleIds, bottom-level keys: datatypeIds
   const thirdLevel = {}; // each entry is an array of data rows where datatypeId is always datatypes[0]
 
   // 2nd and 3rd levels
   for (const row of data) {
-    const topLevelBiosampleFromSource = row[`${topLevelName}BiosampleFromSource`];
-    const otherBiosampleFromSource = row[`${otherName}BiosampleFromSource`];
-    if (!topLevelBiosampleFromSource) {
-    } else if (!otherBiosampleFromSource) {
+    const topLevelBiosampleId = row[`${topLevelName}Biosample`].biosampleId; // the 2nd level id!
+    const otherBiosampleId = row[`${otherName}Biosample`].biosampleId;
+    if (!topLevelBiosampleId) continue;
+    if (!otherBiosampleId) {
       // 2nd level
-      const topLevelBiosampleId = row[`${topLevelName}Biosample`].biosampleId;
-      secondLevel[topLevelBiosampleId] ??= {};
+      const topLevelBiosampleParentId = row[`${topLevelName}BiosampleParent`].biosampleId;
+      secondLevel[topLevelBiosampleParentId] ??= {};
       const _secondLevelName = // will add to the original data row and the table row
-        row[`${groupByTissue ? "tissue" : "celltype"}BiosampleFromSource`];
+        row[`${groupByTissue ? "tissue" : "celltype"}biosample`].biosampleName;
       row._secondLevelName = _secondLevelName;
-      if (!secondLevel[topLevelBiosampleId][topLevelBiosampleFromSource]) {
-        secondLevel[topLevelBiosampleId][topLevelBiosampleFromSource] = {};
+      if (!secondLevel[topLevelBiosampleParentId][topLevelBiosampleId]) {
+        secondLevel[topLevelBiosampleParentId][topLevelBiosampleId] = {};
         Object.defineProperty(
           // so not enumerable
-          secondLevel[topLevelBiosampleId][topLevelBiosampleFromSource],
+          secondLevel[topLevelBiosampleParentId][topLevelBiosampleId],
           "_secondLevelName",
           { value: _secondLevelName, writable: true }
         );
       }
-      secondLevel[topLevelBiosampleId][topLevelBiosampleFromSource][row.datatypeId] = row;
+      secondLevel[topLevelBiosampleParentId][topLevelBiosampleId][row.datatypeId] = row;
     } else {
       // 3rd level
       if (row.datatypeId !== datatypes[0]) {
         throw Error(`Expected all third level rows to have datatypeid '${datatypes[0]}'`);
       }
-      thirdLevel[topLevelBiosampleFromSource] ??= [];
-      thirdLevel[topLevelBiosampleFromSource].push(row);
+      thirdLevel[topLevelBiosampleId] ??= [];
+      thirdLevel[topLevelBiosampleId].push(row);
     }
   }
 
@@ -266,17 +272,19 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
     const firstLevelRow = {};
     for (const obj of objects) {
       for (const [datatypeId, row] of Object.entries(obj)) {
-        const biosample = row[`${groupByTissue ? "tissue" : "celltype"}Biosample`];
+        const biosampleParent = row[`${groupByTissue ? "tissue" : "celltype"}BiosampleParent`];
         if (!firstLevelRow._firstLevelName) {
           Object.defineProperty(firstLevelRow, "_firstLevelName", {
-            value: biosample.biosampleName,
+            value: biosampleParent.biosampleName,
           });
-          Object.defineProperty(firstLevelRow, "_firstLevelId", { value: biosample.biosampleId });
+          Object.defineProperty(firstLevelRow, "_firstLevelId", {
+            value: biosampleParent.biosampleId,
+          });
         }
         if (!(firstLevelRow[datatypeId]?.median >= row.median)) {
           const copiedRow = { ...row };
-          copiedRow._firstLevelName = biosample.biosampleName;
-          copiedRow._firstLevelId = biosample.biosampleId;
+          copiedRow._firstLevelName = biosampleParent.biosampleName;
+          copiedRow._firstLevelId = biosampleParent.biosampleId;
           delete copiedRow._secondLevelName;
           firstLevelRow[datatypeId] = copiedRow;
         }
@@ -288,6 +296,11 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
   console.log({ firstLevel, secondLevel, thirdLevel });
   return { firstLevel, secondLevel, thirdLevel };
 }
+
+!!HAVE;
+UPDATED;
+TO;
+HERE!;
 
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   data,

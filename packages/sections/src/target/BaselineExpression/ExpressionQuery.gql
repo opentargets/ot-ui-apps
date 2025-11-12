@@ -1,7 +1,7 @@
 query ExpressionQuery($ensemblId: String!) {
   target(ensemblId: $ensemblId) {
     id
-    baselineExpression (page: {index: 0, size: 1500}) {
+    baselineExpression(page: { index: 0, size: 1500 }) {
       count
       rows {
         targetFromSourceId
@@ -9,12 +9,18 @@ query ExpressionQuery($ensemblId: String!) {
           biosampleId
           biosampleName
         }
-        tissueBiosampleFromSource
+        tissueBiosampleParent {
+          biosampleId
+          biosampleName
+        }
         celltypeBiosample {
           biosampleId
           biosampleName
         }
-        celltypeBiosampleFromSource
+        celltypeBiosampleParent {
+          biosampleId
+          biosampleName
+        }
         median
         datasourceId
         datatypeId
