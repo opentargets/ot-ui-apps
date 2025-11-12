@@ -39,6 +39,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useMemo, useState } from "react";
+import { addScaledMedians } from "./addScaledMedians";
 import DetailPlot from "./DetailPlot";
 
 const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
@@ -342,6 +343,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     [data, groupByTissue]
   );
 
+  addScaledMedians({ firstLevel, secondLevel, thirdLevel }, datatypes);
+
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
     setExpanded({});
@@ -449,7 +452,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           const backgroundColor =
             datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
           const value = cellContext.getValue();
-          console.log({ value });
           if (value === -1) return <Box className={classes.medianCell}></Box>;
           const percent = value >= 0 ? value * 100 : 0; // normalised median is -1 if absent
           return (
@@ -606,7 +608,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   const isFirstLevel = row.original._firstLevelId;
                   const _isSecondLevel = row.depth === 1;
 
-                  console.log({ row });
                   const isExpanded = row.getIsExpanded();
 
                   // Check if this second-level row is the last child of its parent
