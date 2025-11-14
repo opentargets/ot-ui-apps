@@ -242,7 +242,7 @@ type BodyProps = {
 
 function Body({ id, entity }: BodyProps) {
   const variables = {
-    variantId: id,
+    studyLocusId: id,
   };
 
   const request = useQuery(ENHANCER_TO_GENE_PREDICTIONS_QUERY, {
@@ -256,9 +256,9 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={() => (
         <Description
-          variantId={id}
-          referenceAllele={request.data?.variant?.referenceAllele || ""}
-          alternateAllele={request.data?.variant?.alternateAllele || ""}
+          variantId={request.data?.credibleSet?.variant?.id || ""}
+          referenceAllele={request.data?.credibleSet?.variant?.referenceAllele || ""}
+          alternateAllele={request.data?.credibleSet?.variant?.alternateAllele || ""}
         />
       )}
       renderBody={() => (
@@ -268,7 +268,7 @@ function Body({ id, entity }: BodyProps) {
           showGlobalFilter
           columns={columns}
           loading={request.loading}
-          rows={request.data?.variant?.intervals?.rows || []}
+          rows={request.data?.credibleSet?.variant?.intervals?.rows || []}
           query={ENHANCER_TO_GENE_PREDICTIONS_QUERY.loc?.source?.body}
           variables={variables}
           tableDataLoading={request.loading}
