@@ -6,7 +6,7 @@ export * as VariantEffect from "./VariantEffect";
 export * as VariantEffectPredictor from "./VariantEffectPredictor";
 export * as MolecularStructure from "./MolecularStructure";
 export * as UniProtVariants from "./UniProtVariants";
-export * as Intervals from "./Intervals";
+export * as EnhancerToGenePredictions from "./EnhancerToGenePredictions";
 
 
 
