@@ -1,17 +1,18 @@
-import FacetsSearch from "./components/FacetsSearch";
+import { Box } from "@mui/material";
+import type { DocumentNode } from "graphql";
+import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
+import DataUploader from "./components/DataUploader";
 import ExportMenu from "./components/ExportMenu";
+import FacetsSearch from "./components/FacetsSearch";
 import {
-  TableAssociations,
-  ColumnOptionsMenu,
-  AssociationsProvider,
   AssociationsFocusProvider,
+  AssociationsProvider,
+  ColumnOptionsMenu,
   DisplayModeSwitch,
   NameFilter,
+  TableAssociations,
 } from "./index";
-import { Box } from "@mui/material";
-import { ENTITY } from "./types";
-import { DocumentNode } from "graphql";
-import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
+import type { ENTITY } from "./types";
 
 interface AssociationsView {
   id: string;
@@ -22,39 +23,38 @@ interface AssociationsView {
 const AssociationsView = ({ id, entity, query }: AssociationsView) => (
   <AssociationsProvider id={id} entity={entity} query={query}>
     <AssociationsFocusProvider>
-      <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: { xs: 2, lg: 2 },
+          mt: 4,
+          mb: 1,
+        }}
+      >
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: { xs: 2, lg: 2 },
-            mt: 4,
-            mb: 1,
+            gap: 1,
+            flexDirection: { xs: "column", lg: "row" },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              flexDirection: { xs: "column", lg: "row" },
-            }}
-          >
-            <NameFilter />
-            <Box display="flex">
-              <FacetsSearch />
-              <ColumnOptionsMenu />
-              <ExportMenu />
-            </Box>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "end" }}>
-            <DisplayModeSwitch />
+          {/* <NameFilter /> */}
+          <Box display="flex">
+            <DataUploader />
+            <FacetsSearch />
+            <ColumnOptionsMenu />
+            <ExportMenu />
           </Box>
         </Box>
-        <ActiveFiltersPanel />
-        <TableAssociations />
-      </>
+        <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <DisplayModeSwitch />
+        </Box>
+      </Box>
+      <ActiveFiltersPanel />
+      <TableAssociations />
     </AssociationsFocusProvider>
   </AssociationsProvider>
 );
