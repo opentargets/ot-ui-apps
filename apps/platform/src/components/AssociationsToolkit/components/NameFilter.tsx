@@ -33,7 +33,7 @@ const NameFilter = () => {
   }, [entitySearch]);
 
   return (
-    <Box sx={{ maxWidth: { md: 220 } }}>
+    <Box sx={{ maxWidth: { md: 240 } }}>
       <NameFilterInput
         value={inputValue}
         onChange={(event) => {
@@ -44,7 +44,7 @@ const NameFilter = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <FontAwesomeIcon icon={faSearch} />
+              <FontAwesomeIcon icon={faSearch} size="xs" />
             </InputAdornment>
           ),
         }}

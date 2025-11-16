@@ -190,7 +190,7 @@ function TableAssociations() {
                     alignItems: "center",
                     gap: 1,
                     flexDirection: "column",
-                    px: 2,
+                    pr: 2,
                   }}
                 >
                   <Typography variant="assoc_header">{label}</Typography>
