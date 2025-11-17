@@ -17,9 +17,9 @@ const CREDIBLE_SET = "credibleSet";
 
 const credibleSetProfileWidgets = new Map<string, Widget>([
   [CredibleSet.Locus2Gene.definition.id, CredibleSet.Locus2Gene],
+  [CredibleSet.EnhancerToGenePredictions.definition.id, CredibleSet.EnhancerToGenePredictions],
   [CredibleSet.GWASColoc.definition.id, CredibleSet.GWASColoc],
   [CredibleSet.MolQTLColoc.definition.id, CredibleSet.MolQTLColoc],
-  [CredibleSet.EnhancerToGenePredictions.definition.id, CredibleSet.EnhancerToGenePredictions],
 ]);
 
 const CREDIBLE_SET_WIDGETS = Array.from(credibleSetProfileWidgets.values());
