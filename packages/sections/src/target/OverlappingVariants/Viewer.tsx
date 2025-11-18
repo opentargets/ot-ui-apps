@@ -29,7 +29,7 @@ export default function Viewer() {
   useEffect(() => {
     async function fetchStructure() {
       async function fetchStructureFile(uniprotId) {
-        const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v4.cif`;
+        const pdbUri = `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v6.cif`;
         try {
           const response = await fetch(pdbUri);
           if (response?.ok) return response;

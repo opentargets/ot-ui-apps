@@ -1,18 +1,17 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "configurations": [
     {
-      "command": "yarn dev:platform",
-      "name": "Run platform dev",
+      "name": "Debug Platform App",
+      "type": "node",
       "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "type": "chrome",
-      "request": "launch",
-      "name": "Launch Platform Chrome against localhost",
-      "url": "http://localhost:3000",
-      "webRoot": "${workspaceFolder}/apps/platform/src/"
+      "program": "${workspaceFolder}/apps/platform/node_modules/.bin/vite",
+      "args": ["--mode", "development"],
+      "cwd": "${workspaceFolder}/apps/platform",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      }
     }
   ]
 }
