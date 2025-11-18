@@ -37,6 +37,7 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { max } from "d3";
 import type React from "react";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import { addScaledMedians } from "./addScaledMedians";
@@ -187,21 +188,27 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
 
   data = structuredClone(data);
 
+  // !! REMOVE !!
+  window.data = data;
+
   const firstLevel = []; // array of data rows - unique parent biosample ids
   const secondLevel = {}; // object of array of objects, top-level keys: biosampleIds, bottom-level keys: datatypeIds
   const thirdLevel = {}; // each entry is an array of data rows where datatypeId is always datatypes[0]
 
   // 2nd and 3rd levels
   for (const row of data) {
-    const topLevelBiosampleId = row[`${topLevelName}Biosample`].biosampleId; // the 2nd level id!
-    const otherBiosampleId = row[`${otherName}Biosample`].biosampleId;
+    const topLevelBiosampleId = row[`${topLevelName}Biosample`]?.biosampleId; // the 2nd level id!
+    const otherBiosampleId = row[`${otherName}Biosample`]?.biosampleId;
     if (!topLevelBiosampleId) continue;
     if (!otherBiosampleId) {
       // 2nd level
+
+      console.log(row);
+
       const topLevelBiosampleParentId = row[`${topLevelName}BiosampleParent`].biosampleId;
       secondLevel[topLevelBiosampleParentId] ??= {};
       const _secondLevelName = // will add to the original data row and the table row
-        row[`${groupByTissue ? "tissue" : "celltype"}biosample`].biosampleName;
+        row[`${groupByTissue ? "tissue" : "celltype"}Biosample`].biosampleName;
       row._secondLevelName = _secondLevelName;
       if (!secondLevel[topLevelBiosampleParentId][topLevelBiosampleId]) {
         secondLevel[topLevelBiosampleParentId][topLevelBiosampleId] = {};
@@ -288,26 +295,39 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
           delete copiedRow._secondLevelName;
           firstLevelRow[datatypeId] = copiedRow;
         }
+        // top-level specificity score may come from different object to that with the highest median
+        if (!(firstLevelRow[datatypeId]?._firstLevelSpecificityScore >= row.specificity_score)) {
+          firstLevelRow[datatypeId]._firstLevelSpecificityScore = row.specificityScore;
+        }
       }
     }
     firstLevel.push(firstLevelRow);
+  }
+
+  // get datatype (i.e. column) to sort on
+  {
+    let maxSpecificity = { datatype: null, score: -Infinity };
+    for (const datatype of datatypes) {
+      const score = max(firstLevel.map((obj) => obj[datatype]._firstLevelSpecificityScore));
+      if (score > maxSpecificity.score) {
+        maxSpecificity = { datatype, score };
+      }
+    }
+    Object.defineProperty(firstLevel, "_maxSpecificity", {
+      value: maxSpecificity,
+    });
   }
 
   console.log({ firstLevel, secondLevel, thirdLevel });
   return { firstLevel, secondLevel, thirdLevel };
 }
 
-!!HAVE;
-UPDATED;
-TO;
-HERE!;
-
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   data,
   DownloaderComponent,
 }) => {
   const classes = useStyles();
-  const [sorting, setSorting] = useState<SortingState>([{ id: datatypes[0], desc: true }]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: null, desc: true }]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 50,
@@ -467,6 +487,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           const value = cellContext.getValue();
           if (value === -1) return <Box className={classes.medianCell}></Box>;
           const percent = value >= 0 ? value * 100 : 0; // normalised median is -1 if absent
+
+          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          // console.log(cellCon)
           return (
             <Box
               className={classes.medianCell}
@@ -494,6 +517,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   }
                   style={{ width: `${percent}%` }}
                 />
+                <Typography variant="caption" sx={{ position: "absolute", right: 0, top: -14 }}>
+                  {cellContext.row.original._firstLevelSpecificityScore ??
+                    cellContext.row.original.specificity_score}
+                </Typography>
               </Box>
             </Box>
           );
@@ -503,6 +530,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   }
 
   // create table instance
+  setSorting({ id: firstLevel._maxSpecificity.datatype, desc: true });
   const table = useReactTable({
     data: firstLevel,
     columns,

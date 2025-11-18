@@ -24,6 +24,7 @@ query ExpressionQuery($ensemblId: String!) {
         median
         datasourceId
         datatypeId
+        specificity_score
       }
     }
   }
