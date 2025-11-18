@@ -136,7 +136,7 @@ function HomePage(): JSX.Element {
   const { isPartnerPreview } = usePermissions();
   const releaseNotesURL = isPartnerPreview
     ? "http://home.opentargets.org/ppp-release-notes"
-    : "https://platform-docs.opentargets.org/release-notes";
+    : config.releaseNotesUrl;
   const classes = useStyles();
 
   const handleScrollDown = (): void => {
