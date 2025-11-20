@@ -9,7 +9,7 @@ type DescriptionProps = {
 function Description({ variantId, referenceAllele, alternateAllele }: DescriptionProps) {
   return (
     <>
-      Genes predicted to be regulated by enhancers overlapping{" "}
+      Genes predicted to be regulated by enhancers overlapping the credible set lead variant{" "}
       <strong>
         <DisplayVariantId
           variantId={variantId}
@@ -24,4 +24,4 @@ function Description({ variantId, referenceAllele, alternateAllele }: Descriptio
   );
 }
 
-export default Description; 
+export default Description;

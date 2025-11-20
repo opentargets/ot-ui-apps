@@ -122,7 +122,7 @@ const columns = [
     },
     filterValue: ({ start, end }: { start: number; end: number }) =>
       start !== undefined && end !== undefined && start !== null && end !== null
-        ? `${start}-${end}`
+        ? `${(end - start + 1).toLocaleString()}`
         : "",
     exportValue: ({ start, end }: { start: number; end: number }) => {
       if (
