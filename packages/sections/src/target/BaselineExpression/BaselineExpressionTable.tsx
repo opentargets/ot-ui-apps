@@ -186,10 +186,10 @@ const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
   const [topLevelName, otherName] = groupByTissue ? ["tissue", "celltype"] : ["celltype", "tissue"];
 
-  data = structuredClone(data);
-
   // !! REMOVE !!
   window.data = data;
+
+  data = structuredClone(data);
 
   const firstLevel = []; // array of data rows - unique parent biosample ids
   const secondLevel = {}; // object of array of objects, top-level keys: biosampleIds, bottom-level keys: datatypeIds
@@ -202,14 +202,13 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
     if (!topLevelBiosampleId) continue;
     if (!otherBiosampleId) {
       // 2nd level
-
-      console.log(row);
-
       const topLevelBiosampleParentId = row[`${topLevelName}BiosampleParent`].biosampleId;
       secondLevel[topLevelBiosampleParentId] ??= {};
       const _secondLevelName = // will add to the original data row and the table row
         row[`${groupByTissue ? "tissue" : "celltype"}Biosample`].biosampleName;
+      const _secondLevelId = row[`${groupByTissue ? "tissue" : "celltype"}Biosample`].biosampleId;
       row._secondLevelName = _secondLevelName;
+      row._secondLevelId = _secondLevelId;
       if (!secondLevel[topLevelBiosampleParentId][topLevelBiosampleId]) {
         secondLevel[topLevelBiosampleParentId][topLevelBiosampleId] = {};
         Object.defineProperty(
@@ -217,6 +216,12 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
           secondLevel[topLevelBiosampleParentId][topLevelBiosampleId],
           "_secondLevelName",
           { value: _secondLevelName, writable: true }
+        );
+        Object.defineProperty(
+          // so not enumerable
+          secondLevel[topLevelBiosampleParentId][topLevelBiosampleId],
+          "_secondLevelId",
+          { value: _secondLevelId, writable: true }
         );
       }
       secondLevel[topLevelBiosampleParentId][topLevelBiosampleId][row.datatypeId] = row;
@@ -293,11 +298,12 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
           copiedRow._firstLevelName = biosampleParent.biosampleName;
           copiedRow._firstLevelId = biosampleParent.biosampleId;
           delete copiedRow._secondLevelName;
+          delete copiedRow._secondLevelId;
           firstLevelRow[datatypeId] = copiedRow;
         }
         // top-level specificity score may come from different object to that with the highest median
-        if (!(firstLevelRow[datatypeId]?._firstLevelSpecificityScore >= row.specificity_score)) {
-          firstLevelRow[datatypeId]._firstLevelSpecificityScore = row.specificityScore;
+        if (!(firstLevelRow[datatypeId]._firstLevelSpecificityScore >= row.specificity_score)) {
+          firstLevelRow[datatypeId]._firstLevelSpecificityScore = row.specificity_score;
         }
       }
     }
@@ -308,7 +314,7 @@ function prepareData(data: BaselineExpressionRow[], groupByTissue: boolean) {
   {
     let maxSpecificity = { datatype: null, score: -Infinity };
     for (const datatype of datatypes) {
-      const score = max(firstLevel.map((obj) => obj[datatype]._firstLevelSpecificityScore));
+      const score = max(firstLevel.map((obj) => obj[datatype]?._firstLevelSpecificityScore));
       if (score > maxSpecificity.score) {
         maxSpecificity = { datatype, score };
       }
@@ -327,7 +333,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   DownloaderComponent,
 }) => {
   const classes = useStyles();
-  const [sorting, setSorting] = useState<SortingState>([{ id: null, desc: true }]);
+  const [sorting, setSorting] = useState<SortingState>([{ id: datatypes[0], desc: true }]);
+  // const [sorting, setSorting] = useState<SortingState>([{ id: null, desc: true }]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: 50,
@@ -385,7 +392,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   const getRowCanExpand = useCallback(
     (row) => {
-      return row.original._firstLevelId || thirdLevel[row.original._secondLevelName];
+      return row.original._firstLevelId || thirdLevel[row.original._secondLevelId];
     },
     [firstLevel, secondLevel, thirdLevel]
   );
@@ -487,9 +494,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           const value = cellContext.getValue();
           if (value === -1) return <Box className={classes.medianCell}></Box>;
           const percent = value >= 0 ? value * 100 : 0; // normalised median is -1 if absent
+          const specificityValue =
+            cellContext.row.original[datatype]?._firstLevelSpecificityScore ??
+            cellContext.row.original[datatype]?.specificity_score;
 
-          // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          // console.log(cellCon)
           return (
             <Box
               className={classes.medianCell}
@@ -517,9 +525,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   }
                   style={{ width: `${percent}%` }}
                 />
-                <Typography variant="caption" sx={{ position: "absolute", right: 0, top: -14 }}>
-                  {cellContext.row.original._firstLevelSpecificityScore ??
-                    cellContext.row.original.specificity_score}
+                <Typography
+                  variant="caption"
+                  sx={{ position: "absolute", right: 0, top: -13, fontSize: 10.5, fontWeight: 500 }}
+                >
+                  {specificityValue ? specificityValue.toFixed(3) : String(specificityValue)}
                 </Typography>
               </Box>
             </Box>
@@ -530,7 +540,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   }
 
   // create table instance
-  setSorting({ id: firstLevel._maxSpecificity.datatype, desc: true });
+  // setSorting({ id: firstLevel._maxSpecificity.datatype, desc: true });
   const table = useReactTable({
     data: firstLevel,
     columns,
@@ -723,7 +733,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       </TableRow>
 
                       {/* 3rd level rows */}
-                      {row.getIsExpanded() && row.original._secondLevelName && (
+                      {row.getIsExpanded() && row.original._secondLevelId && (
                         <TableRow sx={{ "& > *": { marginBottom: 5 } }}>
                           <TableCell
                             colSpan={table.getVisibleLeafColumns().length}
@@ -746,7 +756,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               }}
                             >
                               <DetailPlot
-                                data={thirdLevel[row.original._secondLevelName]}
+                                data={thirdLevel[row.original._secondLevelId]}
                                 show={groupByTissue ? "celltype" : "tissue"}
                               />
                             </Box>

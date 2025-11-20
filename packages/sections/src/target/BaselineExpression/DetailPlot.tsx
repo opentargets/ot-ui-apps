@@ -22,7 +22,7 @@ function DetailPlot({
     )
   );
 
-  const xAccessor = (d) => d[`${show}BiosampleFromSource`];
+  const xAccessor = (d) => d[`${show}Biosample`].biosampleName;
   // const xAccessor = d => d[`${show}Biosample`].biosampleName;
 
   return (
@@ -49,6 +49,12 @@ function DetailPlot({
       />
     </Box>
   );
+}
+
+function displaySpecificityScore({ specificity_score: score }) {
+  if (score == null) return "null";
+  if (score === 0) return 0;
+  return score.toFixed(2);
 }
 
 export default DetailPlot;
@@ -112,6 +118,16 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor }, h
         fill: barFill,
         className: "obs-tooltip",
         inset: 0,
+      }),
+
+      // specificity scores
+      PlotLib.text(data, {
+        x: xAccessor,
+        y: 1,
+        text: displaySpecificityScore,
+        textAnchor: "middle",
+        lineAnchor: "bottom",
+        dy: -4,
       }),
     ],
   });
