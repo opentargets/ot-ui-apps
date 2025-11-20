@@ -4,7 +4,7 @@ import { naLabel } from "@ot/constants";
 import { definition } from ".";
 
 import Description from "./Description";
-import INTERVALS_QUERY from "./IntervalsQuery.gql";
+import ENHANCER_TO_GENE_PREDICTIONS_QUERY from "./EnhancerToGenePredictionsQuery.gql";
 
 interface Target {
   id: string;
@@ -245,7 +245,7 @@ function Body({ id, entity }: BodyProps) {
     variantId: id,
   };
 
-  const request = useQuery(INTERVALS_QUERY, {
+  const request = useQuery(ENHANCER_TO_GENE_PREDICTIONS_QUERY, {
     variables,
   });
 
@@ -264,12 +264,12 @@ function Body({ id, entity }: BodyProps) {
       renderBody={() => (
         <OtTable
           dataDownloader
-          dataDownloaderFileStem={`${id}-intervals`}
+          dataDownloaderFileStem={`${id}-enhancer-to-gene-predictions`}
           showGlobalFilter
           columns={columns}
           loading={request.loading}
           rows={request.data?.variant?.intervals?.rows || []}
-          query={INTERVALS_QUERY.loc?.source?.body}
+          query={ENHANCER_TO_GENE_PREDICTIONS_QUERY.loc?.source?.body}
           variables={variables}
           tableDataLoading={request.loading}
           verticalHeaders={false}

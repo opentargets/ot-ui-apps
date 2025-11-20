@@ -1,0 +1,5 @@
+fragment EnhancerToGenePredictionsSummaryFragment on Variant {
+  intervals {
+    count
+  }
+} 
