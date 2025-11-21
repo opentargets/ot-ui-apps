@@ -23,7 +23,6 @@ function DetailPlot({
   );
 
   const xAccessor = (d) => d[`${show}Biosample`].biosampleName;
-  // const xAccessor = d => d[`${show}Biosample`].biosampleName;
 
   return (
     <Box>

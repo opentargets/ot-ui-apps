@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
+import { naLabel } from "@ot/constants";
 import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import {
   createColumnHelper,
@@ -39,6 +40,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Tooltip } from "ui";
 import DetailPlot from "./DetailPlot";
 // import { addScaledMedians } from "./addScaledMedians";
 import { processData } from "./processData";
@@ -130,6 +132,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "relative",
     margin: "2px 0px",
     // padding: "0px 4px",
+  },
+  failed: {
+    backgroundColor: theme.palette.grey[100],
+    fontSize: "8.5px",
   },
   bar: {
     height: "100%",
@@ -329,66 +335,101 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       },
     }),
   ];
-  for (const datatype of datatypes) {
-    columns.push(
-      // use -1 for missing value to make sorting work
-      // - could not get nullish values to bottom with sortingFn: nullishComparator(...
-      columnHelper.accessor((row) => row[datatype]?._normalisedMedian ?? -1, {
-        header: datatype,
-        enableSorting: true,
-        // cell: (info) => {
-        cell: (cellContext) => {
-          const isFirstLevel = cellContext.row.original._firstLevelId;
-          const isSecondLevel = !isFirstLevel && cellContext.row.depth === 1;
-          const isExpanded = cellContext.row.getIsExpanded();
-          const backgroundColor =
-            datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
-          const value = cellContext.getValue();
-          if (value === -1) return <Box className={classes.medianCell}></Box>;
-          const percent = value >= 0 ? value * 100 : 0; // normalised median is -1 if absent
-          const specificityValue =
-            cellContext.row.original[datatype]?._firstLevelSpecificityScore ??
-            cellContext.row.original[datatype]?.specificity_score;
 
-          return (
-            <Box
-              className={classes.medianCell}
-              // sx={{
-              //   backgroundColor,
-              // }}
-            >
-              {/* {isFirstLevel && (
-                <IconButton
-                  size="small"
-                  className={classes.expandButton}
-                  sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
-                >
-                  {cellContext.row.getIsExpanded() ? (
-                    <FontAwesomeIcon icon={faCaretUp} size="xs" />
-                  ) : (
-                    <FontAwesomeIcon icon={faCaretDown} size="xs" />
+  for (const datatype of datatypes) {
+    // empty column
+    if (!groupByTissue && datatype === "mass-spectrometry proteomics") {
+      columns.push(
+        columnHelper.accessor(() => {}, {
+          header: "",
+          accessorKey: datatype,
+          enableSorting: false,
+        })
+      );
+    } else {
+      columns.push(
+        // use -1 for missing value to make sorting work
+        // - could not get nullish values to bottom with sortingFn: nullishComparator(...
+        columnHelper.accessor(
+          (row) => {
+            const value = row[datatype]?._normalisedMedian;
+            if (value === null) return -1;
+            if (value === undefined) return -2;
+            return value;
+          },
+          {
+            header: datatype,
+            enableSorting: true,
+            // cell: (info) => {
+            cell: (cellContext) => {
+              const isFirstLevel = cellContext.row.original._firstLevelId;
+              const isSecondLevel = !isFirstLevel && cellContext.row.depth === 1;
+              const isExpanded = cellContext.row.getIsExpanded();
+              const backgroundColor =
+                datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
+              const value = cellContext.getValue();
+
+              if (value === -1) {
+                return (
+                  <Box className={classes.medianCell}>
+                    <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
+                  </Box>
+                );
+              }
+
+              if (value === -2) return <Box className={classes.medianCell}></Box>;
+
+              const percent = value >= 0 ? value * 100 : 0;
+              const specificityValue =
+                cellContext.row.original[datatype]?._firstLevelSpecificityScore ??
+                cellContext.row.original[datatype]?.specificity_score;
+
+              return (
+                <Tooltip
+                  title={Object.entries(cellContext.row.original[datatype]).map(
+                    ([key, propertyValue]) => (
+                      <Box key={key}>
+                        <Typography variant="caption" component="span">
+                          <strong>{key}</strong>
+                        </Typography>
+                        :{" "}
+                        <Typography variant="caption" component="span">
+                          {JSON.stringify(propertyValue)}
+                        </Typography>
+                      </Box>
+                    )
                   )}
-                </IconButton>
-              )} */}
-              <Box className={classes.barContainer}>
-                <Box
-                  className={
-                    cellContext.row.original._firstLevelId ? classes.bar : classes.childBar
-                  }
-                  style={{ width: `${percent}%` }}
-                />
-                <Typography
-                  variant="caption"
-                  sx={{ position: "absolute", right: 0, top: -13, fontSize: 10.5, fontWeight: 500 }}
+                  style=""
                 >
-                  {specificityValue ? specificityValue.toFixed(3) : String(specificityValue)}
-                </Typography>
-              </Box>
-            </Box>
-          );
-        },
-      })
-    );
+                  <Box className={classes.medianCell}>
+                    <Box className={classes.barContainer}>
+                      <Box
+                        className={
+                          cellContext.row.original._firstLevelId ? classes.bar : classes.childBar
+                        }
+                        style={{ width: `${percent}%` }}
+                      />
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          position: "absolute",
+                          right: 0,
+                          top: -13,
+                          fontSize: 10,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {specificityValue ? specificityValue.toFixed(3) : String(specificityValue)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Tooltip>
+              );
+            },
+          }
+        )
+      );
+    }
   }
 
   // create table instance

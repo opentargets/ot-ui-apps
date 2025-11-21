@@ -77,7 +77,7 @@ export function processData(
     for (const arr of Object.values(secondLevel)) {
       for (const obj of arr) {
         for (const [datatypeId, row] of Object.entries(obj)) {
-          row._normalisedMedian = row.median / maxMedians[datatypeId];
+          row._normalisedMedian = row.median === null ? null : row.median / maxMedians[datatypeId];
         }
       }
     }
@@ -95,7 +95,7 @@ export function processData(
     }
     for (const arr of Object.values(thirdLevel)) {
       for (const row of arr) {
-        row._normalisedMedian = row.median / maxMedian;
+        row._normalisedMedian = row.median === null ? null : row.median / maxMedian;
       }
     }
   }
@@ -133,7 +133,7 @@ export function processData(
 
   // get datatype (i.e. column) to sort on
   {
-    let maxSpecificity = { datatype: null, score: -Infinity };
+    let maxSpecificity = { datatype: datatypes[0], score: -Infinity };
     for (const datatype of datatypes) {
       const score = max(firstLevel.map((obj) => obj[datatype]?._firstLevelSpecificityScore));
       if (score > maxSpecificity.score) {
