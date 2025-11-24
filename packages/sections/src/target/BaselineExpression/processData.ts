@@ -118,6 +118,8 @@ export function processData(
           const copiedRow = { ...row };
           copiedRow._firstLevelName = biosampleParent.biosampleName;
           copiedRow._firstLevelId = biosampleParent.biosampleId;
+          copiedRow._firstLevelSpecificityScore =
+            firstLevelRow[datatypeId]?._firstLevelSpecificityScore;
           delete copiedRow._secondLevelName;
           delete copiedRow._secondLevelId;
           firstLevelRow[datatypeId] = copiedRow;
