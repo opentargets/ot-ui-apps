@@ -58,6 +58,27 @@ declare module "@tanstack/table-core" {
   }
 }
 
+function getSortingFn(datatype, allDatatypes) {
+  return (rowA, rowB) => {
+    const a = rowA.original;
+    const b = rowB.original;
+    const otherDatatypes = new Set(allDatatypes);
+    otherDatatypes.delete(datatype);
+    const orderedDatatypes = [datatype, ...otherDatatypes];
+    for (const dt of orderedDatatypes) {
+      let aMedian = a[dt]?.median;
+      let bMedian = b[dt]?.median;
+      if (aMedian === undefined && bMedian === undefined) continue;
+      if (aMedian === null) aMedian = -1;
+      else if (aMedian === undefined) aMedian = -2;
+      if (bMedian === null) bMedian = -1;
+      else if (bMedian === undefined) bMedian = -2;
+      return aMedian - bMedian;
+    }
+    return 0;
+  };
+}
+
 // Search filter function
 const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
@@ -349,7 +370,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     } else {
       columns.push(
         // use -1 for missing value to make sorting work
-        // - could not get nullish values to bottom with sortingFn: nullishComparator(...
         columnHelper.accessor(
           (row) => {
             const value = row[datatype]?._normalisedMedian;
@@ -360,7 +380,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           {
             header: datatype,
             enableSorting: true,
-            // cell: (info) => {
+            sortingFn: getSortingFn(datatype, datatypes),
             cell: (cellContext) => {
               const isFirstLevel = cellContext.row.original._firstLevelId;
               const isSecondLevel = !isFirstLevel && cellContext.row.depth === 1;
