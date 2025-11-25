@@ -18,7 +18,7 @@ query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor
         variant {
           hgvsId
         }
-        variantEffect
+        directionOnTarget
         directionOnTrait
         diseaseFromSource
         variant {

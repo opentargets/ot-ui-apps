@@ -187,9 +187,9 @@ const getColumns = label => [
     label: (
       <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#gene-burden"></DirectionOfEffectTooltip>
     ),
-    renderCell: ({ variantEffect, directionOnTrait }) => {
+    renderCell: ({ directionOnTarget, directionOnTrait }) => {
       return (
-        <DirectionOfEffectIcon variantEffect={variantEffect} directionOnTrait={directionOnTrait} />
+        <DirectionOfEffectIcon variantEffect={directionOnTarget} directionOnTrait={directionOnTrait} />
       );
     },
   },
