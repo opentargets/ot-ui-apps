@@ -152,15 +152,14 @@ function getColumns(label) {
     {
       id: "variantConsequence",
       label: "Variant Consequence",
-      renderCell: ({
-        variantFunctionalConsequence,
-        variant: {
+      renderCell: ({ variantFunctionalConsequence, variant }) => {
+        if (!variant) return naLabel;
+        const {
           chromosome,
           position,
           referenceAllele,
           alternateAllele
-        }
-      }) => {
+        } = variant;
         return (
           <div style={{ display: "flex", gap: "5px" }}>
             {variantFunctionalConsequence && (
