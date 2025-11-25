@@ -43,9 +43,9 @@ const AssociationsView = ({ id, entity, query }: AssociationsView) => (
         >
           {/* <NameFilter /> */}
           <Box display="flex">
-            <DataUploader />
             <FacetsSearch />
             <ColumnOptionsMenu />
+            <DataUploader />
             <ExportMenu />
           </Box>
         </Box>
