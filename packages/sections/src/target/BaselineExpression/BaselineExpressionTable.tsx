@@ -495,6 +495,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     ]);
   }, [table, firstLevel]);
 
+  useEffect(() => {
+    setExpanded({});
+  }, [groupByTissue]);
+
   return (
     <Box className={classes.tableContainer}>
       <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
