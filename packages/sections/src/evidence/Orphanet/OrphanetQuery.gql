@@ -20,7 +20,7 @@ query OrphanetQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
           id
           name
         }
-        variantEffect
+        directionOnTarget
         directionOnTrait
         diseaseFromSource
         diseaseFromSourceId
