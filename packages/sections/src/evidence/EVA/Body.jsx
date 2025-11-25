@@ -191,10 +191,10 @@ function getColumns(label) {
       label: (
         <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#clinvar"></DirectionOfEffectTooltip>
       ),
-      renderCell: ({ variantEffect, directionOnTrait }) => {
+      renderCell: ({ directionOnTarget, directionOnTrait }) => {
         return (
           <DirectionOfEffectIcon
-            variantEffect={variantEffect}
+            variantEffect={directionOnTarget}
             directionOnTrait={directionOnTrait}
           />
         );
