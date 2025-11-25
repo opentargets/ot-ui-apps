@@ -1,17 +1,15 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
-import { Box, FormControlLabel, FormGroup, Popover, Switch, Typography } from "@mui/material";
+import { Box, Popover } from "@mui/material";
 import { type MouseEvent, type ReactElement, useState } from "react";
 import { FacetsSelect, PopoverButton } from "ui";
 import useAotfContext from "../hooks/useAotfContext";
-import { setIncludeMeasurements } from "../context/aotfActions";
 
 function FacetsSearch(): ReactElement {
   const {
     entityToGet,
     facetFilterSelect,
     id,
-    state: { facetFilters, includeMeasurements },
-    dispatch,
+    state: { facetFilters },
   } = useAotfContext();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -26,10 +24,6 @@ function FacetsSearch(): ReactElement {
 
   const open = Boolean(anchorEl);
   const popoverId = open ? "simple-popover" : undefined;
-
-  const handleIncludeMeasurements = (event: React.ChangeEvent<HTMLInputElement>) => {
-   dispatch(setIncludeMeasurements(event.target.checked));
-  };
 
   return (
     <Box>
@@ -58,14 +52,6 @@ function FacetsSearch(): ReactElement {
         elevation={1}
       >
         <Box sx={{ width: "450px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
-          <FormGroup>
-            <FormControlLabel control={<Switch
-            checked={includeMeasurements}
-            onChange={handleIncludeMeasurements}
-            inputProps={{ "aria-label": "Include measurements" }}
-          />} label="Include measurements" />
-          </FormGroup>
-          
           <FacetsSelect
             id={id}
             entityToGet={entityToGet}
