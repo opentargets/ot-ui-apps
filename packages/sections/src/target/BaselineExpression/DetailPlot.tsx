@@ -68,8 +68,8 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor }, h
 
   const barWidth = 23;
   const gapWidth = 6;
-  const marginLeft = 0;
-  const marginRight = 50;
+  const marginLeft = 24;
+  const marginRight = 80;
   const plotWidth = data.length * (barWidth + gapWidth) + marginLeft + marginRight;
 
   return PlotLib.plot({

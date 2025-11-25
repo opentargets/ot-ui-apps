@@ -306,7 +306,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
         return (
-          <Box sx={{ display: "flex", alignItems: "center", pl: isFirstLevel ? null : 6 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              pl: isFirstLevel ? null : 6,
+            }}
+          >
             {isFirstLevel && (
               <IconButton
                 size="small"
@@ -324,9 +330,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               variant="caption"
               sx={{
                 fontWeight: isFirstLevel ? "bold" : "normal",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
-              {cellContext.getValue()}
+              <Tooltip title={cellContext.getValue()}>{cellContext.getValue()}</Tooltip>
             </Typography>
           </Box>
         );
