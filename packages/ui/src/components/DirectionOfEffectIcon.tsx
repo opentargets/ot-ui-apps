@@ -57,8 +57,6 @@ function DirectionOfEffectIcon({
   const variant = variantEffect || "default";
   const direction = directionOnTrait || "default";
 
-  // debugger
-
   function getTooltipText() {
     return `${LABEL[variant.toLowerCase()].label} │ ${LABEL[direction.toLowerCase()].label}`;
   }
