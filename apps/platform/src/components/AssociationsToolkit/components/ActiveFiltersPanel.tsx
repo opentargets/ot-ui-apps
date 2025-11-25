@@ -1,8 +1,3 @@
-import { Box, Chip, Typography } from "@mui/material";
-import { Tooltip } from "ui";
-import useAotfContext from "../hooks/useAotfContext";
-import { Facet } from "../../Facets/facetsTypes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
   faCircleXmark,
@@ -10,12 +5,18 @@ import {
   faGear,
   faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { setEntitySearch } from "../context/aotfActions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Chip, Switch, Typography } from "@mui/material";
+import Entities from "sections/src/common/Literature/Entities";
+import { Tooltip } from "ui";
+import type { Facet } from "../../Facets/facetsTypes";
+import { ENTITIES } from "../associationsUtils";
+import { setEntitySearch, setIncludeMeasurements } from "../context/aotfActions";
+import useAotfContext from "../hooks/useAotfContext";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
-  return items.filter(item => item.id !== idToRemove);
+  return items.filter((item) => item.id !== idToRemove);
 }
 
 function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
@@ -44,9 +45,73 @@ function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
   );
 }
 
+function FilterChipWithSwitch({
+  checked,
+  onChange,
+  label,
+  tootltipContent,
+}: {
+  checked: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  label: React.ReactNode;
+  tootltipContent?: string;
+  maxWidth?: number;
+}) {
+  const handleBoxClick = () => {
+    const syntheticEvent = {
+      target: { checked: !checked },
+    } as React.ChangeEvent<HTMLInputElement>;
+    onChange(syntheticEvent);
+  };
+
+  return (
+    <Tooltip title={tootltipContent} placement="bottom">
+      <Box sx={{ cursor: "pointer" }} onClick={handleBoxClick}>
+        <Chip
+          sx={{
+            borderRadius: 2,
+          }}
+          size="small"
+          label={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {label}
+              <Switch
+                checked={checked}
+                onChange={onChange}
+                size="small"
+                sx={(theme) => ({
+                  "& .MuiSwitch-switchBase:not(.Mui-checked)": {
+                    color: "grey.200",
+                  },
+                  "& .MuiSwitch-switchBase.Mui-checked": {
+                    color: theme.palette.primary.dark,
+                  },
+                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                    backgroundColor: theme.palette.primary.dark,
+                  },
+                  "& .MuiSwitch-thumb": {
+                    width: 14,
+                    height: 14,
+                  },
+                  "& .MuiSwitch-track": {
+                    height: 9,
+                  },
+                })}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
+            </Box>
+          }
+        />
+      </Box>
+    </Tooltip>
+  );
+}
+
 function ActiveFiltersPanel() {
   const {
-    state: { facetFilters },
+    state: { facetFilters, includeMeasurements },
     facetFilterSelect,
     pinnedEntries,
     uploadedEntries,
@@ -58,6 +123,7 @@ function ActiveFiltersPanel() {
     resetDatasourceControls,
     sorting,
     resetSorting,
+    entityToGet,
   } = useAotfContext();
 
   const somePinned = pinnedEntries.length > 0;
@@ -75,8 +141,8 @@ function ActiveFiltersPanel() {
     modifiedEntitySearch,
   ];
 
-  const showActiveFilter = filterCategories.some(x => x === true);
-  const multipleFiltersOn = filterCategories.filter(x => x === true).length > 1;
+  const showActiveFilter = filterCategories.some((x) => x === true);
+  const multipleFiltersOn = filterCategories.filter((x) => x === true).length > 1;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -103,6 +169,17 @@ function ActiveFiltersPanel() {
         mb: 2,
       }}
     >
+      {entityToGet === "disease" && (
+        <FilterChipWithSwitch
+          checked={includeMeasurements}
+          tootltipContent="Include measurements"
+          label="Include measurements"
+          onChange={() => {
+            dispatch(setIncludeMeasurements(!includeMeasurements));
+          }}
+        />
+      )}
+
       {entitySearch && (
         <FilterChip
           tootltipContent="Name entity"
@@ -146,7 +223,7 @@ function ActiveFiltersPanel() {
           label={
             <Box sx={{ gap: 1 }}>
               <FontAwesomeIcon icon={faArrowDownWideShort} />{" "}
-              {dataSources.find(d => d.id === sorting[0].id)?.label}
+              {dataSources.find((d) => d.id === sorting[0].id)?.label}
             </Box>
           }
         />
@@ -182,7 +259,7 @@ function ActiveFiltersPanel() {
         <Tooltip title="Reset all filters" placement="bottom">
           <Box>
             <Box
-              sx={theme => ({
+              sx={(theme) => ({
                 display: "flex",
                 alignItems: "center",
                 py: 0.3,

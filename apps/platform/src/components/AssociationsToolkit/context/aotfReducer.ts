@@ -33,6 +33,7 @@ export const initialState: State = {
   facetFilters: [],
   facetFiltersIds: [],
   entitySearch: "",
+  includeMeasurements: false,
 };
 
 type InitialStateParams = {
@@ -131,6 +132,12 @@ export function aotfReducer(state: State = initialState, action: Action): State 
         ...state,
         entitySearch: action.entitySearch,
         pagination: DEFAULT_TABLE_PAGINATION_STATE,
+      };
+    }
+    case ActionType.SET_INCLUDE_MEASUREMENTS: {
+      return {
+        ...state,
+        includeMeasurements: action.includeMeasurements,
       };
     }
     case ActionType.SET_INITIAL_STATE: {

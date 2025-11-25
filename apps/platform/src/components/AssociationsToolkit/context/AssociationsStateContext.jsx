@@ -85,6 +85,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       entity,
       facetFilters: state.facetFiltersIds,
       entitySearch: state.entitySearch,
+      includeMeasurements: state.includeMeasurements,
     },
   });
 
@@ -107,6 +108,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       facetFilters: state.facetFiltersIds,
       entitySearch: state.entitySearch,
       laodingCount: pinnedEntries.length,
+      includeMeasurements: state.includeMeasurements,
     },
   });
 
@@ -129,6 +131,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       facetFilters: state.facetFiltersIds,
       entitySearch: state.entitySearch,
       laodingCount: uploadedEntries.length,
+      includeMeasurements: state.includeMeasurements,
     },
   });
 
