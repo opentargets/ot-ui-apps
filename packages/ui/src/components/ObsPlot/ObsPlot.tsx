@@ -1,6 +1,6 @@
 import { ReactElement, useState } from "react";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Box, BoxProps, Fade } from "@mui/material";
+import { Box, Fade } from "@mui/material";
 import { ObsChart, ObsTooltip } from "ui";
 
 type ObsPlotProps = {
@@ -24,7 +24,6 @@ type ObsPlotProps = {
   gapInfo: number;
   renderInfo: (chart: ReactElement | null) => ReactElement;
   renderSVGOverlay: (chart: SVGSVGElement) => SVGElement | null;
-  containerProps?: BoxProps;
 };
 
 function ObsPlot({
@@ -48,7 +47,6 @@ function ObsPlot({
   gapInfo,
   renderInfo,
   renderSVGOverlay,
-  containerProps,
 }: ObsPlotProps) {
   const [ref, { width: measuredWidth }] = useMeasure();
   const [chart, setChart] = useState(null);
@@ -79,7 +77,6 @@ function ObsPlot({
             setChart={setChart}
             setDatum={setDatum}
             renderSVGOverlay={renderSVGOverlay}
-            containerProps={containerProps}
           />
           {hasTooltip && (
             <ObsTooltip

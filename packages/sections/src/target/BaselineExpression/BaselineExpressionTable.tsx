@@ -313,6 +313,18 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               pl: isFirstLevel ? null : 6,
             }}
           >
+            {!isFirstLevel && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  height: "1px",
+                  width: "48px",
+                  bgcolor: "#fff",
+                  bottom: -1,
+                  left: 0,
+                }}
+              />
+            )}
             {isFirstLevel && (
               <IconButton
                 size="small"
@@ -438,7 +450,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }
                         style={{ width: `${percent}%` }}
                       />
-                      <Typography
+                      {/* <Typography
                         variant="caption"
                         sx={{
                           position: "absolute",
@@ -449,7 +461,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                       >
                         {specificityValue ? specificityValue.toFixed(3) : String(specificityValue)}
-                      </Typography>
+                      </Typography> */}
                     </Box>
                   </Box>
                 </Tooltip>
@@ -519,15 +531,15 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                     backgroundColor: "transparent",
                   },
                 },
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
-                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  border: "none",
-                },
+                // "& .MuiOutlinedInput-notchedOutline": {
+                //   border: "none",
+                // },
+                // "&:hover .MuiOutlinedInput-notchedOutline": {
+                //   border: "none",
+                // },
+                // "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                //   border: "none",
+                // },
               }}
             >
               <MenuItem value="tissue">Tissue → Tissue Detail → Cell Detail</MenuItem>
@@ -566,6 +578,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           style={{
                             cursor: header.column.getCanSort() ? "pointer" : "default",
                             width: getColumnWidth(index),
+                            border: "none",
                           }}
                         >
                           {header.isPlaceholder ? null : (
@@ -628,44 +641,66 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               cursor: "pointer",
                             },
                           }),
-                          ...(isFirstLevel &&
-                            isExpanded && {
-                              backgroundColor: "grey.300",
-                            }),
+                          // ...(isFirstLevel &&
+                          //   isExpanded &&
+                          //   {
+                          //     // backgroundColor: "grey.300",
+                          //   }),
+                          // ...(_isSecondLevel &&
+                          //   isExpanded &&
+                          //   row.original.datatypeId === datatypes[0] && {
+                          //     backgroundColor: "grey.300",
+                          //   }),
                         }}
                       >
                         {row.getVisibleCells().map((cell, index) => {
+                          const isExpandColumn =
+                            _isSecondLevel && isExpanded && cell.column.id === "expand";
+                          const isSingleCellColumn =
+                            _isSecondLevel && isExpanded && cell.column.id === datatypes[0];
+                          const isEitherColumn = isExpandColumn || isSingleCellColumn;
                           return (
                             <TableCell
                               sx={{
+                                position: "relative",
                                 width: getColumnWidth(index),
                                 border: "none",
                                 padding: 0,
-                                backgroundColor:
-                                  _isSecondLevel &&
-                                  isExpanded &&
-                                  (cell.column.id === datatypes[0] ||
-                                    cell.column.id === "expand" ||
-                                    cell.column.id === "name")
-                                    ? "grey.300"
-                                    : null,
-                                borderLeft: index === 0 && _isSecondLevel ? "1px solid" : "none",
-                                borderRight:
-                                  index === table.getVisibleLeafColumns().length - 1 &&
-                                  _isSecondLevel
-                                    ? "1px solid"
-                                    : "none",
-                                borderBottom: shouldShowBottomBorder ? "1px solid" : "none",
+                                backgroundColor: isEitherColumn ? "grey.50" : null,
+                                borderStyle: "solid",
                                 borderColor: "grey.300",
+                                borderTopWidth: 0,
+                                borderBottomWidth:
+                                  _isSecondLevel && isExpanded && !isEitherColumn ? "1px" : 0,
+                                borderLeftWidth: 0,
+                                borderRightWidth: 0,
                               }}
                               key={cell.id}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                              {isEitherColumn && (
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    borderStyle: "solid",
+                                    borderColor: "grey.300",
+                                    borderTopWidth: "1px",
+                                    borderBottomWidth: 0,
+                                    borderLeftWidth: isExpandColumn ? "1px" : 0,
+                                    borderRightWidth: isSingleCellColumn ? "1px" : 0,
+                                    borderTopLeftRadius: isExpandColumn ? "3px" : 0,
+                                    borderTopRightRadius: isSingleCellColumn ? "3px" : 0,
+                                  }}
+                                />
+                              )}
                             </TableCell>
                           );
                         })}
                       </TableRow>
-
                       {/* 3rd level rows */}
                       {row.getIsExpanded() && row.original._secondLevelId && (
                         <TableRow sx={{ "& > *": { marginBottom: 5 } }}>
@@ -674,10 +709,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             sx={{
                               border: "none",
                               p: 0,
-                              borderLeft: _isSecondLevel ? "1px solid" : "none",
-                              borderRight: _isSecondLevel ? "1px solid" : "none",
-                              borderBottom: isLastChildOfParent ? "1px solid" : "none",
-                              borderColor: "grey.300",
                             }}
                             key={row.id}
                           >
