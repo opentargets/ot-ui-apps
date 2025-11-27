@@ -2,6 +2,7 @@ import { Box, Grid } from "@mui/material";
 import { DataDownloader } from "ui";
 import BaselineExpressionTable from "./BaselineExpressionTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
+import { processData } from "./processData";
 
 export function getData(ensgId, client) {
   return client.query({
@@ -33,11 +34,20 @@ const getDownloadRows = (baselineExpressions) =>
   }));
 
 function SummaryTab({ symbol, ensgId, data }) {
+  if (!data) return null;
+
+  const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
+  const processedData = {
+    tissue: processData(data.target.baselineExpression.rows, datatypes, true),
+    celltype: processData(data.target.baselineExpression.rows, datatypes, false),
+  };
+
   return (
     <Grid container justifyContent="center">
       <BaselineExpressionTable
-        data={data.target.baselineExpression.rows}
-        symbol={symbol}
+        data={processedData}
+        datatypes={datatypes}
+        specificityThreshold={0.7}
         DownloaderComponent={
           <DataDownloader
             btnLabel="Export"

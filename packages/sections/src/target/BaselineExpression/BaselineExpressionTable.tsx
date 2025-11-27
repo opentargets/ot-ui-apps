@@ -19,6 +19,8 @@ import {
   TableRow,
   TableSortLabel,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
@@ -42,10 +44,6 @@ import type React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Tooltip } from "ui";
 import DetailPlot from "./DetailPlot";
-// import { addScaledMedians } from "./addScaledMedians";
-import { processData } from "./processData";
-
-const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
 
 // Declare module for TanStack Table
 declare module "@tanstack/table-core" {
@@ -120,8 +118,10 @@ type BaselineExpressionTableRow = {
 };
 
 interface BaselineExpressionTableProps {
-  data: BaselineExpressionRow[];
+  processedData: any;
+  datatypes: string[];
   DownloaderComponent?: React.ReactNode;
+  specificityThreshold: number;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -210,7 +210,9 @@ const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   data,
+  datatypes,
   DownloaderComponent,
+  specificityThreshold,
 }) => {
   const classes = useStyles();
   const [sorting, setSorting] = useState<SortingState>([{ id: datatypes[0], desc: true }]);
@@ -257,12 +259,23 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     []
   );
 
-  const { firstLevel, secondLevel, thirdLevel } = useMemo(
-    () => processData(data, datatypes, groupByTissue),
-    [data, groupByTissue]
-  );
+  const viewType = groupByTissue ? "tissue" : "celltype";
+  const { firstLevel, secondLevel, thirdLevel } = data[viewType];
+  console.log({ firstLevel, secondLevel, thirdLevel });
 
-  // addScaledMedians({ firstLevel, secondLevel, thirdLevel }, datatypes);
+  // const specificExpression = {
+  //   [groupByTissue ? "tissue" : "celltype"]: firstLevel._maxSpecificity >= specificityThreshold,
+  //   [groupByTissue ? "celltype" : "tissue"]:
+  //   otherProcessedData.firstLevel._maxSpecificity >= specificityThreshold,
+  // };
+  // const { firstLevel, secondLevel, thirdLevel } = useMemo(
+  //   () => processData(data, datatypes, groupByTissue),
+  //   [data, groupByTissue]
+  // );
+  // const otherProcessedData = useMemo(
+  //   () => processData(data, datatypes, !groupByTissue),
+  //   [data, groupByTissue]
+  // );
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -516,35 +529,51 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Select
+            <ToggleButtonGroup
               value={groupByTissue ? "tissue" : "celltype"}
+              aria-label="toggle view"
+              size="small"
+              sx={{ p: 0 }}
               onChange={(e) => setGroupByTissue(e.target.value === "tissue")}
-              variant="standard"
-              disableUnderline
-              sx={{
-                "& .MuiSelect-select": {
-                  border: "none",
-                  padding: "4px 8px",
-                  fontSize: "0.75rem",
-                  minWidth: "auto",
-                  "&:focus": {
-                    backgroundColor: "transparent",
-                  },
-                },
-                // "& .MuiOutlinedInput-notchedOutline": {
-                //   border: "none",
-                // },
-                // "&:hover .MuiOutlinedInput-notchedOutline": {
-                //   border: "none",
-                // },
-                // "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                //   border: "none",
-                // },
-              }}
             >
-              <MenuItem value="tissue">Tissue → Tissue Detail → Cell Detail</MenuItem>
-              <MenuItem value="celltype">Cell → Cell Detail → Tissue Detail</MenuItem>
-            </Select>
+              <ToggleButton value="tissue" aria-label="tissue">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // justifyContent: "start",
+                    // alignItems: "start",
+                  }}
+                >
+                  <Box>Tissue → Detail → Cell Type</Box>
+                  {data.tissue.firstLevel._maxSpecificity.score >= specificityThreshold ? (
+                    <strong>* specific expression</strong>
+                  ) : (
+                    <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
+                  )}
+                </Box>
+              </ToggleButton>
+              <ToggleButton value="celltype" aria-label="cell type">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    // justifyContent: "start",
+                    // alignItems: "start",
+                    // height: "100%",
+                  }}
+                >
+                  <Box>Cell Type → Detail → Tissue</Box>
+                  {data.celltype.firstLevel._maxSpecificity.score >= specificityThreshold ? (
+                    <strong>* specific expression</strong>
+                  ) : (
+                    <Box sx={{ fontWeight: 400, fontStyle: "italic", opacity: 0.9 }}>
+                      no specific expression
+                    </Box>
+                  )}
+                </Box>
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
           <Button
             variant="outlined"
