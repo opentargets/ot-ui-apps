@@ -534,7 +534,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               aria-label="toggle view"
               size="small"
               sx={{ p: 0 }}
-              onChange={(e) => setGroupByTissue(e.target.value === "tissue")}
+              exclusive
+              onChange={(event, newValue) => setGroupByTissue(newValue === "tissue")}
             >
               <ToggleButton value="tissue" aria-label="tissue">
                 <Box
