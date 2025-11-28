@@ -10,9 +10,10 @@ type ObsTooltipProps = {
   dy?: number;
   xAccessor: (d: any, i?: number) => number;
   yAccessor: (d: any, i?: number) => number;
-  renderTooltip: (datum: any) => ReactElement;
+  renderTooltip: (datum: any, otherData?: any) => ReactElement;
   chart: ReactElement;
   datum: any;
+  otherData?: any;
 };
 
 function ObsTooltip({
@@ -27,6 +28,7 @@ function ObsTooltip({
   renderTooltip,
   chart,
   datum,
+  otherData,
 }: ObsTooltipProps) {
   if (!datum) return null;
 
@@ -81,7 +83,7 @@ function ObsTooltip({
           pointerEvents: "auto",
         }}
       >
-        {renderTooltip(datum)}
+        {renderTooltip(datum, otherData)}
       </Box>
     </Box>
   );
