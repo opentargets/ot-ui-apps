@@ -42,12 +42,15 @@ function SummaryTab({ symbol, ensgId, data }) {
     celltype: processData(data.target.baselineExpression.rows, datatypes, false),
   };
 
+  // !! REMOVE !!
+  window.processedData = processedData;
+
   return (
     <Grid container justifyContent="center">
       <BaselineExpressionTable
         data={processedData}
         datatypes={datatypes}
-        specificityThreshold={0.7}
+        specificityThreshold={0.15}
         DownloaderComponent={
           <DataDownloader
             btnLabel="Export"

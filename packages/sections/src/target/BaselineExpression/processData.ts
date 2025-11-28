@@ -133,20 +133,24 @@ export function processData(
     firstLevel.push(firstLevelRow);
   }
 
-  // get datatype (i.e. column) to sort on
+  // max specificty scores
   {
-    let maxSpecificity = { datatype: datatypes[0], score: -Infinity };
+    const maxSpecificityByDatatype = {};
+    let maxSpecificity = { datatype: null, score: -Infinity };
     for (const datatype of datatypes) {
       const score = max(firstLevel.map((obj) => obj[datatype]?._firstLevelSpecificityScore));
+      maxSpecificityByDatatype[datatype] = score;
       if (score > maxSpecificity.score) {
         maxSpecificity = { datatype, score };
       }
     }
+    Object.defineProperty(firstLevel, "_maxSpecificityByDatatype", {
+      value: maxSpecificityByDatatype,
+    });
     Object.defineProperty(firstLevel, "_maxSpecificity", {
       value: maxSpecificity,
     });
   }
 
-  console.log({ firstLevel, secondLevel, thirdLevel });
   return { firstLevel, secondLevel, thirdLevel };
 }

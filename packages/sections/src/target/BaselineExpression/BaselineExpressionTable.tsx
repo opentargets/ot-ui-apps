@@ -1,4 +1,4 @@
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faAsterisk, faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -261,21 +261,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   const viewType = groupByTissue ? "tissue" : "celltype";
   const { firstLevel, secondLevel, thirdLevel } = data[viewType];
-  console.log({ firstLevel, secondLevel, thirdLevel });
-
-  // const specificExpression = {
-  //   [groupByTissue ? "tissue" : "celltype"]: firstLevel._maxSpecificity >= specificityThreshold,
-  //   [groupByTissue ? "celltype" : "tissue"]:
-  //   otherProcessedData.firstLevel._maxSpecificity >= specificityThreshold,
-  // };
-  // const { firstLevel, secondLevel, thirdLevel } = useMemo(
-  //   () => processData(data, datatypes, groupByTissue),
-  //   [data, groupByTissue]
-  // );
-  // const otherProcessedData = useMemo(
-  //   () => processData(data, datatypes, !groupByTissue),
-  //   [data, groupByTissue]
-  // );
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -373,19 +358,20 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         const isFirstLevel = cellContext.row.original._firstLevelId;
         if (isFirstLevel) return <Box sx={{ width: "24px", height: "24px" }}></Box>;
         return (
-          <Box sx={{ display: "flex", justifyContent: "end" }}>
-            <IconButton
-              size="small"
-              className={classes.expandColumn}
-              sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
-            >
-              {cellContext.row.getIsExpanded() ? (
-                <FontAwesomeIcon icon={faCaretUp} size="xs" />
-              ) : (
-                <FontAwesomeIcon icon={faCaretDown} size="xs" />
-              )}
-            </IconButton>
-          </Box>
+          // <Box sx={{ display: "flex", justifyContent: "end" }}>
+          // <Box sx={{ width: "24px", height: "24px" }}>
+          <IconButton
+            size="small"
+            className={classes.expandColumn}
+            sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
+          >
+            {cellContext.row.getIsExpanded() ? (
+              <FontAwesomeIcon icon={faCaretUp} size="xs" />
+            ) : (
+              <FontAwesomeIcon icon={faCaretDown} size="xs" />
+            )}
+          </IconButton>
+          // </Box>
         );
       },
     }),
@@ -463,6 +449,22 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }
                         style={{ width: `${percent}%` }}
                       />
+                      {cellContext.row.original[datatype][
+                        isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
+                      ] >= specificityThreshold && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            right: -12,
+                            top: -1,
+                            fontSize: 10,
+                            fontWeight: 500,
+                            // color: isFirstLevel ? "primary.dark" : "primary.main",
+                          }}
+                        >
+                          <FontAwesomeIcon icon={faAsterisk} />
+                        </Box>
+                      )}
                       {/* <Typography
                         variant="caption"
                         sx={{
@@ -542,13 +544,21 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    // justifyContent: "start",
-                    // alignItems: "start",
                   }}
                 >
                   <Box>Tissue → Detail → Cell Type</Box>
                   {data.tissue.firstLevel._maxSpecificity.score >= specificityThreshold ? (
-                    <strong>* specific expression</strong>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faAsterisk} size="sm" />
+                      <strong>specific expression</strong>
+                    </Box>
                   ) : (
                     <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
                   )}
@@ -559,18 +569,23 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    // justifyContent: "start",
-                    // alignItems: "start",
-                    // height: "100%",
                   }}
                 >
                   <Box>Cell Type → Detail → Tissue</Box>
                   {data.celltype.firstLevel._maxSpecificity.score >= specificityThreshold ? (
-                    <strong>* specific expression</strong>
-                  ) : (
-                    <Box sx={{ fontWeight: 400, fontStyle: "italic", opacity: 0.9 }}>
-                      no specific expression
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        justifyContent: "center",
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faAsterisk} size="sm" />
+                      <strong>specific expression</strong>
                     </Box>
+                  ) : (
+                    <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
                   )}
                 </Box>
               </ToggleButton>
@@ -695,7 +710,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 position: "relative",
                                 width: getColumnWidth(index),
                                 border: "none",
-                                padding: 0,
+                                // padding: 0,
+                                // mx: 2,
+                                pl: 1.5,
+                                pr: 1.5,
+                                py: 0,
                                 backgroundColor: isEitherColumn ? "grey.50" : null,
                                 borderStyle: "solid",
                                 borderColor: "grey.300",
