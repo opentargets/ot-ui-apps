@@ -144,15 +144,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   medianCell: {
     textAlign: "center",
     fontSize: "0.75rem",
-    marginRight: "8px",
   },
   barContainer: {
     height: "12px",
     backgroundColor: theme.palette.grey[200],
-    // borderRadius: "2px",
     position: "relative",
-    margin: "2px 0px",
-    // padding: "0px 4px",
+    width: "100%",
+    margin: "2px 0",
   },
   failed: {
     backgroundColor: theme.palette.grey[100],
@@ -294,7 +292,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   );
 
   const getColumnWidth = (index) => {
-    return index === 0 ? "18%" : index === 1 ? "3%" : `${60 / datatypes.length}%`;
+    return index === 0 ? "30%" : `${70 / datatypes.length}%`;
   };
 
   const columns = [
@@ -348,30 +346,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               <Tooltip title={cellContext.getValue()}>{cellContext.getValue()}</Tooltip>
             </Typography>
           </Box>
-        );
-      },
-    }),
-    columnHelper.display({
-      id: "expand",
-      header: "",
-      cell: (cellContext) => {
-        const isFirstLevel = cellContext.row.original._firstLevelId;
-        if (isFirstLevel) return <Box sx={{ width: "24px", height: "24px" }}></Box>;
-        return (
-          // <Box sx={{ display: "flex", justifyContent: "end" }}>
-          // <Box sx={{ width: "24px", height: "24px" }}>
-          <IconButton
-            size="small"
-            className={classes.expandColumn}
-            sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
-          >
-            {cellContext.row.getIsExpanded() ? (
-              <FontAwesomeIcon icon={faCaretUp} size="xs" />
-            ) : (
-              <FontAwesomeIcon icon={faCaretDown} size="xs" />
-            )}
-          </IconButton>
-          // </Box>
         );
       },
     }),
@@ -465,18 +439,29 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           <FontAwesomeIcon icon={faAsterisk} />
                         </Box>
                       )}
-                      {/* <Typography
-                        variant="caption"
-                        sx={{
-                          position: "absolute",
-                          right: 0,
-                          top: -13,
-                          fontSize: 10,
-                          fontWeight: 500,
-                        }}
-                      >
-                        {specificityValue ? specificityValue.toFixed(3) : String(specificityValue)}
-                      </Typography> */}
+                      {isSecondLevel && datatype === datatypes[0] && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            left: -22,
+                            top: -6,
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            className={classes.expandColumn}
+                            sx={{
+                              visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
+                            }} // keeps all rows same height
+                          >
+                            {cellContext.row.getIsExpanded() ? (
+                              <FontAwesomeIcon icon={faCaretUp} size="xs" />
+                            ) : (
+                              <FontAwesomeIcon icon={faCaretDown} size="xs" />
+                            )}
+                          </IconButton>
+                        </Box>
+                      )}
                     </Box>
                   </Box>
                 </Tooltip>
@@ -699,35 +684,29 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                       >
                         {row.getVisibleCells().map((cell, index) => {
-                          const isExpandColumn =
-                            _isSecondLevel && isExpanded && cell.column.id === "expand";
                           const isSingleCellColumn =
                             _isSecondLevel && isExpanded && cell.column.id === datatypes[0];
-                          const isEitherColumn = isExpandColumn || isSingleCellColumn;
                           return (
                             <TableCell
                               sx={{
                                 position: "relative",
                                 width: getColumnWidth(index),
                                 border: "none",
-                                // padding: 0,
-                                // mx: 2,
-                                pl: 1.5,
-                                pr: 1.5,
+                                px: 2.8,
                                 py: 0,
-                                backgroundColor: isEitherColumn ? "grey.50" : null,
+                                backgroundColor: isSingleCellColumn ? "grey.50" : null,
                                 borderStyle: "solid",
                                 borderColor: "grey.300",
                                 borderTopWidth: 0,
                                 borderBottomWidth:
-                                  _isSecondLevel && isExpanded && !isEitherColumn ? "1px" : 0,
+                                  _isSecondLevel && isExpanded && !isSingleCellColumn ? "1px" : 0,
                                 borderLeftWidth: 0,
                                 borderRightWidth: 0,
                               }}
                               key={cell.id}
                             >
                               {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              {isEitherColumn && (
+                              {isSingleCellColumn && (
                                 <Box
                                   sx={{
                                     position: "absolute",
@@ -739,9 +718,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                     borderColor: "grey.300",
                                     borderTopWidth: "1px",
                                     borderBottomWidth: 0,
-                                    borderLeftWidth: isExpandColumn ? "1px" : 0,
+                                    borderLeftWidth: isSingleCellColumn ? "1px" : 0,
                                     borderRightWidth: isSingleCellColumn ? "1px" : 0,
-                                    borderTopLeftRadius: isExpandColumn ? "3px" : 0,
+                                    borderTopLeftRadius: isSingleCellColumn ? "3px" : 0,
                                     borderTopRightRadius: isSingleCellColumn ? "3px" : 0,
                                   }}
                                 />
