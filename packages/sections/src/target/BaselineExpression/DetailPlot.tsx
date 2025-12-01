@@ -34,7 +34,7 @@ function DetailPlot({
         borderBottomWidth: "1px",
         borderLeftWidth: "1px",
         borderRightWidth: "1px",
-        marginLeft: "48px",
+        marginLeft: "72px",
         marginBottom: "16px",
         paddingTop: 1.5,
         paddingLeft: 2.5,

@@ -186,14 +186,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   cursorAuto: {
     cursor: "auto !important",
   },
-  nestedTable: {
-    width: "100%",
-  },
-  nestedTableCell: {
-    borderBottom: "none",
-    padding: "0px 8px",
-    fontSize: "0.75rem",
-  },
   expandButton: {
     padding: "2px",
     minWidth: "24px",
@@ -314,7 +306,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 sx={{
                   position: "absolute",
                   height: "1px",
-                  width: "48px",
+                  width: "72px",
                   bgcolor: "#fff",
                   bottom: -1,
                   left: 0,
@@ -690,6 +682,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             <TableCell
                               sx={{
                                 position: "relative",
+                                height: "24px",
                                 width: getColumnWidth(index),
                                 border: "none",
                                 px: 2.8,
