@@ -134,7 +134,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   headerCell: {
     fontWeight: "bold",
-    padding: "0px 8px",
     fontSize: "0.75rem",
   },
   tissueCell: {
@@ -505,8 +504,19 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
   return (
     <Box className={classes.tableContainer}>
-      <Box sx={{ display: "flex", gap: 1, width: "100%", mb: 2, justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          width: "100%",
+          mb: 2,
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+        }}
+      >
+        <Box
+          sx={{ display: "flex", alignItems: "center", columnGap: 5, rowGap: 2, flexWrap: "wrap" }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ToggleButtonGroup
               value={groupByTissue ? "tissue" : "celltype"}
@@ -516,7 +526,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               exclusive
               onChange={(event, newValue) => setGroupByTissue(newValue === "tissue")}
             >
-              <ToggleButton value="tissue" aria-label="tissue">
+              <ToggleButton
+                value="tissue"
+                aria-label="tissue"
+                sx={{ border: "1px solid transparent" }} // stops jumping on change
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -541,7 +555,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   )}
                 </Box>
               </ToggleButton>
-              <ToggleButton value="celltype" aria-label="cell type">
+              <ToggleButton
+                value="celltype"
+                aria-label="cell type"
+                sx={{ border: "1px solid transparent" }} // stops jumping on change
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -597,14 +615,21 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           key={header.id}
                           className={classes.headerCell}
                           onClick={header.column.getToggleSortingHandler()}
-                          style={{
+                          sx={{
                             cursor: header.column.getCanSort() ? "pointer" : "default",
                             width: getColumnWidth(index),
                             border: "none",
+                            textAlign: "center",
                           }}
                         >
                           {header.isPlaceholder ? null : (
-                            <Box display="flex" alignItems="center">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: index === 0 ? "start" : "center",
+                              }}
+                            >
                               <Typography variant="caption" style={{ fontWeight: "bold" }}>
                                 {flexRender(header.column.columnDef.header, header.getContext())}
                               </Typography>
