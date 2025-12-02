@@ -26,6 +26,7 @@ import {
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { naLabel } from "@ot/constants";
+import { sentenceCase } from "@ot/utils";
 import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import {
   createColumnHelper,
@@ -44,6 +45,7 @@ import type React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Tooltip } from "ui";
 import DetailPlot from "./DetailPlot";
+import { TooltipTable } from "./TooltipTable";
 
 // Declare module for TanStack Table
 declare module "@tanstack/table-core" {
@@ -131,6 +133,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   mainTable: {
     tableLayout: "fixed",
     width: "100%",
+    maxWidth: "1420px",
   },
   headerCell: {
     fontWeight: "bold",
@@ -196,6 +199,53 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
+
+function ViewToggleButton({ value, view, otherView, hasSpecific, specificityThreshold }) {
+  return (
+    <Tooltip
+      title={
+        <Typography variant="caption">
+          {hasSpecific
+            ? `At least one ${view} has a high specificity score`
+            : `No ${view}s have a high specificify score`}{" "}
+          (i.e. score ≥ {specificityThreshold})
+        </Typography>
+      }
+    >
+      <ToggleButton
+        value={value}
+        aria-label={view}
+        sx={{ border: "1px solid transparent" }} // stops jumping on change
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Box>
+            {sentenceCase(view)} → Detail → {sentenceCase(otherView)}
+          </Box>
+          {hasSpecific ? (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                justifyContent: "center",
+              }}
+            >
+              <FontAwesomeIcon icon={faAsterisk} size="sm" />
+              <strong>specific expression</strong>
+            </Box>
+          ) : (
+            <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
+          )}
+        </Box>
+      </ToggleButton>
+    </Tooltip>
+  );
+}
 
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   data,
@@ -297,7 +347,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             sx={{
               display: "flex",
               alignItems: "center",
-              pl: isFirstLevel ? null : 6,
+              pl: isFirstLevel ? null : 5,
             }}
           >
             {!isFirstLevel && (
@@ -305,7 +355,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 sx={{
                   position: "absolute",
                   height: "1px",
-                  width: "72px",
+                  width: "80px",
                   bgcolor: "#fff",
                   bottom: -1,
                   left: 0,
@@ -385,26 +435,23 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               if (value === -2) return <Box className={classes.medianCell}></Box>;
 
               const percent = value >= 0 ? value * 100 : 0;
-              const specificityValue =
-                cellContext.row.original[datatype]?._firstLevelSpecificityScore ??
-                cellContext.row.original[datatype]?.specificity_score;
 
               return (
                 <Tooltip
-                  title={Object.entries(cellContext.row.original[datatype]).map(
-                    ([key, propertyValue]) => (
-                      <Box key={key}>
-                        <Typography variant="caption" component="span">
-                          <strong>{key}</strong>
-                        </Typography>
-                        :{" "}
-                        <Typography variant="caption" component="span">
-                          {JSON.stringify(propertyValue)}
-                        </Typography>
-                      </Box>
-                    )
-                  )}
-                  style=""
+                  placement="top-end"
+                  slotProps={{
+                    popper: {
+                      modifiers: [
+                        {
+                          name: "offset",
+                          options: {
+                            offset: [-40, -5],
+                          },
+                        },
+                      ],
+                    },
+                  }}
+                  title={<TooltipTable data={cellContext.row.original[datatype]} show={viewType} />}
                 >
                   <Box className={classes.medianCell}>
                     <Box className={classes.barContainer}>
@@ -526,64 +573,20 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               exclusive
               onChange={(event, newValue) => setGroupByTissue(newValue === "tissue")}
             >
-              <ToggleButton
+              <ViewToggleButton
                 value="tissue"
-                aria-label="tissue"
-                sx={{ border: "1px solid transparent" }} // stops jumping on change
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Box>Tissue → Detail → Cell Type</Box>
-                  {data.tissue.firstLevel._maxSpecificity.score >= specificityThreshold ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faAsterisk} size="sm" />
-                      <strong>specific expression</strong>
-                    </Box>
-                  ) : (
-                    <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
-                  )}
-                </Box>
-              </ToggleButton>
-              <ToggleButton
+                view="tissue"
+                otherView="cell type"
+                hasSpecific={data.tissue.firstLevel._maxSpecificity.score >= specificityThreshold}
+                specificityThreshold={specificityThreshold}
+              />
+              <ViewToggleButton
                 value="celltype"
-                aria-label="cell type"
-                sx={{ border: "1px solid transparent" }} // stops jumping on change
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Box>Cell Type → Detail → Tissue</Box>
-                  {data.celltype.firstLevel._maxSpecificity.score >= specificityThreshold ? (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        justifyContent: "center",
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faAsterisk} size="sm" />
-                      <strong>specific expression</strong>
-                    </Box>
-                  ) : (
-                    <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
-                  )}
-                </Box>
-              </ToggleButton>
+                view="cell type"
+                otherView="tissue"
+                hasSpecific={data.celltype.firstLevel._maxSpecificity.score >= specificityThreshold}
+                specificityThreshold={specificityThreshold}
+              />
             </ToggleButtonGroup>
           </Box>
           <Button
@@ -710,7 +713,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 height: "24px",
                                 width: getColumnWidth(index),
                                 border: "none",
-                                px: 2.8,
+                                px: 5,
+                                // px: 2.8,
                                 py: 0,
                                 backgroundColor: isSingleCellColumn ? "grey.50" : null,
                                 borderStyle: "solid",

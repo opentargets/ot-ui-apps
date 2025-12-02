@@ -50,7 +50,7 @@ function SummaryTab({ symbol, ensgId, data }) {
       <BaselineExpressionTable
         data={processedData}
         datatypes={datatypes}
-        specificityThreshold={0.6}
+        specificityThreshold={0.75}
         DownloaderComponent={
           <DataDownloader
             btnLabel="Export"

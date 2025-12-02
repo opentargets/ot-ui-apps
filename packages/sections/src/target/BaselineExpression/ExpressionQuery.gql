@@ -13,6 +13,7 @@ query ExpressionQuery($ensemblId: String!) {
           biosampleId
           biosampleName
         }
+        tissueBiosampleFromSource
         celltypeBiosample {
           biosampleId
           biosampleName
@@ -21,10 +22,12 @@ query ExpressionQuery($ensemblId: String!) {
           biosampleId
           biosampleName
         }
+        celltypeBiosampleFromSource
         median
         datasourceId
         datatypeId
         specificity_score
+        distribution_score
       }
     }
   }

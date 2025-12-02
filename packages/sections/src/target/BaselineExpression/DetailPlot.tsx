@@ -3,6 +3,7 @@ import * as PlotLib from "@observablehq/plot";
 import { nullishComparator } from "@ot/utils";
 import { max } from "d3";
 import { ObsPlot, ObsTooltipRow, ObsTooltipTable } from "ui";
+import { TooltipTable } from "./TooltipTable";
 
 function DetailPlot({
   data,
@@ -34,7 +35,7 @@ function DetailPlot({
         borderBottomWidth: "1px",
         borderLeftWidth: "1px",
         borderRightWidth: "1px",
-        marginLeft: "72px",
+        marginLeft: "80px",
         marginBottom: "16px",
         paddingTop: 1.5,
         paddingLeft: 2.5,
@@ -143,12 +144,5 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor, sho
 }
 
 function renderTooltip(datum, otherData) {
-  const { xAccessor } = otherData;
-  return (
-    <ObsTooltipTable>
-      <ObsTooltipRow>
-        <Box display="flex">{xAccessor(datum)}</Box>
-      </ObsTooltipRow>
-    </ObsTooltipTable>
-  );
+  return <TooltipTable data={datum} show={otherData.show} showName />;
 }
