@@ -2,15 +2,15 @@ import {
   faArrowDownWideShort,
   faCircleXmark,
   faFileImport,
+  faFilter,
   faGear,
   faThumbtack,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Chip, Switch, Typography } from "@mui/material";
-import Entities from "sections/src/common/Literature/Entities";
+import { Box, Chip,  Typography } from "@mui/material";
 import { Tooltip } from "ui";
 import type { Facet } from "../../Facets/facetsTypes";
-import { ENTITIES } from "../associationsUtils";
 import { setEntitySearch, setIncludeMeasurements } from "../context/aotfActions";
 import useAotfContext from "../hooks/useAotfContext";
 import dataSources from "../static_datasets/dataSourcesAssoc";
@@ -45,70 +45,6 @@ function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
   );
 }
 
-function FilterChipWithSwitch({
-  checked,
-  onChange,
-  label,
-  tootltipContent,
-}: {
-  checked: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  label: React.ReactNode;
-  tootltipContent?: string;
-  maxWidth?: number;
-}) {
-  const handleBoxClick = () => {
-    const syntheticEvent = {
-      target: { checked: !checked },
-    } as React.ChangeEvent<HTMLInputElement>;
-    onChange(syntheticEvent);
-  };
-
-  return (
-    <Tooltip title={tootltipContent} placement="bottom">
-      <Box sx={{ cursor: "pointer" }} onClick={handleBoxClick}>
-        <Chip
-          sx={{
-            borderRadius: 2,
-          }}
-          size="small"
-          label={
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {label}
-              <Switch
-                checked={checked}
-                onChange={onChange}
-                size="small"
-                sx={(theme) => ({
-                  "& .MuiSwitch-switchBase:not(.Mui-checked)": {
-                    color: "grey.200",
-                  },
-                  "& .MuiSwitch-switchBase.Mui-checked": {
-                    color: theme.palette.primary.dark,
-                  },
-                  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                    backgroundColor: theme.palette.primary.dark,
-                  },
-                  "& .MuiSwitch-thumb": {
-                    width: 14,
-                    height: 14,
-                  },
-                  "& .MuiSwitch-track": {
-                    height: 9,
-                  },
-                })}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              />
-            </Box>
-          }
-        />
-      </Box>
-    </Tooltip>
-  );
-}
-
 function ActiveFiltersPanel() {
   const {
     state: { facetFilters, includeMeasurements },
@@ -131,6 +67,7 @@ function ActiveFiltersPanel() {
   const someFacetFilters = facetFilters.length > 0;
   const tableSorted = sorting[0].id !== "score";
   const modifiedEntitySearch = entitySearch !== "";
+  const showExcludeMeasurements = entityToGet === "disease" && !includeMeasurements;
 
   const filterCategories = [
     someFacetFilters,
@@ -139,10 +76,11 @@ function ActiveFiltersPanel() {
     tableSorted,
     modifiedSourcesDataControls,
     modifiedEntitySearch,
+    showExcludeMeasurements
   ];
 
   const showActiveFilter = filterCategories.some((x) => x === true);
-  const multipleFiltersOn = filterCategories.filter((x) => x === true).length > 1;
+  const multipleFiltersOn = filterCategories.filter((x) => x === true).length > 0;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -156,6 +94,7 @@ function ActiveFiltersPanel() {
     if (modifiedSourcesDataControls) resetDatasourceControls();
     if (facetFilters.length > 0) facetFilterSelect([]);
     if (tableSorted) resetSorting();
+    if (showExcludeMeasurements) dispatch(setIncludeMeasurements(true));
   };
 
   return (
@@ -169,13 +108,15 @@ function ActiveFiltersPanel() {
         mb: 2,
       }}
     >
-      {entityToGet === "disease" && (
-        <FilterChipWithSwitch
-          checked={includeMeasurements}
-          tootltipContent="Include measurements"
-          label="Include measurements"
-          onChange={() => {
-            dispatch(setIncludeMeasurements(!includeMeasurements));
+      { multipleFiltersOn && <Typography variant="subtitle2">Applied filters:</Typography>}
+
+      {showExcludeMeasurements && (
+         <FilterChip
+         maxWidth={300}
+          tootltipContent="Exclude measurements"
+          label={<Box sx={{ gap: 1 }}><FontAwesomeIcon icon={faFilter} size="sm" /> Exclude measurements</Box>}
+          onDelete={() => {
+            dispatch(setIncludeMeasurements(true));
           }}
         />
       )}
@@ -191,9 +132,15 @@ function ActiveFiltersPanel() {
       )}
       {facetFilters.map((facet: Facet) => (
         <FilterChip
+        maxWidth={300}
           key={facet.id}
           tootltipContent={facet.label}
-          label={facet.label}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faFilter} size="sm" /> {facet.label}
+            </Box>
+           
+          }
           onDelete={() => {
             onDelete(facet.id);
           }}
@@ -277,7 +224,7 @@ function ActiveFiltersPanel() {
               onClick={setAllFilters}
             >
               <Typography sx={{ fontSize: "0.8125rem" }} variant="body2">
-                Clear {multipleFiltersOn ? "all" : ""}
+                <FontAwesomeIcon icon={faTrash} size="sm" />
               </Typography>
             </Box>
           </Box>
