@@ -23,7 +23,7 @@ query GeneBurdenQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
         urls {
           url
         }
-        variantEffect
+        directionOnTarget
         directionOnTrait
         allelicRequirements
         studyId

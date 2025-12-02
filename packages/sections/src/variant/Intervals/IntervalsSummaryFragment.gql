@@ -1,5 +1,0 @@
-fragment IntervalsSummaryFragment on Variant {
-  intervals {
-    count
-  }
-} 
