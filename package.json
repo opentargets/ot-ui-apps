@@ -28,7 +28,8 @@
     "test:platform:e2e": "turbo run test:platform:e2e",
     "check": "npx biome check --formatter-enabled=true .",
     "check:fix": "npx biome check --formatter-enabled=true --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test_workflow": "act -W '.github/workflows/e2e-ci.yml' --action-offline-mode"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

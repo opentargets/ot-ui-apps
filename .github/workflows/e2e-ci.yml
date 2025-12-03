@@ -1,0 +1,43 @@
+name: "Tests: E2E"
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests_e2e_netlify_prepare:
+    name: Wait for deployment on Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Waiting for Netlify Preview
+        uses: josephduffy/wait-for-netlify-action@v1
+        id: wait-for-netflify-preview
+        with:
+          site_name: "pull-request"
+          max_timeout: 180
+
+  tests_e2e_netlify:
+    needs: tests_e2e_netlify_prepare
+    name: Run end-to-end tests on Netlify PR preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: install playwright browsers
+        run: |
+          cd packages/platform-test
+          yarn playwright install --with-deps chromium webkit
+      - name: yarn dev:test:platform:e2e
+        run: yarn dev:test:platform:e2e
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{steps.extract_branch.outputs.branch}}--ot-platform.netlify.app/"
+          DEBUG: pw:api

@@ -1,8 +1,7 @@
 import { test, expect } from "@playwright/test";
 
-const devURL = "http://localhost:3000"; // TODO: move to env variable
-
-test("Validate page title", async ({ page }) => {
-  await page.goto(devURL);
-  await expect(page).toHaveTitle("Open Targets Platform");
+test("Validate page title", async ({ page, baseURL }) => {
+  await page.goto(baseURL!);
+  const title = await page.title();
+  await expect(title).toBe("Open Targets Platform");
 });
