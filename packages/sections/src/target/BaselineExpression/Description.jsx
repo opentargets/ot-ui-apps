@@ -4,16 +4,20 @@ function Description({ symbol }) {
   return (
     <>
       RNA and protein baseline expression for <strong>{symbol}</strong>. Source:{" "}
-      <Link external to="https://www.ebi.ac.uk/gxa/home">
-        ExpressionAtlas
+      <Link external to="https://tabula-sapiens.sf.czbiohub.org/">
+        Tabula Sapiens
       </Link>
       ,{" "}
-      <Link external to="https://www.proteinatlas.org/">
-        HPA
-      </Link>{" "}
-      and{" "}
       <Link external to="https://www.gtexportal.org/home/">
         GTEx
+      </Link>
+      ,{" "}
+      <Link external to="https://home.opentargets.org/OTAR3091">
+        PRIDE (OTAR3091)
+      </Link>{" "}
+      and{" "}
+      <Link external to="https://dice-database.org/">
+        DICE
       </Link>
       .
     </>

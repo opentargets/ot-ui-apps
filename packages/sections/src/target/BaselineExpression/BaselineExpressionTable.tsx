@@ -1,4 +1,5 @@
-import { faAsterisk, faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+// import { faCircleDot } from "@fortawesome/free-regular-svg-icons";
+import { faCaretDown, faCaretUp, faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -43,7 +44,8 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { Tooltip } from "ui";
+import { Link, Tooltip } from "ui";
+import { DIVERGING_COLORS } from "ui/src/components/HeatmapTable/constants"; // DO BETTER!!
 import DetailPlot from "./DetailPlot";
 import { TooltipTable } from "./TooltipTable";
 
@@ -153,6 +155,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "relative",
     width: "100%",
     margin: "2px 0",
+    // pointerEvents: "none",
   },
   failed: {
     backgroundColor: theme.palette.grey[100],
@@ -164,6 +167,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.dark,
     // borderRadius: "2px",
     transition: "width 0.3s ease",
+    pointerEvents: "none",
   },
   childBar: {
     height: "100%",
@@ -171,6 +175,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     // borderRadius: "2px",
     transition: "width 0.3s ease",
+    pointerEvents: "none",
   },
   groupRow: {
     cursor: "pointer",
@@ -235,7 +240,7 @@ function ViewToggleButton({ value, view, otherView, hasSpecific, specificityThre
                 justifyContent: "center",
               }}
             >
-              <FontAwesomeIcon icon={faAsterisk} size="sm" />
+              <FontAwesomeIcon icon={faCircleDot} size="sm" />
               <strong>specific expression</strong>
             </Box>
           ) : (
@@ -281,14 +286,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           // Find which row was just expanded by comparing with old state
           const newlyExpanded = secondLevelRows.find((id) => !old[id]);
 
-          if (newlyExpanded) {
-            // Close all other second-level rows except the newly expanded one
-            secondLevelRows.forEach((id) => {
-              if (id !== newlyExpanded) {
-                result[id] = false;
-              }
-            });
-          }
+          // if (newlyExpanded) {
+          //   // Close all other second-level rows except the newly expanded one
+          //   secondLevelRows.forEach((id) => {
+          //     if (id !== newlyExpanded) {
+          //       result[id] = false;
+          //     }
+          //   });
+          // }
           return result;
         }
 
@@ -327,7 +332,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         dataRow = obj[datatype];
         if (dataRow) break;
       }
-      return dataRow._secondLevelName ?? dataRow._firstLevelName;
+      return dataRow._secondLevelName
+        ? { name: dataRow._secondLevelName, id: dataRow._secondLevelId }
+        : { name: dataRow._firstLevelName, id: dataRow._firstLevelId };
     },
     [groupByTissue]
   );
@@ -342,6 +349,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       header: groupByTissue ? "Tissue" : "Cell Type",
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
+        // console.log(cellContext.getValue());
+        const { name, id } = cellContext.getValue();
         return (
           <Box
             sx={{
@@ -350,7 +359,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               pl: isFirstLevel ? null : 5,
             }}
           >
-            {!isFirstLevel && (
+            {!isFirstLevel && cellContext.row.getIsExpanded() && (
               <Box
                 sx={{
                   position: "absolute",
@@ -384,7 +393,27 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 whiteSpace: "nowrap",
               }}
             >
-              <Tooltip title={cellContext.getValue()}>{cellContext.getValue()}</Tooltip>
+              <Tooltip
+                title={name}
+                placement="top"
+                slotProps={{
+                  popper: {
+                    sx: { pointerEvents: "none" },
+                    modifiers: [
+                      {
+                        name: "offset",
+                        options: {
+                          offset: [0, -8],
+                        },
+                      },
+                    ],
+                  },
+                }}
+              >
+                <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${id}`}>
+                  {name}
+                </Link>
+              </Tooltip>
             </Typography>
           </Box>
         );
@@ -441,11 +470,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   placement="top-end"
                   slotProps={{
                     popper: {
+                      sx: { pointerEvents: "none" },
                       modifiers: [
                         {
                           name: "offset",
                           options: {
-                            offset: [-40, -5],
+                            offset: [-40, -10],
                           },
                         },
                       ],
@@ -467,14 +497,19 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         <Box
                           sx={{
                             position: "absolute",
-                            right: -12,
+                            right: -18,
                             top: -1,
                             fontSize: 10,
                             fontWeight: 500,
                             // color: isFirstLevel ? "primary.dark" : "primary.main",
                           }}
                         >
-                          <FontAwesomeIcon icon={faAsterisk} />
+                          <FontAwesomeIcon
+                            icon={faCircleDot}
+                            size="lg"
+                            color="#03a776ff"
+                            // color={DIVERGING_COLORS[8]}
+                          />
                         </Box>
                       )}
                       {isSecondLevel && datatype === datatypes[0] && (
@@ -683,11 +718,17 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                         sx={{
                           "&:hover": {
-                            backgroundColor: "grey.200",
+                            // backgroundColor: "grey.200",
+                            outlineOffset: "-1px",
+                            outline: "solid 1px",
+                            outlineColor: "grey.400",
                           },
                           ...(row.getCanExpand() && {
                             "&:hover": {
-                              backgroundColor: "grey.200",
+                              // backgroundColor: "grey.200",
+                              outlineOffset: "-1px",
+                              outline: isFirstLevel || !isExpanded ? "solid 1px" : "none",
+                              outlineColor: "grey.400",
                               cursor: "pointer",
                             },
                           }),
