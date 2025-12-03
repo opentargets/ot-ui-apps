@@ -1,5 +1,5 @@
-// import { faCircleDot } from "@fortawesome/free-regular-svg-icons";
-import { faCaretDown, faCaretUp, faCircleDot } from "@fortawesome/free-solid-svg-icons";
+// import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCaretDown, faCaretUp, faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -24,6 +24,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+import { green } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { naLabel } from "@ot/constants";
@@ -43,11 +44,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import type React from "react";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Link, Tooltip } from "ui";
-import { DIVERGING_COLORS } from "ui/src/components/HeatmapTable/constants"; // DO BETTER!!
 import DetailPlot from "./DetailPlot";
 import { TooltipTable } from "./TooltipTable";
+
+const specificColor = green[500];
 
 // Declare module for TanStack Table
 declare module "@tanstack/table-core" {
@@ -240,7 +242,7 @@ function ViewToggleButton({ value, view, otherView, hasSpecific, specificityThre
                 justifyContent: "center",
               }}
             >
-              <FontAwesomeIcon icon={faCircleDot} size="sm" />
+              <FontAwesomeIcon icon={faCircle} size="sm" color={specificColor} />
               <strong>specific expression</strong>
             </Box>
           ) : (
@@ -387,7 +389,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             <Typography
               variant="caption"
               sx={{
-                fontWeight: isFirstLevel ? "bold" : "normal",
+                fontWeight: isFirstLevel ? "700" : "500",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -504,12 +506,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             // color: isFirstLevel ? "primary.dark" : "primary.main",
                           }}
                         >
-                          <FontAwesomeIcon
-                            icon={faCircleDot}
-                            size="lg"
-                            color="#03a776ff"
-                            // color={DIVERGING_COLORS[8]}
-                          />
+                          <FontAwesomeIcon icon={faCircle} size="lg" color={specificColor} />
                         </Box>
                       )}
                       {isSecondLevel && datatype === datatypes[0] && (
