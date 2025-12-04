@@ -28,7 +28,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.common.white,
     maxWidth: 400,
-    boxShadow: "0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    boxShadow: theme.boxShadow.default,
     cursor: "pointer",
     border: `1px solid ${theme.palette.grey[300]}`,
     borderRadius: 4,
@@ -190,7 +190,6 @@ function AsyncTooltipDataView({
               color: theme => theme.palette.grey[900],
               textTransform: "capitalize",
               fontWeight: "bold",
-              mb: 0.5,
             }}
           >
             {getLabel()}
