@@ -16,9 +16,10 @@ jobs:
         with:
           NETLIFY_AUTH_TOKEN: ${{ vars.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          NETLIFY_DEPLOY_TO_PROD: false
           build_directory: "bundle-platform"
-          deploy_alias: "cc-platform-e2e"
-          monorepo_package: "apps/platform"
+          build_command: "yarn build:platform"
+          install_command: "yarn install --frozen-lockfile"
 
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
