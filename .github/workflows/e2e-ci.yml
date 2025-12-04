@@ -9,6 +9,10 @@ jobs:
     name: Wait for deployment on Netlify
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
       - name: Trigger Netlify deployment
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
