@@ -44,5 +44,5 @@ jobs:
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://dev.opentargets.xyz/"
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{steps.extract_branch.outputs.branch}}--ot-platform.netlify.app/"
           DEBUG: pw:api
