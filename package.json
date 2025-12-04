@@ -29,7 +29,7 @@
     "check": "npx biome check --formatter-enabled=true .",
     "check:fix": "npx biome check --formatter-enabled=true --write .",
     "prepare": "husky install",
-    "test_workflow": "act -W '.github/workflows/e2e-ci.yml' --action-offline-mode"
+    "test_workflow": "act -W '.github/workflows/e2e-ci.yml' --action-offline-mode --container-architecture linux/amd64"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.4",

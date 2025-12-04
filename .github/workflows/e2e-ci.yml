@@ -11,25 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - name: Install Netlify CLI
-        run: npm install -g netlify-cli
-      - name: Enable Corepack
-        run: corepack enable
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Build platform app
-        run: yarn build:platform
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v2.1.0
+      - uses: nelonoel/branch-name@v1.0.1
+      - uses: jsmrcaga/action-netlify-deploy@master
         with:
-          publish-dir: './apps/platform/bundle-platform'
-          production-branch: cc-platform-e2e
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          enable-pull-request-comment: true
-        env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        timeout-minutes: 1
+          deploy_alias: ${{ env.BRANCH_NAME }}
+          build_directory: ./apps/platform/build
+
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
@@ -43,12 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Enable Corepack
         run: corepack enable
       - name: Install dependencies
@@ -60,5 +46,5 @@ jobs:
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{steps.extract_branch.outputs.branch}}--ot-platform.netlify.app/"
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{ env.BRANCH_NAME }}--ot-platform.netlify.app/"
           DEBUG: pw:api
