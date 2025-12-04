@@ -2,7 +2,6 @@ import { ReactElement, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
-  Chip,
   Divider,
   Skeleton,
   styled,
@@ -196,26 +195,19 @@ function AsyncTooltipDataView({
           >
             {getLabel()}
           </Box>
-          {showChromosome && data.genomicLocation?.chromosome && (
-            <Box sx={{ mb: 0.5 }}>
-              <Chip
-                label={`Chr ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
-                size="small"
-                variant="outlined"
-                sx={{
-                  height: "20px",
-                  fontSize: "0.7rem",
-                  color: theme => theme.palette.primary.main,
-                  borderColor: theme => theme.palette.primary.main,
-                }}
-              />
-            </Box>
-          )}
           <Box sx={{ typography: "body2", color: theme => theme.palette.grey[800] }}>
             {getEntityDescription(entity, data as Record<string, unknown>)}
           </Box>
         </Box>
       </Box>
+          {showChromosome && data.genomicLocation?.chromosome && (
+            <>
+              <Divider />
+              <Box sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}>
+                {`Chromosome: ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
+              </Box>
+            </>
+          )}
       {showSubText && (
         <>
           <Divider />
