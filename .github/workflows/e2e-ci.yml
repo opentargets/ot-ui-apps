@@ -17,7 +17,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           deploy_alias: ${{ env.BRANCH_NAME }}
-          build_directory: ./apps/platform/build
+          monorepo_package: "apps/platform"
 
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
