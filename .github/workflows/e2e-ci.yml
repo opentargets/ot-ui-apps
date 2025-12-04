@@ -22,6 +22,8 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         run: |
+          echo "NETLIFY_SITE_ID: $NETLIFY_SITE_ID"
+          echo "NETLIFY_AUTH_TOKEN is set: ${{ secrets.NETLIFY_AUTH_TOKEN != '' }}"
           netlify status
           cd apps/platform
           netlify build
