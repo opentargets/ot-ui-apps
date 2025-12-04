@@ -17,10 +17,6 @@ function getFullMonth({ month, year }: VersionData): string {
   return date.toLocaleString("default", { month: "long" });
 }
 
-function getIteration({ iteration }: VersionData): string {
-  return iteration;
-}
-
 interface VersionContainerProps {
   children: ReactNode;
 }

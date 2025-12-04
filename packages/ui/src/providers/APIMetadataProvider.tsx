@@ -10,9 +10,20 @@ const DATA_VERSION_QUERY = gql`
         year
         iteration
       }
+      apiVersion {
+        x
+        y
+        z
+      }
     }
   }
 `;
+
+type APIVersion = {
+  x: string;
+  y: string;
+  z: string;
+};
 
 type Version = {
   month: string;
@@ -20,10 +31,17 @@ type Version = {
   iteration: string;
   loading: boolean;
   error: ApolloError | null;
+  apiVersion: APIVersion;
 };  
 
 type ContextType = {
   version: Version;
+};
+
+const initialAPIVersion: APIVersion = {
+  x: "0",
+  y: "0",
+  z: "0",
 };
 
 const initialState: ContextType = {
@@ -33,6 +51,7 @@ const initialState: ContextType = {
     month: "0",
     year: "0",
     iteration: "0",
+    apiVersion: initialAPIVersion,
   },
 };
 export const APIMetadataContext = createContext<ContextType | undefined>(undefined);
@@ -55,6 +74,7 @@ export const APIMetadataProvider = ({ children }: PropsWithChildren): JSX.Elemen
     const {
       meta: {
         dataVersion: { month, year, iteration },
+        apiVersion: apiVersion,
       },
     } = data;
 
@@ -64,6 +84,7 @@ export const APIMetadataProvider = ({ children }: PropsWithChildren): JSX.Elemen
       month: month,
       year: year,
       iteration: iteration,
+      apiVersion: apiVersion,
     });
   }, [data, loading, error]);
 
