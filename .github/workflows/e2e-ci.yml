@@ -15,8 +15,6 @@ jobs:
         run: corepack enable
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build platform
-        run: yarn build:platform
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
       - name: Deploy to Netlify
@@ -24,7 +22,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
-          netlify deploy --dir=../apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
+          yarn build:platform && netlify deploy --dir=../apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
