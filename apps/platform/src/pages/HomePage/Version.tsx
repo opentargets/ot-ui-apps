@@ -38,7 +38,6 @@ interface VersionLinkProps {
 }
 
 function VersionLink({ month, year, version, iteration, link }: VersionLinkProps): JSX.Element {
-  console.log(iteration);
   const parsedIteration = iteration && iteration !== "" ? `.${iteration}` : "";
   return (
     <Link external to={link}>
