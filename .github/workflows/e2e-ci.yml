@@ -15,7 +15,7 @@ jobs:
       - uses: jsmrcaga/action-netlify-deploy@master
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: '116d10b0-ee13-4df3-82ea-09d1dadbb2ac'
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           deploy_alias: ${{ env.BRANCH_NAME }}
           monorepo_package: "apps/platform"
 
