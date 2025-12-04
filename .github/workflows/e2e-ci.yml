@@ -13,11 +13,18 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
-      - name: Trigger Netlify deployment
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build and Deploy to Netlify
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: netlify deploy --context deploy-preview
+        run: |
+          cd apps/platform
+          netlify build
+          netlify deploy --dir=dist --prod=false
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
