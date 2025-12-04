@@ -11,15 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - uses: nelonoel/branch-name@v1.0.1
-      - uses: jsmrcaga/action-netlify-deploy@master
-        with:
-          NETLIFY_AUTH_TOKEN: ${{ vars.NETLIFY_AUTH_TOKEN }}
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build platform
+        run: yarn build:platform
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
-          NETLIFY_DEPLOY_TO_PROD: false
-          build_directory: "bundle-platform"
-          build_command: "yarn build:platform"
-          install_command: "yarn install --frozen-lockfile"
+        run: |
+          cd apps/platform
+          netlify deploy --dir=../../bundle-platform --alias=cc-platform-e2e
 
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
