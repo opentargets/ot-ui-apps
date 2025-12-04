@@ -155,10 +155,6 @@ const columns = [
     },
   },
   {
-    id: "colocalisationMethod",
-    label: "Colocalisation Method",
-  },
-  {
     id: "betaRatioSignAverage",
     label: "Directionality",
     tooltip: "Effect directionality based on the ratio of betas between the two credible sets",

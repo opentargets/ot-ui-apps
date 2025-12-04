@@ -19,7 +19,7 @@ query impcQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: Stri
           id
           approvedSymbol
         }
-        variantEffect
+        directionOnTarget
         directionOnTrait
         diseaseFromSource
         biologicalModelGeneticBackground
