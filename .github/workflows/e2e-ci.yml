@@ -22,7 +22,7 @@ jobs:
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
-          publish-dir: './apps/platform/dist'
+          publish-dir: './apps/platform/bundle-platform'
           production-branch: cc-platform-e2e
           github-token: ${{ secrets.GITHUB_TOKEN }}
           enable-pull-request-comment: true
