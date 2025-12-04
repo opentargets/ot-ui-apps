@@ -23,12 +23,6 @@ jobs:
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
            yarn build:platform && ls ${{ github.workspace }}/ && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
-      - name: Waiting for Netlify Preview
-        uses: josephduffy/wait-for-netlify-action@v1
-        id: wait-for-netflify-preview
-        with:
-          site_name: "pull-request"
-          max_timeout: 180
 
   tests_e2e_netlify:
     needs: tests_e2e_netlify_prepare
@@ -51,5 +45,5 @@ jobs:
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://cc-platform-e2e--ot-platform.netlify.app/"
+          PLAYWRIGHT_TEST_BASE_URL: "https://cc-platform-e2e--ot-platform.netlify.app"
           DEBUG: pw:api
