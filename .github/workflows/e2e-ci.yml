@@ -21,12 +21,11 @@ jobs:
         run: npm install -g netlify-cli
       - name: Deploy to Netlify
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ vars.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
           cd apps/platform
-          netlify deploy --dir=../../bundle-platform --alias=cc-platform-e2e --filter platform --site ${{ env.NETLIFY_SITE_ID }}
-
+          netlify deploy --dir=../../bundle-platform --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
