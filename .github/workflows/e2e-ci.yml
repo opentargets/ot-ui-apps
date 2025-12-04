@@ -5,19 +5,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  # tests_e2e_netlify_prepare:
-    # name: Wait for deployment on Netlify
-    # runs-on: ubuntu-latest
-    # steps:
-    #   - name: Waiting for Netlify Preview
-    #     uses: josephduffy/wait-for-netlify-action@v1
-    #     id: wait-for-netflify-preview
-    #     with:
-    #       site_name: "pull-request"
-    #       max_timeout: 180
+  tests_e2e_netlify_prepare:
+    name: Wait for deployment on Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify deployment
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: netlify deploy --context deploy-preview
+      - name: Waiting for Netlify Preview
+        uses: josephduffy/wait-for-netlify-action@v1
+        id: wait-for-netflify-preview
+        with:
+          site_name: "pull-request"
+          max_timeout: 180
 
   tests_e2e_netlify:
-    # needs: tests_e2e_netlify_prepare
+    needs: tests_e2e_netlify_prepare
     name: Run end-to-end tests on Netlify PR preview
     runs-on: ubuntu-latest
     timeout-minutes: 5
