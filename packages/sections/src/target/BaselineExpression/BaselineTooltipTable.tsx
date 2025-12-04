@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { naLabel } from "@ot/constants";
-import { ObsTooltipRow, ObsTooltipTable } from "ui";
+import { TooltipRow, TooltipTable } from "ui";
 
 function formatZeroToOne(v) {
   if (v === 0 || v === 1) return v;
@@ -13,32 +13,34 @@ function formatExpression(v) {
   return v?.toFixed?.(3);
 }
 
-export function TooltipTable({ data, show, showName }) {
+function BaselineTooltipTable({ data, show, showName }) {
   // const fromSource = data?.[`${show}BiosampleFromSource`];
 
   return (
-    <ObsTooltipTable>
+    <TooltipTable>
       {/* {fromSource && (
-        <ObsTooltipRow label={`${show}BiosampleFromSource`}>
+        <TooltipRow label={`${show}BiosampleFromSource`}>
           <Box display="flex">{fromSource}</Box>
-        </ObsTooltipRow>
+        </TooltipRow>
       )} */}
       {showName && data[`${show}Biosample`] && (
-        <ObsTooltipRow label={show === "tissue" ? "Tissue" : "Cell type"}>
+        <TooltipRow label={show === "tissue" ? "Tissue" : "Cell type"}>
           <Box display="flex">{data[`${show}Biosample`].biosampleName}</Box>
-        </ObsTooltipRow>
+        </TooltipRow>
       )}
-      <ObsTooltipRow label="Median expression">
+      <TooltipRow label="Median expression">
         <Box display="flex">{formatExpression(data.median)}</Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Specificity score">
+      </TooltipRow>
+      <TooltipRow label="Specificity score">
         <Box display="flex">
           {data.specificity_score == null ? naLabel : formatZeroToOne(data.specificity_score)}
         </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Distribution score">
+      </TooltipRow>
+      <TooltipRow label="Distribution score">
         <Box display="flex">{formatZeroToOne(data.distribution_score)}</Box>
-      </ObsTooltipRow>
-    </ObsTooltipTable>
+      </TooltipRow>
+    </TooltipTable>
   );
 }
+
+export default BaselineTooltipTable;

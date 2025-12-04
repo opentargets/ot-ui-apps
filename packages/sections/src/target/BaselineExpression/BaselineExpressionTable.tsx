@@ -4,13 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   Button,
-  Collapse,
   Grid,
   IconButton,
-  InputAdornment,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -19,7 +15,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
@@ -46,8 +41,8 @@ import {
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Link, Tooltip } from "ui";
+import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
-import { TooltipTable } from "./TooltipTable";
 
 const specificColor = green[500];
 
@@ -469,7 +464,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
               return (
                 <Tooltip
-                  placement="top-end"
+                  placement="top-start"
                   slotProps={{
                     popper: {
                       sx: { pointerEvents: "none" },
@@ -477,13 +472,18 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         {
                           name: "offset",
                           options: {
-                            offset: [-40, -10],
+                            offset: [-2, -10],
                           },
                         },
                       ],
                     },
                   }}
-                  title={<TooltipTable data={cellContext.row.original[datatype]} show={viewType} />}
+                  title={
+                    <BaselineTooltipTable
+                      data={cellContext.row.original[datatype]}
+                      show={viewType}
+                    />
+                  }
                 >
                   <Box className={classes.medianCell}>
                     <Box className={classes.barContainer}>

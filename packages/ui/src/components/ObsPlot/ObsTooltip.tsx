@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Box } from "@mui/material";
 
-type ObsTooltipProps = {
+type TooltipProps = {
   width: number;
   height: number;
   xAnchor?: "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
@@ -29,7 +29,7 @@ function ObsTooltip({
   chart,
   datum,
   otherData,
-}: ObsTooltipProps) {
+}: TooltipProps) {
   if (!datum) return null;
 
   const x = chart.scale("x").apply(xAccessor(datum));

@@ -2,8 +2,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
 import { nullishComparator } from "@ot/utils";
 import { max } from "d3";
-import { ObsPlot, ObsTooltipRow, ObsTooltipTable } from "ui";
-import { TooltipTable } from "./TooltipTable";
+import { ObsPlot, TooltipRow, TooltipTable } from "ui";
+import BaselineTooltipTable from "./BaselineTooltipTable";
 
 function DetailPlot({
   data,
@@ -144,5 +144,5 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor, sho
 }
 
 function renderTooltip(datum, otherData) {
-  return <TooltipTable data={datum} show={otherData.show} showName />;
+  return <BaselineTooltipTable data={datum} show={otherData.show} showName />;
 }
