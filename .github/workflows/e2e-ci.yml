@@ -17,7 +17,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
           build_directory: "bundle-platform"
-          deploy_alias: ${{ env.BRANCH_NAME }}
+          deploy_alias: "cc-platform-e2e"
           monorepo_package: "apps/platform"
 
       - name: Waiting for Netlify Preview
@@ -48,5 +48,5 @@ jobs:
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ env.BRANCH_NAME }}--ot-platform.netlify.app/"
+          PLAYWRIGHT_TEST_BASE_URL: "https://cc-platform-e2e--ot-platform.netlify.app/"
           DEBUG: pw:api
