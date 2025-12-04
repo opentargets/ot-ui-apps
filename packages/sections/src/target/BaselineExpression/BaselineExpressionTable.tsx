@@ -1,4 +1,3 @@
-// import { faCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCaretDown, faCaretUp, faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,7 +18,7 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import { green } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { naLabel } from "@ot/constants";
@@ -44,7 +43,18 @@ import { Tooltip } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
 
-const specificColor = green[500];
+const specificityColors = {
+  high: green[500],
+  low: grey[200],
+};
+
+const specificityCircleWidth = "12px";
+
+const datatypeNameLookup = {
+  "scrna-seq": "Single-cell RNA-seq",
+  "bulk rna-seq": "Bulk RNA-seq",
+  "mass-spectrometry proteomics": "Mass spectrometry proteomics",
+};
 
 // Declare module for TanStack Table
 declare module "@tanstack/table-core" {
@@ -202,47 +212,45 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
-function ViewToggleButton({ value, view, otherView, hasSpecific, specificityThreshold }) {
+function ViewToggleButton({ value, view, hasSpecific, specificityThreshold }) {
   return (
     <Tooltip
       title={
         <Typography variant="caption">
           {hasSpecific
             ? `At least one ${view} has a high specificity score`
-            : `No ${view}s have a high specificify score`}{" "}
-          (i.e. score ≥ {specificityThreshold})
+            : `No ${view}s have a high specificify score`}
         </Typography>
       }
+      placement="top-start"
     >
       <ToggleButton
         value={value}
         aria-label={view}
-        sx={{ border: "1px solid transparent" }} // stops jumping on change
+        sx={{ border: `1px solid transparent` }} // prevents jumping on change
       >
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            gap: 0.75,
+            alignItems: "center",
           }}
         >
-          <Box>
-            {sentenceCase(view)} → Detail → {sentenceCase(otherView)}
-          </Box>
-          {hasSpecific ? (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                justifyContent: "center",
-              }}
-            >
-              <FontAwesomeIcon icon={faCircle} size="sm" color={specificColor} />
-              <strong>specific expression</strong>
-            </Box>
-          ) : (
-            <Box sx={{ fontWeight: 400, fontStyle: "italic" }}>no specific expression</Box>
-          )}
+          <Box sx={{ fontSize: "13px" }}>{sentenceCase(view)}</Box>
+          {/* <FontAwesomeIcon
+            icon={faCircle}
+            fontSize="12px"
+            color={specificityColors[hasSpecific ? "high" : "low"]}
+          /> */}
+          <Box
+            sx={{
+              width: specificityCircleWidth,
+              height: specificityCircleWidth,
+              bgcolor: specificityColors[hasSpecific ? "high" : "low"],
+              border: hasSpecific ? "none" : `1px solid ${grey[400]}`,
+              borderRadius: "6px",
+            }}
+          />
         </Box>
       </ToggleButton>
     </Tooltip>
@@ -437,7 +445,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             return value;
           },
           {
-            header: datatype,
+            accessorKey: datatype,
+            header: datatypeNameLookup[datatype] ?? datatype,
             enableSorting: true,
             sortingFn: getSortingFn(datatype, datatypes),
             cell: (cellContext) => {
@@ -459,6 +468,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               if (value === -2) return <Box className={classes.medianCell}></Box>;
 
               const percent = value >= 0 ? value * 100 : 0;
+              const specificityScore =
+                cellContext.row.original[datatype][
+                  isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
+                ];
 
               return (
                 <Tooltip
@@ -497,7 +510,32 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }
                         style={{ width: `${percent}%` }}
                       />
-                      {cellContext.row.original[datatype][
+
+                      {specificityScore != null && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            right: -18,
+                            top: -1,
+                            fontSize: 10,
+                            fontWeight: 500,
+                            // color: isFirstLevel ? "primary.dark" : "primary.main",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCircle}
+                            // size="lg"
+                            fontSize={specificityCircleWidth}
+                            color={
+                              specificityColors[
+                                specificityScore >= specificityThreshold ? "high" : "low"
+                              ]
+                            }
+                          />
+                        </Box>
+                      )}
+
+                      {/* {cellContext.row.original[datatype][
                         isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
                       ] >= specificityThreshold && (
                         <Box
@@ -510,9 +548,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             // color: isFirstLevel ? "primary.dark" : "primary.main",
                           }}
                         >
-                          <FontAwesomeIcon icon={faCircle} size="lg" color={specificColor} />
+                          <FontAwesomeIcon
+                            icon={faCircle}
+                            size="lg"
+                            color={specificityColors.high}
+                          />
                         </Box>
-                      )}
+                      )} */}
                       {isSecondLevel && datatype === datatypes[0] && (
                         <Box
                           sx={{
@@ -595,50 +637,72 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           mb: 2,
           justifyContent: "space-between",
           flexWrap: "wrap",
+          alignItems: "center",
         }}
       >
         <Box
-          sx={{ display: "flex", alignItems: "center", columnGap: 5, rowGap: 2, flexWrap: "wrap" }}
+          sx={{ display: "flex", alignItems: "center", columnGap: 4, rowGap: 2, flexWrap: "wrap" }}
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <ToggleButtonGroup
               value={groupByTissue ? "tissue" : "celltype"}
               aria-label="toggle view"
-              size="small"
-              sx={{ p: 0 }}
+              // sx={{ p: 0, bgcolor: "transparent" }}
               exclusive
               onChange={(event, newValue) => setGroupByTissue(newValue === "tissue")}
+              // color="secondary"
             >
               <ViewToggleButton
                 value="tissue"
                 view="tissue"
-                otherView="cell type"
                 hasSpecific={data.tissue.firstLevel._maxSpecificity.score >= specificityThreshold}
                 specificityThreshold={specificityThreshold}
               />
               <ViewToggleButton
                 value="celltype"
                 view="cell type"
-                otherView="tissue"
                 hasSpecific={data.celltype.firstLevel._maxSpecificity.score >= specificityThreshold}
                 specificityThreshold={specificityThreshold}
               />
             </ToggleButtonGroup>
           </Box>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleCollapseAll}
-            disabled={Object.keys(expanded).length === 0}
-            sx={{
-              fontSize: "0.75rem",
-              textTransform: "none",
-              padding: "2px 12px",
-            }}
-          >
-            Collapse All
-          </Button>
+          <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+                Specificity
+              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  fontSize={specificityCircleWidth}
+                  color={specificityColors.high}
+                />
+                <Typography variant="caption">high</Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  fontSize={specificityCircleWidth}
+                  color={specificityColors.low}
+                />
+                <Typography variant="caption">low</Typography>
+              </Box>
+            </Box>
+          </Tooltip>
         </Box>
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={handleCollapseAll}
+          disabled={Object.keys(expanded).length === 0}
+          sx={{
+            fontSize: "0.75rem",
+            textTransform: "none",
+            padding: "2px 12px",
+          }}
+        >
+          Collapse All
+        </Button>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
       </Box>
       <Grid justifyContent="center" container>
