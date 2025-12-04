@@ -24,7 +24,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
-          netlify deploy --dir=../apps/platform/bundle-platform/ --alias=cc-platform-e2e --site ${{ vars.NETLIFY_SITE_ID }}
+          netlify deploy --dir=../apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
