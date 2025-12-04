@@ -17,17 +17,19 @@ jobs:
         run: corepack enable
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build and Deploy to Netlify
+      - name: Build platform app
+        run: yarn build:platform
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './apps/platform/dist'
+          production-branch: cc-platform-e2e
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          enable-pull-request-comment: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          echo "NETLIFY_SITE_ID: $NETLIFY_SITE_ID"
-          echo "NETLIFY_AUTH_TOKEN is set: ${{ secrets.NETLIFY_AUTH_TOKEN != '' }}"
-          netlify status
-          cd apps/platform
-          netlify build
-          netlify deploy --dir=dist --prod=false
+        timeout-minutes: 1
       - name: Waiting for Netlify Preview
         uses: josephduffy/wait-for-netlify-action@v1
         id: wait-for-netflify-preview
