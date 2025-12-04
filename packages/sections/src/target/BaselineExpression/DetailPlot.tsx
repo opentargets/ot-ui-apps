@@ -129,20 +129,23 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor, sho
         className: "obs-tooltip",
         inset: 0,
       }),
-
-      // // specificity scores
-      // PlotLib.text(data, {
-      //   x: xAccessor,
-      //   y: 1,
-      //   text: displaySpecificityScore,
-      //   textAnchor: "middle",
-      //   lineAnchor: "bottom",
-      //   dy: -4,
-      // }),
     ],
   });
 }
 
 function renderTooltip(datum, otherData) {
-  return <BaselineTooltipTable data={datum} show={otherData.show} showName />;
+  return (
+    <Box
+      sx={{
+        background: "#fff",
+        borderColor: "#ddd",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderRadius: "0.2rem",
+        padding: "0.25em 0.5rem",
+      }}
+    >
+      <BaselineTooltipTable data={datum} show={otherData.show} showName />
+    </Box>
+  );
 }

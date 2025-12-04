@@ -40,7 +40,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Link, Tooltip } from "ui";
+import { Tooltip } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
 
@@ -384,7 +384,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             <Typography
               variant="caption"
               sx={{
-                fontWeight: isFirstLevel ? "700" : "500",
+                fontWeight: isFirstLevel ? "600" : "500",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
@@ -400,16 +400,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       {
                         name: "offset",
                         options: {
-                          offset: [0, -8],
+                          offset: [-20, -8],
                         },
                       },
                     ],
                   },
                 }}
               >
-                <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${id}`}>
-                  {name}
-                </Link>
+                {name}
               </Tooltip>
             </Typography>
           </Box>
@@ -472,16 +470,22 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         {
                           name: "offset",
                           options: {
-                            offset: [-2, -10],
+                            offset: [-3, -10],
                           },
                         },
                       ],
+                    },
+                    tooltip: {
+                      sx: {
+                        maxWidth: 550,
+                      },
                     },
                   }}
                   title={
                     <BaselineTooltipTable
                       data={cellContext.row.original[datatype]}
                       show={viewType}
+                      showSource={isSecondLevel && datatype !== datatypes[0]}
                     />
                   }
                 >

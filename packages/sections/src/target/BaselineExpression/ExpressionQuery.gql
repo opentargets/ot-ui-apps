@@ -28,6 +28,7 @@ query ExpressionQuery($ensemblId: String!) {
         datatypeId
         specificity_score
         distribution_score
+        unit
       }
     }
   }
