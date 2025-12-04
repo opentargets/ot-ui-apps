@@ -6,7 +6,7 @@ on:
 
 jobs:
   tests_e2e_netlify_prepare:
-    name: Wait for deployment on Netlify
+    name: Deploy to Netlify for E2E tests 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,28 +22,18 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
-           yarn build:platform && ls ${{ github.workspace }}/ && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
-
-  tests_e2e_netlify:
-    needs: tests_e2e_netlify_prepare
-    name: Run end-to-end tests on Netlify PR preview
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-      - uses: nelonoel/branch-name@v1.0.1
-      - name: Enable Corepack
-        run: corepack enable
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: install playwright browsers
+           yarn build:platform && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
+            - name: install playwright browsers
+        
+      - name: Install Playwright Browsers
         run: |
-          cd packages/platform-test
+          cd ${{ github.workspace }}/packages/platform-test
           yarn playwright install --with-deps chromium webkit
 
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
+        working-directory: ${{ github.workspace }}/
         env:
           PLAYWRIGHT_TEST_BASE_URL: "https://cc-platform-e2e--ot-platform.netlify.app"
           DEBUG: pw:api
+
