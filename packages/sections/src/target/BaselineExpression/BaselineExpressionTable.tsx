@@ -842,6 +842,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                     bottom: 0,
                                     left: 0,
                                     right: 0,
+                                    pointerEvents: "none",
                                     borderStyle: "solid",
                                     borderColor: "grey.300",
                                     borderTopWidth: "1px",
