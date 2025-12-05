@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Box } from "@mui/material";
 
-type ObsTooltipProps = {
+type TooltipProps = {
   width: number;
   height: number;
   xAnchor?: "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
@@ -10,9 +10,10 @@ type ObsTooltipProps = {
   dy?: number;
   xAccessor: (d: any, i?: number) => number;
   yAccessor: (d: any, i?: number) => number;
-  renderTooltip: (datum: any) => ReactElement;
+  renderTooltip: (datum: any, otherData?: any) => ReactElement;
   chart: ReactElement;
   datum: any;
+  otherData?: any;
 };
 
 function ObsTooltip({
@@ -27,7 +28,8 @@ function ObsTooltip({
   renderTooltip,
   chart,
   datum,
-}: ObsTooltipProps) {
+  otherData,
+}: TooltipProps) {
   if (!datum) return null;
 
   const x = chart.scale("x").apply(xAccessor(datum));
@@ -81,7 +83,7 @@ function ObsTooltip({
           pointerEvents: "auto",
         }}
       >
-        {renderTooltip(datum)}
+        {renderTooltip(datum, otherData)}
       </Box>
     </Box>
   );

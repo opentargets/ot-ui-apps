@@ -1,21 +1,19 @@
-import { Fragment } from "react";
-import * as PlotLib from "@observablehq/plot";
 import { Box, Chip, Skeleton, Typography, useTheme } from "@mui/material";
-
+import * as PlotLib from "@observablehq/plot";
+import { credsetConfidenceMap, naLabel } from "@ot/constants";
+import { Fragment } from "react";
 import {
   ClinvarStars,
-  Tooltip,
-  Link,
-  DisplayVariantId,
-  ObsPlot,
-  ObsTooltipTable,
-  ObsTooltipRow,
-  Navigate,
-  ScientificNotation,
   DataDownloader,
+  DisplayVariantId,
+  Link,
+  Navigate,
+  ObsPlot,
+  ScientificNotation,
+  Tooltip,
+  TooltipRow,
+  TooltipTable,
 } from "ui";
-
-import { naLabel, credsetConfidenceMap } from "@ot/constants";
 
 const palette = [
   "#27B4AE",
@@ -51,7 +49,7 @@ function PheWasPlot({
   if (originalData == null) return null;
 
   const data = structuredClone(
-    originalData.filter(d => {
+    originalData.filter((d) => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
@@ -89,11 +87,9 @@ function PheWasPlot({
   function getTherapeuticArea(row) {
     let bestId = null;
     let bestRank = Infinity;
-    const areaIds = row.study.diseases
-      .map(d => {
-        return d.therapeuticAreas.map(area => area.id);
-      })
-      .flat();
+    const areaIds = row.study.diseases.flatMap((d) => {
+      return d.therapeuticAreas.map((area) => area.id);
+    });
     for (const id of areaIds) {
       const rank = therapeuticPriorities[id]?.rank;
       if (rank < bestRank) {
@@ -121,9 +117,9 @@ function PheWasPlot({
   }
 
   let sortedDiseaseIds = // disease ids sorted by disease name
-    [...diseaseGroups].sort((a, b) => a[1].name.localeCompare(b[1].name)).map(a => a[0]);
+    [...diseaseGroups].sort((a, b) => a[1].name.localeCompare(b[1].name)).map((a) => a[0]);
   if (diseaseGroups.has("__uncategorised__")) {
-    sortedDiseaseIds = sortedDiseaseIds.filter(id => id !== "__uncategorised__");
+    sortedDiseaseIds = sortedDiseaseIds.filter((id) => id !== "__uncategorised__");
     sortedDiseaseIds.push("__uncategorised__");
   }
   const xIntervals = new Map();
@@ -176,8 +172,8 @@ function PheWasPlot({
         }}
         height={height}
         renderChart={renderChart}
-        xTooltip={d => d._x}
-        yTooltip={d => d._y}
+        xTooltip={(d) => d._x}
+        yTooltip={(d) => d._y}
         yAnchorTooltip="plotTop"
         dxTooltip={20}
         renderTooltip={renderTooltip}
@@ -258,8 +254,8 @@ function renderChart({
     marks: [
       // ruleY mark for multi-segment x-axis
       PlotLib.ruleY(xIntervals, {
-        x1: d => d[1].start,
-        x2: d => d[1].end,
+        x1: (d) => d[1].start,
+        x2: (d) => d[1].end,
         y: yMax,
         stroke: (d, i) => palette[i],
       }),
@@ -270,7 +266,7 @@ function renderChart({
         label: "-log₁₀(pValue)",
         labelAnchor: "top",
         labelArrow: "none",
-        tickFormat: v => Math.abs(v),
+        tickFormat: (v) => Math.abs(v),
       }),
       PlotLib.ruleX([0], {
         stroke: "#888",
@@ -278,10 +274,10 @@ function renderChart({
 
       // text mark for x-ticks
       PlotLib.text(xIntervals, {
-        x: d => (d[1].start + d[1].end) / 2,
+        x: (d) => (d[1].start + d[1].end) / 2,
         y: yMax,
         dy: 5,
-        text: d => diseaseGroups.get(d[0]).name,
+        text: (d) => diseaseGroups.get(d[0]).name,
         textAnchor: "start",
         lineAnchor: "top",
         rotate: 45,
@@ -290,17 +286,17 @@ function renderChart({
 
       // standard marks
       PlotLib.dot(data, {
-        x: d => d._x,
-        y: d => d._y,
+        x: (d) => d._x,
+        y: (d) => d._y,
         r: 2.55,
-        symbol: d => (d.beta == null ? "circle" : "triangle"),
-        stroke: d => palette[xIntervals.get(d._therapeuticAreaId).index],
-        fill: d =>
+        symbol: (d) => (d.beta == null ? "circle" : "triangle"),
+        stroke: (d) => palette[xIntervals.get(d._therapeuticAreaId).index],
+        fill: (d) =>
           d.variant.id === pageId
             ? palette[xIntervals.get(d._therapeuticAreaId).index]
             : background,
         strokeWidth: 1.3,
-        rotate: d => (d.beta < 0 ? 180 : 0),
+        rotate: (d) => (d.beta < 0 ? 180 : 0),
         className: "obs-tooltip",
       }),
     ],
@@ -320,94 +316,105 @@ function renderTooltip(datum) {
   );
 
   return (
-    <ObsTooltipTable>
-      <ObsTooltipRow label="Credible set">
-        <Box display="flex">
-          <Navigate to={`/credible-set/${datum.studyLocusId}`} />
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Lead variant">
-        {datum.variant.id === datum._pageId ? (
-          <Box display="flex" alignItems="center" gap={0.5}>
-            {displayId}
-            <Chip label="self" variant="outlined" size="small" />
+    <Box
+      sx={{
+        background: "#fffc",
+        borderColor: "#ddd",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderRadius: "0.2rem",
+        padding: "0.25em 0.5rem",
+      }}
+    >
+      <TooltipTable>
+        <TooltipRow label="Credible set">
+          <Box display="flex">
+            <Navigate to={`/credible-set/${datum.studyLocusId}`} />
           </Box>
-        ) : (
-          <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
-            {displayId}
-          </Link>
-        )}
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Reported trait" valueWidth={valueMaxWidth} truncateValue>
-        {datum.study?.traitFromSource ?? naLabel}
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Disease/phenotype" valueWidth={valueMaxWidth} truncateValue>
-        {datum.study?.diseases?.length > 0 ? (
-          <>
-            {datum.study.diseases.map((d, i) => (
-              <Fragment key={d.id}>
-                {i > 0 && ", "}
-                <Link asyncTooltip to={`/disease/${d.id}`}>
-                  {d.name}
+        </TooltipRow>
+        <TooltipRow label="Lead variant">
+          {datum.variant.id === datum._pageId ? (
+            <Box display="flex" alignItems="center" gap={0.5}>
+              {displayId}
+              <Chip label="self" variant="outlined" size="small" />
+            </Box>
+          ) : (
+            <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
+              {displayId}
+            </Link>
+          )}
+        </TooltipRow>
+        <TooltipRow label="Reported trait" valueWidth={valueMaxWidth} truncateValue>
+          {datum.study?.traitFromSource ?? naLabel}
+        </TooltipRow>
+        <TooltipRow label="Disease/phenotype" valueWidth={valueMaxWidth} truncateValue>
+          {datum.study?.diseases?.length > 0 ? (
+            <>
+              {datum.study.diseases.map((d, i) => (
+                <Fragment key={d.id}>
+                  {i > 0 && ", "}
+                  <Link asyncTooltip to={`/disease/${d.id}`}>
+                    {d.name}
+                  </Link>
+                </Fragment>
+              ))}
+            </>
+          ) : (
+            naLabel
+          )}
+        </TooltipRow>
+        <TooltipRow label="Study">
+          {datum.study ? (
+            <Link asyncTooltip to={`/study/${datum.study.id}`}>
+              {datum.study.id}
+            </Link>
+          ) : (
+            naLabel
+          )}
+        </TooltipRow>
+        <TooltipRow label="P-value">
+          <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
+        </TooltipRow>
+        <TooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</TooltipRow>
+        <TooltipRow label="Posterior probability">
+          {datum.locus?.rows?.[0].posteriorProbability.toPrecision(3) ?? naLabel}
+        </TooltipRow>
+        <TooltipRow label="Fine-mapping">
+          <Box display="flex" flexDirection="column" gap={0.25}>
+            <Box display="flex" gap={0.5}>
+              Method: {datum.finemappingMethod ?? naLabel}
+            </Box>
+            <Box display="flex" gap={0.5}>
+              Confidence:{" "}
+              {datum.confidence ? (
+                <Tooltip title={datum.confidence} style="">
+                  <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
+                </Tooltip>
+              ) : (
+                naLabel
+              )}
+            </Box>
+          </Box>
+        </TooltipRow>
+        <TooltipRow label="L2G">
+          <Box display="flex" flexDirection="column" gap={0.25}>
+            <Box display="flex" gap={0.5}>
+              Top:{" "}
+              {datum.l2GPredictions?.rows?.[0]?.target ? (
+                <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+                  {datum.l2GPredictions.rows[0].target.approvedSymbol}
                 </Link>
-              </Fragment>
-            ))}
-          </>
-        ) : (
-          naLabel
-        )}
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Study">
-        {datum.study ? (
-          <Link asyncTooltip to={`/study/${datum.study.id}`}>
-            {datum.study.id}
-          </Link>
-        ) : (
-          naLabel
-        )}
-      </ObsTooltipRow>
-      <ObsTooltipRow label="P-value">
-        <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</ObsTooltipRow>
-      <ObsTooltipRow label="Posterior probability">
-        {datum.locus?.rows?.[0].posteriorProbability.toPrecision(3) ?? naLabel}
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Fine-mapping">
-        <Box display="flex" flexDirection="column" gap={0.25}>
-          <Box display="flex" gap={0.5}>
-            Method: {datum.finemappingMethod ?? naLabel}
+              ) : (
+                naLabel
+              )}
+            </Box>
+            <Box display="flex" alignItems="center" gap={0.5}>
+              Score: {datum.l2GPredictions?.rows?.[0]?.score?.toFixed(3) ?? naLabel}
+            </Box>
           </Box>
-          <Box display="flex" gap={0.5}>
-            Confidence:{" "}
-            {datum.confidence ? (
-              <Tooltip title={datum.confidence} style="">
-                <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
-              </Tooltip>
-            ) : (
-              naLabel
-            )}
-          </Box>
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="L2G">
-        <Box display="flex" flexDirection="column" gap={0.25}>
-          <Box display="flex" gap={0.5}>
-            Top:{" "}
-            {datum.l2GPredictions?.rows?.[0]?.target ? (
-              <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
-                {datum.l2GPredictions.rows[0].target.approvedSymbol}
-              </Link>
-            ) : (
-              naLabel
-            )}
-          </Box>
-          <Box display="flex" alignItems="center" gap={0.5}>
-            Score: {datum.l2GPredictions?.rows?.[0]?.score?.toFixed(3) ?? naLabel}
-          </Box>
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Credible set size">{datum.locusSize?.count ?? naLabel}</ObsTooltipRow>
-    </ObsTooltipTable>
+        </TooltipRow>
+        <TooltipRow label="Credible set size">{datum.locusSize?.count ?? naLabel}</TooltipRow>
+      </TooltipTable>
+    </Box>
   );
 }
