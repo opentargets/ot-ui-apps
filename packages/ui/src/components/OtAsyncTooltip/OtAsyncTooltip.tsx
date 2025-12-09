@@ -119,14 +119,26 @@ function AsyncTooltipLoadingView(): ReactElement {
   );
 }
 
+type TooltipData = {
+  id?: string;
+  name?: string;
+  description?: string | string[];
+  mostSevereConsequence?: { label?: string };
+  publicationFirstAuthor?: string;
+  publicationDate?: string;
+  publicationJournal?: string;
+  genomicLocation?: { chromosome?: string; start?: number };
+};
+
 function AsyncTooltipDataView({
   entity,
   data,
 }: {
   entity: string;
-  data: Record<string, unknown>;
+  data: TooltipData;
 }): ReactElement {
-  const showSubText = !!data?.mostSevereConsequence?.label || data?.publicationFirstAuthor;
+  const showSubText = !!(data?.mostSevereConsequence?.label || data?.publicationFirstAuthor);
+  const showChromosome = entity === "target" && data?.genomicLocation?.chromosome;
 
   function getSubtext() {
     let finalSubText;
@@ -140,9 +152,9 @@ function AsyncTooltipDataView({
     if (publicationData)
       finalSubText = (
         <StudyPublication
-          publicationDate={data?.publicationDate}
-          publicationFirstAuthor={data?.publicationFirstAuthor}
-          publicationJournal={data?.publicationJournal}
+          publicationDate={data?.publicationDate || ""}
+          publicationFirstAuthor={data?.publicationFirstAuthor || ""}
+          publicationJournal={data?.publicationJournal || ""}
         />
       );
 
@@ -171,7 +183,7 @@ function AsyncTooltipDataView({
         <Box sx={{ p: 1, color: theme => theme.palette.primary.main }}>
           <FontAwesomeIcon size="2x" icon={getEntityIcon(entity)}></FontAwesomeIcon>
         </Box>
-        <Box sx={{ pt: 0.4 }}>
+        <Box sx={{ pt: 0.4, flex: 1 }}>
           <Box
             sx={{
               typography: "subtitle2",
@@ -181,12 +193,20 @@ function AsyncTooltipDataView({
             }}
           >
             {getLabel()}
-          </Box>{" "}
+          </Box>
           <Box sx={{ typography: "body2", color: theme => theme.palette.grey[800] }}>
-            {getEntityDescription(entity, data)}
+            {getEntityDescription(entity, data as Record<string, unknown>)}
           </Box>
         </Box>
       </Box>
+          {showChromosome && data.genomicLocation?.chromosome && (
+            <>
+              <Divider />
+              <Box sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}>
+                {`Chromosome: ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
+              </Box>
+            </>
+          )}
       {showSubText && (
         <>
           <Divider />

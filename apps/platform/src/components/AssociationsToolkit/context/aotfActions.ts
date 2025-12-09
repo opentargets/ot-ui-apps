@@ -1,5 +1,5 @@
 import { Facet } from "../../Facets/facetsTypes";
-import { Action, ActionType, Pagination, RowInteractorsKey } from "../types";
+import { Action, ActionType, Pagination } from "../types";
 
 export function onPaginationChange(pagination: Pagination): Action {
   return {
@@ -59,5 +59,12 @@ export function setEntitySearch(entitySearch: string): Action {
   return {
     type: ActionType.ENTITY_SEARCH,
     entitySearch,
+  };
+}
+
+export function setIncludeMeasurements(includeMeasurements: boolean): Action {
+  return {
+    type: ActionType.SET_INCLUDE_MEASUREMENTS,
+    includeMeasurements,
   };
 }

@@ -8,6 +8,7 @@ query TargetAssociationsQuery(
   $rowsFilter: [String!]
   $facetFilters: [String!]
   $entitySearch: String!
+  $includeMeasurements: Boolean!
 ) {
   target(ensemblId: $id) {
     id
@@ -20,6 +21,7 @@ query TargetAssociationsQuery(
       Bs: $rowsFilter
       facetFilters: $facetFilters
       BFilter: $entitySearch
+      includeMeasurements: $includeMeasurements
     ) {
       count
       rows {

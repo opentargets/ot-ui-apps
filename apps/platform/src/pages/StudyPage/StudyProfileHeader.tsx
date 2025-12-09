@@ -13,7 +13,7 @@ import {
 } from "ui";
 import { Box } from "@mui/material";
 import { populationMap } from "@ot/constants";
-import { getSortedAncestries, getStudyTypeDisplay } from "@ot/utils";
+import { getSortedAncestries, getStudyTypeDisplay, formatPercentage } from "@ot/utils";
 
 import STUDY_PROFILE_HEADER_FRAGMENT from "./StudyProfileHeader.gql";
 
@@ -179,7 +179,7 @@ function ProfileHeader() {
               <LabelChip
                 key={ldPopulation}
                 label={ldPopulation.toUpperCase()}
-                value={`${(relativeSampleSize * 100).toFixed(0)}%`}
+                value={`${formatPercentage(relativeSampleSize)}%`}
                 tooltip={`LD reference population: ${populationMap[ldPopulation]}`}
               />
             )
