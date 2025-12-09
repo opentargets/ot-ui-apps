@@ -68,8 +68,19 @@ function literatureReducer(literatureState: LiteratureStateType, action: Literat
 
 function detailsReducer(detailsState: DetailsStateType, action: DetailsActionType) {
   switch (action.type) {
-    case "addDetails":
+    case "addDetails": {
       return { ...detailsState, ...action.value };
+      // const newState = { ...detailsState };
+      // for (const [id, details] of Object.entries(action.value)) {
+      //   if (newState[id] === "loading") {
+      //     newState[id] === details;
+      //   } else if (newState[details?.pmcid] === "loading") {
+      //     newState[details.pmcid] = details;
+      //   }
+      //   newState[id] = details;
+      // }
+      // return newState;
+    }
     case "setToLoading": {
       const newObj = { ...detailsState };
       for (const id of action.value) {

@@ -8,6 +8,7 @@ import Description from "./Description";
 import { defaultRowsPerPageOptions } from "@ot/constants";
 
 import HALLMARKS_QUERY from "./Hallmarks.gql";
+import { europePmcSearchId } from "@ot/utils";
 
 const columns = [
   {
@@ -37,7 +38,7 @@ const columns = [
         entries={[
           {
             name: pmid,
-            url: `http://europepmc.org/search?query=EXT_ID:${pmid}`,
+            url: `http://europepmc.org/search?query=${europePmcSearchId(pmid, true)}`,
             group: "literature",
           },
         ]}
@@ -74,7 +75,7 @@ function Section({ id, label: symbol, entity }) {
           .filter(a => a.name === "role in cancer")
           .map(r => ({
             label: r.description,
-            url: `http://europepmc.org/search?query=EXT_ID:${r.pmid}`,
+            url: `http://europepmc.org/search?query=${europePmcSearchId(r.pmid, true)}`,
           }));
         const rows = request.data?.target.hallmarks.cancerHallmarks.map(r => ({
           label: r.label,

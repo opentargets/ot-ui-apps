@@ -23,6 +23,8 @@ function parsePublications(publications: PublicationType[]): DetailsStateType {
   const obj: DetailsStateType = {};
   for (const pub of publications) {
     obj[pub.id] = {
+      pmid: pub.pmid,
+      pmcid: pub.pmcid,
       source: pub.source,
       patentDetails: pub.patentDetails,
       europePmcId: pub.id,
@@ -189,7 +191,8 @@ function PublicationsList({ hideSearch = false }) {
       renderCell(id) {
         const det = details[id];
         if (det === "loading") {
-          return <SkeletonRow />;
+          return <h1>LOADING: {id}</h1>
+          // return <SkeletonRow />;
         } else if (!det) {
           return null;
         } else {

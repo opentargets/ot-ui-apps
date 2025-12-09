@@ -20,3 +20,9 @@ export const publicationSummaryQuery = ({ pmcId, symbol, name }: publicationSumm
 
   return { baseUrl, body };
 };
+
+export function europePmcSearchId(id: string, upperCase: boolean = false): string {
+  let paramName = id.startsWith("PMC") ? "pmcid" : "ext_id";
+  if (upperCase) paramName = paramName.toUpperCase();
+  return `${paramName}:${id}`;
+}

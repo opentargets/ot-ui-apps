@@ -7,6 +7,7 @@ import { naLabel } from "@ot/constants";
 
 import PHENOTYPES_BODY_QUERY from "./PhenotypesQuery.gql";
 import { definition } from ".";
+import { europePmcSearchId } from "@ot/utils";
 
 const evidenceTypeDescription = {
   IEA: "Inferred from Electronic Annotations (IEA) are extracted by parsing the Clinical Features sections of the Online Mendelian Inheritance in Man resource",
@@ -180,7 +181,7 @@ const columns = [
       // parse references
       const refs = evidence.references.map(r => ({
         url: r.toUpperCase().startsWith("PMID:")
-          ? `https://europepmc.org/search?query=EXT_ID:${r.split(":").pop()}`
+          ? `https://europepmc.org/search?query=${europePmcSearchId(r.split(":").pop(), true)}`
           : `https://hpo.jax.org/app/browse/disease/${r}`,
         name: r,
         group: "References",

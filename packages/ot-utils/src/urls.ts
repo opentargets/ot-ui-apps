@@ -1,4 +1,5 @@
 import { getConfig } from "@ot/config";
+import { europePmcSearchId } from ".";
 
 const config = getConfig();
 
@@ -33,8 +34,11 @@ export function otgVariantUrl(id: string): string {
 }
 
 export function europePmcLiteratureQuery(ids: string[]): string {
+  // console.log(ids);
   const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${ids.length}&query=ext_id:`;
   return encodeURI(baseUrl + ids.join(" OR ext_id:"));
+  // const baseUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?&format=json&resultType=core&pageSize=${ids.length}&query=`;
+  // return encodeURI(baseUrl + ids.map(europePmcSearchId).join(" OR "));
 }
 
 export const encodeParams = (params: Record<string, string>): string => {
@@ -49,12 +53,12 @@ export const encodeParams = (params: Record<string, string>): string => {
 
 export function europePmcSearchPOSTQuery(ids: string[]): SearchPostResult {
   const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
-  const query = ids.join(" OR ext_id:");
+  const query = ids.map(europePmcSearchId).join(" OR ");
   const bodyOptions = {
     resultType: "core",
     format: "json",
     pageSize: "1000",
-    query: `ext_id:${query}`,
+    query: query,
     sort: "P_PDATE_D desc",
   };
   const formBody = encodeParams(bodyOptions);
@@ -63,12 +67,12 @@ export function europePmcSearchPOSTQuery(ids: string[]): SearchPostResult {
 
 export function europePmcBiblioSearchPOSTQuery(ids: string[], size = 25): SearchPostResult {
   const baseUrl = "https://www.ebi.ac.uk/europepmc/webservices/rest/searchPOST";
-  const query = ids.join(" OR ext_id:");
+  const query = ids.map(europePmcSearchId).join(" OR ");
   const bodyOptions = {
     resultType: "core",
     format: "json",
     pageSize: String(size),
-    query: `ext_id:${query}`,
+    query: query,
   };
   const formBody = encodeParams(bodyOptions);
   const requestOptions: RequestOptions = {
