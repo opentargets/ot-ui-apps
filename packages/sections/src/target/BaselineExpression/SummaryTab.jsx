@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Alert, AlertTitle, Grid, Typography } from "@mui/material";
 import { DataDownloader } from "ui";
 import BaselineExpressionTable from "./BaselineExpressionTable";
 import EXPRESSION_QUERY from "./ExpressionQuery.gql";
@@ -47,6 +47,12 @@ function SummaryTab({ symbol, ensgId, data }) {
 
   return (
     <Grid container justifyContent="center">
+      {/* <Alert severity="info">
+        <Typography variant="body2">
+          The median expression is the median of the expression values for the given tissue or cell
+          type.
+        </Typography>
+      </Alert> */}
       <BaselineExpressionTable
         data={processedData}
         datatypes={datatypes}

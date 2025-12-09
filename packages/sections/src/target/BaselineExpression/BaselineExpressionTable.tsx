@@ -1,8 +1,8 @@
-import { faCaretDown, faCaretUp, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faSquareCaretUp } from "@fortawesome/free-regular-svg-icons";
+import { faCaretDown, faCaretUp, faCircle, faSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
-  Button,
   Grid,
   IconButton,
   Paper,
@@ -11,7 +11,6 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   TableSortLabel,
   ToggleButton,
@@ -21,6 +20,7 @@ import {
 import { green, grey } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
+import { theme } from "@ot/config";
 import { naLabel } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
@@ -53,7 +53,7 @@ const specificityCircleWidth = "12px";
 const datatypeNameLookup = {
   "scrna-seq": "Single-cell RNA-seq",
   "bulk rna-seq": "Bulk RNA-seq",
-  "mass-spectrometry proteomics": "Mass spectrometry proteomics",
+  "mass-spectrometry proteomics": "MS proteomics",
 };
 
 // Declare module for TanStack Table
@@ -210,9 +210,53 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
+const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 6 }}>
+      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+            Specificity
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faCircle}
+              fontSize={specificityCircleWidth}
+              color={specificityColors.high}
+            />
+            <Typography variant="caption">high</Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faCircle}
+              fontSize={specificityCircleWidth}
+              color={specificityColors.low}
+            />
+            <Typography variant="caption">low</Typography>
+          </Box>
+        </Box>
+      </Tooltip>
+      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+            Median expression
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faSquare}
+              fontSize={specificityCircleWidth}
+              color={theme.palette.secondary.main}
+            />
+          </Box>
+        </Box>
+      </Tooltip>
+    </Box>
+  );
+};
+
 const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
-function ViewToggleButton({ value, view, hasSpecific, specificityThreshold }) {
+function ViewToggleButton({ value, view, hasSpecific }) {
   return (
     <Tooltip
       title={
@@ -641,16 +685,22 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         }}
       >
         <Box
-          sx={{ display: "flex", alignItems: "center", columnGap: 4, rowGap: 2, flexWrap: "wrap" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            columnGap: 4,
+            rowGap: 2,
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 4 }}>
             <ToggleButtonGroup
               value={groupByTissue ? "tissue" : "celltype"}
               aria-label="toggle view"
-              // sx={{ p: 0, bgcolor: "transparent" }}
               exclusive
-              onChange={(event, newValue) => setGroupByTissue(newValue === "tissue")}
-              // color="secondary"
+              onChange={(_, newValue) => setGroupByTissue(newValue === "tissue")}
             >
               <ViewToggleButton
                 value="tissue"
@@ -665,45 +715,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 specificityThreshold={specificityThreshold}
               />
             </ToggleButtonGroup>
+            <Legend specificityThreshold={specificityThreshold} />
           </Box>
-          <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
-                Specificity
-              </Typography>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <FontAwesomeIcon
-                  icon={faCircle}
-                  fontSize={specificityCircleWidth}
-                  color={specificityColors.high}
-                />
-                <Typography variant="caption">high</Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                <FontAwesomeIcon
-                  icon={faCircle}
-                  fontSize={specificityCircleWidth}
-                  color={specificityColors.low}
-                />
-                <Typography variant="caption">low</Typography>
-              </Box>
-            </Box>
-          </Tooltip>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
         </Box>
-        <Button
-          variant="outlined"
-          size="small"
-          onClick={handleCollapseAll}
-          disabled={Object.keys(expanded).length === 0}
-          sx={{
-            fontSize: "0.75rem",
-            textTransform: "none",
-            padding: "2px 12px",
-          }}
-        >
-          Collapse All
-        </Button>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
       </Box>
       <Grid justifyContent="center" container>
         <Grid item xs={12} md={10}>
@@ -717,33 +732,80 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         <TableCell
                           key={header.id}
                           className={classes.headerCell}
-                          onClick={header.column.getToggleSortingHandler()}
                           sx={{
-                            cursor: header.column.getCanSort() ? "pointer" : "default",
                             width: getColumnWidth(index),
                             border: "none",
-                            textAlign: "center",
                           }}
                         >
-                          {header.isPlaceholder ? null : (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              px: 1,
+                            }}
+                          >
                             <Box
                               sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: index === 0 ? "start" : "center",
+                                cursor: header.column.getCanSort() ? "pointer" : "default",
+                                flex: 1,
                               }}
+                              onClick={header.column.getToggleSortingHandler()}
                             >
-                              <Typography variant="caption" style={{ fontWeight: "bold" }}>
-                                {flexRender(header.column.columnDef.header, header.getContext())}
-                              </Typography>
-                              {header.column.getCanSort() && (
-                                <TableSortLabel
-                                  active={!!header.column.getIsSorted()}
-                                  direction={header.column.getIsSorted() === "asc" ? "asc" : "desc"}
-                                />
+                              {header.isPlaceholder ? null : (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: index === 0 ? "start" : "center",
+                                  }}
+                                >
+                                  <Typography variant="caption" style={{ fontWeight: "bold" }}>
+                                    {flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
+                                  </Typography>
+                                  {header.column.getCanSort() && (
+                                    <TableSortLabel
+                                      active={!!header.column.getIsSorted()}
+                                      direction={
+                                        header.column.getIsSorted() === "asc" ? "asc" : "desc"
+                                      }
+                                    />
+                                  )}
+                                </Box>
                               )}
                             </Box>
-                          )}
+                            {index === 0 && (
+                              <Tooltip title="Collapse All">
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    px: 1,
+                                    py: "2px",
+                                    backgroundColor: "grey.100",
+                                    borderColor: "grey.400",
+                                    visibility:
+                                      Object.keys(expanded).length === 0 ? "hidden" : "visible",
+                                    cursor:
+                                      Object.keys(expanded).length === 0 ? "default" : "pointer",
+                                  }}
+                                  onClick={handleCollapseAll}
+                                >
+                                  <FontAwesomeIcon icon={faSquareCaretUp} color="grey.400" />
+                                  <Typography
+                                    variant="caption"
+                                    sx={{ fontSize: "11px", fontWeight: "600" }}
+                                  >
+                                    Collapse all
+                                  </Typography>
+                                </Box>
+                              </Tooltip>
+                            )}
+                          </Box>
                         </TableCell>
                       );
                     })}
@@ -797,16 +859,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               cursor: "pointer",
                             },
                           }),
-                          // ...(isFirstLevel &&
-                          //   isExpanded &&
-                          //   {
-                          //     // backgroundColor: "grey.300",
-                          //   }),
-                          // ...(_isSecondLevel &&
-                          //   isExpanded &&
-                          //   row.original.datatypeId === datatypes[0] && {
-                          //     backgroundColor: "grey.300",
-                          //   }),
                         }}
                       >
                         {row.getVisibleCells().map((cell, index) => {
@@ -873,8 +925,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               sx={{
                                 width: "100%",
                                 height: "100%",
-                                // mx: 1,
-                                // backgroundColor: "grey.200",
                               }}
                             >
                               <DetailPlot
@@ -891,20 +941,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               </TableBody>
             </Table>
           </TableContainer>
-
-          <TablePagination
-            component="div"
-            count={table.getFilteredRowModel().rows.length}
-            page={pagination.pageIndex}
-            onPageChange={(_, newPage) => {
-              table.setPageIndex(newPage);
-            }}
-            rowsPerPage={pagination.pageSize}
-            onRowsPerPageChange={(event) => {
-              table.setPageSize(Number(event.target.value));
-            }}
-            rowsPerPageOptions={[15, 25, 50, 100]}
-          />
         </Grid>
       </Grid>
     </Box>
