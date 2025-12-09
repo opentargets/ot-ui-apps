@@ -1,7 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
 import { nullishComparator } from "@ot/utils";
-import { max } from "d3";
+import { max, min } from "d3";
 import { ObsPlot, TooltipRow, TooltipTable } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 
@@ -50,10 +50,8 @@ function DetailPlot({
         height={height}
         xTooltip={xAccessor}
         yTooltip={(d) => 1}
-        xAnchorTooltip="left"
+        xAnchorTooltip="adapt"
         yAnchorTooltip="bottom"
-        // dxTooltip={10}
-        // dyTooltip={10}
         renderChart={renderChart}
         renderTooltip={renderTooltip}
       />
@@ -61,15 +59,14 @@ function DetailPlot({
   );
 }
 
-// function displaySpecificityScore({ specificity_score: score }) {
-//   if (score == null) return "null";
-//   if (score === 0) return 0;
-//   return score.toFixed(2);
-// }
-
 export default DetailPlot;
 
-function renderChart({ data, otherData: { barBackground, barFill, xAccessor, show }, height }) {
+function renderChart({
+  data,
+  otherData: { barBackground, barFill, xAccessor, show },
+  width,
+  height,
+}) {
   const maxMedian = max(data, (d) => d.median);
 
   const maxLabelChars = show === "tissue" ? 24 : 28;
@@ -84,7 +81,7 @@ function renderChart({ data, otherData: { barBackground, barFill, xAccessor, sho
   const plotWidth = data.length * (barWidth + gapWidth) + marginLeft + marginRight;
 
   return PlotLib.plot({
-    width: plotWidth,
+    width: min([plotWidth, width]),
     height,
     marginLeft: marginLeft,
     marginRight: marginRight,
