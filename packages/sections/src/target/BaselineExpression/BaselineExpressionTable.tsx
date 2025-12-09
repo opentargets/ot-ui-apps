@@ -236,7 +236,7 @@ const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
           </Box>
         </Box>
       </Tooltip>
-      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+      <Tooltip title="Median expression normalised within columns">
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Median expression
@@ -422,9 +422,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             )}
             {isFirstLevel && (
               <IconButton
-                size="small"
+                disableRipple
                 className={classes.expandButton}
-                sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
+                sx={{
+                  visibility: cellContext.row.getCanExpand() ? "visible" : "hidden", // keeps all rows same height
+                }}
               >
                 {cellContext.row.getIsExpanded() ? (
                   <FontAwesomeIcon icon={faCaretUp} size="xs" />
@@ -560,7 +562,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           sx={{
                             position: "absolute",
                             right: -18,
-                            top: -1,
+                            top: 0,
                             fontSize: 10,
                             fontWeight: 500,
                             // color: isFirstLevel ? "primary.dark" : "primary.main",
@@ -609,9 +611,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         >
                           <IconButton
                             size="small"
+                            disableRipple
+                            size="small"
                             className={classes.expandColumn}
                             sx={{
                               visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
+                              "&:hover": {
+                                bgcolor: "transparent",
+                              },
                             }} // keeps all rows same height
                           >
                             {cellContext.row.getIsExpanded() ? (
@@ -845,14 +852,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                         sx={{
                           "&:hover": {
-                            // backgroundColor: "grey.200",
                             outlineOffset: "-1px",
                             outline: "solid 1px",
                             outlineColor: "grey.400",
                           },
                           ...(row.getCanExpand() && {
                             "&:hover": {
-                              // backgroundColor: "grey.200",
                               outlineOffset: "-1px",
                               outline: isFirstLevel || !isExpanded ? "solid 1px" : "none",
                               outlineColor: "grey.400",
@@ -871,8 +876,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 height: "24px",
                                 width: getColumnWidth(index),
                                 border: "none",
-                                px: 5,
-                                // px: 2.8,
+                                pl: index === 0 ? 5 : 3,
+                                pr: index === 0 ? 3 : 7,
                                 py: 0,
                                 backgroundColor: isSingleCellColumn ? "grey.50" : null,
                                 borderStyle: "solid",
