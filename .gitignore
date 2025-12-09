@@ -44,3 +44,5 @@ yarn-error.log*
 # testing
 ./packages/platform-test/playwright-report
 ./packages/platform-test/test-results
+playwright-report/
+test-results/
