@@ -27,7 +27,7 @@ query ClinvarQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: S
           referenceAllele
           alternateAllele
         }
-        variantEffect
+        directionOnTarget
         directionOnTrait
         diseaseFromSource
         variantRsId
