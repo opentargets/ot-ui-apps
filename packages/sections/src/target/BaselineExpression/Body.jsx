@@ -77,7 +77,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
               severity="info"
               onClose={() => setShowAlert(false)}
             >
-              Put some appropiate warning here!!!
+              Preview of new Baseline Expression widget
             </Alert>
           </Collapse>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>

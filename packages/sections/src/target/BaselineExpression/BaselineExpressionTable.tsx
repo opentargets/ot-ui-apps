@@ -162,7 +162,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "relative",
     width: "100%",
     margin: "2px 0",
-    // pointerEvents: "none",
   },
   failed: {
     backgroundColor: theme.palette.grey[100],
@@ -170,32 +169,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   bar: {
     height: "100%",
-    // backgroundColor: theme.palette.primary.main,
     backgroundColor: theme.palette.primary.dark,
-    // borderRadius: "2px",
     transition: "width 0.3s ease",
     pointerEvents: "none",
   },
   childBar: {
     height: "100%",
-    // backgroundColor: "#BFDAEE",
     backgroundColor: theme.palette.primary.main,
-    // borderRadius: "2px",
     transition: "width 0.3s ease",
     pointerEvents: "none",
   },
   groupRow: {
     cursor: "pointer",
-    "& td": {
-      // padding: "0px 8px",
-    },
   },
   nestedRow: {
     cursor: "pointer",
-    // backgroundColor: theme.palette.grey[50]
-    "& td": {
-      // padding: "0px 8px",
-    },
   },
   cursorAuto: {
     cursor: "auto !important",
@@ -281,11 +269,6 @@ function ViewToggleButton({ value, view, hasSpecific }) {
           }}
         >
           <Box sx={{ fontSize: "13px" }}>{sentenceCase(view)}</Box>
-          {/* <FontAwesomeIcon
-            icon={faCircle}
-            fontSize="12px"
-            color={specificityColors[hasSpecific ? "high" : "low"]}
-          /> */}
           <Box
             sx={{
               width: specificityCircleWidth,
@@ -398,7 +381,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       header: groupByTissue ? "Tissue" : "Cell Type",
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
-        // console.log(cellContext.getValue());
         const { name, id } = cellContext.getValue();
         return (
           <Box
@@ -581,26 +563,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         </Box>
                       )}
 
-                      {/* {cellContext.row.original[datatype][
-                        isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
-                      ] >= specificityThreshold && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            right: -18,
-                            top: -1,
-                            fontSize: 10,
-                            fontWeight: 500,
-                            // color: isFirstLevel ? "primary.dark" : "primary.main",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faCircle}
-                            size="lg"
-                            color={specificityColors.high}
-                          />
-                        </Box>
-                      )} */}
                       {isSecondLevel && datatype === datatypes[0] && (
                         <Box
                           sx={{
