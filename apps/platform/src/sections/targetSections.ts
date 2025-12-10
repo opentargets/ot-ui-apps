@@ -1,10 +1,14 @@
 import { Target } from "sections";
+import { getConfig } from "@ot/config";
+
+// !!!! UNCOMMENT BEFORE RELEASE !!!!!
+const isPPP = true;  //getConfig().profile.isPartnerPreview;
 
 const targetSections = new Map([
   ["tractability", Target.Tractability.getBodyComponent()],
   ["knownDrugs", Target.KnownDrugs.getBodyComponent()],
   ["safety", Target.Safety.getBodyComponent()],
-  ["expressions", Target.Expression.getBodyComponent()],
+  ["expressions", Target[isPPP ? "BaselineExpression" : "Expression"].getBodyComponent()],
   ["depMapEssentiality", Target.DepMap.getBodyComponent()],
   ["geneOntology", Target.GeneOntology.getBodyComponent()],
   ["molecularStructure", Target.MolecularStructure.getBodyComponent()],

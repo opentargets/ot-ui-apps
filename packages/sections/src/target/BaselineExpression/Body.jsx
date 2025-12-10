@@ -77,7 +77,7 @@ function Section({ id: ensgId, label: symbol, entity }) {
               severity="info"
               onClose={() => setShowAlert(false)}
             >
-              Preview of new Baseline Expression widget
+              Preview of new baseline expression widget
             </Alert>
           </Collapse>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
