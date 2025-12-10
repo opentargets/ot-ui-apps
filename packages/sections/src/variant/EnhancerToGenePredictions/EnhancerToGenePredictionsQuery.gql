@@ -1,4 +1,4 @@
-query IntervalsQuery($variantId: String!) {
+query EnhancerToGenePredictionsQuery($variantId: String!) {
   variant(variantId: $variantId) {
     id
     rsIds
