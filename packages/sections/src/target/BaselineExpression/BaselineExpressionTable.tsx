@@ -129,7 +129,7 @@ type BaselineExpressionTableRow = {
 };
 
 interface BaselineExpressionTableProps {
-  processedData: any;
+  data: any;
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
   specificityThreshold: number;

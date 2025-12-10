@@ -40,22 +40,16 @@ function Section({ id: ensgId, label: symbol, entity }) {
   };
 
   useEffect(() => {
-    let isCurrent = true;
-
     async function updateData() {
       const newRequest = await getData(ensgId, client);
-      if (isCurrent) setRequest(newRequest);
+      setRequest(newRequest);
     }
 
-    if (!request.data && getData) {
+    if (getData) {
       setRequest({ loading: true });
       updateData();
     }
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [tab, ensgId, request.data, getData, setRequest]);
+  }, [tab, ensgId, getData]);
 
   return (
     <SectionItem
@@ -82,11 +76,9 @@ function Section({ id: ensgId, label: symbol, entity }) {
           </Collapse>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab value="summary" label="Summary" />
-            {/* <Tab value="atlas" label="Experiments (Expression Atlas)" /> */}
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
           {tab === "summary" && <SummaryTab symbol={symbol} ensgId={ensgId} data={request.data} />}
-          {/* {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />} */}
           {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </>
       )}

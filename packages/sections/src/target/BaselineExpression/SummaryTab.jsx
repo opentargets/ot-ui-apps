@@ -42,17 +42,13 @@ function SummaryTab({ symbol, ensgId, data }) {
     celltype: processData(data.target.baselineExpression.rows, datatypes, false),
   };
 
+  // console.log({ ensgId, processedData });
+
   // !! REMOVE !!
   window.processedData = processedData;
 
   return (
     <Grid container justifyContent="center">
-      {/* <Alert severity="info">
-        <Typography variant="body2">
-          The median expression is the median of the expression values for the given tissue or cell
-          type.
-        </Typography>
-      </Alert> */}
       <BaselineExpressionTable
         data={processedData}
         datatypes={datatypes}
