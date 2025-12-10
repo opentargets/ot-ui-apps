@@ -10,7 +10,7 @@ export class DiseasePage {
   }
 
   getProfilePage() {
-    return this.page.url().replace(/\/associations$/, "");
+    return this.originalURL.replace(/\/associations$/, "");
   }
 
   async goToProfilePage() {

@@ -29,7 +29,15 @@ function RequiredControl({
     setDisplayValue(checkedValue);
   }, [checkedValue]);
 
-  return <OTCheckbox checked={displayValue} color="primary" onChange={handleChange} name={id} />;
+  return (
+    <OTCheckbox 
+      data-testid={`required-checkbox-${id}`}
+      checked={displayValue} 
+      color="primary" 
+      onChange={handleChange} 
+      name={id} 
+    />
+  );
 }
 
 export default RequiredControl;
