@@ -1,21 +1,22 @@
-import { Box, Chip, Typography } from "@mui/material";
-import { Tooltip } from "ui";
-import useAotfContext from "../hooks/useAotfContext";
-import { Facet } from "../../Facets/facetsTypes";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowDownWideShort,
   faCircleXmark,
   faFileImport,
+  faFilter,
   faGear,
   faThumbtack,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-
-import { setEntitySearch } from "../context/aotfActions";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Chip,  Typography } from "@mui/material";
+import { Tooltip } from "ui";
+import type { Facet } from "../../Facets/facetsTypes";
+import { setEntitySearch, setIncludeMeasurements } from "../context/aotfActions";
+import useAotfContext from "../hooks/useAotfContext";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
-  return items.filter(item => item.id !== idToRemove);
+  return items.filter((item) => item.id !== idToRemove);
 }
 
 function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
@@ -46,7 +47,7 @@ function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
 
 function ActiveFiltersPanel() {
   const {
-    state: { facetFilters },
+    state: { facetFilters, includeMeasurements },
     facetFilterSelect,
     pinnedEntries,
     uploadedEntries,
@@ -58,6 +59,7 @@ function ActiveFiltersPanel() {
     resetDatasourceControls,
     sorting,
     resetSorting,
+    entityToGet,
   } = useAotfContext();
 
   const somePinned = pinnedEntries.length > 0;
@@ -65,6 +67,7 @@ function ActiveFiltersPanel() {
   const someFacetFilters = facetFilters.length > 0;
   const tableSorted = sorting[0].id !== "score";
   const modifiedEntitySearch = entitySearch !== "";
+  const showExcludeMeasurements = entityToGet === "disease" && !includeMeasurements;
 
   const filterCategories = [
     someFacetFilters,
@@ -73,10 +76,11 @@ function ActiveFiltersPanel() {
     tableSorted,
     modifiedSourcesDataControls,
     modifiedEntitySearch,
+    showExcludeMeasurements
   ];
 
-  const showActiveFilter = filterCategories.some(x => x === true);
-  const multipleFiltersOn = filterCategories.filter(x => x === true).length > 1;
+  const showActiveFilter = filterCategories.some((x) => x === true);
+  const multipleFiltersOn = filterCategories.filter((x) => x === true).length > 0;
 
   const onDelete = (id: string) => {
     const newState = removeFacet(facetFilters, id);
@@ -90,6 +94,7 @@ function ActiveFiltersPanel() {
     if (modifiedSourcesDataControls) resetDatasourceControls();
     if (facetFilters.length > 0) facetFilterSelect([]);
     if (tableSorted) resetSorting();
+    if (showExcludeMeasurements) dispatch(setIncludeMeasurements(true));
   };
 
   return (
@@ -103,6 +108,19 @@ function ActiveFiltersPanel() {
         mb: 2,
       }}
     >
+      { multipleFiltersOn && <Typography variant="subtitle2">Applied filters:</Typography>}
+
+      {showExcludeMeasurements && (
+         <FilterChip
+         maxWidth={300}
+          tootltipContent="Exclude measurements"
+          label={<Box sx={{ gap: 1 }}><FontAwesomeIcon icon={faFilter} size="sm" /> Exclude measurements</Box>}
+          onDelete={() => {
+            dispatch(setIncludeMeasurements(true));
+          }}
+        />
+      )}
+
       {entitySearch && (
         <FilterChip
           tootltipContent="Name entity"
@@ -114,9 +132,15 @@ function ActiveFiltersPanel() {
       )}
       {facetFilters.map((facet: Facet) => (
         <FilterChip
+        maxWidth={300}
           key={facet.id}
           tootltipContent={facet.label}
-          label={facet.label}
+          label={
+            <Box sx={{ gap: 1 }}>
+              <FontAwesomeIcon icon={faFilter} size="sm" /> {facet.label}
+            </Box>
+           
+          }
           onDelete={() => {
             onDelete(facet.id);
           }}
@@ -146,7 +170,7 @@ function ActiveFiltersPanel() {
           label={
             <Box sx={{ gap: 1 }}>
               <FontAwesomeIcon icon={faArrowDownWideShort} />{" "}
-              {dataSources.find(d => d.id === sorting[0].id)?.label}
+              {dataSources.find((d) => d.id === sorting[0].id)?.label}
             </Box>
           }
         />
@@ -182,7 +206,7 @@ function ActiveFiltersPanel() {
         <Tooltip title="Reset all filters" placement="bottom">
           <Box>
             <Box
-              sx={theme => ({
+              sx={(theme) => ({
                 display: "flex",
                 alignItems: "center",
                 py: 0.3,
@@ -200,7 +224,7 @@ function ActiveFiltersPanel() {
               onClick={setAllFilters}
             >
               <Typography sx={{ fontSize: "0.8125rem" }} variant="body2">
-                Clear {multipleFiltersOn ? "all" : ""}
+                <FontAwesomeIcon icon={faTrash} size="sm" />
               </Typography>
             </Box>
           </Box>

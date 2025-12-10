@@ -152,15 +152,14 @@ function getColumns(label) {
     {
       id: "variantConsequence",
       label: "Variant Consequence",
-      renderCell: ({
-        variantFunctionalConsequence,
-        variant: {
+      renderCell: ({ variantFunctionalConsequence, variant }) => {
+        if (!variant) return naLabel;
+        const {
           chromosome,
           position,
           referenceAllele,
           alternateAllele
-        }
-      }) => {
+        } = variant;
         return (
           <div style={{ display: "flex", gap: "5px" }}>
             {variantFunctionalConsequence && (
@@ -191,10 +190,10 @@ function getColumns(label) {
       label: (
         <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#clinvar"></DirectionOfEffectTooltip>
       ),
-      renderCell: ({ variantEffect, directionOnTrait }) => {
+      renderCell: ({ directionOnTarget, directionOnTrait }) => {
         return (
           <DirectionOfEffectIcon
-            variantEffect={variantEffect}
+            variantEffect={directionOnTarget}
             directionOnTrait={directionOnTrait}
           />
         );
