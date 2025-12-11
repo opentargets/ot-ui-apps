@@ -496,10 +496,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               if (value === -2) return <Box className={classes.medianCell}></Box>;
 
               const percent = value >= 0 ? value * 100 : 0;
-              const specificityScore =
-                cellContext.row.original[datatype][
-                  isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
-                ];
+              const specificityScore = cellContext.row.original[datatype].specificity_score;
 
               return (
                 <Tooltip
@@ -533,9 +530,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   <Box className={classes.medianCell}>
                     <Box className={classes.barContainer}>
                       <Box
-                        className={
-                          cellContext.row.original._firstLevelId ? classes.bar : classes.childBar
-                        }
+                        className={isFirstLevel ? classes.bar : classes.childBar}
                         style={{ width: `${percent}%` }}
                       />
 
@@ -547,7 +542,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             top: 0,
                             fontSize: 10,
                             fontWeight: 500,
-                            // color: isFirstLevel ? "primary.dark" : "primary.main",
                           }}
                         >
                           <FontAwesomeIcon
@@ -669,7 +663,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               value={groupByTissue ? "tissue" : "celltype"}
               aria-label="toggle view"
               exclusive
-              onChange={(_, newValue) => setGroupByTissue(newValue === "tissue")}
+              onChange={(_, newValue) => {
+                if (newValue == null) return;
+                setGroupByTissue(newValue === "tissue");
+              }}
             >
               <ViewToggleButton
                 value="tissue"
