@@ -364,9 +364,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         dataRow = obj[datatype];
         if (dataRow) break;
       }
-      return dataRow._secondLevelName
-        ? { name: dataRow._secondLevelName, id: dataRow._secondLevelId }
-        : { name: dataRow._firstLevelName, id: dataRow._firstLevelId };
+      return dataRow._secondLevelName ?? dataRow._firstLevelName;
     },
     [groupByTissue]
   );
@@ -381,7 +379,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
       header: groupByTissue ? "Tissue" : "Cell Type",
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
-        const { name, id } = cellContext.getValue();
+        const name = cellContext.getValue();
         return (
           <Box
             sx={{
