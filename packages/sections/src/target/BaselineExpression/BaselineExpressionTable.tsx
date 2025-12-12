@@ -39,7 +39,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Tooltip } from "ui";
+import { Link, Tooltip } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
 
@@ -376,7 +376,28 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const columns = [
     columnHelper.accessor((row) => getName(row), {
       id: "name",
-      header: groupByTissue ? "Tissue" : "Cell Type",
+      header: (
+        <Tooltip
+          title={
+            <Box onClick={(event) => event.stopPropagation}>
+              Mapped to{" "}
+              <Link
+                external
+                to={
+                  groupByTissue
+                    ? "https://www.ebi.ac.uk/ols4/ontologies/uberon"
+                    : "https://www.ebi.ac.uk/ols4/ontologies/cl"
+                }
+              >
+                {groupByTissue ? "Uber-anatomy ontology (UBERON)" : "Cell Ontology (CL)"}
+              </Link>
+            </Box>
+          }
+          showHelpIcon
+        >
+          {groupByTissue ? "Tissue" : "Cell Type"}
+        </Tooltip>
+      ),
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
         const name = cellContext.getValue();
