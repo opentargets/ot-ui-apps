@@ -42,8 +42,6 @@ function SummaryTab({ symbol, ensgId, data }) {
     celltype: processData(data.target.baselineExpression.rows, datatypes, false),
   };
 
-  // console.log({ ensgId, processedData });
-
   // !! REMOVE !!
   window.processedData = processedData;
 
