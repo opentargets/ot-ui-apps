@@ -1,0 +1,32 @@
+query APIPagePPPCrisprQuery{
+  disease(efoId:"MONDO_0005180") {
+    id
+    OtCrisprSummary: evidences(
+      ensemblIds: ["ENSG00000188906"]
+      enableIndirect: true
+      datasourceIds: ["ot_crispr"]
+      size: 3500
+    ) {
+      count
+      rows {
+        disease {
+          id
+          name
+        }
+        projectId
+        contrast
+        studyOverview
+        cellType
+        cellLineBackground
+        crisprScreenLibrary
+        statisticalTestTail
+        resourceScore
+        log2FoldChangeValue
+        diseaseCellLines {
+          name
+        }
+        releaseVersion
+      }
+    }
+  }
+}
