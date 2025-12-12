@@ -1,0 +1,37 @@
+query QTLCredibleSetsQuery {
+	target(ensemblId:"ENSG00000120210") {
+		id
+		approvedSymbol
+		credibleSets(page: { size: 500, index: 0}) {
+			count
+			rows {
+				studyLocusId
+				pValueMantissa
+				pValueExponent
+				beta
+				finemappingMethod
+				confidence
+				isTransQtl
+				variant {
+					id
+					chromosome
+					position
+					referenceAllele
+					alternateAllele
+				}
+				study {
+					id
+					studyType
+					condition
+					biosample {
+						biosampleId
+						biosampleName
+					}
+				}
+				locus {
+					count
+				}
+			}
+		}
+	}
+}
