@@ -186,10 +186,10 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin}} />
 
   return (
-    <NameContainer>
+    <NameContainer data-testid="name-cell">
       <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
         <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}

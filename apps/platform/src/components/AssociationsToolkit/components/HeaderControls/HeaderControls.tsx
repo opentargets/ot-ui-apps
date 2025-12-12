@@ -84,9 +84,9 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
 
   return (
     <Collapse in={activeHeadersControlls}>
-      <WeightsControllsContainer className="weights-controlls">
+      <WeightsControllsContainer className="weights-controlls" data-testid="weights-controls-container">
         <Grid container direction="row" wrap="nowrap">
-          <CloseContainer onClick={handleClose}>
+          <CloseContainer onClick={handleClose} data-testid="close-weights-button">
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
           <Grid

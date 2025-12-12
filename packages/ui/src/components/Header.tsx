@@ -84,7 +84,7 @@ function Header({
           </Box>
           <Grid item zeroMinWidth>
             <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
-              <Typography className={classes.title} variant="h4" noWrap title={title}>
+              <Typography  data-testid="profile-page-header-text" className={classes.title} variant="h4" noWrap title={title}>
                 <Box component="span" sx={iconTextStyles}>
                   <FontAwesomeIcon icon={Icon} size="sm" className={classes.mainIcon} />
                 </Box>

@@ -18,11 +18,12 @@ function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter(item => item.id !== idToRemove);
 }
 
-function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150 }) {
+function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150, testId }) {
   return (
     <Tooltip title={tootltipContent} placement="bottom">
       <Box sx={{ maxWidth: `${maxWidth}px` }}>
         <Chip
+          data-testid={testId}
           sx={{
             borderRadius: 2,
             "& .MuiChip-label": {
@@ -94,6 +95,7 @@ function ActiveFiltersPanel() {
 
   return (
     <Box
+      data-testid="active-filters-panel"
       sx={{
         display: "flex",
         flexWrap: "wrap",
@@ -105,6 +107,7 @@ function ActiveFiltersPanel() {
     >
       {entitySearch && (
         <FilterChip
+          testId="active-filter-chip-entity-search"
           tootltipContent="Name entity"
           label={`"${entitySearch}"`}
           onDelete={() => {
@@ -115,6 +118,7 @@ function ActiveFiltersPanel() {
       {facetFilters.map((facet: Facet) => (
         <FilterChip
           key={facet.id}
+          testId={`active-filter-chip-${facet.id}`}
           tootltipContent={facet.label}
           label={facet.label}
           onDelete={() => {
@@ -124,6 +128,7 @@ function ActiveFiltersPanel() {
       ))}
       {modifiedSourcesDataControls && (
         <FilterChip
+          testId="active-filter-chip-column-options"
           tootltipContent="Reset Datasource controls"
           maxWidth={300}
           onDelete={() => {
@@ -138,6 +143,7 @@ function ActiveFiltersPanel() {
       )}
       {tableSorted && (
         <FilterChip
+          testId="active-filter-chip-sort"
           maxWidth={300}
           tootltipContent="Reset sorting"
           onDelete={() => {
@@ -153,6 +159,7 @@ function ActiveFiltersPanel() {
       )}
       {somePinned && (
         <FilterChip
+          testId="active-filter-chip-pinned"
           tootltipContent="Pinned entries"
           onDelete={() => {
             setPinnedEntries([]);
@@ -166,6 +173,7 @@ function ActiveFiltersPanel() {
       )}
       {someUploaded && (
         <FilterChip
+          testId="active-filter-chip-uploaded"
           tootltipContent="Uploaded entries"
           onDelete={() => {
             setUploadedEntries([]);
@@ -182,6 +190,7 @@ function ActiveFiltersPanel() {
         <Tooltip title="Reset all filters" placement="bottom">
           <Box>
             <Box
+              data-testid="clear-all-filters-button"
               sx={theme => ({
                 display: "flex",
                 alignItems: "center",

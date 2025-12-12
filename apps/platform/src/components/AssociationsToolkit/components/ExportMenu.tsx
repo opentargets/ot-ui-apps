@@ -31,6 +31,7 @@ function ExportMenu() {
   return (
     <>
       <StyledBotton
+        data-testid="export-button"
         aria-describedby={id}
         onClick={handleClick}
         variant="text"
@@ -48,6 +49,7 @@ function ExportMenu() {
       </StyledBotton>
 
       <Popover
+        data-testid="export-popover"
         disableScrollLock
         id={id}
         anchorEl={anchorEl}

@@ -36,6 +36,7 @@ function DataMenu() {
   return (
     <>
       <StyledBotton
+        data-testid="column-options-button"
         aria-describedby={id}
         onClick={handleClick}
         variant="text"
