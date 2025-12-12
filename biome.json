@@ -28,7 +28,7 @@
       "!**/coverage",
       "!**/*.d.ts",
       "!**/generated",
-      "!**/apps/platform/src",
+      "**/apps/platform/src",
       "!**/packages/ui",
       "!**/packages/sections",
       "!**/packages/ot-config",
