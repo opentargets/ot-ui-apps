@@ -1,0 +1,89 @@
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Alert, Collapse, Tab, Tabs } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { useEffect, useState } from "react";
+import { SectionItem, useApolloClient } from "ui";
+
+import { definition } from ".";
+import Description from "./Description";
+import GtexTab, { getData as getGtexData } from "./GtexTab";
+import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
+
+function Section({ id: ensgId, label: symbol, entity }) {
+  const defaultTab = "summary";
+  const [showAlert, setShowAlert] = useState(true);
+  const [tab, setTab] = useState(defaultTab);
+  const [requestSummary, setRequestSummary] = useState({ loading: true });
+  const [requestGtex, setRequestGtex] = useState({ loading: true });
+  const client = useApolloClient();
+  // TODO:
+  // the part about requests (see below) will need rethinking / refactoring
+  // SectionItem checks for data based on these requests, but only works for data coming from the target object
+  // the widget displays based on the summary tab only.
+  // Atlas and gTex tab should always be there is the widget is visible, hence the hack of using requestSummary for Atlas
+  // the request for gTex wraps the data in a structure similar to that from the target object:
+  // this can be probably be rewritten differently, but that's a wider scope than the MUI migration we're currently doing
+  const [request, setRequest] = {
+    summary: [requestSummary, setRequestSummary],
+    // atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
+    gtex: [requestGtex, setRequestGtex],
+  }[tab];
+
+  const getData = {
+    summary: getSummaryData,
+    gtex: getGtexData,
+  }[tab];
+
+  const handleChangeTab = (_, tabChange) => {
+    setTab(tabChange);
+  };
+
+  useEffect(() => {
+    async function updateData() {
+      const newRequest = await getData(ensgId, client);
+      setRequest(newRequest);
+    }
+
+    if (getData) {
+      setRequest({ loading: true });
+      updateData();
+    }
+  }, [tab, ensgId, getData]);
+
+  return (
+    <SectionItem
+      definition={definition}
+      entity={entity}
+      request={request}
+      showContentLoading={true}
+      renderDescription={() => <Description symbol={symbol} />}
+      renderBody={() => (
+        <>
+          <Collapse in={showAlert} timeout={500}>
+            <Alert
+              sx={{
+                bgcolor: grey[100],
+                color: "text.primary",
+                my: 1.5,
+                "& .MuiAlert-icon": { color: grey[800] },
+              }}
+              severity="info"
+              onClose={() => setShowAlert(false)}
+            >
+              Preview of new baseline expression widget
+            </Alert>
+          </Collapse>
+          <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
+            <Tab value="summary" label="Summary" />
+            <Tab value="gtex" label="Variation (GTEx)" />
+          </Tabs>
+          {tab === "summary" && <SummaryTab symbol={symbol} ensgId={ensgId} data={request.data} />}
+          {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
+        </>
+      )}
+    />
+  );
+}
+
+export default Section;
