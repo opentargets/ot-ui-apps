@@ -231,8 +231,8 @@ function Body({ id, entity }: BodyProps): ReactElement {
             dataDownloader
             showGlobalFilter
             dataDownloaderFileStem={`${id}-credibleSets`}
-            sortBy="pValue"
-            order="asc"
+            sortBy="h4"
+            order="desc"
             columns={columns}
             loading={request.loading}
             rows={request.data?.credibleSet.colocalisation.rows}
