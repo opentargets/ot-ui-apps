@@ -102,7 +102,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 interface BaselineExpressionDataRow {
-  targetFromSourceId: string;
   tissueBiosample?: {
     biosampleId: string;
     biosampleName: string;
@@ -111,6 +110,7 @@ interface BaselineExpressionDataRow {
     biosampleId: string;
     biosampleName: string;
   };
+  tissueBiosampleFromSource?: string;
   celltypeBiosample?: {
     biosampleId: string;
     biosampleName: string;
@@ -119,9 +119,13 @@ interface BaselineExpressionDataRow {
     biosampleId: string;
     biosampleName: string;
   };
+  celltypeBiosampleFromSource?: string;
   median: number;
   datasourceId: string;
   datatypeId: string;
+  specificity_score?: number;
+  distribution_score: number;
+  unit: string;
 }
 
 type BaselineExpressionTableRow = {

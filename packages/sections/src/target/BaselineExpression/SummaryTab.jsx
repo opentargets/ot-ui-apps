@@ -19,18 +19,20 @@ const columns = [
   { id: "datasourceId", label: "Data Source" },
 ];
 
-// !! NEEDS CHECKED/UPDATED !!
 const getDownloadRows = (baselineExpressions) =>
   baselineExpressions.map((expression) => ({
-    tissueBiosampleName:
-      expression.tissueBiosample?.biosampleName || expression.tissueBiosampleFromSource || "N/A",
-    celltypeBiosampleName:
-      expression.celltypeBiosample?.biosampleName ||
-      expression.celltypeBiosampleFromSource ||
-      "N/A",
+    tissueBiosampleName: expression.tissueBiosample?.biosampleName,
+    tissueBiosampleId: expression.tissueBiosample?.id,
+    tissueBiosampleFromSource: expression.tissueBiosampleFromSource,
+    celltypeBiosampleName: expression.celltypeBiosample?.biosampleName,
+    celltypeBiosampleId: expression.celltypeBiosample?.id,
+    celltypeBiosampleFromSource: expression.celltypeBiosampleFromSource,
     median: expression.median,
-    unit: expression.unit,
     datasourceId: expression.datasourceId,
+    datatypeId: expression.datatypeId,
+    specificityScore: expression.specificity_score,
+    distributionScore: expression.distributionScore,
+    unit: expression.unit,
   }));
 
 function SummaryTab({ symbol, ensgId, data }) {

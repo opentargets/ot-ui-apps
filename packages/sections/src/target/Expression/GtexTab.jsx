@@ -1,11 +1,11 @@
-import { useRef } from "react";
 import { median as d3Median, quantile } from "d3";
+import { useRef } from "react";
 import { DownloadSvgPlot } from "ui";
 
 import GtexVariability from "./GtexVariability";
 
-const transformData = data =>
-  data.map(d => {
+const transformData = (data) =>
+  data.map((d) => {
     // d3 requires for the array of values to be sorted before using median and quantile
     d.data.sort((a, b) => a - b);
     const median = d3Median(d.data);
@@ -16,7 +16,7 @@ const transformData = data =>
     const iqr = q3 - q1; // interquartile range
 
     // find the outliers and not outliers
-    d.data.forEach(item => {
+    d.data.forEach((item) => {
       if (item < q1 - 1.5 * iqr || item > q3 + 1.5 * iqr) {
         outliers.push(item);
       } else {
@@ -37,11 +37,11 @@ const transformData = data =>
 
 export async function getData(symbol) {
   try {
-    const urlGene = `https://gtexportal.org/api/v2/reference/gene?format=json&geneId=${symbol}`;
+    const urlGene = ` https://gtexportal.org/api/v2/reference/gene?geneId=${symbol}&gencodeVersion=v39`;
     const resGene = await fetch(urlGene);
     const rawGene = await resGene.json();
     const { gencodeId } = rawGene.data[0];
-    const urlData = `https://gtexportal.org/api/v2/expression/geneExpression?gencodeId=${gencodeId}`;
+    const urlData = `https://gtexportal.org/api/v2/expression/geneExpression?datasetId=gtex_v10&gencodeId=${gencodeId}`;
     const resData = await fetch(urlData);
     const rawData = await resData.json();
     // TODO:
