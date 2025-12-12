@@ -1,8 +1,7 @@
 import { Target } from "sections";
 import { getConfig } from "@ot/config";
 
-// !!!! UNCOMMENT BEFORE RELEASE !!!!!
-const isPPP = true;  //getConfig().profile.isPartnerPreview;
+const isPPP = getConfig().profile.isPartnerPreview;
 
 const targetSections = new Map([
   ["tractability", Target.Tractability.getBodyComponent()],

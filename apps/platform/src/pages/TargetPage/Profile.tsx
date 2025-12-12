@@ -13,8 +13,7 @@ import ProfileHeader from "./ProfileHeader";
 
 import { getConfig } from "@ot/config";
 
-// !!!! UNCOMMENT BEFORE RELEASE !!!!!
-const isPPP = true;  //getConfig().profile.isPartnerPreview;
+const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
 
 const targetProfileWidgets = new Map<string, Widget>([
   [Target.KnownDrugs.definition.id, Target.KnownDrugs],
@@ -23,7 +22,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
   [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.ChemicalProbes.definition.id, Target.ChemicalProbes],
-  [Target[isPPP ? "BaselineExpression" : "Expression"].definition.id, Target[isPPP ? "BaselineExpression" : "Expression"]],
+  [Target[baselineName].definition.id, Target[baselineName]],
   [Target.DepMap.definition.id, Target.DepMap],
   [Target.SubcellularLocation.definition.id, Target.SubcellularLocation],
   [Target.GeneOntology.definition.id, Target.GeneOntology],
