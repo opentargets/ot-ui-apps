@@ -15,7 +15,7 @@ function ProfileHeader({ children }) {
   const classes = useStyles();
 
   return (
-    <Grid className={classes.profileHeaderContainer} container spacing={2}>
+    <Grid data-testid="profile-header" className={classes.profileHeaderContainer} container spacing={2}>
       {Children.map(children, child => (
         <Grid className={classes.profileHeaderSection} item xs={12} md={6}>
           {child}
