@@ -1,4 +1,4 @@
-import type { Page, Locator } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 export class AotfActions {
   page: Page;
@@ -90,7 +90,9 @@ export class AotfActions {
   }
 
   async closeColumnOptions(): Promise<void> {
-    const closeButton = this.page.locator(".weights-controlls [data-testid='close-weights-button']");
+    const closeButton = this.page.locator(
+      ".weights-controlls [data-testid='close-weights-button']"
+    );
     await closeButton.click();
   }
 
@@ -219,6 +221,16 @@ export class AotfActions {
   async getActiveFiltersCount(): Promise<number> {
     const chips = this.page.locator("[data-testid^='active-filter-chip-']");
     return await chips.count();
+  }
+
+  async hasSortFilter(): Promise<boolean> {
+    const sortChip = this.page.locator("[data-testid='active-filter-chip-sort']");
+    return await sortChip.isVisible().catch(() => false);
+  }
+
+  async getSortFilterText(): Promise<string | null> {
+    const sortChip = this.page.locator("[data-testid='active-filter-chip-sort']");
+    return await sortChip.textContent();
   }
 
   // ==================

@@ -13,44 +13,48 @@ export class AotfTable {
   }
 
   // Headers
-  getTargetHeader(): Locator {
-    return this.page.getByText("Target", { exact: true });
-  }
-
-  getDiseaseHeader(): Locator {
-    return this.page.getByText("Disease", { exact: true });
+  getTargetOrDiseaseHeader(): Locator {
+    return this.page.locator("[data-testid='table-header-name']");
   }
 
   getAssociationScoreHeader(): Locator {
-    return this.page.getByText("Association Score", { exact: true });
+    return this.page.locator("[data-testid='table-header-score']");
+  }
+
+  async getHeaderText(headerTestId: string): Promise<string | null> {
+    return await this.page.locator(`[data-testid='${headerTestId}']`).textContent();
   }
 
   // Table rows and cells
-  getTableRows(): Locator {
-    return this.page.locator("[data-testid^='table-row-']");
+  getTableRows(prefix: string = "core"): Locator {
+    return this.page.locator(`[data-testid^='table-row-${prefix}']`);
   }
 
-  getTableRowByIndex(index: number): Locator {
-    return this.page.locator(`[data-testid='table-row-${index}']`);
+  getTableRowByIndex(index: number, prefix: string = "core"): Locator {
+    return this.page.locator(`[data-testid='table-row-${prefix}-${index}']`);
   }
 
-  async getRowCount(): Promise<number> {
-    return await this.getTableRows().count();
+  async getRowCount(prefix: string = "core"): Promise<number> {
+    return await this.getTableRows(prefix).count();
   }
 
   // Cell accessors
-  getCellByRowAndColumn(rowIndex: number, columnName: string): Locator {
+  getCellByRowAndColumn(rowIndex: number, columnName: string, prefix: string = "core"): Locator {
     return this.page.locator(
-      `[data-testid='table-row-${rowIndex}'] [data-testid*='${columnName}']`
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid*='${columnName}']`
     );
   }
 
-  getNameCell(rowIndex: number): Locator {
-    return this.page.locator(`[data-testid='table-row-${rowIndex}'] [data-testid*='name-cell']`);
+  getNameCell(rowIndex: number, prefix: string = "core"): Locator {
+    return this.page.locator(
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid='name-cell']`
+    );
   }
 
-  getScoreCell(rowIndex: number): Locator {
-    return this.page.locator(`[data-testid='table-row-${rowIndex}'] [data-testid*='score-cell']`);
+  getScoreCell(rowIndex: number, prefix: string = "core"): Locator {
+    return this.page.locator(
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid*='score']`
+    );
   }
 
   // Pagination
@@ -146,15 +150,23 @@ export class AotfTable {
   }
 
   // Get association score value
-  async getAssociationScoreValue(rowIndex: number): Promise<string | null> {
-    const scoreCell = this.getScoreCell(rowIndex);
-    return await scoreCell.textContent();
+  async getAssociationScoreValue(
+    rowIndex: number,
+    prefix: string = "core"
+  ): Promise<string | null> {
+    const scoreCell = this.getScoreCell(rowIndex, prefix);
+    await scoreCell.waitFor({ state: "visible" });
+    const text = await scoreCell.textContent();
+    return text?.trim() || null;
   }
 
   // Get entity name (target or disease)
-  async getEntityName(rowIndex: number): Promise<string | null> {
-    const nameCell = this.getNameCell(rowIndex);
-    return await nameCell.textContent();
+  async getEntityName(rowIndex: number, prefix: string = "core"): Promise<string | null> {
+    const nameCell = this.getNameCell(rowIndex, prefix);
+    // Wait for the name cell to have text content
+    await nameCell.waitFor({ state: "visible" });
+    const text = await nameCell.textContent();
+    return text?.trim() || null;
   }
 
   // Check if table is loading
@@ -176,5 +188,9 @@ export class AotfTable {
     if (loadingVisible) {
       await this.getLoadingIndicator().waitFor({ state: "hidden" });
     }
+    // Wait for at least one row to be present with actual content
+    await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible" });
+    // Give a moment for content to populate
+    await this.page.waitForTimeout(500);
   }
 }

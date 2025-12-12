@@ -190,14 +190,22 @@ function TableAssociations() {
             },
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
-              return <Typography variant="assoc_header">{label}</Typography>;
+              return (
+                <Typography variant="assoc_header" data-testid="table-header-name">
+                  {label}
+                </Typography>
+              );
             },
           }),
           columnHelper.accessor(row => row.score, {
             id: "score",
-            header: <Typography variant="assoc_header">Association Score</Typography>,
+            header: (
+              <Typography variant="assoc_header" data-testid="table-header-score">
+                Association Score
+              </Typography>
+            ),
             cell: cell => (
-              <Box sx={{ marginRight: "10px" }}>
+              <Box sx={{ marginRight: "10px" }} data-testid="score-cell">
                 <TableCell
                   scoreValue={cell.getValue()}
                   globalScore

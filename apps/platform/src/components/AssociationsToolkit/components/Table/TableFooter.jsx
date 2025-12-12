@@ -63,6 +63,11 @@ function TableFooter({ table, coreOpen }) {
             rowsPerPage={table.getState().pagination.pageSize}
             page={pagination.pageIndex}
             labelRowsPerPage="Associations per page"
+            slotProps={{
+              select: {
+                "data-testid": "page-size-selector",
+              },
+            }}
             backIconButtonProps={{
               disableFocusRipple: true,
               "data-testid": "previous-page-button",
