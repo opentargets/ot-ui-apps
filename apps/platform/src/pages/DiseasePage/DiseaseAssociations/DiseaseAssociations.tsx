@@ -1,6 +1,10 @@
-import { ReactElement } from "react";
+import type { ReactElement } from "react";
 import { AssociationsView } from "../../../components/AssociationsToolkit";
 import { ENTITY } from "../../../components/AssociationsToolkit/types";
+import {
+  GeneEnrichmentAnalysisModal,
+  GeneEnrichmentProvider,
+} from "../../../components/GeneEnrichmentAnalysis";
 import DISEASE_ASSOCIATIONS_QUERY from "./DiseaseAssociationsQuery.gql";
 
 type DiseaseAssociationsProps = {
@@ -9,7 +13,14 @@ type DiseaseAssociationsProps = {
 
 function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
-    <AssociationsView id={pros.efoId} entity={ENTITY.DISEASE} query={DISEASE_ASSOCIATIONS_QUERY} />
+    <GeneEnrichmentProvider>
+      <GeneEnrichmentAnalysisModal open={true} onClose={() => {}} />
+      <AssociationsView
+        id={pros.efoId}
+        entity={ENTITY.DISEASE}
+        query={DISEASE_ASSOCIATIONS_QUERY}
+      />
+    </GeneEnrichmentProvider>
   );
 }
 

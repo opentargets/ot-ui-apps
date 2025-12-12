@@ -1,0 +1,67 @@
+import { createContext, type ReactElement, type ReactNode, useContext, useReducer } from "react";
+import { geneEnrichmentReducer, initialState } from "./reducer";
+import type { Action, State } from "./types";
+
+/*****************
+ * CONTEXTS *
+ *****************/
+
+const GeneEnrichmentStateContext = createContext<State | undefined>(undefined);
+const GeneEnrichmentDispatchContext = createContext<React.Dispatch<Action> | undefined>(undefined);
+
+/*****************
+ * PROVIDER *
+ *****************/
+
+interface GeneEnrichmentProviderProps {
+  children: ReactNode;
+}
+
+export function GeneEnrichmentProvider({ children }: GeneEnrichmentProviderProps): ReactElement {
+  const [state, dispatch] = useReducer(geneEnrichmentReducer, initialState);
+
+  console.log("state", state);
+
+  return (
+    <GeneEnrichmentStateContext.Provider value={state}>
+      <GeneEnrichmentDispatchContext.Provider value={dispatch}>
+        {children}
+      </GeneEnrichmentDispatchContext.Provider>
+    </GeneEnrichmentStateContext.Provider>
+  );
+}
+
+/*****************
+ * HOOKS *
+ *****************/
+
+/**
+ * Hook to access the Gene Enrichment state
+ */
+export function useGeneEnrichmentState(): State {
+  const context = useContext(GeneEnrichmentStateContext);
+  if (context === undefined) {
+    throw new Error("useGeneEnrichmentState must be used within a GeneEnrichmentProvider");
+  }
+  return context;
+}
+
+/**
+ * Hook to access the Gene Enrichment dispatch function
+ */
+export function useGeneEnrichmentDispatch(): React.Dispatch<Action> {
+  const context = useContext(GeneEnrichmentDispatchContext);
+  if (context === undefined) {
+    throw new Error("useGeneEnrichmentDispatch must be used within a GeneEnrichmentProvider");
+  }
+  return context;
+}
+
+/**
+ * Hook to access both state and dispatch
+ */
+export function useGeneEnrichment(): [State, React.Dispatch<Action>] {
+  const state = useGeneEnrichmentState();
+  const dispatch = useGeneEnrichmentDispatch();
+  return [state, dispatch];
+}
