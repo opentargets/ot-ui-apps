@@ -39,7 +39,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Tooltip } from "ui";
+import { Link, Tooltip } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
 
@@ -129,7 +129,7 @@ type BaselineExpressionTableRow = {
 };
 
 interface BaselineExpressionTableProps {
-  processedData: any;
+  data: any;
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
   specificityThreshold: number;
@@ -162,7 +162,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "relative",
     width: "100%",
     margin: "2px 0",
-    // pointerEvents: "none",
   },
   failed: {
     backgroundColor: theme.palette.grey[100],
@@ -170,32 +169,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   bar: {
     height: "100%",
-    // backgroundColor: theme.palette.primary.main,
     backgroundColor: theme.palette.primary.dark,
-    // borderRadius: "2px",
     transition: "width 0.3s ease",
     pointerEvents: "none",
   },
   childBar: {
     height: "100%",
-    // backgroundColor: "#BFDAEE",
     backgroundColor: theme.palette.primary.main,
-    // borderRadius: "2px",
     transition: "width 0.3s ease",
     pointerEvents: "none",
   },
   groupRow: {
     cursor: "pointer",
-    "& td": {
-      // padding: "0px 8px",
-    },
   },
   nestedRow: {
     cursor: "pointer",
-    // backgroundColor: theme.palette.grey[50]
-    "& td": {
-      // padding: "0px 8px",
-    },
   },
   cursorAuto: {
     cursor: "auto !important",
@@ -236,7 +224,7 @@ const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
           </Box>
         </Box>
       </Tooltip>
-      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+      <Tooltip title="Median expression normalised within columns">
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Median expression
@@ -281,11 +269,6 @@ function ViewToggleButton({ value, view, hasSpecific }) {
           }}
         >
           <Box sx={{ fontSize: "13px" }}>{sentenceCase(view)}</Box>
-          {/* <FontAwesomeIcon
-            icon={faCircle}
-            fontSize="12px"
-            color={specificityColors[hasSpecific ? "high" : "low"]}
-          /> */}
           <Box
             sx={{
               width: specificityCircleWidth,
@@ -381,9 +364,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
         dataRow = obj[datatype];
         if (dataRow) break;
       }
-      return dataRow._secondLevelName
-        ? { name: dataRow._secondLevelName, id: dataRow._secondLevelId }
-        : { name: dataRow._firstLevelName, id: dataRow._firstLevelId };
+      return dataRow._secondLevelName ?? dataRow._firstLevelName;
     },
     [groupByTissue]
   );
@@ -395,11 +376,31 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const columns = [
     columnHelper.accessor((row) => getName(row), {
       id: "name",
-      header: groupByTissue ? "Tissue" : "Cell Type",
+      header: (
+        <Tooltip
+          title={
+            <Box onClick={(event) => event.stopPropagation}>
+              Mapped to{" "}
+              <Link
+                external
+                to={
+                  groupByTissue
+                    ? "https://www.ebi.ac.uk/ols4/ontologies/uberon"
+                    : "https://www.ebi.ac.uk/ols4/ontologies/cl"
+                }
+              >
+                {groupByTissue ? "Uber-anatomy ontology (UBERON)" : "Cell Ontology (CL)"}
+              </Link>
+            </Box>
+          }
+          showHelpIcon
+        >
+          {groupByTissue ? "Tissue" : "Cell Type"}
+        </Tooltip>
+      ),
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
-        // console.log(cellContext.getValue());
-        const { name, id } = cellContext.getValue();
+        const name = cellContext.getValue();
         return (
           <Box
             sx={{
@@ -422,9 +423,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             )}
             {isFirstLevel && (
               <IconButton
-                size="small"
+                disableRipple
                 className={classes.expandButton}
-                sx={{ visibility: cellContext.row.getCanExpand() ? "visible" : "hidden" }} // keeps all rows same height
+                sx={{
+                  visibility: cellContext.row.getCanExpand() ? "visible" : "hidden", // keeps all rows same height
+                }}
               >
                 {cellContext.row.getIsExpanded() ? (
                   <FontAwesomeIcon icon={faCaretUp} size="xs" />
@@ -512,10 +515,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               if (value === -2) return <Box className={classes.medianCell}></Box>;
 
               const percent = value >= 0 ? value * 100 : 0;
-              const specificityScore =
-                cellContext.row.original[datatype][
-                  isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
-                ];
+              const specificityScore = cellContext.row.original[datatype].specificity_score;
 
               return (
                 <Tooltip
@@ -549,9 +549,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   <Box className={classes.medianCell}>
                     <Box className={classes.barContainer}>
                       <Box
-                        className={
-                          cellContext.row.original._firstLevelId ? classes.bar : classes.childBar
-                        }
+                        className={isFirstLevel ? classes.bar : classes.childBar}
                         style={{ width: `${percent}%` }}
                       />
 
@@ -560,10 +558,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           sx={{
                             position: "absolute",
                             right: -18,
-                            top: -1,
+                            top: 0,
                             fontSize: 10,
                             fontWeight: 500,
-                            // color: isFirstLevel ? "primary.dark" : "primary.main",
                           }}
                         >
                           <FontAwesomeIcon
@@ -579,26 +576,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         </Box>
                       )}
 
-                      {/* {cellContext.row.original[datatype][
-                        isFirstLevel ? "_firstLevelSpecificityScore" : "specificity_score"
-                      ] >= specificityThreshold && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            right: -18,
-                            top: -1,
-                            fontSize: 10,
-                            fontWeight: 500,
-                            // color: isFirstLevel ? "primary.dark" : "primary.main",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faCircle}
-                            size="lg"
-                            color={specificityColors.high}
-                          />
-                        </Box>
-                      )} */}
                       {isSecondLevel && datatype === datatypes[0] && (
                         <Box
                           sx={{
@@ -609,9 +586,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         >
                           <IconButton
                             size="small"
+                            disableRipple
+                            size="small"
                             className={classes.expandColumn}
                             sx={{
                               visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
+                              "&:hover": {
+                                bgcolor: "transparent",
+                              },
                             }} // keeps all rows same height
                           >
                             {cellContext.row.getIsExpanded() ? (
@@ -700,7 +682,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               value={groupByTissue ? "tissue" : "celltype"}
               aria-label="toggle view"
               exclusive
-              onChange={(_, newValue) => setGroupByTissue(newValue === "tissue")}
+              onChange={(_, newValue) => {
+                if (newValue == null) return;
+                setGroupByTissue(newValue === "tissue");
+              }}
             >
               <ViewToggleButton
                 value="tissue"
@@ -845,14 +830,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         }}
                         sx={{
                           "&:hover": {
-                            // backgroundColor: "grey.200",
                             outlineOffset: "-1px",
                             outline: "solid 1px",
                             outlineColor: "grey.400",
                           },
                           ...(row.getCanExpand() && {
                             "&:hover": {
-                              // backgroundColor: "grey.200",
                               outlineOffset: "-1px",
                               outline: isFirstLevel || !isExpanded ? "solid 1px" : "none",
                               outlineColor: "grey.400",
@@ -871,8 +854,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 height: "24px",
                                 width: getColumnWidth(index),
                                 border: "none",
-                                px: 5,
-                                // px: 2.8,
+                                pl: index === 0 ? 5 : 3,
+                                pr: index === 0 ? 3 : 7,
                                 py: 0,
                                 backgroundColor: isSingleCellColumn ? "grey.50" : null,
                                 borderStyle: "solid",

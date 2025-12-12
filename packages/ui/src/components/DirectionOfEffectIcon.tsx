@@ -27,11 +27,11 @@ type DirectionOfEffectIconProp = {
 };
 
 const LABEL = {
-  LoF: {
+  lof: {
     label: "Loss of Function",
     icon: faArrowTrendDown,
   },
-  GoF: {
+  gof: {
     label: "Gain of Function",
     icon: faArrowTrendUp,
   },
@@ -58,7 +58,7 @@ function DirectionOfEffectIcon({
   const direction = directionOnTrait || "default";
 
   function getTooltipText() {
-    return `${LABEL[variant].label} │ ${LABEL[direction].label}`;
+    return `${LABEL[variant.toLowerCase()].label} │ ${LABEL[direction.toLowerCase()].label}`;
   }
 
   const tooltipText = getTooltipText();
@@ -78,11 +78,11 @@ function DirectionOfEffectIcon({
           }}
         >
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[variant].icon} />
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[variant.toLowerCase()].icon} />
           </Box>
           <Divider orientation="vertical" variant="middle" />
           <Box sx={{ display: "flex", justifyContent: "center", width: 20 }}>
-            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[direction].icon} />
+            <FontAwesomeIcon className={classes.colorBlue} icon={LABEL[direction.toLowerCase()].icon} />
           </Box>
         </Box>
       </Tooltip>

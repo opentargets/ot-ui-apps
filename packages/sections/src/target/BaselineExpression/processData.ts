@@ -1,5 +1,3 @@
-import { max } from "d3";
-
 export function processData(
   data: BaselineExpressionRow[],
   datatypes: string[],
@@ -83,29 +81,18 @@ export function processData(
     }
   }
 
-  // add _normalisedMedian to each 3rd level object - all 3rd level objects have datatypeId === datatypes[0]
-  {
-    let maxMedian = 0;
-    for (const arr of Object.values(thirdLevel)) {
-      for (const row of arr) {
-        if (maxMedian < row.median) {
-          maxMedian = row.median;
-        }
-      }
-    }
-    for (const arr of Object.values(thirdLevel)) {
-      for (const row of arr) {
-        row._normalisedMedian = row.median === null ? null : row.median / maxMedian;
-      }
-    }
-  }
-
-  // 1st level
+  // 1st level and max specificity
+  let maxSpecificity = { datatype: undefined, score: undefined };
   for (const objects of Object.values(secondLevel)) {
     const firstLevelRow = {};
     for (const obj of objects) {
       for (const [datatypeId, row] of Object.entries(obj)) {
         const biosampleParent = row[`${groupByTissue ? "tissue" : "celltype"}BiosampleParent`];
+
+        // create object if does not exist
+        firstLevelRow[datatypeId] ??= {};
+
+        // add first level name and id to first level row
         if (!firstLevelRow._firstLevelName) {
           Object.defineProperty(firstLevelRow, "_firstLevelName", {
             value: biosampleParent.biosampleName,
@@ -114,43 +101,46 @@ export function processData(
             value: biosampleParent.biosampleId,
           });
         }
-        if (!(firstLevelRow[datatypeId]?.median >= row.median)) {
-          const copiedRow = { ...row };
-          copiedRow._firstLevelName = biosampleParent.biosampleName;
-          copiedRow._firstLevelId = biosampleParent.biosampleId;
-          copiedRow._firstLevelSpecificityScore =
-            firstLevelRow[datatypeId]?._firstLevelSpecificityScore;
-          delete copiedRow._secondLevelName;
-          delete copiedRow._secondLevelId;
-          firstLevelRow[datatypeId] = copiedRow;
+
+        // also add first level name and id within per-datatype objects
+        firstLevelRow[datatypeId]._firstLevelName ??= biosampleParent.biosampleName;
+        firstLevelRow[datatypeId]._firstLevelId ??= biosampleParent.biosampleId;
+
+        // distribution score - same for all 2nd-level entries with same datatype
+        firstLevelRow[datatypeId].distribution_score ??= row.distribution_score;
+
+        // median
+        const currentMedian = firstLevelRow[datatypeId]?.median;
+        if (
+          currentMedian === undefined ||
+          (row.median !== null && (currentMedian === null || row.median > currentMedian))
+        ) {
+          firstLevelRow[datatypeId].median = row.median;
+          firstLevelRow[datatypeId]._normalisedMedian = row._normalisedMedian;
         }
-        // top-level specificity score may come from different object to that with the highest median
-        if (!(firstLevelRow[datatypeId]._firstLevelSpecificityScore >= row.specificity_score)) {
-          firstLevelRow[datatypeId]._firstLevelSpecificityScore = row.specificity_score;
+
+        // specificity
+        const currentSpecificity = firstLevelRow[datatypeId].specificity_score;
+        if (
+          currentSpecificity === undefined ||
+          (row.specificity_score !== null &&
+            (currentSpecificity === null || row.specificity_score > currentSpecificity))
+        ) {
+          firstLevelRow[datatypeId].specificity_score = row.specificity_score;
+          if (
+            maxSpecificity.score === undefined ||
+            (row.specificity_score !== null &&
+              (maxSpecificity.score === null || row.specificity_score > maxSpecificity.score))
+          )
+            maxSpecificity = { datatype: datatypeId, score: row.specificity_score };
         }
       }
     }
     firstLevel.push(firstLevelRow);
   }
-
-  // max specificty scores
-  {
-    const maxSpecificityByDatatype = {};
-    let maxSpecificity = { datatype: null, score: -Infinity };
-    for (const datatype of datatypes) {
-      const score = max(firstLevel.map((obj) => obj[datatype]?._firstLevelSpecificityScore));
-      maxSpecificityByDatatype[datatype] = score;
-      if (score > maxSpecificity.score) {
-        maxSpecificity = { datatype, score };
-      }
-    }
-    Object.defineProperty(firstLevel, "_maxSpecificityByDatatype", {
-      value: maxSpecificityByDatatype,
-    });
-    Object.defineProperty(firstLevel, "_maxSpecificity", {
-      value: maxSpecificity,
-    });
-  }
+  Object.defineProperty(firstLevel, "_maxSpecificity", {
+    value: maxSpecificity,
+  });
 
   return { firstLevel, secondLevel, thirdLevel };
 }

@@ -3,7 +3,11 @@ import { Link } from "ui";
 function Description({ symbol }) {
   return (
     <>
-      RNA and protein baseline expression for <strong>{symbol}</strong>. Source:{" "}
+      RNA and protein baseline expression for <strong>{symbol}</strong> (see{" "}
+      <Link external to="https://home.opentargets.org/documentation#New%20Baseline%20Expression">
+        our documentation
+      </Link>{" "}
+      for more information). Source:{" "}
       <Link external to="https://tabula-sapiens.sf.czbiohub.org/">
         Tabula Sapiens
       </Link>

@@ -47,12 +47,6 @@ function SummaryTab({ symbol, ensgId, data }) {
 
   return (
     <Grid container justifyContent="center">
-      {/* <Alert severity="info">
-        <Typography variant="body2">
-          The median expression is the median of the expression values for the given tissue or cell
-          type.
-        </Typography>
-      </Alert> */}
       <BaselineExpressionTable
         data={processedData}
         datatypes={datatypes}

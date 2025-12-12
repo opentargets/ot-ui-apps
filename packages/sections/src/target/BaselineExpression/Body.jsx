@@ -1,5 +1,8 @@
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Alert, Collapse, Tab, Tabs } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { useEffect, useState } from "react";
-import { Tab, Tabs } from "@mui/material";
 import { SectionItem, useApolloClient } from "ui";
 
 import { definition } from ".";
@@ -9,6 +12,7 @@ import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
 function Section({ id: ensgId, label: symbol, entity }) {
   const defaultTab = "summary";
+  const [showAlert, setShowAlert] = useState(true);
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
@@ -36,22 +40,16 @@ function Section({ id: ensgId, label: symbol, entity }) {
   };
 
   useEffect(() => {
-    let isCurrent = true;
-
     async function updateData() {
       const newRequest = await getData(ensgId, client);
-      if (isCurrent) setRequest(newRequest);
+      setRequest(newRequest);
     }
 
-    if (!request.data && getData) {
+    if (getData) {
       setRequest({ loading: true });
       updateData();
     }
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [tab, ensgId, request.data, getData, setRequest]);
+  }, [tab, ensgId, getData]);
 
   return (
     <SectionItem
@@ -62,13 +60,25 @@ function Section({ id: ensgId, label: symbol, entity }) {
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => (
         <>
+          <Collapse in={showAlert} timeout={500}>
+            <Alert
+              sx={{
+                bgcolor: grey[100],
+                color: "text.primary",
+                my: 1.5,
+                "& .MuiAlert-icon": { color: grey[800] },
+              }}
+              severity="info"
+              onClose={() => setShowAlert(false)}
+            >
+              Preview of new baseline expression widget
+            </Alert>
+          </Collapse>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab value="summary" label="Summary" />
-            {/* <Tab value="atlas" label="Experiments (Expression Atlas)" /> */}
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
           {tab === "summary" && <SummaryTab symbol={symbol} ensgId={ensgId} data={request.data} />}
-          {/* {tab === "atlas" && <AtlasTab ensgId={ensgId} symbol={symbol} />} */}
           {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </>
       )}
