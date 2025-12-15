@@ -133,6 +133,7 @@ type BaselineExpressionTableRow = {
 };
 
 interface BaselineExpressionTableProps {
+  symbol: string;
   data: any;
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
@@ -202,10 +203,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
+const Legend = ({
+  specificityThreshold,
+  groupByTissue,
+  symbol,
+}: {
+  specificityThreshold: number;
+  groupByTissue: boolean;
+  symbol: string;
+}) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 6 }}>
-      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+      <Tooltip
+        title={
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography variant="caption">
+              Threshold specificity score: {specificityThreshold}
+            </Typography>
+            <Typography variant="caption">
+              A high value indicates <strong>{symbol}</strong> is in the top 25% of specifically
+              expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
+            </Typography>
+          </Box>
+        }
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Specificity
@@ -228,7 +249,11 @@ const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
           </Box>
         </Box>
       </Tooltip>
-      <Tooltip title="Median expression normalised within columns">
+      <Tooltip
+        title={
+          <Typography variant="caption">Median expression normalised within columns</Typography>
+        }
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Median expression
@@ -289,6 +314,7 @@ function ViewToggleButton({ value, view, hasSpecific }) {
 }
 
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
+  symbol,
   data,
   datatypes,
   DownloaderComponent,
@@ -581,7 +607,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         >
                           <FontAwesomeIcon
                             icon={faCircle}
-                            // size="lg"
                             fontSize={specificityCircleWidth}
                             color={
                               specificityColors[
@@ -716,7 +741,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 specificityThreshold={specificityThreshold}
               />
             </ToggleButtonGroup>
-            <Legend specificityThreshold={specificityThreshold} />
+            <Legend
+              specificityThreshold={specificityThreshold}
+              groupByTissue={groupByTissue}
+              symbol={symbol}
+            />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
         </Box>

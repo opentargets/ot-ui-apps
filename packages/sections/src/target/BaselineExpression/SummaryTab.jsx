@@ -57,6 +57,7 @@ function SummaryTab({ symbol, ensgId, data }) {
   return (
     <Grid container justifyContent="center">
       <BaselineExpressionTable
+        symbol={symbol}
         data={processedData}
         datatypes={datatypes}
         specificityThreshold={0.75}
