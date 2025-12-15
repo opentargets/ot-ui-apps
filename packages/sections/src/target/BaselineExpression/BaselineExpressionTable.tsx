@@ -810,9 +810,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                   backgroundColor: "grey.100",
                                   borderColor: "grey.400",
                                   visibility:
-                                    Object.keys(expanded).length === 0 ? "hidden" : "visible",
-                                  cursor:
-                                    Object.keys(expanded).length === 0 ? "default" : "pointer",
+                                    Object.keys(expanded).filter((key) => !key.includes("."))
+                                      .length === 0
+                                      ? "hidden"
+                                      : "visible",
+                                  cursor: "pointer",
                                 }}
                                 onClick={handleCollapseAll}
                               >
