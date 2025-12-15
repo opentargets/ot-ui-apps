@@ -850,11 +850,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       return subRows && subRows[subRows.length - 1]?.id === row.id;
                     })();
 
-                  // Show bottom border only if: it's the last child AND NOT expanded
-                  // (when expanded, the third-level row will handle the bottom border)
-                  const shouldShowBottomBorder =
-                    _isSecondLevel && isLastChildOfParent && !isExpanded;
-
                   return (
                     <Fragment key={row.id}>
                       {/* 1st and 2nd level rows */}
