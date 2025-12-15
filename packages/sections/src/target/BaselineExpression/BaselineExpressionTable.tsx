@@ -508,11 +508,40 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
               const value = cellContext.getValue();
 
+              const slotProps = {
+                popper: {
+                  sx: { pointerEvents: "none" },
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [-3, -10],
+                      },
+                    },
+                  ],
+                },
+                tooltip: {
+                  sx: {
+                    maxWidth: 550,
+                  },
+                },
+              };
+
               if (value === -1) {
                 return (
-                  <Box className={classes.medianCell}>
-                    <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
-                  </Box>
+                  <Tooltip
+                    placement="top-start"
+                    slotProps={slotProps}
+                    title={
+                      datatype === "mass-spectrometry proteomics"
+                        ? "No protein detected in the measured tissue sample"
+                        : null
+                    }
+                  >
+                    <Box className={classes.medianCell}>
+                      <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
+                    </Box>
+                  </Tooltip>
                 );
               }
 
@@ -524,24 +553,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               return (
                 <Tooltip
                   placement="top-start"
-                  slotProps={{
-                    popper: {
-                      sx: { pointerEvents: "none" },
-                      modifiers: [
-                        {
-                          name: "offset",
-                          options: {
-                            offset: [-3, -10],
-                          },
-                        },
-                      ],
-                    },
-                    tooltip: {
-                      sx: {
-                        maxWidth: 550,
-                      },
-                    },
-                  }}
+                  slotProps={slotProps}
                   title={
                     <BaselineTooltipTable
                       data={cellContext.row.original[datatype]}
