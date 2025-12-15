@@ -808,32 +808,30 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               )}
                             </Box>
                             {index === 0 && (
-                              <Tooltip title="Collapse All">
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                    px: 1,
-                                    py: "2px",
-                                    backgroundColor: "grey.100",
-                                    borderColor: "grey.400",
-                                    visibility:
-                                      Object.keys(expanded).length === 0 ? "hidden" : "visible",
-                                    cursor:
-                                      Object.keys(expanded).length === 0 ? "default" : "pointer",
-                                  }}
-                                  onClick={handleCollapseAll}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  px: 1,
+                                  py: "2px",
+                                  backgroundColor: "grey.100",
+                                  borderColor: "grey.400",
+                                  visibility:
+                                    Object.keys(expanded).length === 0 ? "hidden" : "visible",
+                                  cursor:
+                                    Object.keys(expanded).length === 0 ? "default" : "pointer",
+                                }}
+                                onClick={handleCollapseAll}
+                              >
+                                <FontAwesomeIcon icon={faSquareCaretUp} color="grey.400" />
+                                <Typography
+                                  variant="caption"
+                                  sx={{ fontSize: "11px", fontWeight: "600" }}
                                 >
-                                  <FontAwesomeIcon icon={faSquareCaretUp} color="grey.400" />
-                                  <Typography
-                                    variant="caption"
-                                    sx={{ fontSize: "11px", fontWeight: "600" }}
-                                  >
-                                    Collapse all
-                                  </Typography>
-                                </Box>
-                              </Tooltip>
+                                  Collapse all
+                                </Typography>
+                              </Box>
                             )}
                           </Box>
                         </TableCell>
