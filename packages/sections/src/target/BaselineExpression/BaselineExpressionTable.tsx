@@ -620,7 +620,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           <IconButton
                             size="small"
                             disableRipple
-                            size="small"
                             className={classes.expandColumn}
                             sx={{
                               visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
