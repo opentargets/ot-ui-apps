@@ -330,36 +330,28 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
 
-  // Custom handler to ensure only one second-level row is expanded at a time
   const handleExpandedChange = useCallback(
     (updaterOrValue: ExpandedState | ((old: ExpandedState) => ExpandedState)) => {
       setExpanded((old) => {
         const newExpanded =
           typeof updaterOrValue === "function" ? updaterOrValue(old) : updaterOrValue;
 
-        // Find all second-level row IDs (they contain a dot, e.g., "0.1", "2.3")
-        const secondLevelRows = Object.keys(newExpanded).filter(
-          (id) => id.includes(".") && newExpanded[id] === true
+        // Check if any first-level row was collapsed
+        const collapsedFirstLevelIds = Object.keys(old).filter(
+          (id) => !id.includes(".") && old[id] === true && newExpanded[id] !== true
         );
 
-        // If more than one second-level row is expanded, keep only the most recently expanded one
-        if (secondLevelRows.length > 1) {
-          const result = { ...newExpanded };
-          // Find which row was just expanded by comparing with old state
-          const newlyExpanded = secondLevelRows.find((id) => !old[id]);
+        // For each collapsed first-level row, close all its child second-level rows
+        const result = { ...newExpanded };
+        collapsedFirstLevelIds.forEach((parentId) => {
+          Object.keys(result).forEach((id) => {
+            if (id.startsWith(parentId + ".")) {
+              result[id] = false;
+            }
+          });
+        });
 
-          // if (newlyExpanded) {
-          //   // Close all other second-level rows except the newly expanded one
-          //   secondLevelRows.forEach((id) => {
-          //     if (id !== newlyExpanded) {
-          //       result[id] = false;
-          //     }
-          //   });
-          // }
-          return result;
-        }
-
-        return newExpanded;
+        return result;
       });
     },
     []
