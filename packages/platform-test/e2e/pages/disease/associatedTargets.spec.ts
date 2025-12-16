@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
-import { EvidenceSection } from "../../../POM/objects/widgets/EvidenceSection/evidenceSection";
+import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { DiseasePage } from "../../../POM/page/disease/disease";
 
 const DISEASE_EFO_ID = "EFO_0000612";
