@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
+import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
-import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { DiseasePage } from "../../../POM/page/disease/disease";
 
 const DISEASE_EFO_ID = "EFO_0000612";
@@ -194,13 +194,15 @@ test.describe("Disease Page", () => {
       const dataCells = await aotfTable.getDataCellsWithScores(rowIndex);
       test.expect(dataCells.length).toBeGreaterThan(0);
 
-      // Skip the first cell since it's the total association score 
+      // Skip the first cell since it's the total association score
       const cellsToTest = dataCells.slice(1, dataCells.length);
 
       for (const cell of cellsToTest) {
         // Click on the data cell to open the evidence section
         await aotfTable.clickDataCell(rowIndex, cell.columnId);
-        await page.waitForTimeout(500); // Wait for section to load
+
+        // Wait for section to load (no loader, no error)
+        await evidenceSection.waitForSectionLoad(cell.columnId);
 
         // Verify that an evidence section is visible
         const hasSections = await evidenceSection.hasAnyEvidenceSection();
@@ -210,6 +212,10 @@ test.describe("Disease Page", () => {
         // The section ID is typically the data source ID (e.g., 'gwas', 'eva', etc.)
         const isVisible = await evidenceSection.isEvidenceSectionVisible(cell.columnId);
         test.expect(isVisible).toBe(true);
+
+        // Verify no loader is visible
+        const hasLoader = await evidenceSection.isLoaderVisible();
+        test.expect(hasLoader).toBe(false);
 
         // Click the same cell again to close/toggle the section
         await aotfTable.clickDataCell(rowIndex, cell.columnId);
