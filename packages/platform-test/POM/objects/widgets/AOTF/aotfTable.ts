@@ -193,4 +193,69 @@ export class AotfTable {
     // Give a moment for content to populate
     await this.page.waitForTimeout(500);
   }
+
+  // Get all data cells with scores in a specific row
+  getDataCellsInRow(rowIndex: number, prefix: string = "core"): Locator {
+    return this.page.locator(
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid^='score-cell-'][data-score]`
+    );
+  }
+
+  // Get a specific data cell by column id
+  getDataCell(rowIndex: number, columnId: string, prefix: string = "core"): Locator {
+    return this.page.locator(
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid='score-cell-${columnId}']`
+    );
+  }
+
+  // Get the score value from a data cell
+  async getDataCellScore(rowIndex: number, columnId: string, prefix: string = "core"): Promise<number | null> {
+    const cell = this.getDataCell(rowIndex, columnId, prefix);
+    const score = await cell.getAttribute("data-score");
+    return score ? parseFloat(score) : null;
+  }
+
+  // Click on a data cell to open the corresponding section
+  async clickDataCell(rowIndex: number, columnId: string, prefix: string = "core"): Promise<void> {
+    const cell = this.getDataCell(rowIndex, columnId, prefix);
+    await cell.click();
+  }
+
+  // Get all data cells with score > 0 in a row
+  async getDataCellsWithScores(rowIndex: number, prefix: string = "core"): Promise<Array<{ columnId: string; score: number }>> {
+    const cells = this.getDataCellsInRow(rowIndex, prefix);
+    const count = await cells.count();
+    const cellsWithScores: Array<{ columnId: string; score: number }> = [];
+
+    for (let i = 0; i < count; i++) {
+      const cell = cells.nth(i);
+      const scoreAttr = await cell.getAttribute("data-score");
+      const testId = await cell.getAttribute("data-testid");
+      
+      if (scoreAttr && testId) {
+        const score = parseFloat(scoreAttr);
+        if (score > 0) {
+          // Extract column id from testId: 'score-cell-{columnId}'
+          const columnId = testId.replace("score-cell-", "");
+          cellsWithScores.push({ columnId, score });
+        }
+      }
+    }
+
+    return cellsWithScores;
+  }
+
+  // Find first row with data cells that have score > 0
+  async findFirstRowWithData(prefix: string = "core"): Promise<number | null> {
+    const rowCount = await this.getRowCount(prefix);
+    
+    for (let i = 0; i < rowCount; i++) {
+      const cellsWithScores = await this.getDataCellsWithScores(i, prefix);
+      if (cellsWithScores.length > 0) {
+        return i;
+      }
+    }
+    
+    return null;
+  }
 }

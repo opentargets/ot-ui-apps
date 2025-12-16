@@ -33,7 +33,7 @@ function ChipList({ children, title, loading = false, inline }: ChipListProps): 
   if (!children || children.length === 0) return null;
 
   return (
-    <Box>
+    <Box data-testid={`profile-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <Typography variant="subtitle2" display={inline ? "inline" : ""}>
         {title}
         {inline ? ": " : ""}
@@ -46,7 +46,7 @@ function ChipList({ children, title, loading = false, inline }: ChipListProps): 
           maxTerms={10}
           render={(item: ChipListItem | string) => {
             if (_.isString(item)) {
-              return <Chip key={item} label={item} title={item} />;
+              return <Chip key={item} data-testid={`chip-${item}`} label={item} title={item} />;
             }
             return (
               <Tooltip
@@ -56,7 +56,7 @@ function ChipList({ children, title, loading = false, inline }: ChipListProps): 
                 key={item.label}
               >
                 <span>
-                  <Chip label={item.label} />
+                  <Chip data-testid={`chip-${item.label}`} label={item.label} />
                 </span>
               </Tooltip>
             );

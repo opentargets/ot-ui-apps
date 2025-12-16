@@ -17,9 +17,10 @@ type ChipProps = {
   disabled?: boolean;
   label: ReactElement;
   title?: string;
+  "data-testid"?: string;
 };
 
-export default function Chip({ className, label, title, disabled }: ChipProps): ReactElement {
+export default function Chip({ className, label, title, disabled, ...rest }: ChipProps): ReactElement {
   const classes = useStyles();
   return (
     <MUIChip
@@ -29,6 +30,7 @@ export default function Chip({ className, label, title, disabled }: ChipProps): 
       variant="outlined"
       size="small"
       disabled={disabled}
+      {...rest}
     />
   );
 }
