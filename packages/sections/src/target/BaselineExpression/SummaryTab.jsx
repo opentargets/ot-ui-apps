@@ -51,9 +51,6 @@ function SummaryTab({ symbol, ensgId, data }) {
     celltype: processData(data.target.baselineExpression.rows, datatypes, false),
   };
 
-  // !! REMOVE !!
-  window.processedData = processedData;
-
   return (
     <Grid container justifyContent="center">
       <BaselineExpressionTable
