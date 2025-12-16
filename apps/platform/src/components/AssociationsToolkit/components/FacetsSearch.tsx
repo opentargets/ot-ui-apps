@@ -40,6 +40,7 @@ function FacetsSearch(): ReactElement {
   return (
     <Box>
       <FilterButton
+        data-testid="facets-search-button"
         aria-describedby={popoverId}
         variant="text"
         onClick={handleClick}
@@ -54,6 +55,7 @@ function FacetsSearch(): ReactElement {
         </Box>
       </FilterButton>
       <Popover
+        data-testid="facets-popover"
         id={popoverId}
         open={open}
         anchorEl={anchorEl}
