@@ -106,6 +106,9 @@ export function processData(
         firstLevelRow[datatypeId]._firstLevelName ??= biosampleParent.biosampleName;
         firstLevelRow[datatypeId]._firstLevelId ??= biosampleParent.biosampleId;
 
+        // units are same within a column
+        firstLevelRow[datatypeId].unit ??= row.unit;
+
         // distribution score - same for all 2nd-level entries with same datatype
         firstLevelRow[datatypeId].distribution_score ??= row.distribution_score;
 
