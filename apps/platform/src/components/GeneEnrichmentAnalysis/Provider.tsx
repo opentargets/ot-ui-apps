@@ -1,6 +1,16 @@
-import { createContext, type ReactElement, type ReactNode, useContext, useReducer } from "react";
+import {
+  createContext,
+  type ReactElement,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
+import { fetchLibrariesFailure, fetchLibrariesRequest, fetchLibrariesSuccess } from "./actions";
 import { geneEnrichmentReducer, initialState } from "./reducer";
 import type { Action, State } from "./types";
+
+const PATHWAYS_API_URL = "http://127.0.0.1:8000/api/gsea/libraries";
 
 /*****************
  * CONTEXTS *
@@ -21,6 +31,23 @@ export function GeneEnrichmentProvider({ children }: GeneEnrichmentProviderProps
   const [state, dispatch] = useReducer(geneEnrichmentReducer, initialState);
 
   console.log("state", state);
+
+  // Fetch libraries on mount
+  useEffect(() => {
+    async function fetchLibraries() {
+      dispatch(fetchLibrariesRequest());
+      try {
+        const response = await fetch(PATHWAYS_API_URL);
+        const data = await response.json();
+        dispatch(fetchLibrariesSuccess(data));
+      } catch (error) {
+        dispatch(
+          fetchLibrariesFailure(error instanceof Error ? error.message : "Error fetching libraries")
+        );
+      }
+    }
+    fetchLibraries();
+  }, []);
 
   return (
     <GeneEnrichmentStateContext.Provider value={state}>

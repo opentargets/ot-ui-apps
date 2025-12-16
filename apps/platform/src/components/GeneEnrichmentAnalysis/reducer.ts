@@ -46,6 +46,26 @@ export function geneEnrichmentReducer(state: State = initialState, action: Actio
         associationsState: action.associationsState,
       };
     }
+    case ActionType.FETCH_LIBRARIES_REQUEST: {
+      return {
+        ...state,
+        librariesLoading: true,
+      };
+    }
+    case ActionType.FETCH_LIBRARIES_SUCCESS: {
+      return {
+        ...state,
+        libraries: action.payload,
+        librariesLoading: false,
+      };
+    }
+    case ActionType.FETCH_LIBRARIES_FAILURE: {
+      return {
+        ...state,
+        librariesError: action.error,
+        librariesLoading: false,
+      };
+    }
     default: {
       return state;
     }

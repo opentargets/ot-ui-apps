@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 import { setModalOpen } from "./actions";
+import GeneEnrichmentAnalysisForm from "./GeneEnrichmentAnalysisForm";
 import { useGeneEnrichment } from "./Provider";
 
 interface GeneEnrichmentAnalysisModalProps {
@@ -55,13 +56,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           </IconButton>
         </Box>
 
-        <Box sx={{ flex: 1, overflow: "auto" }}>
-          {children || (
-            <Typography variant="body1" color="text.secondary">
-              Content goes here...
-            </Typography>
-          )}
-        </Box>
+        <Box sx={{ flex: 1, overflow: "auto" }}>{children || <GeneEnrichmentAnalysisForm />}</Box>
       </Box>
     </Modal>
   );

@@ -14,7 +14,7 @@ type DiseaseAssociationsProps = {
 function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
   return (
     <GeneEnrichmentProvider>
-      <GeneEnrichmentAnalysisModal open={true} onClose={() => {}} />
+      <GeneEnrichmentAnalysisModal />
       <AssociationsView
         id={pros.efoId}
         entity={ENTITY.DISEASE}
