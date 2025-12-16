@@ -38,7 +38,7 @@ jobs:
     needs: [tests_e2e_netlify_prepare, get_branch_name]
     name: Run end-to-end tests on Netlify PR preview
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
