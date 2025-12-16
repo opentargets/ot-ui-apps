@@ -102,7 +102,6 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 interface BaselineExpressionDataRow {
-  targetFromSourceId: string;
   tissueBiosample?: {
     biosampleId: string;
     biosampleName: string;
@@ -111,6 +110,7 @@ interface BaselineExpressionDataRow {
     biosampleId: string;
     biosampleName: string;
   };
+  tissueBiosampleFromSource?: string;
   celltypeBiosample?: {
     biosampleId: string;
     biosampleName: string;
@@ -119,9 +119,13 @@ interface BaselineExpressionDataRow {
     biosampleId: string;
     biosampleName: string;
   };
+  celltypeBiosampleFromSource?: string;
   median: number;
   datasourceId: string;
   datatypeId: string;
+  specificity_score?: number;
+  distribution_score: number;
+  unit: string;
 }
 
 type BaselineExpressionTableRow = {
@@ -129,6 +133,7 @@ type BaselineExpressionTableRow = {
 };
 
 interface BaselineExpressionTableProps {
+  symbol: string;
   data: any;
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
@@ -198,10 +203,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
+const Legend = ({
+  specificityThreshold,
+  groupByTissue,
+  symbol,
+}: {
+  specificityThreshold: number;
+  groupByTissue: boolean;
+  symbol: string;
+}) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 6 }}>
-      <Tooltip title={`Threshold specificity score: ${specificityThreshold}`}>
+      <Tooltip
+        title={
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Typography variant="caption">
+              Threshold specificity score: {specificityThreshold}
+            </Typography>
+            <Typography variant="caption">
+              A high value indicates <strong>{symbol}</strong> is in the top 25% of specifically
+              expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
+            </Typography>
+          </Box>
+        }
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Specificity
@@ -224,7 +249,11 @@ const Legend = ({ specificityThreshold }: { specificityThreshold: number }) => {
           </Box>
         </Box>
       </Tooltip>
-      <Tooltip title="Median expression normalised within columns">
+      <Tooltip
+        title={
+          <Typography variant="caption">Median expression normalised within columns</Typography>
+        }
+      >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
             Median expression
@@ -285,6 +314,7 @@ function ViewToggleButton({ value, view, hasSpecific }) {
 }
 
 const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
+  symbol,
   data,
   datatypes,
   DownloaderComponent,
@@ -300,36 +330,28 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
 
-  // Custom handler to ensure only one second-level row is expanded at a time
   const handleExpandedChange = useCallback(
     (updaterOrValue: ExpandedState | ((old: ExpandedState) => ExpandedState)) => {
       setExpanded((old) => {
         const newExpanded =
           typeof updaterOrValue === "function" ? updaterOrValue(old) : updaterOrValue;
 
-        // Find all second-level row IDs (they contain a dot, e.g., "0.1", "2.3")
-        const secondLevelRows = Object.keys(newExpanded).filter(
-          (id) => id.includes(".") && newExpanded[id] === true
+        // Check if any first-level row was collapsed
+        const collapsedFirstLevelIds = Object.keys(old).filter(
+          (id) => !id.includes(".") && old[id] === true && newExpanded[id] !== true
         );
 
-        // If more than one second-level row is expanded, keep only the most recently expanded one
-        if (secondLevelRows.length > 1) {
-          const result = { ...newExpanded };
-          // Find which row was just expanded by comparing with old state
-          const newlyExpanded = secondLevelRows.find((id) => !old[id]);
+        // For each collapsed first-level row, close all its child second-level rows
+        const result = { ...newExpanded };
+        collapsedFirstLevelIds.forEach((parentId) => {
+          Object.keys(result).forEach((id) => {
+            if (id.startsWith(parentId + ".")) {
+              result[id] = false;
+            }
+          });
+        });
 
-          // if (newlyExpanded) {
-          //   // Close all other second-level rows except the newly expanded one
-          //   secondLevelRows.forEach((id) => {
-          //     if (id !== newlyExpanded) {
-          //       result[id] = false;
-          //     }
-          //   });
-          // }
-          return result;
-        }
-
-        return newExpanded;
+        return result;
       });
     },
     []
@@ -504,11 +526,40 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
               const value = cellContext.getValue();
 
+              const slotProps = {
+                popper: {
+                  sx: { pointerEvents: "none" },
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [-3, -10],
+                      },
+                    },
+                  ],
+                },
+                tooltip: {
+                  sx: {
+                    maxWidth: 550,
+                  },
+                },
+              };
+
               if (value === -1) {
                 return (
-                  <Box className={classes.medianCell}>
-                    <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
-                  </Box>
+                  <Tooltip
+                    placement="top-start"
+                    slotProps={slotProps}
+                    title={
+                      datatype === "mass-spectrometry proteomics"
+                        ? "No protein detected in the measured tissue sample"
+                        : null
+                    }
+                  >
+                    <Box className={classes.medianCell}>
+                      <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
+                    </Box>
+                  </Tooltip>
                 );
               }
 
@@ -520,24 +571,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               return (
                 <Tooltip
                   placement="top-start"
-                  slotProps={{
-                    popper: {
-                      sx: { pointerEvents: "none" },
-                      modifiers: [
-                        {
-                          name: "offset",
-                          options: {
-                            offset: [-3, -10],
-                          },
-                        },
-                      ],
-                    },
-                    tooltip: {
-                      sx: {
-                        maxWidth: 550,
-                      },
-                    },
-                  }}
+                  slotProps={slotProps}
                   title={
                     <BaselineTooltipTable
                       data={cellContext.row.original[datatype]}
@@ -565,7 +599,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                         >
                           <FontAwesomeIcon
                             icon={faCircle}
-                            // size="lg"
                             fontSize={specificityCircleWidth}
                             color={
                               specificityColors[
@@ -587,7 +620,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           <IconButton
                             size="small"
                             disableRipple
-                            size="small"
                             className={classes.expandColumn}
                             sx={{
                               visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
@@ -700,7 +732,11 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 specificityThreshold={specificityThreshold}
               />
             </ToggleButtonGroup>
-            <Legend specificityThreshold={specificityThreshold} />
+            <Legend
+              specificityThreshold={specificityThreshold}
+              groupByTissue={groupByTissue}
+              symbol={symbol}
+            />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
         </Box>
@@ -763,32 +799,32 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               )}
                             </Box>
                             {index === 0 && (
-                              <Tooltip title="Collapse All">
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 1,
-                                    px: 1,
-                                    py: "2px",
-                                    backgroundColor: "grey.100",
-                                    borderColor: "grey.400",
-                                    visibility:
-                                      Object.keys(expanded).length === 0 ? "hidden" : "visible",
-                                    cursor:
-                                      Object.keys(expanded).length === 0 ? "default" : "pointer",
-                                  }}
-                                  onClick={handleCollapseAll}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                  px: 1,
+                                  py: "2px",
+                                  backgroundColor: "grey.100",
+                                  borderColor: "grey.400",
+                                  visibility:
+                                    Object.keys(expanded).filter((key) => !key.includes("."))
+                                      .length === 0
+                                      ? "hidden"
+                                      : "visible",
+                                  cursor: "pointer",
+                                }}
+                                onClick={handleCollapseAll}
+                              >
+                                <FontAwesomeIcon icon={faSquareCaretUp} color="grey.400" />
+                                <Typography
+                                  variant="caption"
+                                  sx={{ fontSize: "11px", fontWeight: "600" }}
                                 >
-                                  <FontAwesomeIcon icon={faSquareCaretUp} color="grey.400" />
-                                  <Typography
-                                    variant="caption"
-                                    sx={{ fontSize: "11px", fontWeight: "600" }}
-                                  >
-                                    Collapse all
-                                  </Typography>
-                                </Box>
-                              </Tooltip>
+                                  Collapse all
+                                </Typography>
+                              </Box>
                             )}
                           </Box>
                         </TableCell>
@@ -814,11 +850,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       const subRows = parentRow.subRows;
                       return subRows && subRows[subRows.length - 1]?.id === row.id;
                     })();
-
-                  // Show bottom border only if: it's the last child AND NOT expanded
-                  // (when expanded, the third-level row will handle the bottom border)
-                  const shouldShowBottomBorder =
-                    _isSecondLevel && isLastChildOfParent && !isExpanded;
 
                   return (
                     <Fragment key={row.id}>

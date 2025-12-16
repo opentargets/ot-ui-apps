@@ -1,10 +1,5 @@
 fragment ExpressionSummaryFragment on Target {
-  expressions {
-    rna {
-      level
-    }
-    protein {
-      level
-    }
+  baselineExpression(page: { index: 0, size: 1 }) {
+    count
   }
 }
