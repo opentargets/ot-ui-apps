@@ -521,9 +521,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             cell: (cellContext) => {
               const isFirstLevel = cellContext.row.original._firstLevelId;
               const isSecondLevel = !isFirstLevel && cellContext.row.depth === 1;
-              const isExpanded = cellContext.row.getIsExpanded();
-              const backgroundColor =
-                datatype === datatypes[0] && isSecondLevel && isExpanded ? "grey.200" : null;
               const value = cellContext.getValue();
 
               const slotProps = {
@@ -840,16 +837,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   const _isSecondLevel = row.depth === 1;
 
                   const isExpanded = row.getIsExpanded();
-
-                  // Check if this second-level row is the last child of its parent
-                  const isLastChildOfParent =
-                    _isSecondLevel &&
-                    (() => {
-                      const parentRow = table.getRowModel().rows.find((r) => r.id === row.parentId);
-                      if (!parentRow) return false;
-                      const subRows = parentRow.subRows;
-                      return subRows && subRows[subRows.length - 1]?.id === row.id;
-                    })();
 
                   return (
                     <Fragment key={row.id}>
