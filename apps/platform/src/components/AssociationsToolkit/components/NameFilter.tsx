@@ -41,6 +41,9 @@ const NameFilter = () => {
         }}
         size="small"
         fullWidth
+        inputProps={{
+          "data-testid": "name-filter-input",
+        }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
