@@ -39,7 +39,12 @@ export const GridContainer = styled("div", {
   gridTemplateColumns: `repeat(${columnsCount}, 1fr)`,
 }));
 
-export const TableBodyContent = ({ children, prefix }) => (
+type TableBodyContentProps = {
+  children: React.ReactNode,
+  prefix: string
+}
+
+export const TableBodyContent: React.FC<TableBodyContentProps> = ({ children, prefix }) => (
   <Box
     sx={{
       display: "flex",

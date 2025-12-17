@@ -30,6 +30,7 @@ function useAssociationsData({
     facetFilters = [],
     entitySearch = "",
     laodingCount = INITIAL_ROW_COUNT,
+    includeMeasurements = false,
   },
 }) {
   const [state, setState] = useState(getInitialState(laodingCount));
@@ -58,6 +59,7 @@ function useAssociationsData({
           rowsFilter,
           facetFilters,
           entitySearch,
+          includeMeasurements,
         },
       });
       const parsedData = getAssociationsData(entity, resData.data);
@@ -83,6 +85,7 @@ function useAssociationsData({
     entity,
     facetFilters,
     entitySearch,
+    includeMeasurements
   ]);
 
   return state;

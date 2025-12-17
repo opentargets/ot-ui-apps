@@ -1,4 +1,4 @@
-export const mapFile = url => {
+export const mapFile = (url) => {
   let format = "";
   const fileNameParts = url.split(".");
 
@@ -29,13 +29,15 @@ export const buildSchema = (obj, delimiter = "") => {
     const isPrimaryKey = isPrimaryColumn(column, obj.key);
     const dataType = getDataType(column);
     schema += `${DIVIDER}${column.name}${dataType}`;
-    const descObj = { id: column["@id"], name: column.name, description: column.description };
+    const descObj = {
+      id: column["@id"],
+      name: column.name,
+      description: column.description,
+    };
     descriptionArray.push(descObj);
     if (dataType.includes("Struct")) {
-      const { schema: nestedSchema, descriptionArray: nestedDescriptionArray } = buildSchema(
-        column,
-        `${delimiter}│⎯`
-      );
+      const { schema: nestedSchema, descriptionArray: nestedDescriptionArray } =
+        buildSchema(column, `${delimiter}│⎯`);
       schema += nestedSchema;
       descriptionArray = [...descriptionArray, ...nestedDescriptionArray];
     }
@@ -58,7 +60,7 @@ export const buildSchema = (obj, delimiter = "") => {
 export const isPrimaryColumn = (column, primaryKey = {}) => {
   const primaryKeyArray = Array.isArray(primaryKey) ? primaryKey : [primaryKey];
   if (!primaryKeyArray.length) return false;
-  return primaryKeyArray.some(e => e["@id"] === column["@id"]);
+  return primaryKeyArray.some((e) => e["@id"] === column["@id"]);
 };
 
 /**************************************************
@@ -76,7 +78,7 @@ export const isPrimaryColumn = (column, primaryKey = {}) => {
  *  false              -> no foreign key          *
  **************************************************/
 
-export const isForeignColumn = column => {
+export const isForeignColumn = (column) => {
   if (Object.hasOwn(column, "references")) {
     return column["references"]["field"]["@id"];
   }
@@ -98,7 +100,7 @@ export const isForeignColumn = column => {
  *    <Text>  -> String                                             *
  ********************************************************************/
 
-export const getDataType = column => {
+export const getDataType = (column) => {
   let dataType = "";
   const primitiveType = isPrimitive(column);
   const structType = isStruct(column);
@@ -129,7 +131,7 @@ export const getDataType = column => {
  *  false -> not an array           *
  ***********************************/
 
-export const isTypeArray = column => {
+export const isTypeArray = (column) => {
   return Object.hasOwn(column, "repeated") && column.repeated;
 };
 
@@ -143,7 +145,7 @@ export const isTypeArray = column => {
  *  Text, Float, Boolean, Integer         *
  ******************************************/
 
-export const isPrimitive = column => {
+export const isPrimitive = (column) => {
   if (Object.hasOwn(column, "dataType")) {
     const primitiveType = column.dataType.split(":");
     return primitiveType[1];
@@ -163,7 +165,7 @@ export const isPrimitive = column => {
  *  false -> column.subField don't exist  *
  ******************************************/
 
-export const isStruct = column => {
+export const isStruct = (column) => {
   if (Object.hasOwn(column, "subField")) {
     return "Struct";
   }
@@ -179,7 +181,7 @@ export const isStruct = column => {
  *  string <field | subfield>                                *
  *************************************************************/
 
-export const getFieldProperty = column => {
+export const getFieldProperty = (column) => {
   if (Object.hasOwn(column, "subField")) {
     return "subField";
   }
@@ -204,21 +206,20 @@ export const getFieldProperty = column => {
  *            category: [Target] }            *
  *********************************************/
 
-export const addCategoriesToData = data => {
+export const addCategoriesToData = (data) => {
   const results = new Set();
-
-  data.map(item => {
+  const newData = [];
+  for (const item of data) {
     const categories = item.description.match(/\[(.*?)\]/);
     item.categories = [];
-    if (categories) {
+    if (categories && categories[0] !== "[]") {
       item.categories = [...categories[1].split(", ")];
       item.description = item.description.replace(categories[0], "");
-      return results.add(...categories[1].split(","));
+      results.add(...categories[1].split(","));
     }
-    return;
-  });
-
-  return { allDisplayRows: data, allUniqueCategories: [...results] };
+    newData.push(item);
+  }
+  return { allDisplayRows: newData, allUniqueCategories: [...results] };
 };
 
 /************************************
@@ -226,10 +227,40 @@ export const addCategoriesToData = data => {
  *     SORT THEM ALPHABETICALLY     *
  ************************************/
 
-export function getAllRows(data) {
+export function prepareDataRows(data) {
+  if (!data) return [];
+  const fileSetRows = getFileSetsRows(data);
+  const recordSetRows = getRecordSetsRows(data);
+  const newRows = [];
+  for (const fileRow of fileSetRows) {
+    const recordRow = recordSetRows.find(
+      (e) => `${e["@id"]}-fileset` === fileRow["@id"]
+    );
+    if (!recordRow) {
+      console.log("No matching FileSet for RecordSet: ", fileRow);
+      newRows.push({ ...fileRow });
+    } else {
+      newRows.push({ ...fileRow, description: recordRow.description });
+    }
+  }
+  return newRows;
+}
+
+export function getFileSetsRows(data) {
   if (!data) return [];
   return data.distribution
-    .filter(e => e["@type"] === "cr:FileSet")
+    .filter((e) => e["@type"] === "cr:FileSet")
+    .sort((a, b) => {
+      if (a.name > b.name) return 1;
+      else if (a.name < b.name) return -1;
+      return 0;
+    });
+}
+
+export function getRecordSetsRows(data) {
+  if (!data) return [];
+  return data.recordSet
+    .filter((e) => e["@type"] === "cr:RecordSet")
     .sort((a, b) => {
       if (a.name > b.name) return 1;
       else if (a.name < b.name) return -1;
@@ -256,7 +287,7 @@ export function getSchemaRows(data) {
 export function filterDownloadCardsForTextSearch(freeQueryText, data) {
   if (!freeQueryText || !data || !data.length) return;
   return data.filter(
-    e =>
+    (e) =>
       e.description.toLowerCase().includes(freeQueryText.toLowerCase()) ||
       e.name.toLowerCase().includes(freeQueryText.toLowerCase())
   );
@@ -269,7 +300,9 @@ export function filterDownloadCardsForTextSearch(freeQueryText, data) {
 
 export function filterDownloadCardsForFilter(values, data) {
   if (!values || !values.length || !data || !data.length) return;
-  const filteredValues = data.filter(item => item.categories.some(e => values.includes(e)));
+  const filteredValues = data.filter((item) =>
+    item.categories.some((e) => values.includes(e))
+  );
   return filteredValues;
 }
 
@@ -292,8 +325,10 @@ export function filterDownloadCardsForFilter(values, data) {
 export function getAllLocationUrl(data) {
   if (!data) return "";
   const locationObj = {};
-  const locationArray = data.distribution.filter(e => e["@type"] === "cr:FileObject");
-  locationArray.map(e => {
+  const locationArray = data.distribution.filter(
+    (e) => e["@type"] === "cr:FileObject"
+  );
+  locationArray.map((e) => {
     locationObj[e["@id"]] = e.contentUrl;
   });
   return locationObj;
