@@ -76,7 +76,7 @@ function Header({
   const classes = useStyles();
 
   return (
-    <Grid className={classes.titleContainer} container id="profile-page-header-block">
+    <Grid className={classes.titleContainer} data-testid="profile-page-header-block" container id="profile-page-header-block">
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap">
           <Box sx={iconHeaderStyles}>

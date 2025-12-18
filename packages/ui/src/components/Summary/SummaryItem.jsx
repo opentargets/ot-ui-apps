@@ -31,6 +31,7 @@ function SummaryItem({ definition, request, subText }) {
   return (
     <Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
       <Card
+        data-testid={`summary-${definition.id.toLowerCase().replace(/_/g, "")}`}
         className={classNames(classes.card, {
           [classes.cardHasData]: hasData,
           [classes.cardError]: error,

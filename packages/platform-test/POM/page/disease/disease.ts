@@ -6,7 +6,7 @@ export class DiseasePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.originalURL = page.url();  
+    this.originalURL = page.url();
   }
 
   getProfilePage() {
@@ -16,7 +16,7 @@ export class DiseasePage {
   async goToProfilePage() {
     await this.page.goto(this.getProfilePage());
   }
-  
+
   async goToAssociationsPage() {
     await this.page.goto(`${this.originalURL}`);
   }
@@ -40,5 +40,25 @@ export class DiseasePage {
 
   async getFirstXrefLinkHref(): Promise<string | null> {
     return await this.getXrefLinks().first().getAttribute("href");
+  }
+
+  // Navigate to study page from evidence table
+  getStudyLinkInEvidence(studyId: string): Locator {
+    return this.page.locator(`a[href*="/study/${studyId}"]`).first();
+  }
+
+  async goToStudyPageFromEvidence(studyId: string): Promise<void> {
+    await this.getStudyLinkInEvidence(studyId).click();
+    await this.page.waitForURL(`**/study/${studyId}**`);
+  }
+
+  async getFirstStudyLinkInEvidence(): Promise<Locator> {
+    return this.page.locator('a[href*="/study/"]').first();
+  }
+
+  async clickFirstStudyInEvidence(): Promise<void> {
+    const firstStudyLink = await this.getFirstStudyLinkInEvidence();
+    await firstStudyLink.click();
+    await this.page.waitForLoadState("networkidle");
   }
 }
