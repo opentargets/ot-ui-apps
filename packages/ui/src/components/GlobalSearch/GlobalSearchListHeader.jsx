@@ -73,7 +73,7 @@ function GlobalSearchListHeader({ listHeader, children }) {
 
   return (
     <div tabIndex="-1" className={classes.sectionHeader}>
-      <div className={classes.label}>
+      <div  data-testid={`top-hit-list-item-${listHeader}`} className={classes.label}>
         <GlobalSearchIcon entity={listHeader} />
         <Typography sx={{ fontWeight: "bold" }} variant="caption">
           {getListHeader()}
