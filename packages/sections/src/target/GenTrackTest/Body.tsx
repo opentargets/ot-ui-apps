@@ -1,20 +1,21 @@
+import { useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
-import { mantissaExponentComparator, variantComparator } from "@ot/utils";
 import {
-  GenTrack
+  GenTrack,
+  SectionItem
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import GEN_TRACK_TEST_QUERY from "./GenTrackQuery.gql";
+import GEN_TRACK_TEST_QUERY from "./GenTrackTestQuery.gql";
 
 type BodyProps = {
 	id: string;
 	entity: string;
 };
 
-function Body({ id, entity }: BodyProps) {
+function Body({ id: ensemblId, entity }: BodyProps) {
   const variables = { ensemblId };
-  const request = useQuery(PHARMACOGENOMICS_QUERY, {
+  const request = useQuery(GEN_TRACK_TEST_QUERY, {
     variables,
   });
 
@@ -30,7 +31,7 @@ function Body({ id, entity }: BodyProps) {
 			)}
 			renderBody={() => {
 				return (
-					<h2>GEN TRACK HERE</h2>
+					<GenTrack />
 				);
 			}}
 		/>

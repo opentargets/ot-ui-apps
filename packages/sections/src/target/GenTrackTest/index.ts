@@ -4,7 +4,7 @@ export const definition = {
   id: "genTrackTest",
   name: "GenTrack Test",
   shortName: "GT",
-  hasData: () => true;
+  hasData: () => true,
 };
 
 // Components
