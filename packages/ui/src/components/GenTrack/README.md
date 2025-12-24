@@ -68,6 +68,8 @@ __Note:__ The code wrapping the gen track can `useGenTrackDispatch` but should n
 
 #### `GenTrackInnerProvider`
 
+__NOTE: THIS IS OUTDATED SINCE NOW USING VIEW AND USEEFEECT TO PASS ZOOM VALUES TO AVOID RERENDERS. NEED TO DECIDE IF WILL USE THIS APPROACH FOR OTHER INNER STATE CHANGES TO AVOID RERENDERING. IF DO GO WITH THE VIEW-LIKE APPROACH, POTENTIALLY NEED TO GIVE OTHER UI COMPONENTS ACCESS TO VIEW OR SIMILAR SO CAN EFFECT DRAWING OF INNER TRACKS OUTSIDE OF REACT.__
+
 The same as `GenTrackProvider` but with a different name. This inner provider can wrap the top-level gen track and other components. Its dispatch can be used outside the inner gen track, but the inner state should only be consumed by the inner track and related content.
 
 The window controls of a top-level gen track automatically set the `xMin` and `xMax` of the inner state.
@@ -81,17 +83,17 @@ The related hooks have 'Inner' in the name:
 
 Top-level gen track component. This contains the x-info and tracks (each of which contains its own y-info). A `GenTrack` component should be inside a `GenTrackProvider` - and a `GenTrackInnerProvider` if showing inner tracks.
 
-| Prop               | Type        | Default | Description                                                                                                                                                                                            |
-| ------------------ | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tracks`           | `Track[]`   |         | Tracks.                                                                                                                                                                                                |
-| `InnerGenTrack`    | `Gentrack`  |         | A `GenTrack` for the inner tracks.                                                                                                                                                                     |
-| `xInfoGap`         | `number`    | `16`    | Vertical space between xInfo and first track.                                                                                                                                                          |
-| `yInfoGap`         | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                                                                                                                  |
-| `trackGap`         | `number`    | `16`    | Vertical space between tracks.                                                                                                                                                                         |
-| `innerGenTrackGap` | `number`    | `16 `   | Vertical space between last track and inner `GenTrack`. This prop is ignored by an inner `GenTrack`.                                                                                                   |
-| `addWindow`        | `boolean`   | `false` | Include interactive window to select subregion of the x-axis. Changing the window automatically changes the `xMin` and `xMax` of the inner state. This prop can only be used with an outer `GenTrack`. |
-| `XInfo`            | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. track.                                                                                                                  |
-| `yInfoWidth`       | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                                                                                                           |
+| Prop          | Type        | Default | Description                                                                                                                                         |
+| ------------- | ----------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tracks`      | `Track[]`   |         | Tracks.                                                                                                                                             |
+| `xInfoGap`    | `number`    | `16`    | Vertical space between xInfo and first track.                                                                                                       |
+| `yInfoGap`    | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                                                               |
+| `trackGap`    | `number`    | `16`    | Vertical space between tracks.                                                                                                                      |
+| `XInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props.                                 |
+| `yInfoWidth`  | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                                                        |
+| `innerGap`    | `number`    | `16 `   | Vertical space between last track and inner `GenTrack`. This prop is ignored by an inner `GenTrack`.                                                |
+| `innerXInfo`  | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props (where 0-100 is the full range). |
+| `innerTracks` | `Track[]`   |         | Inner tracks.                                                                                                                                       |
 
 A `GenTrack` fills the width of its parent container.
 
