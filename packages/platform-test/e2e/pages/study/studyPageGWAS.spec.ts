@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 import { StudyProfileHeader } from "../../../POM/objects/components/StudyProfileHeader/studyProfileHeader";
-import { GWASCredibleSetsSection } from "../../../POM/objects/widgets/Study/gwasCredibleSetsSection";
 import { SharedTraitStudiesSection } from "../../../POM/objects/widgets/Study/sharedTraitStudiesSection";
+import { GWASCredibleSetsSection } from "../../../POM/objects/widgets/shared/GWASCredibleSetsSection";
 import { StudyPage } from "../../../POM/page/study/study";
 
 // Test Disease study
