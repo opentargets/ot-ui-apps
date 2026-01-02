@@ -95,7 +95,7 @@ function Header({
               </Typography>
             </Grid>
             <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
-              <Typography variant="body2" className={classes.externalLinks}>
+              <Typography variant="body2" className={classes.externalLinks} data-testid="external-links">
                 {loading ? <Skeleton width="50vw" /> : externalLinks}
               </Typography>
             </Grid>

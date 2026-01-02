@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 
-export class KnownDrugsSection {
+export class ClinicalPrecedenceSection {
   page: Page;
 
   constructor(page: Page) {

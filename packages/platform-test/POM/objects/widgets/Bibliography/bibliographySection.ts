@@ -39,9 +39,9 @@ export class BibliographySection {
   }
 
   async getLiteratureTitle(index: number): Promise<string | null> {
-    return await this.getLiteratureEntry(index)
-      .locator("[data-testid='literature-title']")
-      .textContent();
+    const entry = this.getLiteratureEntry(index);
+    const title = entry.locator("a").first();
+    return await title.textContent();
   }
 
   // PubMed links
