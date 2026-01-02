@@ -2,7 +2,7 @@ import { Container, Graphics } from '@pixi/react';
 import { useEffect, useRef } from 'react';
 
 const HANDLE_WIDTH = 8;
-const MIN_WINDOW_WIDTH = 0.02; // normalized
+const MIN_WINDOW_WIDTH = 2; // in 0-100 scale
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
@@ -26,8 +26,8 @@ function ZoomWindow({
   }, [viewModel]);
 
   const draw = ({ start, end }) => {
-    const x = start * widthPx;
-    const w = (end - start) * widthPx;
+    const x = start / 100 * widthPx;
+    const w = (end - start) / 100 * widthPx;
 
     windowGfx.current.clear();
     windowGfx.current.beginFill(0x00aaff, 0.25);
@@ -53,7 +53,7 @@ function ZoomWindow({
   };
 
   // pointer helpers
-  const getNormX = e => e.data.global.x / widthPx;
+  const getNormX = e => e.data.global.x / widthPx * 100;
 
   const onDown = (type, e) => {
     dragState.current = {
@@ -75,7 +75,7 @@ function ZoomWindow({
 
     if (type === 'move') {
       const span = end - start;
-      nextStart = clamp(start + dx, 0, 1 - span);
+      nextStart = clamp(start + dx, 0, 100 - span);
       nextEnd = nextStart + span;
     }
 

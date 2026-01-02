@@ -1,13 +1,11 @@
 import { Box } from "@mui/material";
-import { Stage, Container, Text } from '@pixi/react';
-// import { sum, cumsum } from 'd3';
+import { Stage, Container } from '@pixi/react';
 import { useMeasure } from "@uidotdev/usehooks";
 import { useMemo } from "react";
 import { createViewModel } from "./createViewModel";
 import ZoomWindow from "./ZoomWindow";
 import InnerXInfo from "./InnerXInfo";
-// import { useGenTrackState, useGenTrackDispatch } from  "ui"
-// import { useGenTracInnerState, useGenTrackInnerDispatch } from "ui";
+import { useGenTrackState } from "../../providers/GenTrackProvider";
 
 function px(num) {
   return `${num}px`;
@@ -26,8 +24,11 @@ function GenTrack({
   _isInner = false,
 }) {
 
+  const { xMin, xMax } = useGenTrackState();
+
   // links zoom window to inner genTrack avoiding React
   const viewModel = _isInner ? null : useMemo(createViewModel, []);
+  viewModel?.setView(xMin, xMax);
   
   // heights
   if (!tracks?.length) throw Error("at least one track expected");
@@ -52,9 +53,9 @@ function GenTrack({
       const c = innerRef.current;
       if (!c) return;
 
-      const scale = 1 / (end - start);
-      c.scale.x = scale;
-      c.x = -start * 100 * scale;
+      const pixelsPerUnit = canvasWidth / (start - end);
+      c.scale.x = pixelsPerUnit;
+      c.x = -end * pixelsPerUnit;
     });
   }, [viewModel]);
 
@@ -68,8 +69,8 @@ function GenTrack({
       {XInfo &&
         <Box sx={{ pb: px(xInfoGap) }}>
           {_isInner
-            ? <InnerXInfo viewModel={viewModel} XInfo={XInfo}>
-            : <XInfo start={} end={} />
+            ? <InnerXInfo viewModel={viewModel} XInfo={XInfo} />
+            : <XInfo start={xMin} end={xMax} />
           }
         </Box>
       }
@@ -79,51 +80,53 @@ function GenTrack({
 
         {/* yInfos */}
         <Box sx={{ width: px(yInfoWidth), height: px(canvasHeight), flex: "0 0 auto" }}>
-          {tracks.map({ id, height, YInfo } => (
+          {tracks.map({ id, height, YInfo, yMin, yMax } => (
             <Box key={id} sx={{ width: px(yInfoWidth), height: px(height) }}>
-              <YInfo />
+              <YInfo start={yMin} end={yMax} />
             </Box>
           )}
         </Box>
 
         {/* Pixi canvas */}
         <Stage width={canvasWidth} height={canvasHeight} options={{ background: 0xe8e8e8 }}>
-          {tracks.map(({ id, height, Track }, index) => {
-            const xScale = canvasWidth / 100;
-            const yScale = height / 100;
-            return (
+          <Container ref={_isInner ? innerRef : null}>
+            {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
               <Container
                 key={id}
                 width={px(canvasWidth)}
                 height={px(height)}
-                y={yTrackStarts[index]}
-                scale={{ x: xScale, y:yScale }}
+                y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
+                x={_isInner ? 1 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
+                scale={{ 
+                  x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
+                  y: height / (yMax - yMin),
+                }}
               >
                 <Track />
               </Container>
-            );
-          })}
-          {innerTracks &&(
+            ))}
+          </Container>
+          {innerTracks && (
             <ZoomWindow
               viewModel={viewModel}
               widthPx={width}
-              heightPx={80}
+              heightPx={canvasHeight}
             />
           )}
         </Stage>
-
       </Box>
 
       { innerTracks && (
         <GenTrack
-          tracks={innerTracks},
-          xInfoGap={},
-          yInfoGap={yInfoGap},
-          trackGap={trackGap},
-          XInfo={innerXInfo},
-          yInfoWidth={yInfoWidth},
-          _isInner={true},
-        ></GenTrack>
+          tracks={innerTracks}
+          xInfoGap={XInfoGap}
+          yInfoGap={yInfoGap}
+          trackGap={trackGap}
+          XInfo={innerXInfo}
+          yInfoWidth={yInfoWidth}
+          innerGap={innerGap}
+          _isInner={true}
+        />
       )}
 
     </Box>

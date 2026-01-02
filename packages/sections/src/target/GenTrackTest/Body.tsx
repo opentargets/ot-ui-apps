@@ -1,8 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Box } from "@mui/material";
 import {
+  GenTrackProvider
   GenTrack,
-  SectionItem
+  SectionItem,
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
@@ -19,6 +20,12 @@ function Body({ id: ensemblId, entity }: BodyProps) {
     variables,
   });
 
+  // generate some fake data for now
+  const data = [
+    { x1: 500, x2: 900 },
+    { x1: 300, x2: 700 },
+  ];
+
 	return (
 		<SectionItem
 			definition={definition}
@@ -31,7 +38,11 @@ function Body({ id: ensemblId, entity }: BodyProps) {
 			)}
 			renderBody={() => {
 				return (
-					<GenTrack />
+          <GenTrackProvider data={data} xMin={0} xMax={1000} >
+            <GenTrack
+              tracks={tracks}            
+            />
+          </GenTrackProvider>
 				);
 			}}
 		/>

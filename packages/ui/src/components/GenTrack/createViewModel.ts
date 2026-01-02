@@ -1,9 +1,9 @@
 export function createViewModel() {
   const listeners = new Set();
 
-  const view = {
-    viewStart: 20,
-    viewEnd: 50,
+  const view = { 
+    start: null,
+    end: null,
 
     subscribe(fn) {
       listeners.add(fn);
@@ -11,17 +11,17 @@ export function createViewModel() {
     },
 
     setView(domainStart, domainEnd) {
-      view.viewStart = domainStart;
-      view.viewEnd = domainEnd;
+      view.start = domainStart;
+      view.end = domainEnd;
       listeners.forEach(fn => fn(view));
     },
 
     domainToNorm(x) {
-      return (x - view.viewStart) / (view.viewEnd - view.viewStart);
+      return (x - view.start) / (view.end - view.start);
     },
 
     normToDomain(t) {
-      return view.viewStart + t * (view.viewEnd - view.viewStart);
+      return view.start + t * (view.end - view.start);
     }
   };
 

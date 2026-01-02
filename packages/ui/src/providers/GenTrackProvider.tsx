@@ -6,7 +6,7 @@ export const { ScopedProvider, useScopedState, useScopedDispatch } =
     extraStateProperties: {
       data: null,
       xMin: 0,
-      xMax: Infinity,
+      xMax: 100,
     },
     extraActions: {
       setData: (state, action) => ({ ...state, data: action.value }),
@@ -18,7 +18,3 @@ export const { ScopedProvider, useScopedState, useScopedDispatch } =
 export const GenTrackProvider = ScopedProvider;
 export const useGenTrackState = useScopedState;
 export const useGenTrackDispatch = useScopedDispatch;
-
-export const GenTrackInnerProvider = ScopedProvider;
-export const useGenTrackInnerState = useScopedState;
-export const useGenTrackInnerDispatch = useScopedDispatch;
