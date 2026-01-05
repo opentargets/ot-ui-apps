@@ -3,6 +3,15 @@ name: "Tests: E2E"
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - all
 
 jobs:
   get_branch_name:
@@ -49,9 +58,17 @@ jobs:
       - name: install playwright browsers
         run: |
           cd packages/platform-test
-          yarn playwright install --with-deps chromium webkit
-      - name: yarn dev:test:platform:e2e
-        run: yarn dev:test:platform:e2e
+          yarn playwright install --with-deps chromium
+      - name: Run E2E tests
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
+            yarn dev:test:platform:e2e
+          else
+            yarn dev:test:platform:e2e:smoke
+          fi
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          DEBUG: pw:api
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

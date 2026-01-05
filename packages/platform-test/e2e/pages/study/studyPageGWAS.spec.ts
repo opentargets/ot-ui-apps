@@ -13,7 +13,7 @@ test.describe("Study Page - GWAS Study", () => {
   });
 
   test.describe("GWAS Study Profile Header", () => {
-    test("Profile header is visible and displays study information", async ({ page }) => {
+    test("Profile header is visible and displays study information", { tag: '@smoke' }, async ({ page }) => {
       const profileHeader = new StudyProfileHeader(page);
       await profileHeader.waitForProfileHeaderLoad();
 
