@@ -59,7 +59,7 @@ export class UniProtVariantsSection {
   // Get target gene link
   async getTargetGeneLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/target/']");
+    return row.locator("button");
   }
 
   async clickTargetGeneLink(rowIndex: number): Promise<void> {

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { PharmacogenomicsSection } from "../../../POM/objects/widgets/shared/pharmacogenomicsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,14 +6,14 @@ test.describe("Pharmacogenomics Section", () => {
   let variantPage: VariantPage;
   let pharmacoSection: PharmacogenomicsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     pharmacoSection = new PharmacogenomicsSection(page);
 
     // Navigate to a variant with pharmacogenomics data
     // Using rs662 (PON1 gene) which should have pharmaco data
-    await variantPage.goToVariantPage("7_95308134_T_C");
-    
+    await variantPage.goToVariantPage(testConfig.variant.withPharmacogenomics ?? testConfig.variant.primary);
+
     // Wait for the section to load if it's visible
     const isVisible = await pharmacoSection.isSectionVisible();
     if (isVisible) {
@@ -69,9 +69,9 @@ test.describe("Pharmacogenomics Section", () => {
       await pharmacoSection.clickDrugLink(0);
 
       // Wait for navigation to drug page
-      await page.waitForURL(url => url.toString().includes("/drug/"), { timeout: 5000 });
-  }
-});
+      await page.waitForURL((url) => url.toString().includes("/drug/"), { timeout: 5000 });
+    }
+  });
 
   test("Gene/Target link is displayed in table", async () => {
     const isVisible = await pharmacoSection.isSectionVisible();
@@ -98,8 +98,7 @@ test.describe("Pharmacogenomics Section", () => {
         await pharmacoSection.clickGeneLink(0);
 
         // Wait for navigation to target page
-        await page.waitForURL(url => url.toString().includes("/target/"), { timeout: 5000 });
-
+        await page.waitForURL((url) => url.toString().includes("/target/"), { timeout: 5000 });
       }
     }
   });
@@ -161,5 +160,4 @@ test.describe("Pharmacogenomics Section", () => {
       test.skip();
     }
   });
-
 });

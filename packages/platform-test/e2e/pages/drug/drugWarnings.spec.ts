@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { DrugWarningsSection } from "../../../POM/objects/widgets/shared/drugWarningsSection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Warnings Section", () => {
   let drugPage: DrugPage;
   let warningsSection: DrugWarningsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     warningsSection = new DrugWarningsSection(page);
 
     // Navigate to a drug with warnings data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    await drugPage.goToDrugPage(testConfig.drug.alternatives?.withWarnings ?? testConfig.drug.primary);
 
     // Check if section is visible
     const isVisible = await warningsSection.isSectionVisible();

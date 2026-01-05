@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { EVASection } from "../../../POM/objects/widgets/shared/evaSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("EVA / ClinVar Section", () => {
   let variantPage: VariantPage;
   let evaSection: EVASection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     evaSection = new EVASection(page);
 
     // Navigate to a variant with ClinVar data
-    await variantPage.goToVariantPage("19_44908822_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.withEVA ?? testConfig.variant.primary);
 
     // Check if section is visible
     const isVisible = await evaSection.isSectionVisible();

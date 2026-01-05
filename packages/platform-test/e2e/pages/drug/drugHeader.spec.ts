@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { DrugHeader } from "../../../POM/objects/components/DrugHeader/drugHeader";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Header", () => {
   let drugPage: DrugPage;
   let drugHeader: DrugHeader;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     drugHeader = new DrugHeader(page);
 
     // Navigate to a drug page
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Wait for header to load
     await drugHeader.waitForHeaderLoad();

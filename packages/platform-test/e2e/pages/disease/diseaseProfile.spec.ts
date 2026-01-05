@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test } from "../../../fixtures";
 import { ProfileHeader } from "../../../POM/objects/components/ProfileHeader/profileHeader";
 import { BibliographySection } from "../../../POM/objects/widgets/Bibliography/bibliographySection";
 import { GWASStudiesSection } from "../../../POM/objects/widgets/GWAS/gwasStudiesSection";
@@ -7,12 +7,10 @@ import { OntologySection } from "../../../POM/objects/widgets/Ontology/ontologyS
 import { OTProjectsSection } from "../../../POM/objects/widgets/OTProjects/otProjectsSection";
 import { PhenotypesSection } from "../../../POM/objects/widgets/Phenotypes/phenotypesSection";
 
-const DISEASE_EFO_ID = "EFO_0000612";
-const DISEASE_NAME = "myocardial infarction";
 
 test.describe("Disease Profile Page", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL}/disease/${DISEASE_EFO_ID}`);
+  test.beforeEach(async ({ page, baseURL, testConfig }) => {
+    await page.goto(`${baseURL}/disease/${testConfig.disease.primary}`);
   });
 
   test.describe("Profile Header", () => {

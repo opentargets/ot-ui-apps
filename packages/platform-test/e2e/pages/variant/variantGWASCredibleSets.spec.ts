@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { GWASCredibleSetsSection as VariantGWASCredibleSetsSection } from "../../../POM/objects/widgets/shared/GWASCredibleSetsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("Variant GWAS Credible Sets Section", () => {
   let variantPage: VariantPage;
   let gwasSection: VariantGWASCredibleSetsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     gwasSection = new VariantGWASCredibleSetsSection(page);
 
     // Navigate to a variant with GWAS credible sets data
-    await variantPage.goToVariantPage("1_154453788_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.primary);
 
     // Wait for the section to fully load
     await gwasSection.waitForLoad();

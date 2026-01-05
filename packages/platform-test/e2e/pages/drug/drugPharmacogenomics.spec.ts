@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { PharmacogenomicsSection } from "../../../POM/objects/widgets/shared/pharmacogenomicsSection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Pharmacogenomics Section", () => {
   let drugPage: DrugPage;
   let pharmacoSection: PharmacogenomicsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     pharmacoSection = new PharmacogenomicsSection(page);
 
     // Navigate to a drug with pharmacogenomics data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Check if section is visible
     const isVisible = await pharmacoSection.isSectionVisible();
@@ -69,8 +69,6 @@ test.describe("Drug Pharmacogenomics Section", () => {
   });
 
   test("Can search/filter pharmacogenomics data", async () => {
-    const initialRowCount = await pharmacoSection.getTableRows();
-
     // Search for a specific term
     await pharmacoSection.search("response");
 
