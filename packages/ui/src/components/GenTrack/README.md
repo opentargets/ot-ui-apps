@@ -26,6 +26,8 @@ Everything is React - tracks sare written in [`@pixi/react`](https://react.pixij
 
 #### `GenTrackProvider`
 
+__NOTE: Under the updated design, this dedicated state management is perhaps no longer required/justified for this component and should maybe be removed?__
+
 Provides context for the track. Its children should include a single `GenTrack` component along with any other components that need to get/set the context.
 
 | Prop           | Type     | Default    | Description                                                                                                                                                                        |
@@ -95,7 +97,9 @@ Inside a `Track`, it is standard to access the relevant context: `useGenTrackSta
 
 #### Notes
 
-- Need to add tooltips on tracks. Implement a GenTrack tooletip in HTML (i.e. plain React). Probably need a dedicated tooltip state/context which set from the track and read from the tooltip
+- __Important__: switched order that spread `extraStateProperties` and `initialState` in `createScopedContext`.tsx so that can initialise extra state properties when create the provider. Make sure happy this is appropriate and does not break any existing use of `createScopedContext`.
+
+- Need to add tooltips on tracks. Implement a GenTrack tooltip in HTML (i.e. plain React). Probably need a dedicated tooltip state/context which set from the track and read from the tooltip.
 
 - Could investigate `pixi-viewport` for zooming, panning etc. and 'culling' for allowing inexpensive unseen elements.
 
@@ -107,12 +111,6 @@ Inside a `Track`, it is standard to access the relevant context: `useGenTrackSta
 
 - Should probably allow top padding per track rather than fixed per GenTrack
 
-- Inner and outer tracks both use `GenTrack` and `Track` components - there is nothing in the component name or props to differentiate an inner from an outer prop. When adding 
-
-- Only thing preventing deeper nesting is the fixed provider names. Could easily be extended if there are good use cases.
-
-- There are many existing libraries, but they tend to be large and overkill for what we need (e.g. HiGlass and libraries that use it like Gosling.js(?), use SVG or basic canvas (so performance issues likely) or not particularly popular or frequently updated. Using Pixi.js will give us full flexibility and integration into React while still being quite high-level (for a WebGL library) and high performance.
-
-- Can actually use this for other plots where performance an issue
+- There are existing libraries, but they tend to be large and overkill for what we need (e.g. HiGlass and libraries that use it like Gosling.js(?), use SVG or basic canvas (so performance issues likely) or not particularly popular or frequently updated. Using Pixi.js will give us full flexibility and integration into React while still being quite high-level (for a WebGL library) and high performance.
 
 - Gives team some experience with Pixi for creating other bespoke visualisations.

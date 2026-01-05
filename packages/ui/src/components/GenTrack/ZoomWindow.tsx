@@ -1,8 +1,6 @@
 import { Container, Graphics } from '@pixi/react';
+import { Rectangle } from "pixi.js";
 import { useEffect, useRef } from 'react';
-
-const HANDLE_WIDTH = 8;
-const MIN_WINDOW_WIDTH = 2; // in 0-100 scale
 
 function clamp(v, min, max) {
   return Math.max(min, Math.min(max, v));
@@ -10,8 +8,10 @@ function clamp(v, min, max) {
 
 function ZoomWindow({
   viewModel,
-  widthPx,
-  heightPx,
+  canvasWidthPx,
+  canvasHeightPx,
+  xMin,
+  xMax,
 }) {
   const containerRef = useRef();
   const windowGfx = useRef();
@@ -19,46 +19,55 @@ function ZoomWindow({
   const rightHandle = useRef();
 
   const dragState = useRef(null);
+    
+  const HANDLE_WIDTH_PX = 8;
+  const MIN_WINDOW_WIDTH_DATA = 20 * (xMax - xMin) / canvasWidthPx;
+
+  const handleColor = 0x00aaff;
 
   // redraw window when view changes
   useEffect(() => {
-    return viewModel.subscribe(draw);
-  }, [viewModel]);
+    if (!viewModel) return;
+    const unsubscribe = viewModel.subscribe(draw);
+    draw({ start: viewModel.start, end: viewModel.end });
+    return unsubscribe;
+  }, [viewModel, canvasWidthPx, canvasHeightPx, xMin, xMax]);
 
   const draw = ({ start, end }) => {
-    const x = start / 100 * widthPx;
-    const w = (end - start) / 100 * widthPx;
+    const x = (start - xMin) / (xMax - xMin) * canvasWidthPx; 
+    const w = (end - start) / (xMax - xMin) * canvasWidthPx;
 
     windowGfx.current.clear();
-    windowGfx.current.beginFill(0x00aaff, 0.25);
-    windowGfx.current.lineStyle(2, 0x00aaff, 0.9);
-    windowGfx.current.drawRect(x, 0, w, heightPx);
+    windowGfx.current.beginFill(handleColor, 0.15);
+    windowGfx.current.lineStyle(2, handleColor, 0.9);
+    windowGfx.current.drawRect(x, 0, w, canvasHeightPx);
     windowGfx.current.endFill();
 
     // handles
     leftHandle.current.clear();
-    leftHandle.current.beginFill(0x00aaff);
-    leftHandle.current.drawRect(x - HANDLE_WIDTH / 2, 0, HANDLE_WIDTH, heightPx);
+    leftHandle.current.beginFill(handleColor);
+    leftHandle.current.drawRect(x - HANDLE_WIDTH_PX / 2, 0, HANDLE_WIDTH_PX, canvasHeightPx);
     leftHandle.current.endFill();
 
     rightHandle.current.clear();
-    rightHandle.current.beginFill(0x00aaff);
+    rightHandle.current.beginFill(handleColor);
     rightHandle.current.drawRect(
-      x + w - HANDLE_WIDTH / 2,
+      x + w - HANDLE_WIDTH_PX / 2,
       0,
-      HANDLE_WIDTH,
-      heightPx
+      HANDLE_WIDTH_PX,
+      canvasHeightPx
     );
     rightHandle.current.endFill();
   };
 
-  // pointer helpers
-  const getNormX = e => e.data.global.x / widthPx * 100;
+  function xPxToData(xPx) {
+    return xMin + (xPx / canvasWidthPx) * (xMax - xMin);
+  }
 
   const onDown = (type, e) => {
     dragState.current = {
       type,
-      startX: getNormX(e),
+      startX: xPxToData(e.data.global.x),
       start: viewModel.start,
       end: viewModel.end,
     };
@@ -68,26 +77,26 @@ function ZoomWindow({
     if (!dragState.current) return;
 
     const { type, startX, start, end } = dragState.current;
-    const dx = getNormX(e) - startX;
+    const dx = xPxToData(e.data.global.x) - startX;
 
     let nextStart = start;
     let nextEnd = end;
 
     if (type === 'move') {
       const span = end - start;
-      nextStart = clamp(start + dx, 0, 100 - span);
+      nextStart = clamp(start + dx, xMin, xMax - span);
       nextEnd = nextStart + span;
     }
 
     if (type === 'left') {
-      nextStart = clamp(start + dx, 0, end - MIN_WINDOW_WIDTH);
+      nextStart = clamp(start + dx, xMin, xMax - MIN_WINDOW_WIDTH_DATA);
     }
 
     if (type === 'right') {
-      nextEnd = clamp(end + dx, start + MIN_WINDOW_WIDTH, 1);
+      nextEnd = clamp(end + dx, xMin + MIN_WINDOW_WIDTH_DATA, xMax);
     }
 
-    viewModel.set({ start: nextStart, end: nextEnd });
+    viewModel.setView(nextStart, nextEnd);
   };
 
   const onUp = () => {
@@ -98,21 +107,24 @@ function ZoomWindow({
     <Container
       ref={containerRef}
       eventMode="static"
+      hitArea={new Rectangle(0, 0, canvasWidthPx, canvasHeightPx)}
       pointermove={onMove}
       pointerup={onUp}
       pointerupoutside={onUp}
     >
+
       {/* main window */}
       <Graphics
         ref={windowGfx}
-        interactive
+        eventMode="static"
+        cursor="move"
         pointerdown={e => onDown('move', e)}
       />
 
       {/* left handle */}
       <Graphics
         ref={leftHandle}
-        interactive
+        eventMode="static"
         cursor="ew-resize"
         pointerdown={e => onDown('left', e)}
       />
@@ -120,7 +132,7 @@ function ZoomWindow({
       {/* right handle */}
       <Graphics
         ref={rightHandle}
-        interactive
+        eventMode="static"
         cursor="ew-resize"
         pointerdown={e => onDown('right', e)}
       />

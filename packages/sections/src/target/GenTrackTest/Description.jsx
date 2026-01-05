@@ -3,7 +3,7 @@ import { Link } from "ui";
 function Description() {
   return (
     <>
-      Gen track test.
+      Gen track test, see below for details.
     </>
   );
 }
