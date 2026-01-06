@@ -45,7 +45,6 @@ test.describe("Variant GWAS Credible Sets Section", () => {
   });
 
   test("Lead variant column displays correctly", async () => {
-
     // Lead variant might be the current variant (no link) or a different variant (with link)
     // Either way, the cell should have content
     const row = await gwasSection.getTableRow(0);

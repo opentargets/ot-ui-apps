@@ -76,7 +76,6 @@ test.describe("Variant QTL Credible Sets Section", () => {
   });
 
   test("Can search/filter QTL credible sets", async () => {
-
     // Search for a specific term
     await qtlSection.search("ENSG");
 

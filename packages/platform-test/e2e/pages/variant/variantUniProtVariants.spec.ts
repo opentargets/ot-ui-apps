@@ -70,7 +70,6 @@ test.describe("UniProt Variants Section", () => {
   });
 
   test("Can search/filter UniProt variants", async () => {
-
     // Search for a specific term
     await uniprotSection.search("disease");
 
