@@ -1,6 +1,6 @@
 import type { Locator, Page } from "@playwright/test";
 
-export class GWASStudiesSection {
+export class QTLCredibleSetsSection {
   page: Page;
 
   constructor(page: Page) {
@@ -9,16 +9,18 @@ export class GWASStudiesSection {
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-gwasstudies']");
+    return this.page.locator("[data-testid='section-qtl-credible-sets']");
   }
 
   async isSectionVisible(): Promise<boolean> {
-    return await this.getSection().isVisible();
+    return await this.getSection()
+      .isVisible()
+      .catch(() => false);
   }
 
   // Section header
   getSectionHeader(): Locator {
-    return this.page.locator("[data-testid='section-gwasstudies-header']");
+    return this.page.locator("[data-testid='section-qtl-credible-sets-header']");
   }
 
   async getSectionTitle(): Promise<string | null> {
@@ -44,22 +46,26 @@ export class GWASStudiesSection {
     return await this.getTableRows().count();
   }
 
-  // Get study data
-  getStudyCell(rowIndex: number, columnIndex: number = 0): Locator {
+  // Get cell data
+  getCell(rowIndex: number, columnIndex: number): Locator {
     return this.getTableRows().nth(rowIndex).locator("td").nth(columnIndex);
   }
 
-  async getStudyId(rowIndex: number): Promise<string | null> {
-    return await this.getStudyLink(rowIndex).textContent();
+  async getCellText(rowIndex: number, columnIndex: number): Promise<string | null> {
+    return await this.getCell(rowIndex, columnIndex).textContent();
   }
 
-  // Study links
-  getStudyLink(rowIndex: number): Locator {
-    return this.getTableRows().nth(rowIndex).locator('a[href*="/study/"]');
+  // Get variant link
+  getVariantLink(rowIndex: number): Locator {
+    return this.getTableRows().nth(rowIndex).locator("a[href*='/variant/']");
   }
 
-  async clickStudy(rowIndex: number): Promise<void> {
-    await this.getStudyLink(rowIndex).click();
+  async clickVariantLink(rowIndex: number): Promise<void> {
+    await this.getVariantLink(rowIndex).click();
+  }
+
+  async getVariantId(rowIndex: number): Promise<string | null> {
+    return await this.getVariantLink(rowIndex).textContent();
   }
 
   // Search/Filter
@@ -67,17 +73,17 @@ export class GWASStudiesSection {
     return this.getSection().locator("input[type='text']");
   }
 
-  async searchStudy(searchTerm: string): Promise<void> {
+  async searchCredibleSet(searchTerm: string): Promise<void> {
     await this.getSearchInput().fill(searchTerm);
   }
 
   // Pagination
   getNextPageButton(): Locator {
-    return this.getSection().locator("[data-testid='next-page-button']");
+    return this.getSection().locator("[data-testid='pagination-next-button']");
   }
 
   getPreviousPageButton(): Locator {
-    return this.getSection().locator("[data-testid='previous-page-button']");
+    return this.getSection().locator("[data-testid='pagination-previous-button']");
   }
 
   async clickNextPage(): Promise<void> {
@@ -88,9 +94,17 @@ export class GWASStudiesSection {
     await this.getPreviousPageButton().click();
   }
 
+  async isNextPageEnabled(): Promise<boolean> {
+    return await this.getNextPageButton().isEnabled();
+  }
+
+  async isPreviousPageEnabled(): Promise<boolean> {
+    return await this.getPreviousPageButton().isEnabled();
+  }
+
   // Wait for section to load
   async waitForSectionLoad(): Promise<void> {
-    await this.getSection().waitFor({ state: "visible" });
+    await this.getSection().waitFor({ state: "visible", timeout: 10000 });
     await this.page.waitForTimeout(500);
   }
 }
