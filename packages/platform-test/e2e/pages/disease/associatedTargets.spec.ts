@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
+import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
-import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { DiseasePage } from "../../../POM/page/disease/disease";
 
 const DISEASE_EFO_ID = "EFO_0000612";
@@ -194,7 +194,7 @@ test.describe("Disease Page", () => {
       const dataCells = await aotfTable.getDataCellsWithScores(rowIndex);
       test.expect(dataCells.length).toBeGreaterThan(0);
 
-      // Skip the first cell since it's the total association score 
+      // Skip the first cell since it's the total association score
       const cellsToTest = dataCells.slice(1, dataCells.length);
 
       for (const cell of cellsToTest) {
