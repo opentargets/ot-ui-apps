@@ -30,7 +30,7 @@ function TableFooter({ table, coreOpen }) {
   }, [displayedTable]);
 
   return (
-    <TableFooterContainer>
+    <TableFooterContainer data-testid="pagination-container">
       <div style={{ display: "flex", alignItems: " flex-start" }}>
         <div id="legend" />
         <div
@@ -63,11 +63,18 @@ function TableFooter({ table, coreOpen }) {
             rowsPerPage={table.getState().pagination.pageSize}
             page={pagination.pageIndex}
             labelRowsPerPage="Associations per page"
+            slotProps={{
+              select: {
+                "data-testid": "page-size-selector",
+              },
+            }}
             backIconButtonProps={{
               disableFocusRipple: true,
+              "data-testid": "previous-page-button",
             }}
             nextIconButtonProps={{
               disableFocusRipple: true,
+              "data-testid": "next-page-button",
             }}
             onPageChange={(e, index) => {
               if (!loading) {

@@ -118,6 +118,8 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
         onClick={() => onClickHandler()}
         shape={shape}
         active={active}
+        aria-label={scoreText}
+        data-score={cellValue.toFixed(2)}
       />
     </Tooltip>
   );
