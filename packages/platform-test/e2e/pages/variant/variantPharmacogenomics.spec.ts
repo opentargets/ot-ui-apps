@@ -13,7 +13,7 @@ test.describe("Pharmacogenomics Section", () => {
     // Navigate to a variant with pharmacogenomics data
     // Using rs662 (PON1 gene) which should have pharmaco data
     await variantPage.goToVariantPage("7_95308134_T_C");
-    
+
     // Wait for the section to load if it's visible
     const isVisible = await pharmacoSection.isSectionVisible();
     if (isVisible) {
@@ -69,9 +69,9 @@ test.describe("Pharmacogenomics Section", () => {
       await pharmacoSection.clickDrugLink(0);
 
       // Wait for navigation to drug page
-      await page.waitForURL(url => url.toString().includes("/drug/"), { timeout: 5000 });
-  }
-});
+      await page.waitForURL((url) => url.toString().includes("/drug/"), { timeout: 5000 });
+    }
+  });
 
   test("Gene/Target link is displayed in table", async () => {
     const isVisible = await pharmacoSection.isSectionVisible();
@@ -98,8 +98,7 @@ test.describe("Pharmacogenomics Section", () => {
         await pharmacoSection.clickGeneLink(0);
 
         // Wait for navigation to target page
-        await page.waitForURL(url => url.toString().includes("/target/"), { timeout: 5000 });
-
+        await page.waitForURL((url) => url.toString().includes("/target/"), { timeout: 5000 });
       }
     }
   });
@@ -161,5 +160,4 @@ test.describe("Pharmacogenomics Section", () => {
       test.skip();
     }
   });
-
 });
