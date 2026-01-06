@@ -38,7 +38,7 @@ jobs:
     needs: [tests_e2e_netlify_prepare, get_branch_name]
     name: Run end-to-end tests on Netlify PR preview
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -52,6 +52,12 @@ jobs:
           yarn playwright install --with-deps chromium webkit
       - name: yarn dev:test:platform:e2e
         run: yarn dev:test:platform:e2e
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: ${{ github.workspace }}/packages/platform-test/playwright-report
+          retention-days: 7
         env:
           PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
           DEBUG: pw:api
