@@ -6,7 +6,7 @@ import { StudyPage } from "../../../POM/page/study/study";
 test.describe("Study Page - QTL Study", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
     const studyPage = new StudyPage(page);
-    await studyPage.goToStudyPage(baseURL as string, testConfig.study.qtl!.primary!);
+    await studyPage.goToStudyPage(baseURL as string, testConfig.study.qtl?.primary as string);
     await studyPage.waitForStudyPageLoad();
   });
 
@@ -296,7 +296,7 @@ test.describe("Study Page - QTL Study", () => {
       const studyPage = new StudyPage(page);
 
       const studyId = await studyPage.getStudyIdFromHeader();
-      test.expect(studyId).toContain(testConfig.study.qtl!.primary!);
+      test.expect(studyId).toContain(testConfig.study?.qtl?.primary);
     });
   });
 });

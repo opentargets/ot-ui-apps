@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Locator, Page } from "@playwright/test";
 
 /**
  * Drug Page Object Model
@@ -18,7 +18,7 @@ export class DrugPage {
   /**
    * Get the drug page header
    */
-  getDrugHeader(): any {
+  getDrugHeader(): Locator {
     return this.page.locator("[data-testid='profile-header']");
   }
 

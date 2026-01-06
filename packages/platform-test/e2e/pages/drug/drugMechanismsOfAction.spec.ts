@@ -55,8 +55,6 @@ test.describe("Drug Mechanisms of Action Section", () => {
   });
 
   test("Can search/filter mechanisms of action", async () => {
-    const initialRowCount = await moaSection.getTableRows();
-
     // Search for a specific term
     await moaSection.search("inhibitor");
 

@@ -1,7 +1,7 @@
+import { test } from "../../../fixtures";
 import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
-import { test } from "../../../fixtures";
 
 test.describe("Disease Page - AOTF Evidence Widgets", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {

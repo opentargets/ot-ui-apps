@@ -8,18 +8,22 @@ test.describe("Study Page - GWAS Study", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
     const studyPage = new StudyPage(page);
     // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(testConfig.disease.primary);
-    await studyPage.goToStudyPage(baseURL!, testConfig.study.gwas.primary);
+    await studyPage.goToStudyPage(baseURL ?? "", testConfig.study.gwas.primary);
     await studyPage.waitForStudyPageLoad();
   });
 
   test.describe("GWAS Study Profile Header", () => {
-    test("Profile header is visible and displays study information", { tag: '@smoke' }, async ({ page }) => {
-      const profileHeader = new StudyProfileHeader(page);
-      await profileHeader.waitForProfileHeaderLoad();
+    test(
+      "Profile header is visible and displays study information",
+      { tag: "@smoke" },
+      async ({ page }) => {
+        const profileHeader = new StudyProfileHeader(page);
+        await profileHeader.waitForProfileHeaderLoad();
 
-      const isVisible = await profileHeader.isProfileHeaderVisible();
-      test.expect(isVisible).toBe(true);
-    });
+        const isVisible = await profileHeader.isProfileHeaderVisible();
+        test.expect(isVisible).toBe(true);
+      }
+    );
 
     test("Study type is displayed correctly as GWAS", async ({ page }) => {
       const profileHeader = new StudyProfileHeader(page);
@@ -411,8 +415,6 @@ test.describe("Study Page - GWAS Study", () => {
           const rowCount = await sharedTraitStudies.getRowCount();
 
           if (rowCount > 0) {
-            const studyId = await sharedTraitStudies.getStudyId(0);
-
             // Click study link
             await sharedTraitStudies.clickStudyLink(0);
             await page.waitForURL("**/study/**");
