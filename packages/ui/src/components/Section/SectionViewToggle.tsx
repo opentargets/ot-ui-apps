@@ -41,11 +41,19 @@ function SectionViewToggle({
       value={sectionView}
       onChange={handleViewChange}
     >
-      <StyledToggleButton aria-label="Switch to table view" value={VIEW.table}>
+      <StyledToggleButton 
+        aria-label="Switch to table view" 
+        value={VIEW.table}
+        data-testid="view-toggle-table"
+      >
         <FontAwesomeIcon icon={faTableColumns} />
         {VIEW.table} view
       </StyledToggleButton>
-      <StyledToggleButton aria-label="Switch to chartn view" value={VIEW.chart}>
+      <StyledToggleButton 
+        aria-label="Switch to chart view" 
+        value={VIEW.chart}
+        data-testid="view-toggle-chart"
+      >
         <FontAwesomeIcon icon={faChartLine} />
         {VIEW.chart}
       </StyledToggleButton>
