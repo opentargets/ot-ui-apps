@@ -2,7 +2,6 @@ import { test } from "@playwright/test";
 import { ProfileHeader } from "../../../POM/objects/components/ProfileHeader/profileHeader";
 
 const DISEASE_EFO_ID = "EFO_0000612";
-const DISEASE_NAME = "myocardial infarction";
 
 test.describe("Disease Profile Page", () => {
   test.beforeEach(async ({ page, baseURL }) => {
