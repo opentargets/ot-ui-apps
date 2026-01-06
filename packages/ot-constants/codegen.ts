@@ -1,6 +1,6 @@
+import { resolve } from "node:path";
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import { config as dotenvConfig } from "dotenv";
-import { resolve } from "path";
 
 // Load .env from apps/platform directory
 dotenvConfig({ path: resolve(__dirname, "../../apps/platform/.env") });
