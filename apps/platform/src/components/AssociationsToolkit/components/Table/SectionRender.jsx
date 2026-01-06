@@ -87,7 +87,7 @@ export function SectionRender({
   if (!Component) return <SectionNotFound />;
 
   return (
-    <Container table={table}>
+    <Container data-testid={`evidence-section-${section[1]}`} table={table}>
       <Component id={componentId} label={label} entity={entityOfSection} {...componentProps} />
     </Container>
   );

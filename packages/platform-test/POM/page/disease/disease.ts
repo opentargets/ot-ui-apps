@@ -6,7 +6,7 @@ export class DiseasePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.originalURL = page.url();  
+    this.originalURL = page.url();
   }
 
   getProfilePage() {
@@ -16,7 +16,7 @@ export class DiseasePage {
   async goToProfilePage() {
     await this.page.goto(this.getProfilePage());
   }
-  
+
   async goToAssociationsPage() {
     await this.page.goto(`${this.originalURL}`);
   }
