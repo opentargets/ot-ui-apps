@@ -58,7 +58,6 @@ test.describe("Variant Effect Predictor / Transcript Consequences Section", () =
   });
 
   test("Can search/filter transcript consequences", async () => {
-
     // Search for a specific term
     await vepSection.search("missense");
 

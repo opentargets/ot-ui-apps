@@ -58,7 +58,6 @@ test.describe("Enhancer-to-Gene Predictions Section", () => {
   });
 
   test("Can search/filter E2G predictions", async () => {
-
     // Search for a specific term
     await e2gSection.search("ENSG");
 
