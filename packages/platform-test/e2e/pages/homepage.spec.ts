@@ -13,7 +13,7 @@ async function fillPolling(locator: Locator, value: string) {
 
 test.describe("Home page actions", () => {
   test("Validate page title", async ({ page, baseURL }) => {
-    await page.goto(baseURL!);
+    await page.goto(baseURL ?? "/");
     const title = await page.title();
     await expect(title).toBe("Open Targets Platform");
   });
@@ -22,7 +22,7 @@ test.describe("Home page actions", () => {
     let searchInput: Locator;
 
     test.beforeEach(async ({ page, baseURL }) => {
-      await page.goto(baseURL!);
+      await page.goto(baseURL ?? "/");
       await page.getByTestId("global-search-input-trigger").click();
 
       // Verify that the global search input is rendered
