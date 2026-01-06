@@ -8,7 +8,7 @@ test.describe("Study Page - GWAS Study", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     const studyPage = new StudyPage(page);
     // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(DISEASE_EFO_ID);
-    await studyPage.goToStudyPage(baseURL ?? '', "GCST90475211");
+    await studyPage.goToStudyPage(baseURL ?? "", "GCST90475211");
     await studyPage.waitForStudyPageLoad();
   });
 
