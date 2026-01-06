@@ -58,7 +58,7 @@ jobs:
       - name: install playwright browsers
         run: |
           cd packages/platform-test
-          yarn playwright install --with-deps chromium
+          yarn playwright install --with-deps chromium webkit
       - name: Run E2E tests
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
