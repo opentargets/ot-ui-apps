@@ -4,14 +4,11 @@ import { GWASCredibleSetsSection } from "../../../POM/objects/widgets/Study/gwas
 import { SharedTraitStudiesSection } from "../../../POM/objects/widgets/Study/sharedTraitStudiesSection";
 import { StudyPage } from "../../../POM/page/study/study";
 
-// Test Disease study
-const DISEASE_EFO_ID = "EFO_0000612";
-
 test.describe("Study Page - GWAS Study", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
+  test.beforeEach(async ({ page, baseURL = "" }) => {
     const studyPage = new StudyPage(page);
     // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(DISEASE_EFO_ID);
-    await studyPage.goToStudyPage(baseURL!, "GCST90475211");
+    await studyPage.goToStudyPage(baseURL, "GCST90475211");
     await studyPage.waitForStudyPageLoad();
   });
 
@@ -414,8 +411,6 @@ test.describe("Study Page - GWAS Study", () => {
           const rowCount = await sharedTraitStudies.getRowCount();
 
           if (rowCount > 0) {
-            const studyId = await sharedTraitStudies.getStudyId(0);
-
             // Click study link
             await sharedTraitStudies.clickStudyLink(0);
             await page.waitForURL("**/study/**");
