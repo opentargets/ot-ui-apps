@@ -28,7 +28,9 @@ export class EnhancerToGenePredictionsSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-enhancer-to-gene-predictions']");
+          const sect = document.querySelector(
+            "[data-testid='section-enhancer-to-gene-predictions']"
+          );
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;

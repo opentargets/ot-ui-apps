@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { MechanismsOfActionSection } from "../../../POM/objects/widgets/shared/mechanismsOfActionSection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Mechanisms of Action Section", () => {
   let drugPage: DrugPage;
   let moaSection: MechanismsOfActionSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     moaSection = new MechanismsOfActionSection(page);
 
     // Navigate to a drug with mechanisms of action data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Wait for the section to fully load
     await moaSection.waitForLoad();
@@ -55,8 +55,6 @@ test.describe("Drug Mechanisms of Action Section", () => {
   });
 
   test("Can search/filter mechanisms of action", async () => {
-    const initialRowCount = await moaSection.getTableRows();
-
     // Search for a specific term
     await moaSection.search("inhibitor");
 

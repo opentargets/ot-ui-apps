@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { VariantProfileHeader } from "../../../POM/objects/components/VariantProfileHeader/variantProfileHeader";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("Variant Profile Header", () => {
   let variantPage: VariantPage;
   let variantProfileHeader: VariantProfileHeader;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     variantProfileHeader = new VariantProfileHeader(page);
 
     // Navigate to a variant page with known data
-    await variantPage.goToVariantPage("1_154453788_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.primary);
   });
 
   test("Profile header is visible", async () => {

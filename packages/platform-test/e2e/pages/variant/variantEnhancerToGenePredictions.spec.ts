@@ -1,17 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { EnhancerToGenePredictionsSection } from "../../../POM/objects/widgets/shared/enhancerToGenePredictionsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
-test.describe("Enhancer-to-Gene Predictions Section", () => {
+test.describe("Enhancer To Gene Predictions Section", () => {
   let variantPage: VariantPage;
   let e2gSection: EnhancerToGenePredictionsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     e2gSection = new EnhancerToGenePredictionsSection(page);
 
-    // Navigate to a variant with E2G predictions
-    await variantPage.goToVariantPage("19_44908822_C_T");
+    // Navigate to a variant with E2G predictions data
+    await variantPage.goToVariantPage(testConfig.variant.withMolecularStructure);
 
     // Check if section is visible
     const isVisible = await e2gSection.isSectionVisible();
@@ -58,8 +58,6 @@ test.describe("Enhancer-to-Gene Predictions Section", () => {
   });
 
   test("Can search/filter E2G predictions", async () => {
-    const initialRowCount = await e2gSection.getTableRows();
-
     // Search for a specific term
     await e2gSection.search("ENSG");
 

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
 test.describe("Variant Page Navigation", () => {
@@ -8,8 +8,8 @@ test.describe("Variant Page Navigation", () => {
     variantPage = new VariantPage(page);
   });
 
-  test("Can navigate to variant page directly by variant ID", async ({ page }) => {
-    const variantId = "1_154453788_C_T";
+  test("Can navigate to variant page directly by variant ID", async ({ page, testConfig }) => {
+    const variantId = testConfig.variant.primary;
 
     await variantPage.goToVariantPage(variantId);
 
@@ -20,8 +20,8 @@ test.describe("Variant Page Navigation", () => {
     expect(page.url()).toContain(`/variant/${variantId}`);
   });
 
-  test("Can get variant ID from page header", async () => {
-    const variantId = "1_154453788_C_T";
+  test("Can get variant ID from page header", async ({ testConfig }) => {
+    const variantId = testConfig.variant.primary;
 
     await variantPage.goToVariantPage(variantId);
 
@@ -32,8 +32,8 @@ test.describe("Variant Page Navigation", () => {
     expect(headerVariantId).toContain("154453788");
   });
 
-  test("Variant page loads successfully with profile header", async ({ page }) => {
-    const variantId = "1_154453788_C_T";
+  test("Variant page loads successfully with profile header", async ({ page, testConfig }) => {
+    const variantId = testConfig.variant.primary;
 
     await variantPage.goToVariantPage(variantId);
 
@@ -44,5 +44,4 @@ test.describe("Variant Page Navigation", () => {
     const profileHeaderBlock = page.locator("[data-testid='profile-page-header-block']");
     await expect(profileHeaderBlock).toBeVisible();
   });
-
 });

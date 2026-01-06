@@ -1,11 +1,11 @@
 import type { Locator, Page } from "@playwright/test";
-import { GWASStudiesSection } from "../../objects/widgets/GWAS/gwasStudiesSection"
+import { GWASStudiesSection } from "../../objects/widgets/GWAS/gwasStudiesSection";
 
 export class StudyPage {
   page: Page;
   originalURL: string;
   STUDY_BASE_URL = "/study/";
-  CHOSEN_STUDY_ID = ""
+  CHOSEN_STUDY_ID = "";
 
   constructor(page: Page) {
     this.page = page;
@@ -42,7 +42,6 @@ export class StudyPage {
         await this.goToStudyPageFromEvidence(trimmedStudyId);
       }
     });
-
   }
 
   // Tab navigation

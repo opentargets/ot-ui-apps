@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { UniProtVariantsSection } from "../../../POM/objects/widgets/shared/uniprotVariantsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("UniProt Variants Section", () => {
   let variantPage: VariantPage;
   let uniprotSection: UniProtVariantsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     uniprotSection = new UniProtVariantsSection(page);
 
     // Navigate to a variant with UniProt data
-    await variantPage.goToVariantPage("19_44908822_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.withMolecularStructure);
 
     // Check if section is visible
     const isVisible = await uniprotSection.isSectionVisible();
@@ -35,18 +35,18 @@ test.describe("UniProt Variants Section", () => {
 
   test("Target gene link is displayed in table", async () => {
     const geneLink = await uniprotSection.getTargetGeneLink(0);
-
     expect(await geneLink.isVisible()).toBe(true);
   });
 
-  test("Can click target gene link in table", async ({ page }) => {
+  test("Can click target gene button in table", async ({ page }) => {
     await uniprotSection.clickTargetGeneLink(0);
 
-    // Wait for navigation to target page
-    await page.waitForURL((url) => url.toString().includes("/target/"), { timeout: 5000 });
+    // Wait for drawer to open (button opens a drawer instead of navigating)
+    const drawer = page.locator("[data-testid='publications-drawer']");
+    await drawer.waitFor({ state: "visible", timeout: 5000 });
 
-    // Should navigate to target/gene page
-    expect(page.url()).toContain("/target/");
+    // Drawer should be visible
+    expect(await drawer.isVisible()).toBe(true);
   });
 
   test("Disease links are displayed in table", async () => {
@@ -70,8 +70,6 @@ test.describe("UniProt Variants Section", () => {
   });
 
   test("Can search/filter UniProt variants", async () => {
-    const initialRowCount = await uniprotSection.getTableRows();
-
     // Search for a specific term
     await uniprotSection.search("disease");
 

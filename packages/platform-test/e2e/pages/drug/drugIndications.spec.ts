@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { IndicationsSection } from "../../../POM/objects/widgets/shared/indicationsSection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Indications Section", () => {
   let drugPage: DrugPage;
   let indicationsSection: IndicationsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     indicationsSection = new IndicationsSection(page);
 
     // Navigate to a drug with indications data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Wait for the section to fully load
     await indicationsSection.waitForLoad();
@@ -52,8 +52,6 @@ test.describe("Drug Indications Section", () => {
   });
 
   test("Can search/filter indications", async () => {
-    const initialRowCount = await indicationsSection.getTableRows();
-
     // Search for a specific term
     await indicationsSection.search("cancer");
 

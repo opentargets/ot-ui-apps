@@ -140,6 +140,44 @@ export class AotfTable {
     return this.page.locator(`[data-testid*='table-row']`, { hasText: name });
   }
 
+  // Find row index by gene symbol
+  async findRowIndexByGeneSymbol(
+    geneSymbol: string,
+    prefix: string = "core"
+  ): Promise<number | null> {
+    const rowCount = await this.getRowCount(prefix);
+
+    for (let i = 0; i < rowCount; i++) {
+      const nameCell = this.getNameCell(i, prefix);
+      const text = await nameCell.textContent();
+
+      if (text?.includes(geneSymbol)) {
+        return i;
+      }
+    }
+
+    return null;
+  }
+
+  // Wait for specific gene to appear in table
+  async waitForGeneInTable(
+    geneSymbol: string,
+    prefix: string = "core",
+    timeout: number = 10000
+  ): Promise<number | null> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const rowIndex = await this.findRowIndexByGeneSymbol(geneSymbol, prefix);
+      if (rowIndex !== null) {
+        return rowIndex;
+      }
+      await this.page.waitForTimeout(500);
+    }
+
+    return null;
+  }
+
   // Pin/Unpin row
   getPinButtonForRow(rowIndex: number): Locator {
     return this.page.locator(`[data-testid='pin-button-${rowIndex}']`);
@@ -209,7 +247,11 @@ export class AotfTable {
   }
 
   // Get the score value from a data cell
-  async getDataCellScore(rowIndex: number, columnId: string, prefix: string = "core"): Promise<number | null> {
+  async getDataCellScore(
+    rowIndex: number,
+    columnId: string,
+    prefix: string = "core"
+  ): Promise<number | null> {
     const cell = this.getDataCell(rowIndex, columnId, prefix);
     const score = await cell.getAttribute("data-score");
     return score ? parseFloat(score) : null;
@@ -222,7 +264,10 @@ export class AotfTable {
   }
 
   // Get all data cells with score > 0 in a row
-  async getDataCellsWithScores(rowIndex: number, prefix: string = "core"): Promise<Array<{ columnId: string; score: number }>> {
+  async getDataCellsWithScores(
+    rowIndex: number,
+    prefix: string = "core"
+  ): Promise<Array<{ columnId: string; score: number }>> {
     const cells = this.getDataCellsInRow(rowIndex, prefix);
     const count = await cells.count();
     const cellsWithScores: Array<{ columnId: string; score: number }> = [];
@@ -231,7 +276,7 @@ export class AotfTable {
       const cell = cells.nth(i);
       const scoreAttr = await cell.getAttribute("data-score");
       const testId = await cell.getAttribute("data-testid");
-      
+
       if (scoreAttr && testId) {
         const score = parseFloat(scoreAttr);
         if (score > 0) {
@@ -248,14 +293,14 @@ export class AotfTable {
   // Find first row with data cells that have score > 0
   async findFirstRowWithData(prefix: string = "core"): Promise<number | null> {
     const rowCount = await this.getRowCount(prefix);
-    
-    for (let i = 0; i < rowCount; i++) {
+
+    for (let i = 1; i < rowCount; i++) {
       const cellsWithScores = await this.getDataCellsWithScores(i, prefix);
       if (cellsWithScores.length > 0) {
         return i;
       }
     }
-    
+
     return null;
   }
 }

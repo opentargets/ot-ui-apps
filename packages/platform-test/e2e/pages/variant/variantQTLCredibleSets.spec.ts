@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { QTLCredibleSetsSection } from "../../../POM/objects/widgets/shared/qtlCredibleSetsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("Variant QTL Credible Sets Section", () => {
   let variantPage: VariantPage;
   let qtlSection: QTLCredibleSetsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     qtlSection = new QTLCredibleSetsSection(page);
 
     // Navigate to a variant with QTL credible sets data
-    await variantPage.goToVariantPage("1_154453788_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.withQTL ?? testConfig.variant.primary);
 
     // Check if section is visible
     const isVisible = await qtlSection.isSectionVisible();
@@ -76,8 +76,6 @@ test.describe("Variant QTL Credible Sets Section", () => {
   });
 
   test("Can search/filter QTL credible sets", async () => {
-    const initialRowCount = await qtlSection.getTableRows();
-
     // Search for a specific term
     await qtlSection.search("ENSG");
 

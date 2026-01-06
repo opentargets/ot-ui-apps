@@ -243,6 +243,7 @@ function PublicationsDrawer({
         classes={{ modal: classes.drawerModal, paper: classes.drawerPaper }}
         open={open}
         onClose={closeDrawer}
+        data-testid="publications-drawer"
       >
         <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
           <Box display="flex" justifyContent="space-between" alignItems="center">

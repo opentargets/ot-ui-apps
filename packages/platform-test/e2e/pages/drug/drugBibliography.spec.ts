@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { BibliographySection } from "../../../POM/objects/widgets/Bibliography/bibliographySection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
@@ -6,12 +6,12 @@ test.describe("Drug Bibliography Section", () => {
   let drugPage: DrugPage;
   let bibliographySection: BibliographySection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     bibliographySection = new BibliographySection(page);
 
-    // Navigate to a drug with bibliography data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    // Navigate to a drug with bibliography
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Check if section is visible
     const isVisible = await bibliographySection.isSectionVisible();

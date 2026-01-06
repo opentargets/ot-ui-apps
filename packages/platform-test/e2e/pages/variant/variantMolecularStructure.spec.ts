@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 
 import { MolecularStructureSection } from "../../../POM/objects/widgets/shared/molecularStructureSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
@@ -7,12 +7,14 @@ test.describe("Molecular Structure Section", () => {
   let variantPage: VariantPage;
   let structureSection: MolecularStructureSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     structureSection = new MolecularStructureSection(page);
 
     // Navigate to a variant with molecular structure data
-    await variantPage.goToVariantPage("19_44908822_C_T");
+    await variantPage.goToVariantPage(
+      testConfig.variant.withMolecularStructure ?? testConfig.variant.primary
+    );
 
     // Check if section is visible
     const isVisible = await structureSection.isSectionVisible();
