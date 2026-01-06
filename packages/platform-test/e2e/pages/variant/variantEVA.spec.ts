@@ -57,8 +57,6 @@ test.describe("EVA / ClinVar Section", () => {
   });
 
   test("Can search/filter ClinVar entries", async () => {
-    const initialRowCount = await evaSection.getTableRows();
-
     // Search for a specific term
     await evaSection.search("pathogenic");
 

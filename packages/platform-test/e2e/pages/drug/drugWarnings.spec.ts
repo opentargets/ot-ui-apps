@@ -11,7 +11,9 @@ test.describe("Drug Warnings Section", () => {
     warningsSection = new DrugWarningsSection(page);
 
     // Navigate to a drug with warnings data
-    await drugPage.goToDrugPage(testConfig.drug.alternatives?.withWarnings ?? testConfig.drug.primary);
+    await drugPage.goToDrugPage(
+      testConfig.drug.alternatives?.withWarnings ?? testConfig.drug.primary
+    );
 
     // Check if section is visible
     const isVisible = await warningsSection.isSectionVisible();
@@ -55,8 +57,6 @@ test.describe("Drug Warnings Section", () => {
   });
 
   test("Can search/filter warnings", async () => {
-    const initialRowCount = await warningsSection.getTableRows();
-
     // Search for a specific term
     await warningsSection.search("warning");
 

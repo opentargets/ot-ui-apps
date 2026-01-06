@@ -8,7 +8,7 @@ test.describe("Study Page - GWAS Study", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
     const studyPage = new StudyPage(page);
     // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(testConfig.disease.primary);
-    await studyPage.goToStudyPage(baseURL!, testConfig.study.gwas.primary);
+    await studyPage.goToStudyPage(baseURL ?? "", testConfig.study.gwas.primary);
     await studyPage.waitForStudyPageLoad();
   });
 
@@ -411,8 +411,6 @@ test.describe("Study Page - GWAS Study", () => {
           const rowCount = await sharedTraitStudies.getRowCount();
 
           if (rowCount > 0) {
-            const studyId = await sharedTraitStudies.getStudyId(0);
-
             // Click study link
             await sharedTraitStudies.clickStudyLink(0);
             await page.waitForURL("**/study/**");

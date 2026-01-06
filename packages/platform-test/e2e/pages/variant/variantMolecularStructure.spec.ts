@@ -1,4 +1,4 @@
-import { test, expect } from "../../../fixtures";
+import { expect, test } from "../../../fixtures";
 
 import { MolecularStructureSection } from "../../../POM/objects/widgets/shared/molecularStructureSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
@@ -12,7 +12,9 @@ test.describe("Molecular Structure Section", () => {
     structureSection = new MolecularStructureSection(page);
 
     // Navigate to a variant with molecular structure data
-    await variantPage.goToVariantPage(testConfig.variant.withMolecularStructure ?? testConfig.variant.primary);
+    await variantPage.goToVariantPage(
+      testConfig.variant.withMolecularStructure ?? testConfig.variant.primary
+    );
 
     // Check if section is visible
     const isVisible = await structureSection.isSectionVisible();

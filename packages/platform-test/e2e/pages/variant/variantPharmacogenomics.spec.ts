@@ -12,7 +12,9 @@ test.describe("Pharmacogenomics Section", () => {
 
     // Navigate to a variant with pharmacogenomics data
     // Using rs662 (PON1 gene) which should have pharmaco data
-    await variantPage.goToVariantPage(testConfig.variant.withPharmacogenomics ?? testConfig.variant.primary);
+    await variantPage.goToVariantPage(
+      testConfig.variant.withPharmacogenomics ?? testConfig.variant.primary
+    );
 
     // Wait for the section to load if it's visible
     const isVisible = await pharmacoSection.isSectionVisible();

@@ -7,7 +7,6 @@ import { OntologySection } from "../../../POM/objects/widgets/Ontology/ontologyS
 import { OTProjectsSection } from "../../../POM/objects/widgets/OTProjects/otProjectsSection";
 import { PhenotypesSection } from "../../../POM/objects/widgets/Phenotypes/phenotypesSection";
 
-
 test.describe("Disease Profile Page", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
     await page.goto(`${baseURL}/disease/${testConfig.disease.primary}`);
