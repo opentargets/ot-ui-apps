@@ -1,5 +1,11 @@
 import { test } from "@playwright/test";
 import { ProfileHeader } from "../../../POM/objects/components/ProfileHeader/profileHeader";
+import { BibliographySection } from "../../../POM/objects/widgets/Bibliography/bibliographySection";
+import { GWASStudiesSection } from "../../../POM/objects/widgets/GWAS/gwasStudiesSection";
+import { KnownDrugsSection } from "../../../POM/objects/widgets/KnownDrugs/knownDrugsSection";
+import { OntologySection } from "../../../POM/objects/widgets/Ontology/ontologySection";
+import { OTProjectsSection } from "../../../POM/objects/widgets/OTProjects/otProjectsSection";
+import { PhenotypesSection } from "../../../POM/objects/widgets/Phenotypes/phenotypesSection";
 
 const DISEASE_EFO_ID = "EFO_0000612";
 
@@ -77,6 +83,136 @@ test.describe("Disease Profile Page", () => {
       // Check that description is not the default "No description available" message
       if (descriptionText) {
         test.expect(descriptionText.toLowerCase()).not.toContain("no description available");
+      }
+    });
+  });
+
+  test.describe("Profile Evidences are correctly rendered", () => {
+    test("Ontology section is visible and contains data", async ({ page }) => {
+      const ontologySection = new OntologySection(page);
+      await ontologySection.waitForSectionLoad();
+
+      const isVisible = await ontologySection.isSectionVisible();
+      test.expect(isVisible).toBe(true);
+
+      const title = await ontologySection.getSectionTitle();
+      test.expect(title).toBeTruthy();
+    });
+
+    test("Known Drugs section is visible when disease has drug data", async ({ page }) => {
+      const knownDrugsSection = new KnownDrugsSection(page);
+
+      // Wait for section to potentially load
+      const isVisible = await knownDrugsSection.isSectionVisible();
+
+      // If the section is visible, verify it has data
+      if (isVisible) {
+        await knownDrugsSection.waitForSectionLoad();
+
+        const title = await knownDrugsSection.getSectionTitle();
+        test.expect(title).toBeTruthy();
+
+        const isTableVisible = await knownDrugsSection.isTableVisible();
+        if (isTableVisible) {
+          const rowCount = await knownDrugsSection.getRowCount();
+          test.expect(rowCount).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    test("Phenotypes section is visible when disease has phenotype data", async ({ page }) => {
+      const phenotypesSection = new PhenotypesSection(page);
+
+      const isVisible = await phenotypesSection.isSectionVisible();
+
+      if (isVisible) {
+        await phenotypesSection.waitForSectionLoad();
+
+        const title = await phenotypesSection.getSectionTitle();
+        test.expect(title).toBeTruthy();
+
+        const isTableVisible = await phenotypesSection.isTableVisible();
+        if (isTableVisible) {
+          const rowCount = await phenotypesSection.getRowCount();
+          test.expect(rowCount).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    test("OT Projects section is visible when disease has project data", async ({ page }) => {
+      const otProjectsSection = new OTProjectsSection(page);
+
+      const isVisible = await otProjectsSection.isSectionVisible();
+
+      if (isVisible) {
+        await otProjectsSection.waitForSectionLoad();
+
+        const title = await otProjectsSection.getSectionTitle();
+        test.expect(title).toBeTruthy();
+
+        const projectCount = await otProjectsSection.getProjectCount();
+        test.expect(projectCount).toBeGreaterThan(0);
+      }
+    });
+
+    test("GWAS Studies section is visible when disease has GWAS data", async ({ page }) => {
+      const gwasStudiesSection = new GWASStudiesSection(page);
+
+      const isVisible = await gwasStudiesSection.isSectionVisible();
+
+      if (isVisible) {
+        await gwasStudiesSection.waitForSectionLoad();
+
+        const title = await gwasStudiesSection.getSectionTitle();
+        test.expect(title).toBeTruthy();
+
+        const isTableVisible = await gwasStudiesSection.isTableVisible();
+        if (isTableVisible) {
+          const rowCount = await gwasStudiesSection.getRowCount();
+          test.expect(rowCount).toBeGreaterThan(0);
+        }
+      }
+    });
+
+    test("Bibliography section is visible when disease has literature data", async ({ page }) => {
+      const bibliographySection = new BibliographySection(page);
+
+      const isVisible = await bibliographySection.isSectionVisible();
+
+      if (isVisible) {
+        await bibliographySection.waitForSectionLoad();
+
+        const title = await bibliographySection.getSectionTitle();
+        test.expect(title).toBeTruthy();
+
+        const literatureCount = await bibliographySection.getLiteratureCount();
+        test.expect(literatureCount).toBeGreaterThan(0);
+      }
+    });
+
+    test("All visible sections have corresponding headers", async ({ page }) => {
+      // Create instances of all section interactors
+      const sections = [
+        { name: "Ontology", interactor: new OntologySection(page) },
+        { name: "Known Drugs", interactor: new KnownDrugsSection(page) },
+        { name: "Phenotypes", interactor: new PhenotypesSection(page) },
+        { name: "OT Projects", interactor: new OTProjectsSection(page) },
+        { name: "GWAS Studies", interactor: new GWASStudiesSection(page) },
+        { name: "Bibliography", interactor: new BibliographySection(page) },
+      ];
+
+      // Wait for page to stabilize
+      await page.waitForLoadState("networkidle");
+
+      // Check each section
+      for (const section of sections) {
+        const isVisible = await section.interactor.isSectionVisible();
+
+        if (isVisible) {
+          const title = await section.interactor.getSectionTitle();
+          test.expect(title).toBeTruthy();
+          console.log(`✓ ${section.name} section is visible with title: ${title}`);
+        }
       }
     });
   });

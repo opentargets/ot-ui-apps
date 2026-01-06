@@ -48,4 +48,33 @@ export class EvidenceSection {
       await closeButton.click();
     }
   }
+
+  // Check if loader is present in evidence section
+  getLoader(): Locator {
+    return this.page.locator("[data-testid='section-loader']");
+  }
+
+  async isLoaderVisible(): Promise<boolean> {
+    return await this.getLoader()
+      .isVisible()
+      .catch(() => false);
+  }
+
+  async waitForLoaderToDisappear(): Promise<void> {
+    try {
+      await this.getLoader().waitFor({ state: "hidden", timeout: 10000 });
+    } catch {
+      // Loader might not appear at all, which is fine
+    }
+  }
+
+  // Wait for section to fully load (section visible and no loader)
+  // Note: There is no error fallback UI - if there's an error, the section simply won't render
+  async waitForSectionLoad(sectionId: string): Promise<void> {
+    // Wait for section to appear (if this fails, it indicates an error state)
+    await this.waitForEvidenceSection(sectionId);
+
+    // Wait for loader to disappear
+    await this.waitForLoaderToDisappear();
+  }
 }
