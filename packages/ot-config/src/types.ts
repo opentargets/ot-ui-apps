@@ -5,6 +5,7 @@ export interface Config {
   googleTagManagerID: string | null;
   geneticsPortalUrl: string;
   gitVersion: string;
+  releaseNotesUrl: string;
 }
 
 export type Environment = "development" | "production";

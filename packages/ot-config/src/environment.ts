@@ -9,6 +9,7 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       googleTagManagerID: null,
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
+      releaseNotesUrl: "https://platform-docs.opentargets.org/release-notes",
     },
     production: {
       urlApi: "https://api.platform.opentargets.org",
@@ -17,6 +18,7 @@ export const getEnvironmentConfig = (env: Environment): Config => {
       googleTagManagerID: "GTM-XXXXX",
       geneticsPortalUrl: "https://genetics.opentargets.org",
       gitVersion: "",
+      releaseNotesUrl: "https://platform-docs.opentargets.org/release-notes",
     },
   };
 
@@ -27,6 +29,7 @@ export const getEnvironmentConfig = (env: Environment): Config => {
 const ENV_API_URL: string | undefined = import.meta.env.VITE_API_URL;
 const ENV_AI_API_URL: string | undefined = import.meta.env.VITE_AI_API_URL;
 const ENV_GIT_VERSION: string | undefined = import.meta.env.VITE_GIT_VERSION;
+const ENV_RELEASE_NOTES_URL: string | undefined = import.meta.env.VITE_RELEASE_NOTES_URL;
 
 export const getConfig = (): Config => {
   return {
@@ -36,5 +39,6 @@ export const getConfig = (): Config => {
     profile: window.configProfile ?? { isPartnerPreview: false },
     googleTagManagerID: window.configGoogleTagManagerID ?? null,
     geneticsPortalUrl: window.configGeneticsPortalUrl ?? "https://genetics.opentargets.org",
+    releaseNotesUrl: window.configReleaseNotesUrl ?? ENV_RELEASE_NOTES_URL ?? "https://platform-docs.opentargets.org/release-notes/production",
   };
 };

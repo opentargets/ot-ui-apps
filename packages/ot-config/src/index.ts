@@ -11,5 +11,6 @@ declare global {
     configGoogleTagManagerID?: string;
     configGeneticsPortalUrl?: string;
     gitVersion?: string;
+    configReleaseNotesUrl?: string;
   }
 }
