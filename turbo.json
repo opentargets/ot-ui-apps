@@ -8,6 +8,10 @@
     "lint": {
       "outputs": []
     },
+    "codegen": {
+      "outputs": ["src/types/**", "graphql.schema.json"],
+      "cache": false
+    },
     "prettier:all": {
       "outputs": []
     },
