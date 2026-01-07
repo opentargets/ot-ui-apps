@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
 import { fetcher } from "@ot/utils";
-import "graphiql/graphiql.min.css";
 
 import Link from "./Link";
 
