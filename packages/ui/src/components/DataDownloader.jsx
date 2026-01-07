@@ -16,7 +16,6 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import "graphiql/graphiql.min.css";
 import ApiPlaygroundDrawer from "./ApiPlaygroundDrawer";
 
 const asJSON = (columns, rows) => {
