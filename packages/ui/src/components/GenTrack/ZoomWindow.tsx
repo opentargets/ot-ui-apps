@@ -17,7 +17,6 @@ function ZoomWindow({
   const windowGfx = useRef();
   const leftHandle = useRef();
   const rightHandle = useRef();
-
   const dragState = useRef(null);
     
   const HANDLE_WIDTH_PX = 8;
@@ -103,6 +102,7 @@ function ZoomWindow({
     dragState.current = null;
   };
 
+
   return (
     <Container
       ref={containerRef}
@@ -127,6 +127,7 @@ function ZoomWindow({
         eventMode="static"
         cursor="ew-resize"
         pointerdown={e => onDown('left', e)}
+        // hitArea={new Rectangle(-10, 0, 20, canvasHeightPx)}
       />
 
       {/* right handle */}
@@ -135,6 +136,7 @@ function ZoomWindow({
         eventMode="static"
         cursor="ew-resize"
         pointerdown={e => onDown('right', e)}
+        // hitArea={new Rectangle(-10, 0, 20, canvasHeightPx)}
       />
     </Container>
   );

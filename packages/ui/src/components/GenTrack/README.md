@@ -13,7 +13,6 @@ Flexible 1D-tracks for showing genetic (and related) data.
 
 - Zoomed track correspond to a window on the outer wrapper's x-scale.
 
-
 ## Design
 
 <img src="design.png" alt="idea" style="max-width: 600px">
@@ -25,8 +24,6 @@ Everything is React - tracks sare written in [`@pixi/react`](https://react.pixij
 ## Components
 
 #### `GenTrackProvider`
-
-__NOTE: Under the updated design, this dedicated state management is perhaps no longer required/justified for this component and should maybe be removed?__
 
 Provides context for the track. Its children should include a single `GenTrack` component along with any other components that need to get/set the context.
 

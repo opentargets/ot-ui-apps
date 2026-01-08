@@ -15,7 +15,7 @@ export function Rectangle(props) {
     [props],
   );
 
-  return <Graphics draw={draw} />;
+  return <Graphics draw={draw} />;  // make all interactive for now !!!
 }
 
 // reusable rectangle texture
