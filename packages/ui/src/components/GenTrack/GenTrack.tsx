@@ -17,12 +17,11 @@ const TooltipLayer = memo(function TooltipLayer({
   width,
   height,
 }) {
-  console.log("tooltip-layer!!")
 
   if (!render) return null;
 
   return (
-    <Box id="tooltip-layer" sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+    <Box sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
       <VisTooltip width={width} height={height}>
         {render}
       </VisTooltip>

@@ -26,7 +26,7 @@ const data = {
     { x1: 250, x2: 400, y1: 51, y2: 74 },
     { x1: 600, x2: 700, y1: 76, y2: 99 },
   ],
-  shortRects: new Array(5_000).fill(0).map(() => randomRect({xMin, xMax, yMin, yMax})),
+  shortRects: new Array(20_000).fill(0).map(() => randomRect({xMin, xMax, yMin, yMax})),
   bars: new Array(50).fill(1).map((_, i) => {
     const h = Math.random() * yMax;
     return {

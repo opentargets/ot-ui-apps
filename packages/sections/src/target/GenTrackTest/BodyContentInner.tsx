@@ -108,16 +108,16 @@ function BodyContentInner({ data, yMin, yMax }) {
       Track: () => {
         const rectTexture = useRectangleTexture();
         return (
-          // <ParticleContainer
-          //   maxSize={data.shortRects.length}
-          //   properties={{
-          //     position: true,
-          //     scale: true, // width/height maps to scale internally
-          //     tint: true,
-          //     alpha: true,
-          //   }}
-          // >
-          <Container>
+          <ParticleContainer
+            maxSize={data.shortRects.length}
+            properties={{
+              position: true,
+              scale: true, // width/height maps to scale internally
+              tint: true,
+              alpha: true,
+            }}
+          >
+          {/* <Container> */}
             {data.shortRects.map((p, i) => (
               <Sprite
                 key={i}
@@ -128,21 +128,21 @@ function BodyContentInner({ data, yMin, yMax }) {
                 height={p.h}
                 tint={colorScheme[p.category]}
                 alpha={0.3}
-                eventMode="static"
-                pointerover={e => {
-                  // console.log("pointerover");
-                  visTooltipDispatch({ type: "setDatum", value: p });
-                  visTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
-                }}
-                pointerout={e => {
-                  // console.log("pointerout");
-                  visTooltipDispatch({ type: "setDatum", value: null });
-                  visTooltipDispatch({ type: "setGlobalXY", value: null });
-                }}
+                // eventMode="static"
+                // pointerover={e => {
+                //   // console.log("pointerover");
+                //   visTooltipDispatch({ type: "setDatum", value: p });
+                //   visTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                // }}
+                // pointerout={e => {
+                //   // console.log("pointerout");
+                //   visTooltipDispatch({ type: "setDatum", value: null });
+                //   visTooltipDispatch({ type: "setGlobalXY", value: null });
+                // }}
               />
             ))}
-          </Container>
-          // </ParticleContainer>
+          {/* </Container> */}
+          </ParticleContainer>
         );
       }
     },
