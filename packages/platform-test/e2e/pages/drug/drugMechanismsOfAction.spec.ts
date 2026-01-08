@@ -17,7 +17,7 @@ test.describe("Drug Mechanisms of Action Section", () => {
     await moaSection.waitForLoad();
   });
 
-  test("Mechanisms of Action section is visible", async () => {
+  test("Mechanisms of Action section is visible", { tag: "@smoke" }, async () => {
     expect(await moaSection.isSectionVisible()).toBe(true);
   });
 

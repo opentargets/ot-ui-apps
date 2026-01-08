@@ -2,7 +2,7 @@ import { expect, type Locator, test } from "@playwright/test";
 import { fillPolling } from "../../utils/fillPolling";
 
 test.describe("Home page actions", () => {
-  test("Validate page title", async ({ page, baseURL }) => {
+  test("Validate page title", { tag: "@smoke" }, async ({ page, baseURL }) => {
     await page.goto(baseURL ?? "/");
     const title = await page.title();
     await expect(title).toBe("Open Targets Platform");

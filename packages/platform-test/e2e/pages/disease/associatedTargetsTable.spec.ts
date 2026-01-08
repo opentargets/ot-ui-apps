@@ -7,7 +7,7 @@ test.describe("Disease Page - AOTF Table", () => {
     await page.goto(`${baseURL}/disease/${testConfig.disease.primary}/associations`);
   });
 
-  test("targets are displayed in the associations table", async ({ page }) => {
+  test("targets are displayed in the associations table", { tag: "@smoke" }, async ({ page }) => {
     const aotfTable = new AotfTable(page);
 
     // Wait for table to load
