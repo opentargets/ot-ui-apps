@@ -1,0 +1,3 @@
+fragment GenTrackTestSummaryFragment on Target {
+  id
+}
