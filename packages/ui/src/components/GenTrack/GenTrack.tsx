@@ -1,5 +1,4 @@
 import { Box } from "@mui/material";
-import { Rectangle } from "pixi.js";
 import { Stage, Container } from '@pixi/react';
 import { useMeasure } from "@uidotdev/usehooks";
 import { useRef, useMemo, useEffect, memo } from "react";
@@ -7,25 +6,25 @@ import { createViewModel } from "./createViewModel";
 import PanZoomPanel from "./PanZoomPanel";
 import NestedXInfo from "./NestedXInfo";
 import { useGenTrackState } from "../../providers/GenTrackProvider";
-import VisTooltip from "../VisTooltip";
-import { useVisTooltipDispatch } from "../../providers/VisTooltipProvider";
+import GenTrackTooltip from "./GenTrackTooltip";
+import { useGenTrackTooltipDispatch } from "../../providers/GenTrackTooltipProvider";
 
 function px(num) {
   return `${num}px`;
 }
 
-const TooltipLayer = memo(function TooltipLayer({ render, width, height, canvasType }) {
-  const visTooltipDispatch = useVisTooltipDispatch();
+const TooltipLayer = memo(function TooltipLayer({ children, width, height, canvasType }) {
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
   
   const handleMouseEnter = () => {
-    visTooltipDispatch({ type: "setActiveCanvas", value: canvasType });
+    genTrackTooltipDispatch({ type: "setActiveCanvas", value: canvasType });
   };
   
   const handleMouseLeave = () => {
-    visTooltipDispatch({ type: "setActiveCanvas", value: null });
+    genTrackTooltipDispatch({ type: "setActiveCanvas", value: null });
   };
   
-  if (!render) return null;
+  if (!children) return null;
   
   return (
     <Box 
@@ -37,9 +36,9 @@ const TooltipLayer = memo(function TooltipLayer({ render, width, height, canvasT
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <VisTooltip width={width} height={height} canvasType={canvasType}>
-        {render}
-      </VisTooltip>
+      <GenTrackTooltip width={width} height={height} canvasType={canvasType}>
+        {children}
+      </GenTrackTooltip>
     </Box>
   );
 });
@@ -53,8 +52,8 @@ function GenTrack({
   yInfoGap = 16,
   panZoomTopGap = 16,
   panZoomBottomGap = 16,
-  renderTooltip,
-  innerRenderTooltip,
+  Tooltip,
+  InnerTooltip,
   _isInner = false,
   _viewModel = null,  // only used if inner genTrack - it is the view model from the outer genTrack
   _innerTracksContainerRef
@@ -156,13 +155,15 @@ function GenTrack({
               ))}
             </Container>
           </Stage>
-          {renderTooltip && (
+          {Tooltip && (
             <TooltipLayer
-              render={renderTooltip}
+              // render={renderTooltip}
               width={canvasWidth}
               height={canvasHeight}
               canvasType={_isInner ? "inner" : "outer"}
-            />
+            >
+              <Tooltip />   
+            </TooltipLayer>
           )}
         </Box>
       </Box>
@@ -194,7 +195,7 @@ function GenTrack({
               XInfo={InnerXInfo}
               yInfoWidth={yInfoWidth}
               panZoomBottomGap={panZoomBottomGap}
-              renderTooltip={innerRenderTooltip}
+              Tooltip={InnerTooltip}
               _isInner={true}
               _viewModel={viewModel}
               _innerTracksContainerRef={innerTracksContainerRef}

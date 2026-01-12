@@ -1,7 +1,7 @@
-import { useVisTooltipState } from "../providers/VisTooltipProvider";
+import { useGenTrackTooltipState } from "../../providers/GenTrackTooltipProvider";
 import { Box } from "@mui/material";
 
-function VisTooltip({
+function GenTrackTooltip({
   width,  
   height,
   canvasType,
@@ -15,9 +15,9 @@ function VisTooltip({
   children
 }) {
 
-  const visTooltipState = useVisTooltipState();
-  if (!visTooltipState) return null 
-  const { datum, otherData, globalXY, activeCanvas } = useVisTooltipState();
+  const genTrackTooltipState = useGenTrackTooltipState();
+  if (!genTrackTooltipState) return null 
+  const { datum, otherData, globalXY, activeCanvas } = genTrackTooltipState;
   if (!datum && !otherData) return null;
   if (activeCanvas !== canvasType) return null;
 
@@ -73,4 +73,4 @@ function VisTooltip({
   );
 }
 
-export default VisTooltip;
+export default GenTrackTooltip;

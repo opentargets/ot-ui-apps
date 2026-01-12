@@ -1,8 +1,8 @@
 
 import {
   GenTrack,
-  useVisTooltipDispatch,
-  useVisTooltipState
+  useGenTrackTooltipDispatch,
+  useGenTrackTooltipState
 } from "ui";
 import { Container, Sprite, ParticleContainer } from '@pixi/react';
 import { Box, Typography } from "@mui/material";
@@ -10,11 +10,11 @@ import { Rectangle, useRectangleTexture } from "./shapes";
 import Intro from "./Intro";
 
 function MyTooltip() {
-  const visTooltipState = useVisTooltipState();
-  if (!visTooltipState?.datum) return null;
+  const { datum } = useGenTrackTooltipState() ?? {};
+  if (!datum) return null;
   return (
-    <Box sx={{ p: 0.5, border: "1px solid #bbb", borderRadius: 2, bgcolor: "#fff", fontSize: "13px" }}>
-      {JSON.stringify(visTooltipState.datum)}
+    <Box sx={{ p: 0.5, border: "1px solid #bbb", borderRadius: 2, bgcolor: "#fff" }}>
+      {JSON.stringify(datum)}
     </Box>
   );
 }
@@ -46,21 +46,21 @@ const colorScheme = [
 ];
 
   
-  // need canvasWidth prop (even if not used) for correct behavior of inner XInfo
-  function XInfo({start, end, canvasWidth}) {
-    return (
-      <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1, borderRadius: 2 }}>
-        <Typography variant="body2">
-          <Box component="span" sx={{fontWeight: 600, pr: 2 }}>x: {Math.round(start)}-{Math.round(end)}</Box>
-          <Box component="span" sx={{fontWeight: 300, }}>x-info, e.g. axis</Box>
-        </Typography>
-      </Box>
-    )
-  }
+// need canvasWidth prop (even if not used) for correct behavior of inner XInfo
+function XInfo({start, end, canvasWidth}) {
+  return (
+    <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1, borderRadius: 2 }}>
+      <Typography variant="body2">
+        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>x: {Math.round(start)}-{Math.round(end)}</Box>
+        <Box component="span" sx={{fontWeight: 300, }}>x-info, e.g. axis</Box>
+      </Typography>
+    </Box>
+  )
+}
 
 function BodyContentInner({ data, yMin, yMax }) {
 
-  const visTooltipDispatch = useVisTooltipDispatch();
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
   const tracks = [
     { // use Grahoics objects for example with few rectangles
@@ -133,12 +133,12 @@ function BodyContentInner({ data, yMin, yMax }) {
                 eventMode="static"
                 pointerover={e => {
                   // console.log(e)
-                  visTooltipDispatch({ type: "setDatum", value: p });
-                  visTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                  genTrackTooltipDispatch({ type: "setDatum", value: p });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
                 }}
                 pointerout={e => {
-                  visTooltipDispatch({ type: "setDatum", value: null });
-                  visTooltipDispatch({ type: "setGlobalXY", value: null });
+                  genTrackTooltipDispatch({ type: "setDatum", value: null });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
                 }}
               />
             ))}
@@ -177,12 +177,12 @@ function BodyContentInner({ data, yMin, yMax }) {
                 alpha={0.6}
                 eventMode="static"
                 pointerover={e => {
-                  visTooltipDispatch({ type: "setDatum", value: p });
-                  visTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                  genTrackTooltipDispatch({ type: "setDatum", value: p });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
                 }}
                 pointerout={e => {
-                  visTooltipDispatch({ type: "setDatum", value: null });
-                  visTooltipDispatch({ type: "setGlobalXY", value: null });
+                  genTrackTooltipDispatch({ type: "setDatum", value: null });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
                 }}
               />
             ))}
@@ -199,8 +199,8 @@ function BodyContentInner({ data, yMin, yMax }) {
         tracks={tracks.slice(0, 2)}
         InnerXInfo={XInfo}
         innerTracks={tracks.slice(1)}
-        renderTooltip={<MyTooltip />}
-        innerRenderTooltip={<MyTooltip />}
+        Tooltip={MyTooltip}
+        InnerTooltip={MyTooltip}
       />
       <Intro />
     </>

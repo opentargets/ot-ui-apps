@@ -1,5 +1,5 @@
 
-import { GenTrackProvider, VisTooltipProvider } from "ui";
+import { GenTrackProvider, GenTrackTooltipProvider } from "ui";
 import BodyContentInner from './BodyContentInner';
 
 function randomRect({ xMin, xMax, yMin, yMax }) {
@@ -41,9 +41,9 @@ const data = {
 function BodyContent({}) {
   return (
     <GenTrackProvider initialState={{ data, xMin: 200, xMax: 700 }} >
-      <VisTooltipProvider >
+      <GenTrackTooltipProvider >
         <BodyContentInner data={data} yMin={yMin} yMax={yMax} />
-      </VisTooltipProvider>
+      </GenTrackTooltipProvider>
     </GenTrackProvider>
   );
 }

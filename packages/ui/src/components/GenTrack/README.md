@@ -65,8 +65,10 @@ Top-level gen track component. This contains the x-info and tracks (each of whic
 | ------------------ | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
 | `tracks`           | `Track[]`   |         | Tracks.                                                                                                             |
 | `XInfo`            | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
+| `Tooltip`          | `component` |         | Tooltip - see [Tooltip](#tooltip).                                                                                  |
 | `innerTracks`      | `Track[]`   |         | Inner tracks.                                                                                                       |
 | `InnerXInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
+| `InnerTooltip`     | `component` |         | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                 |
 | `yInfoWidth`       | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                        |
 | `yInfoGap`         | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                               |
 | `panZoomTopGap`    | `number`    | `16 `   | Vertical space above pan-zoom panel.                                                                                |
@@ -91,6 +93,58 @@ The `tracks` prop of a `GenTrack` should be passed an array of objects, where ea
 Inside a `Track`, it is standard to access the relevant context: `useGenTrackState`.
 
 `YInfo` components belonging to an outer `GenTrack` can set the outer or inner state (`useGenTrackDispatch` and `useGenTrackInnerDispatch`). `YInfo` components inside an inner `GenTrack` can access the outer state (`useGenTrackState`).
+
+#### Tooltip
+
+Use the `Tooltip` and `InnerTooltip` properties of the `GenTrack` component to pass tooltip components for top-level and inner tracks respectively.
+
+To include a tooltip, wrap the GenTrack content in a `GenTrackTooltipProvider`, e.g.
+
+```jsx
+<GenTrackProvider initialState={{ data, xMin: 200, xMax: 700 }} >
+  <GenTrackTooltipProvider >
+    <BodyContentInner data={data} />
+  </GenTrackTooltipProvider>
+</GenTrackProvider>
+```
+
+Inside the component where the tracks are defined, get the tooltip dispatch function:
+
+```js
+const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
+```
+
+
+When drawing with Pixi, use `eventMode: "static"` to make sprites/objects interactive. Also add event handlers which use the dispatch function to set any of the `datum`, `otherData` and `globalXY` properties of the tooltip context. E.g.
+
+```jsx
+<Sprite
+  eventMode="static"
+  pointerover={e => {
+    genTrackTooltipDispatch({ type: "setDatum", value: d });
+    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+  }}
+  pointerout={e => {
+    genTrackTooltipDispatch({ type: "setDatum", value: null });
+    genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+  }}
+  // ... other Sprite props
+/>
+```
+
+Inside the tooltip component passed to `GenTrack`, access the tooltip context as required. E.g.
+
+```jsx
+function MyTooltip() {
+  const { datum } = useGenTrackTooltipState() ?? {};
+  if (!.datum) return null;
+  return (
+    <Box sx={{ p: 0.5, border: "1px solid #bbb", borderRadius: 2, bgcolor: "#fff" }}>
+      {JSON.stringify(datum)}
+    </Box>
+  );
+}
+```
 
 #### Notes
 

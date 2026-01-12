@@ -2,7 +2,7 @@ import { createScopedContext } from "@ot/utils";
 
 const { ScopedProvider, useScopedState, useScopedDispatch } = 
   createScopedContext({
-    name: "visTooltip",
+    name: "genTrackTooltip",
     extraStateProperties: {
       datum: null,
       otherData: null,     // arbitrary info that can be used to set tootltip optons
@@ -16,6 +16,6 @@ const { ScopedProvider, useScopedState, useScopedDispatch } =
     }
   });
 
-export const VisTooltipProvider = ScopedProvider;
-export const useVisTooltipState = useScopedState;
-export const useVisTooltipDispatch = useScopedDispatch;
+export const GenTrackTooltipProvider = ScopedProvider;
+export const useGenTrackTooltipState = useScopedState;
+export const useGenTrackTooltipDispatch = useScopedDispatch;

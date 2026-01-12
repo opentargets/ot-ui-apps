@@ -102,5 +102,5 @@ export * from "./providers/ViewerProvider";
 export * from "./providers/ViewerInteractionProvider";
 
 export * from "./providers/GenTrackProvider";
-export * from "./providers/VisTooltipProvider";
+export * from "./providers/GenTrackTooltipProvider";
 export { default as GenTrack } from "./components/GenTrack/GenTrack";
