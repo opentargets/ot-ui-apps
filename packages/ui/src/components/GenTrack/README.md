@@ -61,18 +61,16 @@ __Note:__ The code wrapping the gen track can use `useGenTrackDispatch` but shou
 
 Top-level gen track component. This contains the x-info and tracks (each of which contains its own y-info). A `GenTrack` component should be inside a `GenTrackProvider` - and a `GenTrackInnerProvider` if showing inner tracks.
 
-| Prop          | Type        | Default | Description                                                                                                         |
-| ------------- | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
-| `tracks`      | `Track[]`   |         | Tracks.                                                                                                             |
-| `xInfoGap`    | `number`    | `16`    | Vertical space between xInfo and first track.                                                                       |
-| `yInfoGap`    | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                               |
-| `trackGap`    | `number`    | `16`    | Vertical space between tracks.                                                                                      |
-| `XInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
-| `yInfoWidth`  | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                        |
-| `panZoomGap`  | `number`    | `16 `   | Vertical space between last track and pan-zoom panel. This prop is ignored by an inner `GenTrack`.                  |
-| `innerGap`    | `number`    | `16 `   | Vertical space between pan-zoom panel and inner `GenTrack`. This prop is ignored by an inner `GenTrack`.            |
-| `innerXInfo`  | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
-| `innerTracks` | `Track[]`   |         | Inner tracks.                                                                                                       |
+| Prop               | Type        | Default | Description                                                                                                         |
+| ------------------ | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| `tracks`           | `Track[]`   |         | Tracks.                                                                                                             |
+| `XInfo`            | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
+| `innerTracks`      | `Track[]`   |         | Inner tracks.                                                                                                       |
+| `InnerXInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
+| `yInfoWidth`       | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                        |
+| `yInfoGap`         | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                               |
+| `panZoomTopGap`    | `number`    | `16 `   | Vertical space above pan-zoom panel.                                                                                |
+| `panZoomBottomGap` | `number`    | `16 `   | Vertical space below pan-zoom panel.                                                                                |
 
 A `GenTrack` fills the width of its parent container.
 
@@ -80,18 +78,19 @@ A `GenTrack` fills the width of its parent container.
 
 The `tracks` prop of a `GenTrack` should be passed an array of objects, where each object has the form:
 
-| Property | Type        | Default | Description                                                                                                                                                                                                                  |
-| -------- | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`     | `string`    |         | Unique id for the track. Typically a readable name, e.g. `'domains'`.                                                                                                                                                        |
-| `height` | `number`    | `50`    |                                                                                                                                                                                                                              | Height of `YInfo` container and `Track` container. |
-| `yMin`   | `number`    | `0`     | Minimum y value for y-scale.                                                                                                                                                                                                 |
-| `yMax`   | `number`    | `100`   | Maximum y value for y-scale.                                                                                                                                                                                                 |
-| `YInfo`  | `component` |         | Is rendered inside a container with width equal to the `InfoWidth` of the parent `GenTrack` and height equal to `height`.                                                                                                    |                                                    |
-| `Track`  | `component` |         | Should return a Pixi container. The container is vertically translated to the appropriate part of the canvas, stretched to the width of the canvas, given height equal to `height` and given the appropriate x and y scales. |                                                    |
+| Property     | Type        | Default | Description                                                                                                                                                                                                                  |
+| ------------ | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | `string`    |         | Unique id for the track. Typically a readable name, e.g. `'domains'`.                                                                                                                                                        |
+| `yMin`       | `number`    | `0`     | Minimum y value for y-scale.                                                                                                                                                                                                 |
+| `yMax`       | `number`    | `100`   | Maximum y value for y-scale.                                                                                                                                                                                                 |
+| `YInfo`      | `component` |         | Is rendered inside a container with width equal to the `InfoWidth` of the parent `GenTrack` and height equal to `height`.                                                                                                    |                                                    |
+| `Track`      | `component` |         | Should return a Pixi container. The container is vertically translated to the appropriate part of the canvas, stretched to the width of the canvas, given height equal to `height` and given the appropriate x and y scales. |                                                    |
+| `height`     | `number`    | `50`    |
+| `paddingTop` | `number`    | `0`     | Gap above track.                                                                                                                                                                                                             | Height of `YInfo` container and `Track` container. |
 
-Inside a `Track`, it is standard to access the relevant context: `useGenTrackState` and/or `useGenTrackInnerState`. An outer `Track` can also modify the state of the inner `TrackGen` (`useGenTrackInnerDispatch`).
+Inside a `Track`, it is standard to access the relevant context: `useGenTrackState`.
 
-`YInfo` components belonging to an outer `GenTrack` can set the outer or inner state (`useGenTrackDispatch` and `useGenTrackInnerDispatch`). `YInfo` components inside an inner `GenTrack` can access the outer state (`useGenTrackState`) and set the inner state (use `useGenTrackInnerDispatch`).
+`YInfo` components belonging to an outer `GenTrack` can set the outer or inner state (`useGenTrackDispatch` and `useGenTrackInnerDispatch`). `YInfo` components inside an inner `GenTrack` can access the outer state (`useGenTrackState`).
 
 #### Notes
 

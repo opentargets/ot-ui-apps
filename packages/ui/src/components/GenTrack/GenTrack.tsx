@@ -29,17 +29,15 @@ const TooltipLayer = memo(function TooltipLayer({
   );
 });
 
-function GenTrack({ 
+function GenTrack({
   tracks,
-  xInfoGap = 16,
-  yInfoGap = 16,
-  trackGap = 16,
   XInfo,
-  yInfoWidth = 160,
-  panZoomGap = 16,
-  innerGap = 16,
-  InnerXInfo,
   innerTracks,
+  InnerXInfo,
+  yInfoWidth = 160,
+  yInfoGap = 16,
+  panZoomTopGap = 16,
+  panZoomBottomGap = 16,
   renderTooltip,
   innerRenderTooltip,
   _isInner = false,
@@ -56,12 +54,11 @@ function GenTrack({
   // heights
   if (!tracks?.length) throw Error("at least one track expected");
   const yTrackStarts = [];
-  for (const index of tracks.keys()) {
-    if (index === 0) {
-      yTrackStarts.push(0);
-    } else {
-      yTrackStarts.push(yTrackStarts.at(-1) + tracks[index - 1].height + trackGap);
-    }
+  for (const [index, track] of tracks.entries()) {
+    yTrackStarts.push(index === 0
+      ? (track.paddingTop ?? 0)
+      : yTrackStarts.at(-1) + tracks.at(index - 1).height + (track.paddingTop ?? 0)
+    );
   }
   const canvasHeight = yTrackStarts.at(-1) + tracks.at(-1).height;
 
@@ -91,12 +88,12 @@ function GenTrack({
       
       {/* xInfo */}
       {_isInner && XInfo &&
-        <Box sx={{ pb: px(xInfoGap), ml: px(yInfoWidth + yInfoGap)}}>
+        <Box sx={{ ml: px(yInfoWidth + yInfoGap)}}>
           <NestedXInfo viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
         </Box>
       }
       {!_isInner && XInfo && (
-        <Box sx={{ pb: px(xInfoGap), ml: px(yInfoWidth + yInfoGap)}}>
+        <Box sx={{ ml: px(yInfoWidth + yInfoGap)}}>
           <XInfo start={xMin} end={xMax} />
         </Box>
       )}
@@ -111,10 +108,9 @@ function GenTrack({
           flex: "0 0 auto",
           display: "flex",
           flexDirection: "column",
-          gap: px(yInfoGap)
         }}>
-          {tracks.map(({ id, height, YInfo, yMin, yMax }) => (
-            <Box key={id} sx={{ width: px(yInfoWidth), height: px(height) }}>
+          {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
+            <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
               <YInfo start={yMin} end={yMax} />
             </Box>
           ))}
@@ -162,8 +158,8 @@ function GenTrack({
       {innerTracks && (
         <>   
           <Box sx={{
-            pt: px(panZoomGap),
-            pb: px(innerGap),
+            pt: px(panZoomTopGap),
+            pb: px(panZoomBottomGap),
             pl: px(yInfoWidth + yInfoGap),
           }}>
             <PanZoomPanel
@@ -182,12 +178,10 @@ function GenTrack({
           >
             <GenTrack
               tracks={innerTracks}
-              xInfoGap={xInfoGap}
               yInfoGap={yInfoGap}
-              trackGap={trackGap}
               XInfo={InnerXInfo}
               yInfoWidth={yInfoWidth}
-              innerGap={innerGap}
+              panZoomBottomGap={panZoomBottomGap}
               renderTooltip={innerRenderTooltip}
               _isInner={true}
               _viewModel={viewModel}

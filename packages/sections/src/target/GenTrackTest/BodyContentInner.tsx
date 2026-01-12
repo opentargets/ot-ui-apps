@@ -66,6 +66,7 @@ function BodyContentInner({ data, yMin, yMax }) {
     { // use Grahoics objects for example with few rectangles
       id: `long-rectangles`,
       height: 60,
+      // paddingTop: 30,
       yMin,
       yMax,
       YInfo: ({}) => (
@@ -95,6 +96,7 @@ function BodyContentInner({ data, yMin, yMax }) {
     { // use texture and particle container when a lot of rectangles
       id: `small-rectangles`,
       height: 120,
+      // paddingTop: 10,
       yMin,
       yMax,
       YInfo: ({}) => (
@@ -149,6 +151,7 @@ function BodyContentInner({ data, yMin, yMax }) {
     {
       id: `bar-chart`,
       height: 80,
+      // paddingTop: 40,
       yMin,
       yMax,
       YInfo: ({}) => (
