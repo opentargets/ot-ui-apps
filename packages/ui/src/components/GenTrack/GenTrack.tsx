@@ -3,7 +3,7 @@ import { Stage, Container } from '@pixi/react';
 import { useMeasure } from "@uidotdev/usehooks";
 import { useRef, useMemo, useEffect, memo } from "react";
 import { createViewModel } from "./createViewModel";
-import ZoomWindow from "./ZoomWindow";
+import PanZoomPanel from "./PanZoomPanel";
 import NestedXInfo from "./NestedXInfo";
 import { useGenTrackState } from "../../providers/GenTrackProvider";
 import VisTooltip from "../VisTooltip";
@@ -36,6 +36,7 @@ function GenTrack({
   trackGap = 16,
   XInfo,
   yInfoWidth = 160,
+  panZoomGap = 16,
   innerGap = 16,
   InnerXInfo,
   innerTracks,
@@ -85,7 +86,7 @@ function GenTrack({
   return (
     <Box
       ref={widthRef}
-      sx={{ diplay: "flex", flexDirection: "column", pt: _isInner ? px(innerGap) : 0 }}
+      sx={{ diplay: "flex", flexDirection: "column" }}
     >
       
       {/* xInfo */}
@@ -147,15 +148,6 @@ function GenTrack({
                 </Container>
               ))}
             </Container>
-            {viewModel && (
-              <ZoomWindow
-                viewModel={viewModel}
-                canvasWidthPx={canvasWidth}
-                canvasHeightPx={canvasHeight}
-                xMin={xMin}
-                xMax={xMax}
-              />
-            )}
           </Stage>
           {renderTooltip && (
             <TooltipLayer
@@ -168,26 +160,41 @@ function GenTrack({
       </Box>
 
       {innerTracks && (
-        <Box 
-          sx={{ 
-            position: "relative",
-            pointerEvents: "none", // Allow clicks to pass through the container
-          }}
-        >
-          <GenTrack
-            tracks={innerTracks}
-            xInfoGap={xInfoGap}
-            yInfoGap={yInfoGap}
-            trackGap={trackGap}
-            XInfo={InnerXInfo}
-            yInfoWidth={yInfoWidth}
-            innerGap={innerGap}
-            renderTooltip={innerRenderTooltip}
-            _isInner={true}
-            _viewModel={viewModel}
-            _innerTracksContainerRef={innerTracksContainerRef}
-          />
-        </Box>
+        <>   
+          <Box sx={{
+            pt: px(panZoomGap),
+            pb: px(innerGap),
+            pl: px(yInfoWidth + yInfoGap),
+          }}>
+            <PanZoomPanel
+              viewModel={viewModel}
+              canvasWidth={canvasWidth}
+              xMin={xMin}
+              xMax={xMax}
+            />
+          </Box>
+
+          <Box 
+            sx={{ 
+              position: "relative",
+              pointerEvents: "none", // Allow clicks to pass through the container
+            }}
+          >
+            <GenTrack
+              tracks={innerTracks}
+              xInfoGap={xInfoGap}
+              yInfoGap={yInfoGap}
+              trackGap={trackGap}
+              XInfo={InnerXInfo}
+              yInfoWidth={yInfoWidth}
+              innerGap={innerGap}
+              renderTooltip={innerRenderTooltip}
+              _isInner={true}
+              _viewModel={viewModel}
+              _innerTracksContainerRef={innerTracksContainerRef}
+            />
+          </Box>
+        </>
       )}
 
     </Box>

@@ -69,7 +69,8 @@ Top-level gen track component. This contains the x-info and tracks (each of whic
 | `trackGap`    | `number`    | `16`    | Vertical space between tracks.                                                                                      |
 | `XInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
 | `yInfoWidth`  | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                        |
-| `innerGap`    | `number`    | `16 `   | Vertical space between last track and inner `GenTrack`. This prop is ignored by an inner `GenTrack`.                |
+| `panZoomGap`  | `number`    | `16 `   | Vertical space between last track and pan-zoom panel. This prop is ignored by an inner `GenTrack`.                  |
+| `innerGap`    | `number`    | `16 `   | Vertical space between pan-zoom panel and inner `GenTrack`. This prop is ignored by an inner `GenTrack`.            |
 | `innerXInfo`  | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
 | `innerTracks` | `Track[]`   |         | Inner tracks.                                                                                                       |
 
