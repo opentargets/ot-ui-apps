@@ -4,6 +4,7 @@ import { Box } from "@mui/material";
 function VisTooltip({
   width,  
   height,
+  canvasType,
   
   // following props can be a function: (datum, otherData) => value
   xAnchor = "right",   // "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
@@ -16,8 +17,9 @@ function VisTooltip({
 
   const visTooltipState = useVisTooltipState();
   if (!visTooltipState) return null 
-  const { datum, otherData, globalXY } = useVisTooltipState();
+  const { datum, otherData, globalXY, activeCanvas } = useVisTooltipState();
   if (!datum && !otherData) return null;
+  if (activeCanvas !== canvasType) return null;
 
   if (typeof xAnchor === "function") xAnchor = xAnchor(datum);
   if (typeof yAnchor === "function") yAnchor = yAnchor(datum);
@@ -55,27 +57,19 @@ function VisTooltip({
   }
 
   return (
-    // <Box
-    //   sx={{
-    //     width: "100%",
-    //     height: "100%",
-    //     position: "relative"
-    //   }}
-    // >
-      <Box
-        sx={{
-          position: "absolute",
-          left,
-          right,
-          top,
-          bottom,
-          transform: `translate(${transformX ?? 0}, ${transformY ?? 0})`,
-          pointerEvents: "auto",
-        }}
-      >
-        {children}
-      </Box>
-    // </Box>
+    <Box
+      sx={{
+        position: "absolute",
+        left,
+        right,
+        top,
+        bottom,
+        transform: `translate(${transformX ?? 0}, ${transformY ?? 0})`,
+        pointerEvents: "auto",
+      }}
+    >
+      {children}
+    </Box>
   );
 }
 

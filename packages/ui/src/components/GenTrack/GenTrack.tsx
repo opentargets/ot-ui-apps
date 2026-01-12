@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { Rectangle } from "pixi.js";
 import { Stage, Container } from '@pixi/react';
 import { useMeasure } from "@uidotdev/usehooks";
 import { useRef, useMemo, useEffect, memo } from "react";
@@ -7,22 +8,36 @@ import PanZoomPanel from "./PanZoomPanel";
 import NestedXInfo from "./NestedXInfo";
 import { useGenTrackState } from "../../providers/GenTrackProvider";
 import VisTooltip from "../VisTooltip";
+import { useVisTooltipDispatch } from "../../providers/VisTooltipProvider";
 
 function px(num) {
   return `${num}px`;
 }
 
-const TooltipLayer = memo(function TooltipLayer({
-  render,
-  width,
-  height,
-}) {
-
+const TooltipLayer = memo(function TooltipLayer({ render, width, height, canvasType }) {
+  const visTooltipDispatch = useVisTooltipDispatch();
+  
+  const handleMouseEnter = () => {
+    visTooltipDispatch({ type: "setActiveCanvas", value: canvasType });
+  };
+  
+  const handleMouseLeave = () => {
+    visTooltipDispatch({ type: "setActiveCanvas", value: null });
+  };
+  
   if (!render) return null;
-
+  
   return (
-    <Box sx={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-      <VisTooltip width={width} height={height}>
+    <Box 
+      sx={{ 
+        position: "absolute", 
+        inset: 0, 
+        pointerEvents: "auto"
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <VisTooltip width={width} height={height} canvasType={canvasType}>
         {render}
       </VisTooltip>
     </Box>
@@ -122,10 +137,6 @@ function GenTrack({
             width={canvasWidth}
             height={canvasHeight}
             options={{ background: 0xffffff }}
-            onMount={(app) => {
-              app.stage.eventMode = "static";
-              app.stage.hitArea = app.screen;
-            }}
           >
             <Container ref={_isInner ? _innerTracksContainerRef : null}>
               {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
@@ -150,6 +161,7 @@ function GenTrack({
               render={renderTooltip}
               width={canvasWidth}
               height={canvasHeight}
+              canvasType={_isInner ? "inner" : "outer"}
             />
           )}
         </Box>
