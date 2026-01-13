@@ -18,19 +18,28 @@ export class ProfileHeader {
       .catch(() => false);
   }
 
-  // Description section
+  // Description section - locate by the "Description" heading
+  // Note: Description heading is outside the profile-header container, so search at page level
+  getDescriptionHeading(): Locator {
+    return this.page.getByRole("heading", { name: "Description", level: 6 });
+  }
+
   getDescriptionSection(): Locator {
-    return this.page.locator("[data-testid='profile-description']");
+    // Get the parent container that includes both heading and description text
+    return this.getDescriptionHeading().locator("..");
   }
 
   async isDescriptionVisible(): Promise<boolean> {
-    return await this.getDescriptionSection()
+    return await this.getDescriptionHeading()
       .isVisible()
       .catch(() => false);
   }
 
   async getDescriptionText(): Promise<string | null> {
-    return await this.getDescriptionSection().textContent();
+    // Get the paragraph element that is a sibling following the Description heading
+    // Use xpath to find the paragraph sibling after the heading
+    const descriptionParagraph = this.getDescriptionHeading().locator("xpath=following-sibling::p[1]");
+    return await descriptionParagraph.textContent();
   }
 
   // Synonyms section

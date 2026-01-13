@@ -80,6 +80,7 @@ const TableIndicatorControl = ({
       )}
       <Box
         onClick={onClickToggle}
+        data-testid={`section-${prefix.toLowerCase()}`}
         sx={{
           ml: prefix === TABLE_PREFIX.CORE ? "20px" : 0,
           cursor: "pointer",
@@ -130,11 +131,11 @@ function getDatasources({ displayedTable, colorScale }) {
       isPrivate,
       docsLink,
       header: isAssociations ? (
-        <Typography variant="assoc_header">{label}</Typography>
+        <Typography variant="assoc_header" data-testid={`table-header-${id}`}>{label}</Typography>
       ) : (
         <AggregationsTooltip title={description} placement="right">
           <div className="cursor-help">
-            <Typography variant="assoc_header">{label}</Typography>
+            <Typography variant="assoc_header" data-testid={`table-header-${id}`}>{label}</Typography>
           </div>
         </AggregationsTooltip>
       ),
