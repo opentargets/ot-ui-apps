@@ -63,10 +63,10 @@ function BodyContentInner({ data, yMin, yMax }) {
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
   const tracks = [
-    { // use Grahoics objects for example with few rectangles
+    { // use Graphics objects for example with few rectangles
       id: `long-rectangles`,
       height: 60,
-      // paddingTop: 30,
+      paddingTop: 16,
       yMin,
       yMax,
       YInfo: ({}) => (
@@ -96,7 +96,7 @@ function BodyContentInner({ data, yMin, yMax }) {
     { // use texture and particle container when a lot of rectangles
       id: `small-rectangles`,
       height: 120,
-      // paddingTop: 10,
+      paddingTop: 16,
       yMin,
       yMax,
       YInfo: ({}) => (
@@ -132,7 +132,6 @@ function BodyContentInner({ data, yMin, yMax }) {
                 alpha={0.3}
                 eventMode="static"
                 pointerover={e => {
-                  // console.log(e)
                   genTrackTooltipDispatch({ type: "setDatum", value: p });
                   genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
                 }}
@@ -150,7 +149,7 @@ function BodyContentInner({ data, yMin, yMax }) {
     {
       id: `bar-chart`,
       height: 80,
-      // paddingTop: 40,
+      paddingTop: 16,
       yMin,
       yMax,
       YInfo: ({}) => (
@@ -197,6 +196,7 @@ function BodyContentInner({ data, yMin, yMax }) {
       <GenTrack
         XInfo={XInfo}
         tracks={tracks.slice(0, 2)}
+        // tracks={[]}
         InnerXInfo={XInfo}
         innerTracks={tracks.slice(1)}
         Tooltip={MyTooltip}

@@ -66,15 +66,18 @@ function GenTrack({
   const viewModel = _isInner || !innerTracks ? null : _vm;
 
   // heights
-  if (!tracks?.length) throw Error("at least one track expected");
+  // if (!tracks?.length) throw Error("at least one track expected");
   const yTrackStarts = [];
-  for (const [index, track] of tracks.entries()) {
-    yTrackStarts.push(index === 0
-      ? (track.paddingTop ?? 0)
-      : yTrackStarts.at(-1) + tracks.at(index - 1).height + (track.paddingTop ?? 0)
-    );
+  let canvasHeight = 0;
+  if (tracks?.length > 0) {
+    for (const [index, track] of tracks.entries()) {
+      yTrackStarts.push(index === 0
+        ? (track.paddingTop ?? 0)
+        : yTrackStarts.at(-1) + tracks.at(index - 1).height + (track.paddingTop ?? 0)
+      );
+    }
+    canvasHeight = yTrackStarts.at(-1) + tracks.at(-1).height;
   }
-  const canvasHeight = yTrackStarts.at(-1) + tracks.at(-1).height;
 
   // widths
   const [widthRef, { width: totalWidth }] = useMeasure();
@@ -113,60 +116,62 @@ function GenTrack({
       )}
 
       {/* container for yInfos and Pixi canvas */}
-      <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
+      {tracks?.length > 0 && (
+        <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
 
-        {/* yInfos */}
-        <Box sx={{
-          width: px(yInfoWidth), 
-          height: px(canvasHeight),
-          flex: "0 0 auto",
-          display: "flex",
-          flexDirection: "column",
-        }}>
-          {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
-            <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
-              <YInfo start={yMin} end={yMax} />
-            </Box>
-          ))}
-        </Box>
+          {/* yInfos */}
+          <Box sx={{
+            width: px(yInfoWidth), 
+            height: px(canvasHeight),
+            flex: "0 0 auto",
+            display: "flex",
+            flexDirection: "column",
+          }}>
+            {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
+              <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
+                <YInfo start={yMin} end={yMax} />
+              </Box>
+            ))}
+          </Box>
 
-        {/* Pixi canvas */}
-        <Box sx={{ width: canvasWidth, height: canvasHeight, position: "relative" }}>
-          <Stage
-            width={canvasWidth}
-            height={canvasHeight}
-            options={{ background: 0xffffff }}
-          >
-            <Container ref={_isInner ? _innerTracksContainerRef : null}>
-              {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
-                <Container
-                  key={id}
-                  width={px(canvasWidth)}
-                  height={px(height)}
-                  y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
-                  x={_isInner ? 1 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
-                  scale={{ 
-                    x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
-                    y: height / (yMax - yMin),
-                  }}
-                >
-                  <Track />
-                </Container>
-              ))}
-            </Container>
-          </Stage>
-          {Tooltip && (
-            <TooltipLayer
-              // render={renderTooltip}
+          {/* Pixi canvas */}
+          <Box sx={{ width: canvasWidth, height: canvasHeight, position: "relative" }}>
+            <Stage
               width={canvasWidth}
               height={canvasHeight}
-              canvasType={_isInner ? "inner" : "outer"}
+              options={{ background: 0xffffff }}
             >
-              <Tooltip />   
-            </TooltipLayer>
-          )}
+              <Container ref={_isInner ? _innerTracksContainerRef : null}>
+                {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
+                  <Container
+                    key={id}
+                    width={px(canvasWidth)}
+                    height={px(height)}
+                    y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
+                    x={_isInner ? 1 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
+                    scale={{ 
+                      x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
+                      y: height / (yMax - yMin),
+                    }}
+                  >
+                    <Track />
+                  </Container>
+                ))}
+              </Container>
+            </Stage>
+            {Tooltip && (
+              <TooltipLayer
+                // render={renderTooltip}
+                width={canvasWidth}
+                height={canvasHeight}
+                canvasType={_isInner ? "inner" : "outer"}
+              >
+                <Tooltip />   
+              </TooltipLayer>
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {innerTracks && (
         <>   
