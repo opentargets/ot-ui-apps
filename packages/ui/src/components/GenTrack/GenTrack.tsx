@@ -82,21 +82,29 @@ function GenTrack({
   // widths
   const [widthRef, { width: totalWidth }] = useMeasure();
   const canvasWidth = totalWidth - yInfoWidth - yInfoGap;
+// refs
+const innerTracksContainerRef = useRef(null);
+const didSetView = useRef(false);
 
-  // zoom window view
-  const innerTracksContainerRef = useRef(null);
-  useEffect(() => {
-    if (!viewModel) return;
-    const unsubscribe = viewModel.subscribe(({ start, end }) => {
-      const c = innerTracksContainerRef.current;
-      if (!c) return;
-      c.scale.x = canvasWidth / (end - start);
-      c.x = -start * canvasWidth / (end - start);
-    });
-    viewModel?.setView(xMin + 50, xMax - 150);  // !!!!! PUT BACK TO xMin, xMax !!!!!
-    return unsubscribe;
-  }, [viewModel, canvasWidth, xMin, xMax]);
-  
+useEffect(() => {
+  if (!viewModel || canvasWidth <= 0) return; // wait until canvasWidth is ready
+
+  // subscribe to zoom changes and update container scale/position
+  const unsubscribe = viewModel.subscribe(({ start, end }) => {
+    const c = innerTracksContainerRef.current;
+    if (!c) return;
+    c.scale.x = canvasWidth / (end - start);
+    c.x = -start * canvasWidth / (end - start);
+  });
+
+  // initialize zoom window only once
+  if (!didSetView.current) {
+    viewModel.setView(xMin + 50, xMax - 150); // initial view
+    didSetView.current = true;
+  }
+
+  return () => unsubscribe();
+}, [viewModel, canvasWidth, xMin, xMax]);
   return (
     <Box
       ref={widthRef}
@@ -161,7 +169,6 @@ function GenTrack({
             </Stage>
             {Tooltip && (
               <TooltipLayer
-                // render={renderTooltip}
                 width={canvasWidth}
                 height={canvasHeight}
                 canvasType={_isInner ? "inner" : "outer"}

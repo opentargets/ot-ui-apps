@@ -201,6 +201,7 @@ function BodyContentInner({ data, yMin, yMax }) {
         innerTracks={tracks.slice(1)}
         Tooltip={MyTooltip}
         InnerTooltip={MyTooltip}
+        zoomLines
       />
       <Intro />
     </>
