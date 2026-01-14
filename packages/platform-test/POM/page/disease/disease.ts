@@ -31,7 +31,7 @@ export class DiseasePage {
   }
 
   getXrefLinks(): Locator {
-    return this.page.locator('[data-testid="header-external-links"] a[href*="identifiers.org"]');
+    return this.page.locator('[data-testid^="header-external-links-"] a');
   }
 
   async getXrefLinksCount(): Promise<number> {

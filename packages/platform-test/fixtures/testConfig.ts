@@ -26,6 +26,7 @@ export interface TestConfig {
   target?: {
     primary?: string;
     alternatives?: string[];
+    aotfDiseases?: string[];
   };
   disease: {
     primary: string;

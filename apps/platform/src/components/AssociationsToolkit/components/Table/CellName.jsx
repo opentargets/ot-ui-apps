@@ -215,6 +215,7 @@ function CellName({ cell, colorScale }) {
         onClick={handleToggle}
         onContextMenu={handleContextMenu}
         active={openContext}
+        data-testid={`context-menu-${cell.row.index}`}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
       </ContextMenuContainer>
@@ -241,7 +242,7 @@ function CellName({ cell, colorScale }) {
           </Box>
           <Divider sx={{ marginBottom: 1 }} />
           {!isPinned && (
-            <StyledMenuItem onClick={handleClickPin}>
+            <StyledMenuItem onClick={handleClickPin} data-testid="pin-entity-button">
               <ListItemIcon>
                 <FontAwesomeIcon icon={faThumbTack} />
               </ListItemIcon>
@@ -249,7 +250,7 @@ function CellName({ cell, colorScale }) {
             </StyledMenuItem>
           )}
           {isPinned && (
-            <StyledMenuItem onClick={handleClickPin}>
+            <StyledMenuItem onClick={handleClickPin} data-testid="unpin-entity-button">
               <ListItemIcon>
                 <FontAwesomeIcon icon={faTrashCan} />
               </ListItemIcon>

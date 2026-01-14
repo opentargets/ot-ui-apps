@@ -17,6 +17,10 @@ export class AotfTable {
     return this.page.locator("[data-testid='table-header-name']");
   }
 
+  getAssociationScoreHeader(): Locator {
+    return this.page.locator("[data-testid='table-header-score']");
+  }
+
   async getHeaderText(headerTestId: string): Promise<string | null> {
     return await this.page.locator(`[data-testid='${headerTestId}']`).textContent();
   }
@@ -26,11 +30,21 @@ export class AotfTable {
     return this.page.locator(`[data-testid^='table-row-${prefix}']`);
   }
 
+  getTableRowByIndex(index: number, prefix: string = "core"): Locator {
+    return this.page.locator(`[data-testid='table-row-${prefix}-${index}']`);
+  }
+
   async getRowCount(prefix: string = "core"): Promise<number> {
     return await this.getTableRows(prefix).count();
   }
 
   // Cell accessors
+  getCellByRowAndColumn(rowIndex: number, columnName: string, prefix: string = "core"): Locator {
+    return this.page.locator(
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid*='${columnName}']`
+    );
+  }
+
   getNameCell(rowIndex: number, prefix: string = "core"): Locator {
     return this.page.locator(
       `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid='name-cell']`
@@ -39,11 +53,15 @@ export class AotfTable {
 
   getScoreCell(rowIndex: number, prefix: string = "core"): Locator {
     return this.page.locator(
-      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid*='score']`
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid='score-cell-score']`
     );
   }
 
   // Pagination
+  getPaginationContainer(): Locator {
+    return this.page.locator("[data-testid='pagination-container']");
+  }
+
   getPageSizeSelector(): Locator {
     return this.page.locator("[data-testid='page-size-selector']");
   }
@@ -66,13 +84,61 @@ export class AotfTable {
 
   async selectPageSize(size: string): Promise<void> {
     await this.getPageSizeSelector().click();
-    await this.page.getByRole("option", { name: size }).click();
+    // MUI Select renders options in a listbox with data-value attribute
+    await this.page.locator(`[role='listbox'] [data-value='${size}']`).click();
+  }
+
+  // Section controls (Pinned, Uploaded, Core)
+  getPinnedSection(): Locator {
+    return this.page.locator("[data-testid='section-pinning']");
+  }
+
+  getUploadedSection(): Locator {
+    return this.page.locator("[data-testid='section-uploaded']");
+  }
+
+  getCoreSection(): Locator {
+    return this.page.locator("[data-testid='section-core']");
+  }
+
+  async togglePinnedSection(): Promise<void> {
+    await this.getPinnedSection().click();
+  }
+
+  async toggleUploadedSection(): Promise<void> {
+    await this.getUploadedSection().click();
+  }
+
+  async toggleCoreSection(): Promise<void> {
+    await this.getCoreSection().click();
+  }
+
+  // Delete actions
+  getDeletePinnedButton(): Locator {
+    return this.page.locator("[data-testid='delete-pinning-button']");
+  }
+
+  getDeleteUploadedButton(): Locator {
+    return this.page.locator("[data-testid='delete-uploaded-button']");
+  }
+
+  async deletePinnedEntries(): Promise<void> {
+    await this.getDeletePinnedButton().click();
+  }
+
+  async deleteUploadedEntries(): Promise<void> {
+    await this.getDeleteUploadedButton().click();
   }
 
   // Sorting
   async sortByColumn(columnName: string): Promise<void> {
     const header = this.page.getByText(columnName, { exact: true });
     await header.click();
+  }
+
+  // Search/Filter in specific row
+  getRowByName(name: string): Locator {
+    return this.page.locator(`[data-testid*='table-row']`, { hasText: name }).first();
   }
 
   // Find row index by gene symbol
@@ -94,6 +160,58 @@ export class AotfTable {
     return null;
   }
 
+  // Wait for specific gene to appear in table
+  async waitForGeneInTable(
+    geneSymbol: string,
+    prefix: string = "core",
+    timeout: number = 10000
+  ): Promise<number | null> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const rowIndex = await this.findRowIndexByGeneSymbol(geneSymbol, prefix);
+      if (rowIndex !== null) {
+        return rowIndex;
+      }
+      await this.page.waitForTimeout(500);
+    }
+
+    return null;
+  }
+
+  // Pin/Unpin row via context menu
+  getContextMenuForRow(rowIndex: number): Locator {
+    return this.page.locator(`[data-testid='context-menu-${rowIndex}']`);
+  }
+
+  getPinEntityButton(): Locator {
+    return this.page.locator("[data-testid='pin-entity-button']");
+  }
+
+  getUnpinEntityButton(): Locator {
+    return this.page.locator("[data-testid='unpin-entity-button']");
+  }
+
+  async pinRow(rowIndex: number): Promise<void> {
+    await this.getContextMenuForRow(rowIndex).click();
+    await this.getPinEntityButton().click();
+  }
+
+  async unpinRow(rowIndex: number): Promise<void> {
+    await this.getContextMenuForRow(rowIndex).click();
+    await this.getUnpinEntityButton().click();
+  }
+
+  // Get association score value
+  async getAssociationScoreValue(
+    rowIndex: number,
+    prefix: string = "core"
+  ): Promise<string | null> {
+    const scoreCell = this.getScoreCell(rowIndex, prefix);
+    await scoreCell.waitFor({ state: "visible" });
+    return scoreCell.getAttribute("data-score");
+  }
+
   // Get entity name (target or disease)
   async getEntityName(rowIndex: number, prefix: string = "core"): Promise<string | null> {
     const nameCell = this.getNameCell(rowIndex, prefix);
@@ -103,15 +221,24 @@ export class AotfTable {
     return text?.trim() || null;
   }
 
+  // Check if table is loading
+  getLoadingIndicator(): Locator {
+    return this.page.locator("[data-testid='table-loading']");
+  }
+
+  async isLoading(): Promise<boolean> {
+    return await this.getLoadingIndicator().isVisible();
+  }
+
   // Wait for table to load
   async waitForTableLoad(): Promise<void> {
     await this.page.waitForSelector(".TAssociations", { state: "visible" });
     // Wait for loading to finish if present
-    const loadingVisible = await this.page.locator("[data-testid='table-loading']")
+    const loadingVisible = await this.getLoadingIndicator()
       .isVisible()
       .catch(() => false);
     if (loadingVisible) {
-      await this.page.locator("[data-testid='table-loading']").waitFor({ state: "hidden" });
+      await this.getLoadingIndicator().waitFor({ state: "hidden" });
     }
     // Wait for at least one row to be present with actual content
     await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible" });
