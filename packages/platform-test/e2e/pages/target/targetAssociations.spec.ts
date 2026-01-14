@@ -1,7 +1,7 @@
-import { test, expect } from "../../../fixtures";
-import { TargetPage } from "../../../POM/page/target/target";
-import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
+import { expect, test } from "../../../fixtures";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
+import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
+import { TargetPage } from "../../../POM/page/target/target";
 
 test.describe("Target Associated Diseases", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
@@ -30,9 +30,11 @@ test.describe("Target Associated Diseases", () => {
       await expect(scoreHeader).toBeVisible();
 
       // Check that data source headers are present (entity columns)
-      const entityColumnHeaders = page.locator("[data-testid='associations-table-header'] [data-testid^='table-header-']");
+      const entityColumnHeaders = page.locator(
+        "[data-testid='associations-table-header'] [data-testid^='table-header-']"
+      );
       const headerCount = await entityColumnHeaders.count();
-      
+
       // Should have: Disease/Target, Association Score, plus multiple data source columns
       // (genetic_association, somatic_mutation, known_drug, etc.)
       expect(headerCount).toBeGreaterThan(2);
@@ -296,10 +298,10 @@ test.describe("Target Associated Diseases", () => {
         expect(cellsWithScores.length).toBeGreaterThan(0);
 
         // Verify scores are valid numbers
-        cellsWithScores.forEach(cell => {
+        for (const cell of cellsWithScores) {
           expect(cell.score).toBeGreaterThan(0);
           expect(cell.score).toBeLessThanOrEqual(1);
-        });
+        }
       }
     });
 
@@ -371,7 +373,7 @@ test.describe("Target Associated Diseases", () => {
   });
 
   test.describe("Integration with Target Page", () => {
-    test("Can navigate from associations back to profile", async ({ page, testConfig }) => {
+    test("Can navigate from associations back to profile", async ({ page }) => {
       const targetPage = new TargetPage(page);
       await targetPage.waitForPageLoad();
 
@@ -387,10 +389,7 @@ test.describe("Target Associated Diseases", () => {
       expect(isProfileActive).toBe(true);
     });
 
-    test("Associations table maintains state when navigating away and back", async ({
-      page,
-      testConfig,
-    }) => {
+    test("Associations table maintains state when navigating away and back", async ({ page }) => {
       const aotfTable = new AotfTable(page);
       await aotfTable.waitForTableLoad();
 

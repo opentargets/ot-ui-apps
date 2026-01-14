@@ -38,7 +38,9 @@ export class ProfileHeader {
   async getDescriptionText(): Promise<string | null> {
     // Get the paragraph element that is a sibling following the Description heading
     // Use xpath to find the paragraph sibling after the heading
-    const descriptionParagraph = this.getDescriptionHeading().locator("xpath=following-sibling::p[1]");
+    const descriptionParagraph = this.getDescriptionHeading().locator(
+      "xpath=following-sibling::p[1]"
+    );
     return await descriptionParagraph.textContent();
   }
 

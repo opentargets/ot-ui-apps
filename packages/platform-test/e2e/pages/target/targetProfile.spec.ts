@@ -1,4 +1,4 @@
-import { test, expect } from "../../../fixtures";
+import { expect, test } from "../../../fixtures";
 import { ProfileHeader } from "../../../POM/objects/components/ProfileHeader/profileHeader";
 import { ClinicalPrecedenceSection } from "../../../POM/objects/widgets/KnownDrugs/knownDrugsSection";
 import { PharmacogenomicsSection } from "../../../POM/objects/widgets/shared/pharmacogenomicsSection";
@@ -86,7 +86,9 @@ test.describe("Target Profile Page", () => {
       await profileHeader.waitForProfileHeaderLoad();
 
       // Check for genomic location badge (GRCh38)
-      const genomicLocationBadge = page.locator("[data-testid='profile-header']").getByText("GRCh38");
+      const genomicLocationBadge = page
+        .locator("[data-testid='profile-header']")
+        .getByText("GRCh38");
       const isVisible = await genomicLocationBadge.isVisible().catch(() => false);
 
       if (isVisible) {
@@ -100,7 +102,9 @@ test.describe("Target Profile Page", () => {
       await profileHeader.waitForProfileHeaderLoad();
 
       // Check for core essential gene chip
-      const essentialChip = page.locator("[data-testid='profile-header']").getByText("Core essential gene");
+      const essentialChip = page
+        .locator("[data-testid='profile-header']")
+        .getByText("Core essential gene");
       const isVisible = await essentialChip.isVisible().catch(() => false);
 
       if (isVisible) {
@@ -178,7 +182,7 @@ test.describe("Target Profile Page", () => {
 
       // Check that skeleton loader is not present
       const skeleton = page.locator(".MuiSkeleton-root");
-      const hasSkeletons = await skeleton.count();
+      const _hasSkeletons = await skeleton.count();
 
       // Give time for skeletons to disappear
       await page.waitForTimeout(2000);
@@ -216,7 +220,9 @@ test.describe("Target Profile Page", () => {
       await profileHeader.waitForProfileHeaderLoad();
 
       // Check for "show more" link
-      const showMoreLink = page.locator("[data-testid='profile-description']").getByText("show more");
+      const showMoreLink = page
+        .locator("[data-testid='profile-description']")
+        .getByText("show more");
       const hasShowMore = await showMoreLink.isVisible().catch(() => false);
 
       if (hasShowMore) {
@@ -233,7 +239,9 @@ test.describe("Target Profile Page", () => {
       const profileHeader = new ProfileHeader(page);
       await profileHeader.waitForProfileHeaderLoad();
 
-      const showMoreLink = page.locator("[data-testid='profile-description']").getByText("show more");
+      const showMoreLink = page
+        .locator("[data-testid='profile-description']")
+        .getByText("show more");
       const hasShowMore = await showMoreLink.isVisible().catch(() => false);
 
       if (hasShowMore) {
@@ -247,17 +255,16 @@ test.describe("Target Profile Page", () => {
         await page.waitForTimeout(300);
 
         // Verify "show more" is back
-        const showMoreAgain = page.locator("[data-testid='profile-description']").getByText("show more");
+        const showMoreAgain = page
+          .locator("[data-testid='profile-description']")
+          .getByText("show more");
         await expect(showMoreAgain).toBeVisible();
       }
     });
   });
 
   test.describe("Profile Data Validation", () => {
-    test("Target profile displays unique content based on target ID", async ({
-      page,
-      testConfig,
-    }) => {
+    test("Target profile displays unique content based on target ID", async ({ page }) => {
       const profileHeader = new ProfileHeader(page);
       await profileHeader.waitForProfileHeaderLoad();
 

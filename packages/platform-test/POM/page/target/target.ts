@@ -242,7 +242,9 @@ export class TargetPage {
    * Wait for the target page to load completely
    */
   async waitForPageLoad(): Promise<void> {
-    await this.page.waitForSelector("[data-testid='profile-page-header-text']", { state: "visible" });
+    await this.page.waitForSelector("[data-testid='profile-page-header-text']", {
+      state: "visible",
+    });
     await this.page.waitForLoadState("networkidle");
   }
 

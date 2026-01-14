@@ -1,4 +1,4 @@
-import { test, expect } from "../../../fixtures";
+import { expect, test } from "../../../fixtures";
 import { TargetPage } from "../../../POM/page/target/target";
 
 test.describe("Target Page - Header and Navigation", () => {
@@ -8,10 +8,7 @@ test.describe("Target Page - Header and Navigation", () => {
   });
 
   test.describe("Page Header", () => {
-    test("Target page loads successfully with correct title and name", async ({
-      page,
-      testConfig,
-    }) => {
+    test("Target page loads successfully with correct title and name", async ({ page }) => {
       const targetPage = new TargetPage(page);
       await targetPage.waitForPageLoad();
 
@@ -177,7 +174,7 @@ test.describe("Target Page - Header and Navigation", () => {
   });
 
   test.describe("Direct Navigation", () => {
-    test("Can navigate directly to profile page", async ({ page, baseURL, testConfig }) => {
+    test("Can navigate directly to profile page", async ({ page, testConfig }) => {
       const targetId = testConfig.target?.primary || "ENSG00000157764";
       const targetPage = new TargetPage(page);
 
