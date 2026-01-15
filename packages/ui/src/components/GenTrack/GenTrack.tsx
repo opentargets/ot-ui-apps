@@ -105,9 +105,13 @@ function GenTrack({
       }
 
       const z = zoomLinesRef.current;
+      const left = (start - xMin) / (xMax - xMin) * canvasWidth;
+      const right = canvasWidth - ((end - xMin) / (xMax - xMin) * canvasWidth);
       if (z) {
-        z.style.left = `${(start - xMin) / (xMax - xMin) * canvasWidth - ZOOM_LINE_WIDTH}px`;
-        z.style.right = `${canvasWidth - ((end - xMin) / (xMax - xMin) * canvasWidth) - ZOOM_LINE_WIDTH}px`;
+        z.style.left = `${left - ZOOM_LINE_WIDTH}px`;
+        z.style.right = `${right - ZOOM_LINE_WIDTH}px`;
+        z.style.borderLeftStyle = left === 0 ? "none" : "solid"; 
+        z.style.borderRightStyle = right === 0 ? "none" : "solid"; 
       }
     };
 
@@ -202,7 +206,10 @@ function GenTrack({
                   left: 0,
                   right: 0,
                   zIndex: 5,
-                  borderWidth: `0 ${ZOOM_LINE_WIDTH}px`,
+                  borderTop: 0,
+                  borderBottom: 0,
+                  borderLeft: `${ZOOM_LINE_WIDTH}px`,
+                  borderRight: `${ZOOM_LINE_WIDTH}px`,
                   borderStyle: "solid",
                   borderColor: "#00aaff",
                   pointerEvents: "none",

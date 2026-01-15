@@ -204,7 +204,7 @@ function BodyContentInner({ data, yMin, yMax }) {
         InnerTooltip={MyTooltip}
         innerTooltipProps={{ xAnchor: "adapt" }}
         zoomLines
-        initialZoom={[400, 650]}
+        // initialZoom={[400, 650]}
       />
       <Intro />
     </>
