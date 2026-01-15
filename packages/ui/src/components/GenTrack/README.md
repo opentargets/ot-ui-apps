@@ -15,11 +15,19 @@ Flexible 1D-tracks for showing genetic (and related) data.
 
 ## Design
 
+__Note:__ The diagram below is outdated - the zoom window now has its own HTML container located between the top-level tracks and the zoomed tracks.
+
 <img src="design.png" alt="idea" style="max-width: 600px">
 
-Everything is HTML/SVG except the track content and all tracks within the same `genTrack` wrapper share a single canvas (and x-scale).
+- The top-level tracks are drawn on the same cavas. The zoomed tracks are drawn on a second canvas. All tracks on the same canvas will share an x-scale.
 
-Everything is React - tracks sare written in [`@pixi/react`](https://react.pixijs.io/).
+- We can write a single `GenTrack` component to use for both sets of tracks. Fixed x-limits can be used for the top tracks whereas the x-limits of the zoomed tracks will be dictated by the zoom window.
+
+- Everything outside the two canvases will HTML/SVG.
+
+- Everything is React - tracks are written in [`@pixi/react`](https://react.pixijs.io/).
+
+- Any combination of tracks can be used at the top-level and the zoom-level - a track can (but need not) be used at both levels. It is fine to use no tracks at the top-level (zoomable tracks only) or have no zoomable tracks.
 
 ## Components
 
@@ -61,18 +69,22 @@ __Note:__ The code wrapping the gen track can use `useGenTrackDispatch` but shou
 
 Top-level gen track component. This contains the x-info and tracks (each of which contains its own y-info). A `GenTrack` component should be inside a `GenTrackProvider` - and a `GenTrackInnerProvider` if showing inner tracks.
 
-| Prop               | Type        | Default | Description                                                                                                         |
-| ------------------ | ----------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
-| `tracks`           | `Track[]`   |         | Tracks.                                                                                                             |
-| `XInfo`            | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
-| `Tooltip`          | `component` |         | Tooltip - see [Tooltip](#tooltip).                                                                                  |
-| `innerTracks`      | `Track[]`   |         | Inner tracks.                                                                                                       |
-| `InnerXInfo`       | `component` |         | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
-| `InnerTooltip`     | `component` |         | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                 |
-| `yInfoWidth`       | `number`    | `160`   | Space on left reserved for y-info of tracks.                                                                        |
-| `yInfoGap`         | `number`    | `16`    | Horizontal space between yInfo components and tracks.                                                               |
-| `panZoomTopGap`    | `number`    | `16 `   | Vertical space above pan-zoom panel.                                                                                |
-| `panZoomBottomGap` | `number`    | `16 `   | Vertical space below pan-zoom panel.                                                                                |
+| Prop                | Type        | Default        | Description                                                                                                         |
+| ------------------- | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `tracks`            | `Track[]`   |                | Tracks.                                                                                                             |
+| `XInfo`             | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Should take `start` and `end` props. |
+| `Tooltip`           | `component` |                | Tooltip - see [Tooltip](#tooltip).                                                                                  |
+| `tooltipProps`      | `object`    |                | Additional tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                       |
+| `innerTracks`       | `Track[]`   |                | Inner tracks.                                                                                                       |
+| `InnerXInfo`        | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Should take `xMin` and `xMax` props. |
+| `InnerTooltip`      | `component` |                | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                 |
+| `innerTooltipProps` | `object`    |                | Additional inner tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                 |
+| `yInfoWidth`        | `number`    | `160`          | Space on left reserved for y-info of tracks.                                                                        |
+| `yInfoGap`          | `number`    | `16`           | Horizontal space between yInfo components and tracks.                                                               |
+| `panZoomTopGap`     | `number`    | `16 `          | Vertical space above pan-zoom panel.                                                                                |
+| `panZoomBottomGap`  | `number`    | `16 `          | Vertical space below pan-zoom panel.                                                                                |
+| `zoomLines`         | `boolean`   | `false `       | Indicate zoom window on top-level canvas.                                                                           |
+| `initialZoom`       | `number[]`  | `[xMin, xMax]` | Initial limits for pan-zoom window. Should be within the x-limits used for the top-level tracks.                    |
 
 A `GenTrack` fills the width of its parent container.
 
@@ -98,7 +110,7 @@ Inside a `Track`, it is standard to access the relevant context: `useGenTrackSta
 
 Use the `Tooltip` and `InnerTooltip` properties of the `GenTrack` component to pass tooltip components for top-level and inner tracks respectively.
 
-To include a tooltip, wrap the GenTrack content in a `GenTrackTooltipProvider`, e.g.
+If using `Tooltip` or `InnerTooltip`, wrap the GenTrack content in a `GenTrackTooltipProvider`, e.g.
 
 ```jsx
 <GenTrackProvider initialState={{ data, xMin: 200, xMax: 700 }} >
@@ -113,7 +125,6 @@ Inside the component where the tracks are defined, get the tooltip dispatch func
 ```js
 const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 ```
-
 
 When drawing with Pixi, use `eventMode: "static"` to make sprites/objects interactive. Also add event handlers which use the dispatch function to set any of the `datum`, `otherData` and `globalXY` properties of the tooltip context. E.g.
 
@@ -146,11 +157,21 @@ function MyTooltip() {
 }
 ```
 
+#### Features To Add
+
+- Crosshairs option on hover. Ideally ink vertical crosshairs so they show on both canvases.
+
+- Allow 'x-tracks' for overlays over multiple tracks. E.g. to highlight a region or to show lines linking enhancers in one track to genes in another.
+
+- Tooltip position currently at mouse position. Allow passing e.g. a `position` prop:  a functoin with access to data, otherData, globalXY as well as scales to get from data->canvas coodinates.
+
+#### Bugs/Issues
+
+- Is the initial width of the inner tracks canvas sometimes too narrow? - then coorects after first interaction with zoom window?
+
 #### Notes
 
 - __Important__: switched order that spread `extraStateProperties` and `initialState` in `createScopedContext`.tsx so that can initialise extra state properties when create the provider. Make sure happy this is appropriate and does not break any existing use of `createScopedContext`.
-
-- Need to add tooltips on tracks. Implement a GenTrack tooltip in HTML (i.e. plain React). Probably need a dedicated tooltip state/context which set from the track and read from the tooltip.
 
 - Could investigate `pixi-viewport` for zooming, panning etc. and 'culling' for allowing inexpensive unseen elements.
 
@@ -160,8 +181,4 @@ function MyTooltip() {
   
   - Need to consider file formats, dynamic fetching/streaming etc. but leave this until later.
 
-- Should probably allow top padding per track rather than fixed per GenTrack
-
 - There are existing libraries, but they tend to be large and overkill for what we need (e.g. HiGlass and libraries that use it like Gosling.js(?), use SVG or basic canvas (so performance issues likely) or not particularly popular or frequently updated. Using Pixi.js will give us full flexibility and integration into React while still being quite high-level (for a WebGL library) and high performance.
-
-- Gives team some experience with Pixi for creating other bespoke visualisations.

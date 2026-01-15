@@ -200,8 +200,11 @@ function BodyContentInner({ data, yMin, yMax }) {
         InnerXInfo={XInfo}
         innerTracks={tracks.slice(1)}
         Tooltip={MyTooltip}
+        // tooltipProps={{ xAnchor: "left", dy: 40 }}
         InnerTooltip={MyTooltip}
+        innerTooltipProps={{ xAnchor: "adapt" }}
         zoomLines
+        initialZoom={[400, 650]}
       />
       <Intro />
     </>

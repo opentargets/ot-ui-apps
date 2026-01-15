@@ -1,9 +1,9 @@
-export function createViewModel() {
+export function createViewModel(start, end) {
   const listeners = new Set();
 
   const view = { 
-    start: null,
-    end: null,
+    start,
+    end,
 
     subscribe(fn) {
       listeners.add(fn);

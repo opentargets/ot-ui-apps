@@ -13,7 +13,7 @@ function px(num) {
   return `${num}px`;
 }
 
-const TooltipLayer = memo(function TooltipLayer({ children, width, height, canvasType }) {
+const TooltipLayer = memo(function TooltipLayer({ children, width, height, canvasType, tooltipProps }) {
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
   
   const handleMouseEnter = () => {
@@ -31,12 +31,12 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
       sx={{ 
         position: "absolute", 
         inset: 0, 
-        pointerEvents: "auto"
+        pointerEvents: "auto",
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <GenTrackTooltip width={width} height={height} canvasType={canvasType}>
+      <GenTrackTooltip width={width} height={height} canvasType={canvasType} {...tooltipProps}>
         {children}
       </GenTrackTooltip>
     </Box>
@@ -46,27 +46,34 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
 function GenTrack({
   tracks,
   XInfo,
+  Tooltip,
+  tooltipProps = {},
   innerTracks,
   InnerXInfo,
+  InnerTooltip,
+  innerTooltipProps = {},
   yInfoWidth = 160,
   yInfoGap = 16,
   panZoomTopGap = 16,
   panZoomBottomGap = 16,
-  Tooltip,
-  InnerTooltip,
+  initialZoom = [null, null],
+  zoomLines, 
   _isInner = false,
   _viewModel = null,  // only used if inner genTrack - it is the view model from the outer genTrack
   _innerTracksContainerRef
 }) {
 
+  const ZOOM_LINE_WIDTH = 2;
+
   const { xMin, xMax } = useGenTrackState();
 
-  // links zoom window to inner genTrack avoiding React
-  const _vm = useMemo(createViewModel, []);
-  const viewModel = _isInner || !innerTracks ? null : _vm;
+  const viewModel = useMemo(() => {
+    return _isInner || !(innerTracks?.length > 0)
+      ? null
+      : createViewModel(initialZoom[0] ?? xMin, initialZoom[1] ?? xMax);
+  }, [_isInner, innerTracks?.length]);
 
   // heights
-  // if (!tracks?.length) throw Error("at least one track expected");
   const yTrackStarts = [];
   let canvasHeight = 0;
   if (tracks?.length > 0) {
@@ -82,29 +89,35 @@ function GenTrack({
   // widths
   const [widthRef, { width: totalWidth }] = useMeasure();
   const canvasWidth = totalWidth - yInfoWidth - yInfoGap;
-// refs
-const innerTracksContainerRef = useRef(null);
-const didSetView = useRef(false);
 
-useEffect(() => {
-  if (!viewModel || canvasWidth <= 0) return; // wait until canvasWidth is ready
+  // refs
+  const innerTracksContainerRef = useRef(null);
+  const zoomLinesRef = useRef(null);
 
-  // subscribe to zoom changes and update container scale/position
-  const unsubscribe = viewModel.subscribe(({ start, end }) => {
-    const c = innerTracksContainerRef.current;
-    if (!c) return;
-    c.scale.x = canvasWidth / (end - start);
-    c.x = -start * canvasWidth / (end - start);
-  });
+  useEffect(() => {
+    if (!viewModel || canvasWidth <= 0) return;
 
-  // initialize zoom window only once
-  if (!didSetView.current) {
-    viewModel.setView(xMin + 50, xMax - 150); // initial view
-    didSetView.current = true;
-  }
+    const apply = ({ start, end }) => {
+      const c = innerTracksContainerRef.current;
+      if (c) {
+        c.scale.x = canvasWidth / (end - start);
+        c.x = -start * canvasWidth / (end - start);
+      }
 
-  return () => unsubscribe();
-}, [viewModel, canvasWidth, xMin, xMax]);
+      const z = zoomLinesRef.current;
+      if (z) {
+        z.style.left = `${(start - xMin) / (xMax - xMin) * canvasWidth - ZOOM_LINE_WIDTH}px`;
+        z.style.right = `${canvasWidth - ((end - xMin) / (xMax - xMin) * canvasWidth) - ZOOM_LINE_WIDTH}px`;
+      }
+    };
+
+    // apply immediately using current view
+    apply(viewModel);
+
+    const unsubscribe = viewModel.subscribe(apply);
+    return unsubscribe;
+  }, [viewModel, canvasWidth, xMin, xMax]);
+  
   return (
     <Box
       ref={widthRef}
@@ -172,15 +185,35 @@ useEffect(() => {
                 width={canvasWidth}
                 height={canvasHeight}
                 canvasType={_isInner ? "inner" : "outer"}
+                tooltipProps={tooltipProps}
               >
                 <Tooltip />   
               </TooltipLayer>
+            )}
+            
+            {/* zoom lines overlay */}
+            {zoomLines && innerTracks?.length > 0 && (
+              <Box
+                ref={zoomLinesRef}
+                sx={{
+                  position: "absolute",
+                  top: tracks[0].paddingTop,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  zIndex: 5,
+                  borderWidth: `0 ${ZOOM_LINE_WIDTH}px`,
+                  borderStyle: "solid",
+                  borderColor: "#00aaff",
+                  pointerEvents: "none",
+                }}
+              />
             )}
           </Box>
         </Box>
       )}
 
-      {innerTracks && (
+      {innerTracks?.length > 0 && (
         <>   
           <Box sx={{
             pt: px(panZoomTopGap),
@@ -208,6 +241,7 @@ useEffect(() => {
               yInfoWidth={yInfoWidth}
               panZoomBottomGap={panZoomBottomGap}
               Tooltip={InnerTooltip}
+              tooltipProps={innerTooltipProps}
               _isInner={true}
               _viewModel={viewModel}
               _innerTracksContainerRef={innerTracksContainerRef}

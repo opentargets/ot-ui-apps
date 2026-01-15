@@ -11,7 +11,6 @@ function GenTrackTooltip({
   yAnchor = "bottom",  // "top" | "bottom" | "center" | "adapt" | "plotTop" | "plotBottom";
   dx = 0,
   dy = 0,
-  position,  // (datum, otherData) => {x, y}, if not used mouse position used as {x, y}
   children
 }) {
 
@@ -26,7 +25,7 @@ function GenTrackTooltip({
   if (typeof dx === "function") dx = xAnchor(datum);
   if (typeof dy === "function") dy = xAnchor(datum);
 
-  const {x, y} = position?.(datum, globalXY) ?? globalXY;
+  const { x, y } = globalXY;
 
   let left, right, transformX;
   if (xAnchor === "plotLeft") {

@@ -11,6 +11,7 @@ const { ScopedProvider, useScopedState, useScopedDispatch } =
     },
     extraActions: {
       setDatum: (state, action) => ({ ...state, datum: action.value }),
+      setOtherData: (state, action) => ({ ...state, otherData: action.value }),
       setGlobalXY: (state, action) => ({ ...state, globalXY: action.value }),
       setActiveCanvas: (state, action) => ({ ...state, activeCanvas: action.value }),
     }
