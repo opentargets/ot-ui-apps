@@ -6,7 +6,7 @@ import {
 } from "ui";
 import { Container, Sprite, ParticleContainer } from '@pixi/react';
 import { Box, Typography } from "@mui/material";
-import { Rectangle, useRectangleTexture } from "./shapes";
+import { Rectangle, useRectangleTexture } from "ui/src/components/GenTrack/shapes";
 import Intro from "./Intro";
 
 function MyTooltip() {
