@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { SectionItem } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import GEN_TRACK_TEST_QUERY from "./GenTrackTestQuery.gql";
+import SUMMARY_TRACKS_QUERY from "./SummaryTracksQuery.gql";
 import BodyContent from "./BodyContent";
 
 type BodyProps = {
@@ -10,9 +10,12 @@ type BodyProps = {
 	entity: string;
 };
 
-function Body({ id: ensemblId, entity }: BodyProps) {
-  const variables = { ensemblId };
-  const request = useQuery(GEN_TRACK_TEST_QUERY, {
+function Body({ id, entity }: BodyProps) {
+  const variables = {
+    studyLocusId: id,
+  };
+
+  const request = useQuery(SUMMARY_TRACKS_QUERY, {
     variables,
   });
  

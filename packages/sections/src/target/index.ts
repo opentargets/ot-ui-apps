@@ -1,4 +1,3 @@
-export * as GenTrackTest from "./GenTrackTest";
 export * as Bibliography from "./Bibliography";
 export * as CancerHallmarks from "./CancerHallmarks";
 export * as ChemicalProbes from "./ChemicalProbes";

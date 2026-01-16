@@ -165,9 +165,13 @@ function MyTooltip() {
 
 - Tooltip position currently at mouse position. Allow passing e.g. a `position` prop:  a functoin with access to data, otherData, globalXY as well as scales to get from data->canvas coodinates.
 
+- Highlight datum that tooltip is hovering on? Possibly tough since store this in a context where as should store manually for Pixi to see?
+
 #### Bugs/Issues
 
 - Is the initial width of the inner tracks canvas sometimes too narrow? - then coorects after first interaction with zoom window?
+
+- Can XInfo/YInfo show contents overflowing. Will likely need this for e.g. axis labels at limits.
 
 #### Notes
 

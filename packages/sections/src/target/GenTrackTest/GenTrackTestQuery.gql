@@ -1,5 +1,0 @@
-query GenTrackTestQuery($ensemblId: String!) {
-  target(ensemblId: $ensemblId) {
-    id
-  }
-}

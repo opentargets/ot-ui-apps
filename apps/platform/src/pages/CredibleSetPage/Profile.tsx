@@ -16,6 +16,8 @@ import { Suspense } from "react";
 const CREDIBLE_SET = "credibleSet";
 
 const credibleSetProfileWidgets = new Map<string, Widget>([
+  [CredibleSet.SummaryTracks.definition.id, CredibleSet.SummaryTracks],
+  [CredibleSet.GenTrackTest.definition.id, CredibleSet.GenTrackTest],
   [CredibleSet.Locus2Gene.definition.id, CredibleSet.Locus2Gene],
   [CredibleSet.EnhancerToGenePredictions.definition.id, CredibleSet.EnhancerToGenePredictions],
   [CredibleSet.GWASColoc.definition.id, CredibleSet.GWASColoc],

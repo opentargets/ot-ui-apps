@@ -4,7 +4,6 @@ import { getConfig } from "@ot/config";
 const isPPP = getConfig().profile.isPartnerPreview;
 
 const targetSections = new Map([
-  ["genTrackTest", Target.GenTrackTest.getBodyComponent()],
   ["tractability", Target.Tractability.getBodyComponent()],
   ["knownDrugs", Target.KnownDrugs.getBodyComponent()],
   ["safety", Target.Safety.getBodyComponent()],
