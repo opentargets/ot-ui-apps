@@ -15,5 +15,4 @@ fragment DrugProfileHeaderFragment on Drug {
   blackBoxWarning
   maximumClinicalTrialPhase
   tradeNames
-  yearOfFirstApproval
 }
