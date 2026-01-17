@@ -5,7 +5,6 @@ const isPPP = getConfig().profile.isPartnerPreview;
 
 const targetSections = new Map([
   ["tractability", Target.Tractability.getBodyComponent()],
-  ["knownDrugs", Target.KnownDrugs.getBodyComponent()],
   ["safety", Target.Safety.getBodyComponent()],
   ["expressions", Target[isPPP ? "BaselineExpression" : "Expression"].getBodyComponent()],
   ["depMapEssentiality", Target.DepMap.getBodyComponent()],

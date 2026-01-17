@@ -40,14 +40,6 @@ export interface TargetData {
     tissueSiteDetailId?: string;
   }>;
 
-  // Known Drugs
-  knownDrugs?: {
-    count: number;
-    uniqueDrugs: number;
-    uniqueDiseases: number;
-    freeTextQuery?: string;
-  };
-
   // Mouse Phenotypes
   mousePhenotypes?: Array<Record<string, unknown>>;
 

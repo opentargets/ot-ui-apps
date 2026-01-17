@@ -35,7 +35,6 @@ export * from "./components/HeatmapTable";
 export { default as Highlights } from "./components/Highlights";
 export { default as BrokenSearchIcon } from "./components/icons/BrokenSearchIcon";
 export * from "./components/Button";
-export { default as KnownDrugsSourceDrawer } from "./components/KnownDrugsSourceDrawer";
 export { default as LabelChip } from "./components/LabelChip";
 export { default as Legend } from "./components/Legend";
 export { default as Link } from "./components/Link";
