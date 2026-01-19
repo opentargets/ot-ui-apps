@@ -6,7 +6,7 @@ import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import { Platform } from "@ot/constants";
+import { Platform, } from "@ot/constants";
 
 import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Associations from "./DiseaseAssociations";

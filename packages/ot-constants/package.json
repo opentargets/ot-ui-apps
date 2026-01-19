@@ -11,8 +11,7 @@
     "format": "biome format .",
     "format:fix": "biome format --write .",
     "check": "biome check --formatter-enabled=true .",
-    "check:fix": "biome check --formatter-enabled=true --write .",
-    "generate-graphql-types": "node scripts/generate-graphql-types.js"
+    "check:fix": "biome check --formatter-enabled=true --write ."
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^6.1.0",
