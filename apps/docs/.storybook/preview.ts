@@ -84,8 +84,10 @@ const preview: Preview = {
         { initialEntries: ["/"] },
         React.createElement(OTApolloProvider, {
           config,
+          // biome-ignore lint/correctness/noChildrenProp: TODO: fix this
           children: React.createElement(ThemeProvider, {
             theme,
+            // biome-ignore lint/correctness/noChildrenProp: TODO: fix this
             children: React.createElement(Story),
           }),
         })
