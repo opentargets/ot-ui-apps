@@ -1,27 +1,18 @@
-import { Box, Button, Divider, Popover, styled } from "@mui/material";
-import { ReactElement, useState, MouseEvent } from "react";
-import { FacetsSelect } from "ui";
-
+import { faFilter, faScaleBalanced } from "@fortawesome/free-solid-svg-icons";
+import { Box, Divider, FormControlLabel, Popover, Switch, FormGroup, Typography } from "@mui/material";
+import { type MouseEvent, type ReactElement, useState } from "react";
+import { FacetsSelect, PopoverButton } from "ui";
+import {  setIncludeMeasurements } from "../context/aotfActions";
 import useAotfContext from "../hooks/useAotfContext";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp, faFilter } from "@fortawesome/free-solid-svg-icons";
-
-import { DataUploader } from "..";
-
-const FilterButton = styled(Button)({
-  border: "none",
-  "& .MuiButton-startIcon": {
-    fontSize: "14px !important",
-  },
-});
 
 function FacetsSearch(): ReactElement {
   const {
     entityToGet,
     facetFilterSelect,
     id,
-    state: { facetFilters },
+    state: { facetFilters, includeMeasurements },
+    dispatch
   } = useAotfContext();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -39,20 +30,18 @@ function FacetsSearch(): ReactElement {
 
   return (
     <Box>
-      <FilterButton
-        aria-describedby={popoverId}
-        variant="text"
-        onClick={handleClick}
-        sx={{ height: 1 }}
-      >
-        <Box component="span" sx={{ mr: 1 }}>
-          <FontAwesomeIcon icon={faFilter} />
-        </Box>
-        Advanced filters
-        <Box component="span" sx={{ ml: 1 }}>
-          {open ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
-        </Box>
-      </FilterButton>
+      <PopoverButton
+        popoverId={popoverId}
+        open={open}
+        icon={faFilter}
+        label="Advanced filters"
+        handleClick={handleClick}
+        ariaLabel="Advanced filters"
+        disableElevation
+        iconSize="lg"
+        sx={{ height: 1, maxHeight: "45px" }}
+      />
+
       <Popover
         id={popoverId}
         open={open}
@@ -66,9 +55,15 @@ function FacetsSearch(): ReactElement {
         elevation={1}
       >
         <Box sx={{ width: "450px", display: "flex", p: 3, flexDirection: "column", gap: 2 }}>
-          <DataUploader parentAction={handleClose} />
-
-          <Divider flexItem sx={{ my: 1 }} />
+          {entityToGet === "disease" && (
+            <>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2">Exclude measurements</Typography>
+              <Switch size="small" color="primary" checked={!includeMeasurements} onChange={() => dispatch(setIncludeMeasurements(!includeMeasurements))} />
+            </Box>
+          <Divider />
+            </>
+          )}
           <FacetsSelect
             id={id}
             entityToGet={entityToGet}
