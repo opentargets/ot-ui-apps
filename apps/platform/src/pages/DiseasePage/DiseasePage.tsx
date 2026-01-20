@@ -6,6 +6,7 @@ import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
+import { Platform, } from "@ot/constants";
 
 import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Associations from "./DiseaseAssociations";
@@ -18,8 +19,9 @@ type DiseaseURLParams = {
 function DiseasePage(): ReactElement {
   const location = useLocation();
   const { efoId } = useParams<DiseaseURLParams>();
-  const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
-    variables: { efoId },
+  const { loading, data } = useQuery<Platform.DiseasePageQueryQuery, Platform.DiseasePageQueryQueryVariables>(DISEASE_PAGE_QUERY, {
+    variables: { efoId: efoId! },
+
   });
 
   if (data && !data.disease) {
@@ -62,8 +64,8 @@ function DiseasePage(): ReactElement {
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Profile efoId={efoId} name={name} />} />
-          <Route path="/associations" element={<Associations efoId={efoId} />} />
+          <Route path="/" element={<Profile efoId={efoId!} name={name!} />} />
+          <Route path="/associations" element={<Associations efoId={efoId!} />} />
         </Routes>
       </>
     </BasePage>
