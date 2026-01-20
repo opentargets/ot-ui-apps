@@ -33,7 +33,6 @@ function ProfileHeader({ chemblId }) {
     synonyms,
     tradeNames,
     drugType,
-    yearOfFirstApproval,
     maximumClinicalTrialPhase,
     isApproved,
     hasBeenWithdrawn,
@@ -50,9 +49,6 @@ function ProfileHeader({ chemblId }) {
         <ProfileDescription loading={loading}>{description}</ProfileDescription>
         <Field loading={loading} title="Molecule type">
           {drugType}
-        </Field>
-        <Field loading={loading} title="First approval">
-          {yearOfFirstApproval || "N/A"}
         </Field>
         <Field loading={loading} title="Max phase">
           {clinicalPhase}
