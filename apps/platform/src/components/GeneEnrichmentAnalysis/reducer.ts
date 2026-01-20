@@ -6,6 +6,9 @@ import { type Action, ActionType, type State } from "./types";
 export const initialState: State = {
   modalOpen: false,
   loading: false,
+  libraries: [],
+  librariesLoading: false,
+  librariesError: null,
   associationsState: {
     efoId: "",
     filter: "",
