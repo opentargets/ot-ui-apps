@@ -6,7 +6,7 @@ import {
   CompactAlphaFoldHydrophobicityLegend,
   useViewerState
 } from "ui";
-import { domainColors, hydrophobicityColorInterpolator } from "./helpers";
+import { domainColors, hydrophobicityColorInterpolator } from "ui/src/components/Viewer/helpers";
 
 function Legend() {
 

@@ -24,10 +24,10 @@ The `<Viewer>` should be wrapped in a `<ViewerProvider>`. Use the provider to pa
 
 Props:
 
-| Prop | Default | Type | Description |
-|-------|---------|------|-------------|
-| `initialState` | `{}` | `object`| |
-| `reducer` | | `function` | A reducer function describing valid state changes. Passed the state and an action object. Should return a new state object. |
+| Prop           | Default | Type       | Description                                                                                                                 |
+| -------------- | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `initialState` | `{}`    | `object`   |                                                                                                                             |
+| `reducer`      |         | `function` | A reducer function describing valid state changes. Passed the state and an action object. Should return a new state object. |
 
 **Note**: Reducer actions should start by shallow copying the state to ensure the extra state properties descibed below are not discarded.  
 
@@ -40,16 +40,16 @@ While the dispatch function can be used from e.g. a click handler attached to th
 
 When creating the viewer state, the initial state object is copied and the following properties are added:
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `viewer` | 3dMol viewer | The 3dMol viewer object. |
-| `atomsByResi` | `Map` | Key value pairs: residue index, atom objects (from viewer) belonging to the residue. | 
+| Property      | Type         | Description                                                                          |
+| ------------- | ------------ | ------------------------------------------------------------------------------------ |
+| `viewer`      | 3dMol viewer | The 3dMol viewer object.                                                             |
+| `atomsByResi` | `Map`        | Key value pairs: residue index, atom objects (from viewer) belonging to the residue. |
 
 The reducer function passed to the provider is augmented with corresponding action types:
 
 - `_setViewer`: Used internally when 3dMol viewer is created.
 
-The `viewer` and `atomsByResi` state properties can be used as needed, but `_setViewer` should not be - it is internally by the viewer.
+The `viewer` and `atomsByResi` state properties can be used as needed, but `_setViewer` should not be - it is used internally by the viewer.
 
 ### Derived State
 
@@ -66,10 +66,10 @@ Like `ViewerProvider`, `ViewerInteractionProvider` takes `initialState` and `red
 
 When creating the interaction state, the initial state object is copied and the following properties are added:
 
-| Property | Type | Description |
-|----------|------|-------------|
+| Property      | Type   | Description                       |
+| ------------- | ------ | --------------------------------- |
 | `hoveredResi` | number | Residue index of hovered residue. |
-| `clickedResi` | number | Last clicked residue index. |
+| `clickedResi` | number | Last clicked residue index.       |
 
 The reducer function passed to the provider is augmented with corresponding action types:
 
@@ -93,12 +93,12 @@ viewerInteractionDispatch({
 
 An `appearance` object is a description of what to show in the viewer and how:
 
-| Property | Default | Type | Description |
-|----------|---------|------|-------------|
-| `selection` | `{}` | 3Dmol `AtomSelectionSpec` \| `function` | If a function, is passed the state and should return a `AtomSelectionSpec`. |
-| `style` | | 3Dmol `AtomStyleSpec` \| `function` | If a function, is passed the state and should return a `AtomStyleSpec`. |
-| `addStyle` | `false` | `boolean` | If `true`, use 3Dmol's `addStyle` rather than `setStyle`. |
-| `use` |  | `function` | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
+| Property    | Default | Type                                    | Description                                                                                                                           |
+| ----------- | ------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `selection` | `{}`    | 3Dmol `AtomSelectionSpec` \| `function` | If a function, is passed the state and should return a `AtomSelectionSpec`.                                                           |
+| `style`     |         | 3Dmol `AtomStyleSpec` \| `function`     | If a function, is passed the state and should return a `AtomStyleSpec`.                                                               |
+| `addStyle`  | `false` | `boolean`                               | If `true`, use 3Dmol's `addStyle` rather than `setStyle`.                                                                             |
+| `use`       |         | `function`                              | Passed the state object and returns `true` if the appearance is to be applied. If `use` is omitted, the appearance is always applied. |
 
 ### Click and Hover
 
@@ -106,10 +106,10 @@ An `appearance` object is a description of what to show in the viewer and how:
 
 Appearance objects used for hover/click can have additional properties:
 
-| Property | Default | Type | Description |
-|----------|---------|------|-------------|
-| `onApply` | | `function` | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
-| `leave` |  | `eventAppearance[]` | Appearance objects to apply when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`. |
+| Property  | Default | Type                | Description                                                                                                                          |
+| --------- | ------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `onApply` |         | `function`          | Called after the appearance is applied. Passed the viewer state, residue index, interaction state and interaction dispatch function. |
+| `leave`   |         | `eventAppearance[]` | Appearance objects to apply when the current `hoveredResi`/`clickedResi` stops being the `hoveredResi`/`clickedResi`.                |
 
 Notes:
 
@@ -123,26 +123,26 @@ Notes:
 
 ## Viewer Props
 
-| Prop | Default | Type | Description |
-|-------|---------|------|------------|
-| `height` | `"400px"` | `string` | Height of viewer. There is no `width` prop - the viewer fills the parent container. |
-| `data` |  | `array` | See [Data](#data). |
-| `onData` |  | `function` | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function. |
-| `onFirstDraw` |  | `function` | Called immediately after first draw (and before `onDraw`). Passed the viewer state. |
-| `onDraw` |  | `function` | Called immediately after every redraw. Passed the viewer state. |
-| `onDblClick` |  | `function` | Called on double click of the viewer's canvas. Passed the viewer state. |
-| `drawAppearance` | `[]` | `appearance[]` | See [Appearance](#appearance). |
-| `hoverSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Hoverable atoms. If a function, is passed the viewer state and should return a `AtomSelectionSpec`. |
-| `hoverAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `clickSelection` | `{}` | 3dMol `AtomSelectionSpec` \| `function` | Clickable atoms. See `hoverSelection`. |
-| `clickAppearance` | `[]` | `eventAppearance[]` | See [Click and Hover](#click-and-hover). |
-| `trackColor` | | `function` | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
-| `trackTicks` | | `function` | Passed the viewer state. Should return an array of `{ resi, label }` objects to highlight on the track - labels are optional. | 
-| `usage` | `{}` | `object` | Label-value pairs to add to the basic usage instructions popup. |
-| `topLeft` |  | `string` \| `component` | Component to show in the top-left. Often shown conditionally based on the viewer state - the component should render `null` to be hidden. |
-| `bottomRight` |  | `string` \| `component` | Component to show in the bottom-right corner - see `topRight`.|
-| `zoomLimit` | `[20, 500]` | `[number, number]` | Lower and upper zoom limits. |
-| `screenshotId` | `""` | `string` | ID to include in screenshot file name. |
+| Prop              | Default     | Type                                    | Description                                                                                                                                                    |
+| ----------------- | ----------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `height`          | `"400px"`   | `string`                                | Height of viewer. There is no `width` prop - the viewer fills the parent container.                                                                            |
+| `data`            |             | `array`                                 | See [Data](#data).                                                                                                                                             |
+| `onData`          |             | `function`                              | Called immediately after all data loaded into the viewer. Passed the viewer object and dispatch function.                                                      |
+| `onFirstDraw`     |             | `function`                              | Called immediately after first draw (and before `onDraw`). Passed the viewer state.                                                                            |
+| `onDraw`          |             | `function`                              | Called immediately after every redraw. Passed the viewer state.                                                                                                |
+| `onDblClick`      |             | `function`                              | Called on double click of the viewer's canvas. Passed the viewer state.                                                                                        |
+| `drawAppearance`  | `[]`        | `appearance[]`                          | See [Appearance](#appearance).                                                                                                                                 |
+| `hoverSelection`  | `{}`        | 3dMol `AtomSelectionSpec` \| `function` | Hoverable atoms. If a function, is passed the viewer state and should return a `AtomSelectionSpec`.                                                            |
+| `hoverAppearance` | `[]`        | `eventAppearance[]`                     | See [Click and Hover](#click-and-hover).                                                                                                                       |
+| `clickSelection`  | `{}`        | 3dMol `AtomSelectionSpec` \| `function` | Clickable atoms. See `hoverSelection`.                                                                                                                         |
+| `clickAppearance` | `[]`        | `eventAppearance[]`                     | See [Click and Hover](#click-and-hover).                                                                                                                       |
+| `trackColor`      |             | `function`                              | Color function for residues shown in 1D track. Passed the viewer state and a residue and should return a color. If `trackColor` is omitted, no track is shown. |
+| `trackTicks`      |             | `function`                              | Passed the viewer state. Should return an array of `{ resi, label }` objects to highlight on the track - labels are optional.                                  |
+| `usage`           | `{}`        | `object`                                | Label-value pairs to add to the basic usage instructions popup.                                                                                                |
+| `topLeft`         |             | `string` \| `component`                 | Component to show in the top-left. Often shown conditionally based on the viewer state - the component should render `null` to be hidden.                      |
+| `bottomRight`     |             | `string` \| `component`                 | Component to show in the bottom-right corner - see `topRight`.                                                                                                 |
+| `zoomLimit`       | `[20, 500]` | `[number, number]`                      | Lower and upper zoom limits.                                                                                                                                   |
+| `screenshotId`    | `""`        | `string`                                | ID to include in screenshot file name.                                                                                                                         |
 
 Notes:
 

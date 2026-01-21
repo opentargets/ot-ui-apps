@@ -10,6 +10,7 @@ import {
   safeFetch,
 } from "@ot/utils";
 import { useEffect, useState } from "react";
+import { trackColor } from "ui/src/components/Viewer/helpers";
 import {
   dataHandler,
   drawAppearance,
@@ -17,7 +18,6 @@ import {
   clickAppearance,
   firstDrawHandler,
   drawHandler,
-  trackColor,
   trackTicks,
 } from "./helpers";
 import AtomInfo from "./AtomInfo";
