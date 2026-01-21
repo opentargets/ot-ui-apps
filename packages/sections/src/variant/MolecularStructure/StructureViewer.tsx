@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { Viewer, useViewerState, useViewerDispatch } from "ui";
+import { Viewer, ViewerRadios, ViewerDropdown, useViewerState, useViewerDispatch } from "ui";
 import {
   alphaFoldCifUrl,
   fetchPathogenicityScores,
@@ -23,8 +23,6 @@ import {
 import AtomInfo from "./AtomInfo";
 import MissingColorWarning from "./MissingColorWarning";
 import Legend from "./Legend";
-import Radios from "./Radios";
-import Dropdown from "./Dropdown";
 import { initialState } from "./context";
 
 function StructureViewer({ row }) {
@@ -175,7 +173,7 @@ function StructureViewer({ row }) {
               }}
             >
               <Box>
-                <Radios
+                <ViewerRadios
                   titleLabel="Structure"
                   options={structureOptions}
                   defaultValue={initialState.representBy}
@@ -190,7 +188,7 @@ function StructureViewer({ row }) {
                 alignItems: { xs: "flex-start", lg: "flex-end" },
                 maxWidth: { xs: "100%", lg: "50%" },
               }}>
-                <Dropdown 
+                <ViewerDropdown 
                   titleLabel="Colour"
                   options={colorOptions}
                   stateProperty="colorBy"
