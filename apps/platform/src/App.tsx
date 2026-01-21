@@ -18,6 +18,7 @@ import CredibleSetPage from "./pages/CredibleSetPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import { DataMetricsPage } from "@thehyve/data-metrics-plugin";
 
 const config = getConfig();
 
@@ -34,6 +35,7 @@ function App(): ReactElement {
             <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/data-metrics/*" element={<DataMetricsPage currentRelease="25.12" previousRelease="25.09" currentMetricsFile={`metrics_25-12.csv`} previousMetricsFile={`metrics_25-09.csv`} />} />
             <Route path="/downloads/*" element={<DownloadsPage />} />
             <Route path="/target/:ensgId/*" element={<TargetPage />} />
             <Route path="/disease/:efoId/*" element={<DiseasePage />} />
