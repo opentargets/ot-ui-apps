@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { alphaFoldPathogenicityColorScale } from "@ot/constants";
-import { DetailPopover, AlphaFoldPathogenicityLegend } from "ui";
+import { DetailPopover } from "ui";
+import AlphaFoldPathogenicityLegend from "./AlphaFoldPathogenicityLegend";
 
 export default function CompactAlphaFoldPathogenicityLegend({ showTitle = true }) {
   const barWidth = 100;

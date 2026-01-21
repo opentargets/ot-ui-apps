@@ -1,5 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import { Viewer, ViewerRadios, ViewerDropdown, useViewerState, useViewerDispatch } from "ui";
+import {
+  Viewer,
+  ViewerRadios,
+  ViewerDropdown,
+  ViewerLegend,
+  useViewerState,
+  useViewerDispatch
+} from "ui";
 import {
   alphaFoldCifUrl,
   fetchPathogenicityScores,
@@ -22,7 +29,6 @@ import {
 } from "./helpers";
 import AtomInfo from "./AtomInfo";
 import MissingColorWarning from "./MissingColorWarning";
-import Legend from "./Legend";
 import { initialState } from "./context";
 
 function StructureViewer({ row }) {
@@ -194,7 +200,7 @@ function StructureViewer({ row }) {
                   stateProperty="colorBy"
                   onChange={handleColorChange}
                 />
-                <Legend />
+                <ViewerLegend />
               </Box>
             </Box>
           </>
