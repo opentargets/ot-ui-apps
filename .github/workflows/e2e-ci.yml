@@ -13,14 +13,17 @@ on:
           - smoke
           - all
       test_config_url:
-        description: 'Google Sheet CSV URL for test configuration'
+        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
         required: false
-        default: 'https://docs.google.com/spreadsheets/d/1oWYlb_o0AZBYOFUCd8k5-whZpKLpicZ-UyyNkLUbUk8/export?format=csv'
         type: string
       test_scenario:
         description: 'Scenario name from the CSV to use for tests'
         required: false
         default: 'Happy_Path_Full_Data'
+        type: string
+      base_url:
+        description: 'Base URL to run tests against (defaults to Netlify branch preview)'
+        required: false
         type: string
 
 jobs:
@@ -77,7 +80,7 @@ jobs:
             yarn dev:test:platform:e2e:smoke
           fi
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}
           DEBUG: pw:api
           TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
           TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
@@ -88,5 +91,5 @@ jobs:
           path: ${{ github.workspace }}/packages/platform-test/playwright-report
           retention-days: 7
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}
           DEBUG: pw:api
