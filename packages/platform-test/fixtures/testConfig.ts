@@ -79,8 +79,8 @@ function parseArray(value: string): string[] {
   if (!value) return [];
   return value
     .split(",")
-    .map(v => v.trim())
-    .filter(v => v.length > 0);
+    .map((v) => v.trim())
+    .filter((v) => v.length > 0);
 }
 
 /**
@@ -143,7 +143,7 @@ async function fetchConfigFromSheet(url: string, scenarioName: string): Promise<
     const parseResult = Papa.parse<CSVRow>(csvText, {
       header: true,
       skipEmptyLines: true,
-      transformHeader: header => header.trim(),
+      transformHeader: (header) => header.trim(),
     });
 
     if (parseResult.errors.length > 0) {
@@ -153,9 +153,11 @@ async function fetchConfigFromSheet(url: string, scenarioName: string): Promise<
     const rows = parseResult.data;
 
     // Find the row matching the scenario name
-    const matchingRow = rows.find(row => row["Scenario Name"] === scenarioName);
+    const matchingRow = rows.find((row) => row["Scenario Name"] === scenarioName);
     if (!matchingRow) {
-      console.error(`Scenario "${scenarioName}" not found in CSV. Available scenarios: ${rows.map(r => r["Scenario Name"]).join(", ")}`);
+      console.error(
+        `Scenario "${scenarioName}" not found in CSV. Available scenarios: ${rows.map((r) => r["Scenario Name"]).join(", ")}`
+      );
       return null;
     }
 
