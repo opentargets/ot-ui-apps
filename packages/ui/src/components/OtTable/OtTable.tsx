@@ -199,7 +199,7 @@ function OtTable({
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
         {/* Table component */}
-        <OtTableContainer>
+        <OtTableContainer data-testid="ot-table">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
