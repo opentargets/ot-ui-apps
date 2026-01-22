@@ -1,0 +1,91 @@
+name: "Tests: E2E"
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - all
+      test_config_url:
+        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
+        required: false
+        type: string
+      test_scenario:
+        description: 'Scenario name from the CSV to use for tests'
+        required: false
+        default: 'Happy_Path_Full_Data'
+        type: string
+
+jobs:
+  get_branch_name:
+    name: Extract branch name
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+  tests_e2e_netlify_prepare:
+    name: Wait for deployment on Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+        run: |
+           yarn build:platform && ls ${{ github.workspace }}/ && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
+  tests_e2e_netlify:
+    needs: [tests_e2e_netlify_prepare, get_branch_name]
+    name: Run end-to-end tests on Netlify PR preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: install playwright browsers
+        run: |
+          cd packages/platform-test
+          yarn playwright install --with-deps chromium webkit
+      - name: Run E2E tests
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
+            yarn dev:test:platform:e2e
+          else
+            yarn dev:test:platform:e2e:smoke
+          fi
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          DEBUG: pw:api
+          TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
+          TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: ${{ github.workspace }}/packages/platform-test/playwright-report
+          retention-days: 7
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          DEBUG: pw:api
