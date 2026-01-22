@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.36.2",
+    "@types/papaparse": "^5.5.2",
     "start-server-and-test": "^2.0.4"
   },
   "scripts": {
@@ -18,5 +19,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "papaparse": "^5.5.3"
+  }
 }

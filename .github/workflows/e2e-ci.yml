@@ -12,6 +12,15 @@ on:
         options:
           - smoke
           - all
+      test_config_url:
+        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
+        required: false
+        type: string
+      test_scenario:
+        description: 'Scenario name from the CSV to use for tests'
+        required: false
+        default: 'Happy_Path_Full_Data'
+        type: string
 
 jobs:
   get_branch_name:
@@ -69,6 +78,8 @@ jobs:
         env:
           PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
           DEBUG: pw:api
+          TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
+          TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
