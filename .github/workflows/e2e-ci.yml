@@ -13,8 +13,9 @@ on:
           - smoke
           - all
       test_config_url:
-        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
+        description: 'Google Sheet CSV URL for test configuration'
         required: false
+        default: 'https://docs.google.com/spreadsheets/d/1oWYlb_o0AZBYOFUCd8k5-whZpKLpicZ-UyyNkLUbUk8/export?format=csv'
         type: string
       test_scenario:
         description: 'Scenario name from the CSV to use for tests'
