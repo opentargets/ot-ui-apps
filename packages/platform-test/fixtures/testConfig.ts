@@ -133,7 +133,14 @@ function csvRowToTestConfig(row: CSVRow): TestConfig {
  */
 async function fetchConfigFromSheet(url: string, scenarioName: string): Promise<TestConfig | null> {
   try {
-    const response = await fetch(url);
+    // Add cache-busting parameter to ensure fresh data
+    const cacheBustUrl = `${url}${url.includes("?") ? "&" : "?"}_t=${Date.now()}`;
+    const response = await fetch(cacheBustUrl, {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache",
+      },
+    });
     if (!response.ok) {
       console.error(`Failed to fetch config from ${url}: ${response.status}`);
       return null;
@@ -211,34 +218,109 @@ function getDefaultConfig(): TestConfig {
 }
 
 /**
+ * Merge fetched config with default config, filling in empty values from default
+ */
+function mergeWithDefaults(fetched: TestConfig, defaults: TestConfig): TestConfig {
+  return {
+    drug: {
+      primary: fetched.drug.primary || defaults.drug.primary,
+      alternatives: {
+        withWarnings:
+          fetched.drug.alternatives?.withWarnings || defaults.drug.alternatives?.withWarnings || "",
+        withAdverseEvents:
+          fetched.drug.alternatives?.withAdverseEvents ||
+          defaults.drug.alternatives?.withAdverseEvents ||
+          "",
+      },
+    },
+    variant: {
+      primary: fetched.variant.primary || defaults.variant.primary,
+      withMolecularStructure:
+        fetched.variant.withMolecularStructure || defaults.variant.withMolecularStructure,
+      withPharmacogenomics:
+        fetched.variant.withPharmacogenomics || defaults.variant.withPharmacogenomics,
+      withQTL: fetched.variant.withQTL || defaults.variant.withQTL,
+      withEVA: fetched.variant.withEVA || defaults.variant.withEVA,
+    },
+    target: {
+      primary: fetched.target?.primary || defaults.target?.primary,
+      alternatives: fetched.target?.alternatives?.length
+        ? fetched.target.alternatives
+        : defaults.target?.alternatives,
+      aotfDiseases: fetched.target?.aotfDiseases?.length
+        ? fetched.target.aotfDiseases
+        : defaults.target?.aotfDiseases,
+    },
+    disease: {
+      primary: fetched.disease.primary || defaults.disease.primary,
+      name: fetched.disease.name || defaults.disease.name,
+      alternatives: fetched.disease.alternatives?.length
+        ? fetched.disease.alternatives
+        : defaults.disease.alternatives,
+      aotfGenes: fetched.disease.aotfGenes?.length
+        ? fetched.disease.aotfGenes
+        : defaults.disease.aotfGenes,
+    },
+    study: {
+      gwas: {
+        primary: fetched.study.gwas.primary || defaults.study.gwas.primary,
+        alternatives: fetched.study.gwas.alternatives?.length
+          ? fetched.study.gwas.alternatives
+          : defaults.study.gwas.alternatives,
+      },
+      qtl:
+        fetched.study.qtl?.primary || defaults.study.qtl
+          ? {
+              primary: fetched.study.qtl?.primary || defaults.study.qtl?.primary,
+              alternatives: fetched.study.qtl?.alternatives?.length
+                ? fetched.study.qtl.alternatives
+                : defaults.study.qtl?.alternatives,
+            }
+          : undefined,
+    },
+  };
+}
+
+/**
  * Cached test configuration
  */
 let cachedConfig: TestConfig | null = null;
 
 /**
- * Get test configuration (with caching)
+ * Default configuration constants
+ */
+const DEFAULT_CONFIG_URL =
+  "https://docs.google.com/spreadsheets/d/1oWYlb_o0AZBYOFUCd8k5-whZpKLpicZ-UyyNkLUbUk8/export?format=csv";
+const DEFAULT_SCENARIO = "Target-Disease Links";
+
+/**
+ * Get test configuration (always fetches fresh)
  * Reads from environment variables TEST_CONFIG_URL and TEST_SCENARIO if available,
- * otherwise falls back to default configuration.
+ * otherwise uses hardcoded defaults.
  * @returns Test configuration object
  */
 export async function getTestConfig(): Promise<TestConfig> {
-  if (!cachedConfig) {
-    const configUrl = process.env.TEST_CONFIG_URL;
-    const scenarioName = process.env.TEST_SCENARIO || "Happy_Path_Full_Data";
+  // Always reset to fetch fresh config for every run
+  cachedConfig = null;
 
-    if (configUrl) {
-      console.log(`Fetching test config from: ${configUrl}`);
-      console.log(`Using scenario: ${scenarioName}`);
-      const fetchedConfig = await fetchConfigFromSheet(configUrl, scenarioName);
-      if (fetchedConfig) {
-        cachedConfig = fetchedConfig;
-        return cachedConfig;
-      }
-      console.log("Falling back to default configuration");
+  const configUrl = process.env.TEST_CONFIG_URL || DEFAULT_CONFIG_URL;
+  const scenarioName = process.env.TEST_SCENARIO || DEFAULT_SCENARIO;
+  const defaults = getDefaultConfig();
+
+  if (configUrl) {
+    console.log(`Fetching test config from: ${configUrl}`);
+    console.log(`Using scenario: ${scenarioName}`);
+    const fetchedConfig = await fetchConfigFromSheet(configUrl, scenarioName);
+    if (fetchedConfig) {
+      // Merge fetched config with defaults to fill any empty cells
+      cachedConfig = mergeWithDefaults(fetchedConfig, defaults);
+      console.log(cachedConfig);
+      return cachedConfig;
     }
-
-    cachedConfig = getDefaultConfig();
+    console.log("Falling back to default configuration");
   }
+
+  cachedConfig = defaults;
   return cachedConfig;
 }
 

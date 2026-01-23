@@ -2,10 +2,16 @@ import { test as base } from "@playwright/test";
 import { getTestConfig, type TestConfig } from "./testConfig";
 
 /**
+ * Default base URL for tests
+ */
+const DEFAULT_BASE_URL = "http://localhost:3000";
+
+/**
  * Extended test fixtures with test configuration
  */
 type TestFixtures = {
   testConfig: TestConfig;
+  baseURL: string;
 };
 
 /**
@@ -17,6 +23,10 @@ export const test = base.extend<TestFixtures>({
     // Fetch configuration once per test
     const config = await getTestConfig();
     await use(config);
+  },
+  baseURL: async ({}, use) => {
+    const url = process.env.PLAYWRIGHT_TEST_BASE_URL || DEFAULT_BASE_URL;
+    await use(url);
   },
 });
 
