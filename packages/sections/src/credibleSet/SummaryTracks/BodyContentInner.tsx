@@ -1,4 +1,5 @@
 
+import { useEffect, useRef } from "react";
 import {
   GenTrack,
   useGenTrackState,
@@ -7,7 +8,8 @@ import {
 } from "ui";
 import { Container, Sprite, ParticleContainer } from '@pixi/react';
 import { Box, Typography } from "@mui/material";
-import { useRectangleTexture } from "ui/src/components/GenTrack/shapes";
+import { useRectangleTexture, useCircleTexture } from "ui/src/components/GenTrack/shapes";
+import { scaleLinear, axisTop, select } from "d3";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -45,16 +47,41 @@ const colorScheme = [
   0xbab0ab,
 ];
 
-  
-// need canvasWidth prop (even if not used) for correct behavior of inner XInfo
-function XInfo({start, end, canvasWidth}) {
+function XInfo({ start, end, canvasWidth }) {
+  const axisRef = useRef(null);
+
+  useEffect(() => {
+    const scale = scaleLinear()
+      .domain([start, end])
+      .range([0, canvasWidth])
+      .nice();
+
+    const axis = axisTop(scale)
+      .ticks(8)
+      .tickSizeOuter(0);
+
+    select(axisRef.current)
+      .call(axis)
+      .selectAll("text")
+      .style("font-size", "11px")
+      .style("font-family", "'Inter', sans-serif");
+  }, [start, end, canvasWidth]);
+
   return (
-    <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1, borderRadius: 2 }}>
+    <svg width={canvasWidth} height={30} style={{ overflow: "visible" }}>
+      <g ref={axisRef} transform="translate(0, 30)" />
+    </svg>
+  );
+}
+
+function XYInfo() {
+  return (
+    <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
       <Typography variant="body2">
-        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>x: {Math.round(start)}-{Math.round(end)}</Box>
+        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Chromosome??</Box><br />
       </Typography>
     </Box>
-  )
+  );
 }
 
 function BodyContentInner({ data }) {
@@ -64,10 +91,55 @@ function BodyContentInner({ data }) {
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
+  const variantWidth = 10;
+  const circleTrackHeight = 30;
   const tracks = [
+
+    // fixed-width rectangular variants
+    // {
+    //   id: `variants`,
+    //   height: 30,
+    //   paddingTop: 16,
+    //   yMin: 0,
+    //   yMax: 100,
+    //   YInfo: ({}) => (
+    //     <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
+    //     <Typography variant="body2">
+    //       <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Variants</Box><br />
+    //     </Typography>
+    //     </Box>
+    //   ),
+    //   Track: () => {
+    //     const texture = useRectangleTexture();
+    //     return (
+    //       <Container>
+    //         {data.locus.rows.map(({ variant }, i) => (
+    //           <Sprite
+    //             key={i}
+    //             texture={texture}
+    //             x={variant.position}
+    //             y={0}
+    //             anchor={[0.5, 0]}
+    //             height={100}
+    //             tint="steelblue"
+    //             alpha={0.8}
+    //           />
+    //         ))}
+    //       </Container>
+    //     );
+    //   },
+    //   onTick: wrapper => {  // to fix pixel width
+    //     const xScale = wrapper.scale.x * wrapper.parent.scale.x;
+    //     for (const rect of wrapper.children[0].children) {
+    //       rect.width = variantWidth / xScale;
+    //     }
+    //   }
+    // },
+    
+    // fixed-circle size variants
     {
-      id: `variants`,
-      height: 30,
+      id: `circle-variants`,
+      height: circleTrackHeight,
       paddingTop: 16,
       yMin: 0,
       yMax: 100,
@@ -79,34 +151,43 @@ function BodyContentInner({ data }) {
         </Box>
       ),
       Track: () => {
-        const rectTexture = useRectangleTexture();
+        const texture = useCircleTexture();
         return (
           <Container>
             {data.locus.rows.map(({ variant }, i) => (
               <Sprite
                 key={i}
-                texture={rectTexture}
+                texture={texture}
                 x={variant.position}
-                y={0}
-                width={(xMax - xMin) / 200}
-                height={100}
+                y={50}
+                anchor={[0.5, 0.5]}
+                height={variantWidth / circleTrackHeight * 100}
                 tint="steelblue"
                 alpha={0.8}
               />
             ))}
           </Container>
         );
+      },
+      onTick: wrapper => {  // to fix pixel width
+        const xScale = wrapper.scale.x * wrapper.parent.scale.x;
+        for (const rect of wrapper.children[0].children) {
+          rect.width = variantWidth / xScale;
+        }
       }
     },
+
   ];
 
   return (
     <>
       <GenTrack
         XInfo={XInfo}
+        XYInfo={XYInfo}
         tracks={tracks}
         InnerXInfo={XInfo}
         innerTracks={tracks}
+        InnerXYInfo={XYInfo}
         zoomLines
       />
       {/* <Intro /> */}

@@ -2,6 +2,7 @@ query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
     variant {
       id
+      chromosome
       referenceAllele
       alternateAllele
     }

@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { Stage, Container } from '@pixi/react';
+import { Stage, Container, useApp } from '@pixi/react';
 import { useMeasure } from "@uidotdev/usehooks";
 import { useRef, useMemo, useEffect, memo } from "react";
 import { createViewModel } from "./createViewModel";
@@ -43,13 +43,55 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
   );
 });
 
+function Tracks({ tracks, canvasWidth, xMin, xMax, yTrackStarts, _isInner }) {
+  const app = useApp();
+  const trackContainersRef = useRef([]);  // ref to the wrapper container for each track
+
+  // per-frame, per track updates
+  useEffect(() => {
+    const update = () => {
+      if (!trackContainersRef.current.some(v => v)) return;
+      for (const [index, { onTick }] of tracks.entries()) {
+        onTick?.(trackContainersRef.current[index]);
+      }
+    };
+    app.ticker.add(update);
+    return () => app.ticker.remove(update);
+  }, []);
+
+  return (
+    <>
+      {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
+        <Container
+          key={id}
+          ref={el => (trackContainersRef.current[index] = el)}
+          width={px(canvasWidth)}
+          height={px(height)}
+          y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
+          x={_isInner ? 0 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
+          scale={{ 
+            x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
+            y: height / (yMax - yMin),
+          }}
+        >
+          <Track />
+        </Container>
+      ))}
+    </>
+  );
+}
+
 function GenTrack({
   tracks,
   XInfo,
+  XYInfo,
+  xyInfoHeight = 32,
   Tooltip,
   tooltipProps = {},
   innerTracks,
   InnerXInfo,
+  InnerXYInfo,
+  innerXYInfoHeight = 32,
   InnerTooltip,
   innerTooltipProps = {},
   yInfoWidth = 160,
@@ -111,7 +153,7 @@ function GenTrack({
         z.style.left = `${left - ZOOM_LINE_WIDTH}px`;
         z.style.right = `${right - ZOOM_LINE_WIDTH}px`;
         z.style.borderLeftStyle = left === 0 ? "none" : "solid"; 
-        z.style.borderRightStyle = right === 0 ? "none" : "solid"; 
+        z.style.borderRightStyle = right === 0 ? "none" : "solid";
       }
     };
 
@@ -121,139 +163,144 @@ function GenTrack({
     const unsubscribe = viewModel.subscribe(apply);
     return unsubscribe;
   }, [viewModel, canvasWidth, xMin, xMax]);
-  
+
+
   return (
     <Box
       ref={widthRef}
       sx={{ diplay: "flex", flexDirection: "column" }}
     >
       
-      {/* xInfo */}
-      {_isInner && XInfo &&
-        <Box sx={{ ml: px(yInfoWidth + yInfoGap)}}>
-          <NestedXInfo viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
-        </Box>
-      }
-      {!_isInner && XInfo && (
-        <Box sx={{ ml: px(yInfoWidth + yInfoGap)}}>
-          <XInfo start={xMin} end={xMax} />
-        </Box>
-      )}
+      {canvasWidth > 0 && (
+        <>
 
-      {/* container for yInfos and Pixi canvas */}
-      {tracks?.length > 0 && (
-        <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
-
-          {/* yInfos */}
-          <Box sx={{
-            width: px(yInfoWidth), 
-            height: px(canvasHeight),
-            flex: "0 0 auto",
-            display: "flex",
-            flexDirection: "column",
-          }}>
-            {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
-              <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
-                <YInfo start={yMin} end={yMax} />
+          {/* XInfo */}
+          {(XInfo || XYInfo) && (
+            <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
+              <Box sx={{ height: px(xyInfoHeight), width: px(yInfoWidth) }}>
+                {XYInfo && <XYInfo />}
               </Box>
-            ))}
-          </Box>
+              <Box sx={{ height: px(xyInfoHeight), width: px(canvasWidth) }}>
+                {XInfo && (_isInner 
+                  ? <NestedXInfo viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
+                  : <XInfo start={xMin} end={xMax} canvasWidth={canvasWidth} />
+                )}
+              </Box>
+            </Box>
+          )}
 
-          {/* Pixi canvas */}
-          <Box sx={{ width: canvasWidth, height: canvasHeight, position: "relative" }}>
-            <Stage
-              width={canvasWidth}
-              height={canvasHeight}
-              options={{ background: 0xffffff }}
-            >
-              <Container ref={_isInner ? _innerTracksContainerRef : null}>
-                {tracks.map(({ id, height = 50, Track, yMin, yMax }, index) => (
-                  <Container
-                    key={id}
-                    width={px(canvasWidth)}
-                    height={px(height)}
-                    y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
-                    x={_isInner ? 1 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
-                    scale={{ 
-                      x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
-                      y: height / (yMax - yMin),
-                    }}
-                  >
-                    <Track />
-                  </Container>
+          {/* container for yInfos and Pixi canvas */}
+          {tracks?.length > 0 && (
+            <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
+
+              {/* yInfos */}
+              <Box sx={{
+                width: px(yInfoWidth), 
+                height: px(canvasHeight),
+                flex: "0 0 auto",
+                display: "flex",
+                flexDirection: "column",
+              }}>
+                {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
+                  <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
+                    <YInfo start={yMin} end={yMax} />
+                  </Box>
                 ))}
-              </Container>
-            </Stage>
-            {Tooltip && (
-              <TooltipLayer
-                width={canvasWidth}
-                height={canvasHeight}
-                canvasType={_isInner ? "inner" : "outer"}
-                tooltipProps={tooltipProps}
-              >
-                <Tooltip />   
-              </TooltipLayer>
-            )}
-            
-            {/* zoom lines overlay */}
-            {zoomLines && innerTracks?.length > 0 && (
-              <Box
-                ref={zoomLinesRef}
-                sx={{
-                  position: "absolute",
-                  top: tracks[0].paddingTop,
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  zIndex: 5,
-                  borderTop: 0,
-                  borderBottom: 0,
-                  borderLeft: `${ZOOM_LINE_WIDTH}px`,
-                  borderRight: `${ZOOM_LINE_WIDTH}px`,
-                  borderStyle: "solid",
-                  borderColor: "#00aaff",
-                  pointerEvents: "none",
+              </Box>
+
+              {/* Pixi canvas */}
+              <Box sx={{ width: canvasWidth, height: canvasHeight, position: "relative" }}>
+                <Stage
+                  width={canvasWidth}
+                  height={canvasHeight}
+                  options={{ background: 0xffffff }}
+                >
+                  <Container ref={_isInner ? _innerTracksContainerRef : null}>
+                    <Tracks
+                      tracks={tracks}
+                      canvasWidth={canvasWidth}
+                      xMin={xMin}
+                      xMax={xMax}
+                      yTrackStarts={yTrackStarts}
+                      _isInner={_isInner}
+                    />
+                  </Container>
+                </Stage>
+                {Tooltip && (
+                  <TooltipLayer
+                    width={canvasWidth}
+                    height={canvasHeight}
+                    canvasType={_isInner ? "inner" : "outer"}
+                    tooltipProps={tooltipProps}
+                  >
+                    <Tooltip />   
+                  </TooltipLayer>
+                )}
+                
+                {/* zoom lines overlay */}
+                {zoomLines && innerTracks?.length > 0 && (
+                  <Box
+                    ref={zoomLinesRef}
+                    sx={{
+                      position: "absolute",
+                      top: tracks[0].paddingTop,
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      zIndex: 5,
+                      borderTop: 0,
+                      borderBottom: 0,
+                      borderLeft: `${ZOOM_LINE_WIDTH}px`,
+                      borderRight: `${ZOOM_LINE_WIDTH}px`,
+                      borderStyle: "solid",
+                      borderColor: "#00aaff",
+                      pointerEvents: "none",
+                    }}
+                  />
+                )}
+              </Box>
+            </Box>
+          )}
+
+          {innerTracks?.length > 0 && (
+            <>   
+              <Box sx={{
+                pt: px(panZoomTopGap),
+                pb: px(panZoomBottomGap),
+                pl: px(yInfoWidth + yInfoGap),
+              }}>
+                <PanZoomPanel
+                  viewModel={viewModel}
+                  canvasWidth={canvasWidth}
+                  xMin={xMin}
+                  xMax={xMax}
+                />
+              </Box>
+
+              <Box 
+                sx={{ 
+                  position: "relative",
+                  pointerEvents: "none", // Allow clicks to pass through the container
                 }}
-              />
-            )}
-          </Box>
-        </Box>
-      )}
+              >
+                <GenTrack
+                  tracks={innerTracks}
+                  yInfoGap={yInfoGap}
+                  XInfo={InnerXInfo}
+                  XYInfo={InnerXYInfo}
+                  xyInfoHeight={innerXYInfoHeight}
+                  yInfoWidth={yInfoWidth}
+                  panZoomBottomGap={panZoomBottomGap}
+                  Tooltip={InnerTooltip}
+                  tooltipProps={innerTooltipProps}
+                  _isInner={true}
+                  _viewModel={viewModel}
+                  _innerTracksContainerRef={innerTracksContainerRef}
+                />
+              </Box>
+            </>
+          )}
 
-      {innerTracks?.length > 0 && (
-        <>   
-          <Box sx={{
-            pt: px(panZoomTopGap),
-            pb: px(panZoomBottomGap),
-            pl: px(yInfoWidth + yInfoGap),
-          }}>
-            <PanZoomPanel
-              viewModel={viewModel}
-              canvasWidth={canvasWidth}
-              xMin={xMin}
-              xMax={xMax}
-            />
-          </Box>
-
-          <Box 
-            sx={{ 
-              position: "relative",
-              pointerEvents: "none", // Allow clicks to pass through the container
-            }}
-          >
-            <GenTrack
-              tracks={innerTracks}
-              yInfoGap={yInfoGap}
-              XInfo={InnerXInfo}
-              yInfoWidth={yInfoWidth}
-              panZoomBottomGap={panZoomBottomGap}
-              Tooltip={InnerTooltip}
-              tooltipProps={innerTooltipProps}
-              _isInner={true}
-              _viewModel={viewModel}
-              _innerTracksContainerRef={innerTracksContainerRef}
-            />
-          </Box>
         </>
       )}
 
