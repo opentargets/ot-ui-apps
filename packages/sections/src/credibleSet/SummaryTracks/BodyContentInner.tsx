@@ -9,8 +9,8 @@ import {
 import { Container, Sprite, Graphics, ParticleContainer } from '@pixi/react';
 import { Graphics as PixiGraphics } from "pixi.js";
 import { Box, Typography } from "@mui/material";
-import { useRectangleTexture, useCircleTexture } from "ui/src/components/GenTrack/shapes";
-import { scaleLinear, axisTop, select } from "d3";
+import { useRectangleTexture, useCircleTexture, useRingTexture } from "ui/src/components/GenTrack/shapes";
+import { scaleLinear, axisTop, select, max } from "d3";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -87,7 +87,7 @@ const infoStyle = {
 function XYInfo({ data }) {
   return (
     <Box sx={{ ...infoStyle, alignItems: "end"}}>
-      <Typography component="div" variant="caption" sx={{ height: "12px" }}>
+      <Typography component="div" variant="caption" sx={{ height: "12px", fontSize: "11px" }}>
         Chr {data.locus.rows[0].variant.chromosome}
       </Typography>
     </Box>
@@ -97,15 +97,110 @@ function XYInfo({ data }) {
 function BodyContentInner({ data }) {
 
   const genTrackState = useGenTrackState();
-  const { xMin, xMax } = genTrackState; 
+  const { xMin, xMax } = genTrackState;
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
   const variantWidth = 10;
   const circleTrackHeight = 30;
   const tracks = [
+    
+    // fixed-circle size variants
+    {
+      id: `circle-variants`,
+      height: circleTrackHeight,
+      paddingTop: 16,
+      yMin: 0,
+      yMax: 100,
+      YInfo: ({}) => (
+        <Box sx={infoStyle}> 
+          <Typography component="div" variant="caption" sx={{ fontWeight: 600 }}>
+            Variants
+          </Typography>
+        </Box>
+      ),
+      Track: () => {
+        const ringTexture = useRingTexture(32, 10);
+        const circleTexture = useCircleTexture(32);
+        const draw = useCallback((g) => {
+          g.clear();
+          g.lineStyle(2, 0xaaaaaa, 1);
+          g.moveTo(xMin, 50);
+          g.lineTo(xMax, 50);
+        }, [xMin, xMax]);
+        return (
+          <Container>
 
-    // fixed-width rectangular variants
+            {/* horizontal line */}
+            <Graphics draw={draw} />
+            
+            {/* all variants */}
+            {data.locus.rows.map(({ variant }, i) => (
+              <Sprite
+                key={i}
+                texture={ringTexture}
+                x={variant.position}
+                y={50}
+                anchor={[0.5, 0.5]}
+                height={variantWidth / circleTrackHeight * 100}
+                tint="steelblue"
+                alpha={0.9}
+              />
+            ))}
+
+            {/* lead variants */}
+            <Sprite
+              texture={circleTexture}
+              x={data.variant.position}
+              y={50}
+              anchor={[0.5, 0.5]}
+              height={variantWidth / circleTrackHeight * 100}
+              tint="steelblue"
+              alpha={0.9}
+            />
+          </Container>
+        );
+      },
+      // fix circle pixel widths - ugly, particularly since need to skip horintal graphics line
+      onTick: wrapper => {
+        const xScale = wrapper.scale.x * wrapper.parent.scale.x;
+        for (const obj of wrapper.children[0].children) {
+          if (obj instanceof PixiGraphics) continue;
+          obj.width = variantWidth / xScale;
+        }
+      }
+    },
+
+  ];
+
+  return (
+    <Box sx={{mr: 3}}>
+      <GenTrack
+        XInfo={XInfo}
+        XYInfo={XYInfo}
+        tracks={tracks}
+        InnerXInfo={XInfo}
+        innerTracks={tracks}
+        // InnerXYInfo={XYInfo}
+        yInfoGap={8}
+        yInfoWidth={100}
+        zoomLines
+      />
+      {/* <Intro /> */}
+    </Box>
+  );
+}
+
+export default BodyContentInner;
+
+// !!!!! THE VARIANTS ARE NOT IN EXACTLY THE CORRECT PLACE RELATIVE TO THE AXES!
+//   - AND THERE POSITION RELATIVE TO IT CHANGES!
+//   - FIRST CHECK HOW COMPUTING XMIN AND XMAX - AND ID USING CONSISTENTLY FOR TRACKS AND AXIS
+
+
+//
+
+  // fixed-width rectangular variants
     // {
     //   id: `variants`,
     //   height: 30,
@@ -145,75 +240,3 @@ function BodyContentInner({ data }) {
     //     }
     //   }
     // },
-    
-    // fixed-circle size variants
-    {
-      id: `circle-variants`,
-      height: circleTrackHeight,
-      paddingTop: 16,
-      yMin: 0,
-      yMax: 100,
-      YInfo: ({}) => (
-        <Box sx={infoStyle}> 
-          <Typography component="div" variant="caption" sx={{ fontWeight: 600 }}>
-            Variants
-          </Typography>
-        </Box>
-      ),
-      Track: () => {
-        const texture = useCircleTexture();
-        const draw = useCallback((g) => {
-          g.clear();
-          g.lineStyle(2, 0xaaaaaa, 1);
-          g.moveTo(xMin, 50);
-          g.lineTo(xMax, 50);
-        }, [xMin, xMax]);
-        return (
-          <Container>
-            <Graphics draw={draw} />
-            {data.locus.rows.map(({ variant }, i) => (
-              <Sprite
-                key={i}
-                texture={texture}
-                x={variant.position}
-                y={50}
-                anchor={[0.5, 0.5]}
-                height={variantWidth / circleTrackHeight * 100}
-                tint="steelblue"
-                alpha={0.8}
-              />
-            ))}
-          </Container>
-        );
-      },
-      // fix circle pixel widths - ugly, particularly since need to skip horintal graphics line
-      onTick: wrapper => {
-        const xScale = wrapper.scale.x * wrapper.parent.scale.x;
-        for (const obj of wrapper.children[0].children) {
-          if (obj instanceof PixiGraphics) continue;
-          obj.width = variantWidth / xScale;
-        }
-      }
-    },
-
-  ];
-
-  return (
-    <Box sx={{mr: 3}}>
-      <GenTrack
-        XInfo={XInfo}
-        XYInfo={XYInfo}
-        tracks={tracks}
-        InnerXInfo={XInfo}
-        innerTracks={tracks}
-        // InnerXYInfo={XYInfo}
-        yInfoGap={8}
-        yInfoWidth={100}
-        zoomLines
-      />
-      {/* <Intro /> */}
-    </Box>
-  );
-}
-
-export default BodyContentInner

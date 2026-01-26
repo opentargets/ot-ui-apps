@@ -18,7 +18,7 @@ function PanZoomPanel({ viewModel, canvasWidth, xMin, xMax }) {
   const rafRef = useRef(null);
 
   const HANDLE_WIDTH = 8;
-  const PANEL_HEIGHT = 30;
+  const PANEL_HEIGHT = 20;
   const MIN_WINDOW_WIDTH_DATA = 20 * (xMax - xMin) / canvasWidth;
   const HANDLE_COLOR = '#00aaff';
 

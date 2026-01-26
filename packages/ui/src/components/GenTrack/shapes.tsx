@@ -66,3 +66,16 @@ export function useCircleTexture(radius = 32) {
     return texture;
   }, [app, radius]);
 }
+
+// Ring texture (stroke only)
+export function useRingTexture(radius = 32, strokeWidth = 2) {
+  const app = useApp();
+  return useMemo(() => {
+    const g = new PIXI.Graphics();
+    g.lineStyle(strokeWidth, 0xffffff);
+    g.drawCircle(radius, radius, radius - strokeWidth / 2);
+    const texture = app.renderer.generateTexture(g);
+    g.destroy(true);
+    return texture;
+  }, [app, radius, strokeWidth]);
+}

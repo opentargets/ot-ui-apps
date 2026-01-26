@@ -3,6 +3,7 @@ query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
     variant {
       id
       chromosome
+      position
       referenceAllele
       alternateAllele
     }
