@@ -1,5 +1,6 @@
 import { test as base } from "@playwright/test";
-import { getTestConfig, type TestConfig } from "./testConfig";
+import type { TestConfig } from "../types";
+import { getTestConfig } from "./testConfig";
 
 /**
  * Default base URL for tests
