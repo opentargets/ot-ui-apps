@@ -1,12 +1,13 @@
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import {
   GenTrack,
   useGenTrackState,
   useGenTrackTooltipDispatch,
   useGenTrackTooltipState
 } from "ui";
-import { Container, Sprite, ParticleContainer } from '@pixi/react';
+import { Container, Sprite, Graphics, ParticleContainer } from '@pixi/react';
+import { Graphics as PixiGraphics } from "pixi.js";
 import { Box, Typography } from "@mui/material";
 import { useRectangleTexture, useCircleTexture } from "ui/src/components/GenTrack/shapes";
 import { scaleLinear, axisTop, select } from "d3";
@@ -74,11 +75,20 @@ function XInfo({ start, end, canvasWidth }) {
   );
 }
 
+const infoStyle = {
+  // background: "#f0f0f0",
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  justifyContent: "end",
+  alignItems: "center" 
+};
+
 function XYInfo({ data }) {
   return (
-    <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
-      <Typography variant="body2">
-        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Chromosome {data.locus.rows[0].variant.chromosome}</Box><br />
+    <Box sx={{ ...infoStyle, alignItems: "end"}}>
+      <Typography component="div" variant="caption" sx={{ height: "12px" }}>
+        Chr {data.locus.rows[0].variant.chromosome}
       </Typography>
     </Box>
   );
@@ -144,16 +154,23 @@ function BodyContentInner({ data }) {
       yMin: 0,
       yMax: 100,
       YInfo: ({}) => (
-        <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
-        <Typography variant="body2">
-          <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Variants</Box><br />
-        </Typography>
+        <Box sx={infoStyle}> 
+          <Typography component="div" variant="caption" sx={{ fontWeight: 600 }}>
+            Variants
+          </Typography>
         </Box>
       ),
       Track: () => {
         const texture = useCircleTexture();
+        const draw = useCallback((g) => {
+          g.clear();
+          g.lineStyle(2, 0xaaaaaa, 1);
+          g.moveTo(xMin, 50);
+          g.lineTo(xMax, 50);
+        }, [xMin, xMax]);
         return (
           <Container>
+            <Graphics draw={draw} />
             {data.locus.rows.map(({ variant }, i) => (
               <Sprite
                 key={i}
@@ -169,10 +186,12 @@ function BodyContentInner({ data }) {
           </Container>
         );
       },
-      onTick: wrapper => {  // to fix pixel width
+      // fix circle pixel widths - ugly, particularly since need to skip horintal graphics line
+      onTick: wrapper => {
         const xScale = wrapper.scale.x * wrapper.parent.scale.x;
-        for (const rect of wrapper.children[0].children) {
-          rect.width = variantWidth / xScale;
+        for (const obj of wrapper.children[0].children) {
+          if (obj instanceof PixiGraphics) continue;
+          obj.width = variantWidth / xScale;
         }
       }
     },
@@ -180,18 +199,20 @@ function BodyContentInner({ data }) {
   ];
 
   return (
-    <>
+    <Box sx={{mr: 3}}>
       <GenTrack
         XInfo={XInfo}
         XYInfo={XYInfo}
         tracks={tracks}
         InnerXInfo={XInfo}
         innerTracks={tracks}
-        InnerXYInfo={XYInfo}
+        // InnerXYInfo={XYInfo}
+        yInfoGap={8}
+        yInfoWidth={100}
         zoomLines
       />
       {/* <Intro /> */}
-    </>
+    </Box>
   );
 }
 
