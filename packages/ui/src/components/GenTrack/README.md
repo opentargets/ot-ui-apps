@@ -72,14 +72,14 @@ Top-level gen track component. This contains the x-info and tracks (each of whic
 | Prop                | Type        | Default        | Description                                                                                                         |
 | ------------------- | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `tracks`            | `Track[]`   |                | Tracks.                                                                                                             |
-| `XInfo`             | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `start`, `end` and `canvasWidth` props. |
-| `XYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `xyInfoHeight`. |
+| `XInfo`             | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `data`, `start`, `end` and `canvasWidth` props. |
+| `XYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `xyInfoHeight`. Can take a `data` prop. |
 | `xyInfoHeight` | `number` | `32` | Height of `XInfo` and `XYInfo` containers. |
 | `Tooltip`           | `component` |                | Tooltip - see [Tooltip](#tooltip).                                                                                  |
 | `tooltipProps`      | `object`    |                | Additional tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                       |
 | `innerTracks`       | `Track[]`   |                | Inner tracks.                                                                                                       |
-| `InnerXInfo`        | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `start`, `end` and `canvasWidth` props - `InnerXInfo` __must__ take a `canvasWidth` prop (even if unsued) to ensure correct behavior. |
-| `InnerXYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `innerXYInfoHeight`. |
+| `InnerXInfo`        | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `data`, `start`, `end` and `canvasWidth` props - `InnerXInfo` __must__ take a `canvasWidth` prop (even if unsued) to ensure correct behavior. |
+| `InnerXYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `innerXYInfoHeight`. Can take a `data` prop. |
 | `innerXYInfoHeight` | `number` | `32` | Height of `InnerXInfo` and `XYInfo` containers. |
 | `InnerTooltip`      | `component` |                | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                 |
 | `innerTooltipProps` | `object`    |                | Additional inner tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                 |
@@ -101,7 +101,7 @@ The `tracks` prop of a `GenTrack` should be passed an array of objects, where ea
 | `id`         | `string`    |         | Unique id for the track. Typically a readable name, e.g. `'domains'`.                                                                                                                                                        |
 | `yMin`       | `number`    | `0`     | Minimum y value for y-scale.                                                                                                                                                                                                 |
 | `yMax`       | `number`    | `100`   | Maximum y value for y-scale.                                                                                                                                                                                                 |
-| `YInfo`      | `component` |         | Rendered inside a container with width equal to the `yInfoWidth` of the parent `GenTrack` and height equal to `height`.                                                                                                    |                                                    |
+| `YInfo`      | `component` |         | Rendered inside a container with width equal to the `yInfoWidth` of the parent `GenTrack` and height equal to `height`. Can take a `data` prop.                                                                                                    |                                                    |
 | `Track`      | `component` |         | Should return a Pixi container. The container is vertically translated to the appropriate part of the canvas, stretched to the width of the canvas, given height equal to `height` and given the appropriate x and y scales. |                                                    |
 | `onTick` | `function` |  | Passed the  |
 | `height`     | `number`    | `50`    |

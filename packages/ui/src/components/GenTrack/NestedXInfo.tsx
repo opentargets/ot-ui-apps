@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function NestedXInfo({ viewModel, XInfo, canvasWidth }) {
+function NestedXInfo({ data, viewModel, XInfo, canvasWidth }) {
   const [range, setRange] = useState({
     start: viewModel.start,
     end: viewModel.end,
@@ -12,7 +12,7 @@ function NestedXInfo({ viewModel, XInfo, canvasWidth }) {
     });
   }, [viewModel]);
 
-  return <XInfo start={range.start} end={range.end} canvasWidth={canvasWidth} />;
+  return <XInfo data={data} start={range.start} end={range.end} canvasWidth={canvasWidth} />;
 }
 
 export default NestedXInfo;

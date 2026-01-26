@@ -107,7 +107,7 @@ function GenTrack({
 
   const ZOOM_LINE_WIDTH = 2;
 
-  const { xMin, xMax } = useGenTrackState();
+  const { data, xMin, xMax } = useGenTrackState();
 
   const viewModel = useMemo(() => {
     return _isInner || !(innerTracks?.length > 0)
@@ -175,12 +175,12 @@ function GenTrack({
       {canvasWidth > 0 && (XInfo || XYInfo) && (
         <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
           <Box sx={{ height: px(xyInfoHeight), width: px(yInfoWidth) }}>
-            {XYInfo && <XYInfo />}
+            {XYInfo && <XYInfo data={data} />}
           </Box>
           <Box sx={{ height: px(xyInfoHeight), width: px(canvasWidth) }}>
             {XInfo && (_isInner 
-              ? <NestedXInfo viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
-              : <XInfo start={xMin} end={xMax} canvasWidth={canvasWidth} />
+              ? <NestedXInfo data={data} viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
+              : <XInfo data={data} start={xMin} end={xMax} canvasWidth={canvasWidth} />
             )}
           </Box>
         </Box>
@@ -200,7 +200,7 @@ function GenTrack({
           }}>
             {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
               <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
-                <YInfo start={yMin} end={yMax} />
+                <YInfo data={data} start={yMin} end={yMax} />
               </Box>
             ))}
           </Box>

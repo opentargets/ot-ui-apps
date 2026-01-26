@@ -74,11 +74,11 @@ function XInfo({ start, end, canvasWidth }) {
   );
 }
 
-function XYInfo() {
+function XYInfo({ data }) {
   return (
     <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
       <Typography variant="body2">
-        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Chromosome??</Box><br />
+        <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Chromosome {data.locus.rows[0].variant.chromosome}</Box><br />
       </Typography>
     </Box>
   );
