@@ -1,0 +1,36 @@
+query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
+  credibleSet(studyLocusId: $studyLocusId) {
+    variant {
+      id
+      chromosome
+      position
+      referenceAllele
+      alternateAllele
+    }
+    studyLocusId
+    locus(page: { size: $size, index: $index }) {
+      count
+      rows {
+        logBF
+        posteriorProbability
+        variant {
+          id
+          chromosome
+          position
+          referenceAllele
+          alternateAllele
+          mostSevereConsequence {
+            id
+            label
+          }
+        }
+        pValueMantissa
+        pValueExponent
+        beta
+        standardError
+        r2Overall
+      }
+    }
+  }
+}
+
