@@ -1,9 +1,10 @@
-import { expect, type Locator, test } from "@playwright/test";
+import { expect, type Locator } from "@playwright/test";
+import { test } from "../../fixtures";
 import { fillPolling } from "../../utils/fillPolling";
 
 test.describe("Home page actions", () => {
   test("Validate page title", { tag: "@smoke" }, async ({ page, baseURL }) => {
-    await page.goto(baseURL ?? "/");
+    await page.goto(baseURL!);
     const title = await page.title();
     await expect(title).toBe("Open Targets Platform");
   });
@@ -12,7 +13,7 @@ test.describe("Home page actions", () => {
     let searchInput: Locator;
 
     test.beforeEach(async ({ page, baseURL }) => {
-      await page.goto(baseURL ?? "/");
+      await page.goto(baseURL!);
       await page.getByTestId("global-search-input-trigger").click();
 
       // Verify that the global search input is rendered

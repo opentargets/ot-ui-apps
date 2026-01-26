@@ -88,6 +88,54 @@ For more details on POM, see the [References](#references) section.
 
 We use **Playwright fixtures** to manage test data and make tests flexible and maintainable. All test entity IDs are centralized in `fixtures/testConfig.ts`.
 
+### CSV Configuration Schema
+
+Test configurations are loaded from a Google Sheet CSV. Each row represents a testing scenario, and columns define the entity IDs to use for different test types.
+
+| Column Name | Type | Description |
+|-------------|------|-------------|
+| `Testing Scenario` | string | |
+| `drug_page_primary` | string | |
+| `variant_primary` | string | |
+| `variant_with_pharmacogenetics` | string | |
+| `variant_with_qtl` | string | |
+| `target_primary` | string | |
+| `target_incomplete` | string (comma-separated) | |
+| `target_aotf_diseases` | string (comma-separated) | |
+| `disease_primary` | string | |
+| `disease_name` | string | |
+| `disease_alternatives` | string (comma-separated) | |
+| `disease_aotf_genes` | string (comma-separated) | |
+| `study_gwas` | string | |
+| `study_qtl` | string | |
+| `credible_set` | string | |
+| `credible_set_GWAS_coloc` | string | |
+| `credible_set_QTL_coloc` | string | |
+
+### GitHub Actions Integration
+
+The test configuration integrates with GitHub Actions through environment variables:
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `TEST_CONFIG_URL` | URL to the Google Sheet CSV export | Hardcoded default URL |
+| `TEST_SCENARIO` | Name of the scenario row to use | `testing_scenario_1` |
+
+**Workflow usage example:**
+
+```yaml
+- name: Run E2E Tests
+  env:
+    TEST_CONFIG_URL: ${{ secrets.TEST_CONFIG_SHEET_URL }}
+    TEST_SCENARIO: ${{ github.event.inputs.test_scenario || 'testing_scenario_1' }}
+  run: yarn dev:test:platform:e2e
+```
+
+This allows:
+- Running tests with different entity configurations per environment
+- Manual workflow dispatch with scenario selection
+- Easy updates to test data without code changes
+
 ### Configuration Structure
 
 ```typescript
