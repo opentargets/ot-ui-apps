@@ -200,7 +200,8 @@ test.describe("Disease Page", () => {
       for (const cell of cellsToTest) {
         // Click on the data cell to open the evidence section
         await aotfTable.clickDataCell(rowIndex, cell.columnId);
-        await page.waitForTimeout(500); // Wait for section to load
+        // dont use waitForTimeout here
+        await evidenceSection.waitForEvidenceSection(cell.columnId);
 
         // Verify that an evidence section is visible
         const hasSections = await evidenceSection.hasAnyEvidenceSection();
