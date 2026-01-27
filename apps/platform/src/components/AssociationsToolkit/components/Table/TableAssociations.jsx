@@ -67,7 +67,11 @@ const TableIndicatorControl = ({
   return (
     <Box sx={{ display: "flex", my: 1, gap: 1, alignItems: "center" }}>
       {prefix !== TABLE_PREFIX.CORE && (
-        <Box onClick={onClickDelete} sx={{ color: grey[600], cursor: "pointer" }}>
+        <Box 
+          onClick={onClickDelete} 
+          sx={{ color: grey[600], cursor: "pointer" }}
+          data-testid={`delete-${prefix.toLowerCase()}-button`}
+        >
           <FontAwesomeIcon size="sm" icon={faTrash} />
         </Box>
       )}
@@ -193,7 +197,7 @@ function TableAssociations() {
                     pr: 2,
                   }}
                 >
-                  <Typography variant="assoc_header">{label}</Typography>
+                  <Typography data-testid="table-header-name" variant="assoc_header">{label}</Typography>
                   <NameFilter />
                 </Box>
               );
@@ -201,7 +205,7 @@ function TableAssociations() {
           }),
           columnHelper.accessor((row) => row.score, {
             id: "score",
-            header: <Typography variant="assoc_header">Association Score</Typography>,
+            header: <Typography variant="assoc_header" data-testid="table-header-score">Association Score</Typography>,
             cell: (cell) => (
               <Box sx={{ marginRight: "10px" }}>
                 <TableCell
@@ -324,7 +328,7 @@ function TableAssociations() {
 
   const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
   return (
-    <div className="TAssociations" style={tableCSSVariables}>
+    <div className="TAssociations" style={tableCSSVariables} data-testid="associations-table">
       <TableElement>
         {/* HEADER */}
         <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
