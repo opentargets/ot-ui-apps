@@ -54,8 +54,7 @@ function XInfo({ start, end, canvasWidth }) {
   useEffect(() => {
     const scale = scaleLinear()
       .domain([start, end])
-      .range([0, canvasWidth])
-      .nice();
+      .range([0, canvasWidth]);
 
     const axis = axisTop(scale)
       .ticks(8)
