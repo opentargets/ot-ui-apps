@@ -34,53 +34,9 @@ const columns = [
     id: "records",
     label: "Approvals and Trials",
     renderCell: ({ clinicalReportIds }) => (
-      clinicalReportIds.length
+      <RecordsDrawer recordIds={clinicalReportIds} />
     ),
   },
-  // {
-  //   id: "therapeuticAreas",
-  //   label: "Therapeutic Areas",
-  //   renderCell: d => <TherapeuticAreasDrawer therapeuticAreas={d.disease.therapeuticAreas} />,
-  //   exportValue: d => d.disease.therapeuticAreas.map(therapeuticArea => therapeuticArea.id),
-  //   width: "38%",
-  // },
-  // {
-  //   id: "maxPhaseForIndication",
-  //   label: "Max Phase",
-  //   sortable: true,
-  //   width: "10%",
-  //   renderCell: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
-  //   filterValue: ({ maxPhaseForIndication }) => phaseMap(maxPhaseForIndication),
-  // },
-  // {
-  //   id: "references",
-  //   label: "Source",
-  //   renderCell: ({ references }) => {
-  //     if (!references) return "N/A";
-
-  //     const referenceList = [];
-
-  //     references.forEach(reference => {
-  //       reference.ids.forEach(id => {
-  //         referenceList.push({
-  //           name: id,
-  //           url: referenceUrls[reference.source](id),
-  //           group: sourceMap[reference.source],
-  //         });
-  //       });
-  //     });
-
-  //     if (referenceList.length === 1) {
-  //       return (
-  //         <Link external to={referenceList[0].url}>
-  //           {referenceList[0].group}
-  //         </Link>
-  //       );
-  //     }
-
-  //     return <TableDrawer entries={referenceList} />;
-  //   },
-  // },
 ];
 
 function Body({ id: chemblId, label: name, entity }) {
