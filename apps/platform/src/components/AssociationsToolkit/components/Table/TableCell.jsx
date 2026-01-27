@@ -113,6 +113,7 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
   return (
     <Tooltip title={scoreText} arrow disableHoverListener={false}>
       <ScoreElement
+        data-testid={`score-cell-${cell.column.id}`}
         backgroundColor={backgroundColor}
         borderColor={borderColor}
         onClick={() => onClickHandler()}
