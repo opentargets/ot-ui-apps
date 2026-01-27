@@ -40,7 +40,7 @@ const columns = [
       return (
         <Link
           external
-          to={`http://purl.obolibrary.org/obo/${biosample.biosampleId}`}
+          to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
         >
           {biosample.biosampleName || biosample.biosampleId}
         </Link>
