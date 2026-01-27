@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { styled, Box, InputAdornment, useTheme, TextField } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, InputAdornment, styled, TextField, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useDebounce } from "ui";
 import { setEntitySearch } from "../context/aotfActions";
+import useAotfContext from "../hooks/useAotfContext";
 
 const NameFilterInput = styled(TextField)(() => ({
   borderRadius: "2px",
@@ -33,10 +33,10 @@ const NameFilter = () => {
   }, [entitySearch]);
 
   return (
-    <Box sx={{ width: { md: 220 } }}>
+    <Box sx={{ maxWidth: { md: 240 } }}>
       <NameFilterInput
         value={inputValue}
-        onChange={event => {
+        onChange={(event) => {
           setInputValue(event.target.value);
         }}
         size="small"
@@ -47,11 +47,11 @@ const NameFilter = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <FontAwesomeIcon icon={faSearch} />
+              <FontAwesomeIcon icon={faSearch} size="xs" />
             </InputAdornment>
           ),
         }}
-        placeholder={`Search ${placeHolderEntity}...`}
+        placeholder={`Search ${placeHolderEntity}`}
       />
     </Box>
   );

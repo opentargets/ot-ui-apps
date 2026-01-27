@@ -1,0 +1,5 @@
+fragment ExpressionSummaryFragment on Target {
+  baselineExpression(page: { index: 0, size: 1 }) {
+    count
+  }
+}
