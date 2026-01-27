@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import ColorRamp from "./ColorRamp";
+import ColorRamp from "../ColorRamp";
 
 function CompactAlphaFoldHydrophobicityLegend({ colorInterpolator }) {
   return (

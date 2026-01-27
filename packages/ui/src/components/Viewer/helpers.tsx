@@ -1,3 +1,139 @@
+import {
+  scaleLinear,
+  schemeDark2,
+  schemeSet1,
+  interpolateRdBu,
+} from "d3";
+import { Vector2 } from "3dmol";
+import {
+  getAlphaFoldConfidence,
+  getAlphaFoldPathogenicityColor,
+  aminoAcidHydrophobicity,
+} from "@ot/constants";
+
+const secondaryStructureColors = {
+  h: "#008B8B",
+  s: "#e6ab02", 
+  c: "#c0c0c0",
+}
+
+export const domainColors = [
+  ...[1, 2, 5, 0, 6].map(i => schemeDark2[i]),
+  ...[1, 0, 4, 7, 2].map(i => schemeSet1[i]),
+];
+
+export const hydrophobicityColorInterpolator = v => interpolateRdBu(1 - v);
+
+const hydrophobicityColorScale = scaleLinear()
+  .domain([-55, 100])
+  .range([0, 1]);
+
+export function getHydrophobicityColor(resn) {
+  return hydrophobicityColorInterpolator(
+    hydrophobicityColorScale(aminoAcidHydrophobicity[resn].value)
+  );
+}
+
+export const clickColor = "magenta";
+
+export const labelStyle = {
+  alignment: "center",
+  screenOffset: new Vector2(28, -28),
+  backgroundColor: "#fff",
+  backgroundOpacity: 0.9,
+  borderColor: "#999",
+  borderThickness: 1.5,
+  font: "'Inter', sans-serif",
+  fontColor: "#000",
+  fontSize: 12.6,
+  inFront: true,
+};
+
+// hover on a residue
+export function showHoverSpheres(state, resi) {
+  let color, opacity, radius;
+  switch (state.representBy) {
+    case "cartoon":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 0.7;
+      break;
+    case "hybrid":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 1;
+      break;
+    case "transparent":
+      radius = 1.5;
+      color = getResiColor(state, resi);
+      opacity = 1;
+      break;
+    case "opaque":
+      radius = 2;
+      color = clickColor;
+      opacity = 1;
+      break;
+  }
+
+  if (resi !== state.viewer._clickedResi) {
+    for (const atom of state.atomsByResi.get(resi)) {
+      state.viewer.addSphere({
+        center: {x: atom.x, y: atom.y, z: atom.z},
+        radius,
+        color,
+        opacity,
+      });
+    }
+  }
+}
+
+export function removeHoverSpheres(state) {
+  state.viewer.removeAllShapes();
+}
+
+export function getResiColor(state, resi) {
+  switch (state.colorBy) {
+    case "confidence":
+      return getAlphaFoldConfidence(state.atomsByResi.get(resi)[0], "color");
+    case "pathogenicity":
+      return state.pathogenicityScores 
+        ? getAlphaFoldPathogenicityColor(state.pathogenicityScores.get(resi))
+        : "#ddd";
+    case "domain": {
+      if (!state.domains) return "#ddd";
+      const domainIndex = state.domains.descriptionToIndex[state.domains.getDescription(resi)];
+      return domainIndex == null
+        ? "#ddd"
+        : domainColors[domainIndex % domainColors.length];
+    }
+    case "hydrophobicity":
+      return getHydrophobicityColor(state.atomsByResi.get(resi)[0].resn);
+    case "secondary structure":
+      return secondaryStructureColors[state.atomsByResi.get(resi)[0].ss];
+    case "none":
+      return "#ddd";
+  }
+}
+
+export const clickSurfaceStyle = {
+  color: clickColor,
+  opacity: 1,
+};
+
+export const baseCartoonStyle = state => ({
+  cartoon: {
+    hidden: state.representBy === "opaque" || state.representBy === "transparent",
+    colorfunc: atom => getResiColor(state, atom.resi),
+    arrows: true,
+  },
+});
+
+export function trackColor(state, resi) {
+  if (!state.viewer) return;
+  return getResiColor(state, resi);
+}
+
+
 export function onClickCapture(viewerRef, id) {
   if (!viewerRef.current) return;
 
