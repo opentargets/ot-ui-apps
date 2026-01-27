@@ -1,0 +1,5 @@
+fragment ClinicalIndicationsSummaryFragment on Drug {
+  indications {  # !! UPDARTE ONCE HAVE API
+    count
+  }
+}
