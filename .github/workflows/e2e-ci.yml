@@ -77,7 +77,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
             yarn dev:test:platform:e2e
           else
-            yarn dev:test:platform:e2e:smoke
+            yarn dev:test:platform:e2e
           fi
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}

@@ -8,6 +8,12 @@
     "lint": {
       "outputs": []
     },
+    "dev-test": {
+      "cache": false
+    },
+    "test:platform:e2e": {
+      "dependsOn": ["^build"]
+    },
     "prettier:all": {
       "outputs": []
     },
