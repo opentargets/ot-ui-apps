@@ -5,6 +5,7 @@ import { Link, useAPIMetadata } from "ui";
 interface VersionData {
   month: number;
   year: number;
+  iteration: string;
 }
 
 function getVersion({ month, year }: VersionData): string {
@@ -33,12 +34,14 @@ interface VersionLinkProps {
   year: number;
   version: string;
   link: string;
+  iteration: string;
 }
 
-function VersionLink({ month, year, version, link }: VersionLinkProps): JSX.Element {
+function VersionLink({ month, year, version, iteration, link }: VersionLinkProps): JSX.Element {
+  const parsedIteration = iteration && iteration !== "" ? `.${iteration}` : "";
   return (
     <Link external to={link}>
-      {month} 20{year} ({version})
+      {month} 20{year} ({version}{parsedIteration}) 
     </Link>
   );
 }
@@ -65,13 +68,13 @@ function Version({
   const { month, year } = version;
 
   const parsedVersion = getVersion({ month, year });
-  const fullMonth = getFullMonth({ month, year });
+  const fullMonth = getFullMonth({ month, year });;
 
   return (
     <VersionContainer>
       <Typography variant="body2">
         Last update:{" "}
-        <VersionLink link={releaseNotesURL} month={fullMonth} year={year} version={parsedVersion} />
+        <VersionLink link={releaseNotesURL} month={fullMonth} year={year} version={parsedVersion} iteration={version.iteration} />
       </Typography>
     </VersionContainer>
   );

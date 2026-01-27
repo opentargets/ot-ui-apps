@@ -1,4 +1,5 @@
 import { test } from "@playwright/test";
+import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
 import { DiseasePage } from "../../../POM/page/disease/disease";
@@ -149,6 +150,72 @@ test.describe("Disease Page", () => {
       // Verify filtered results contain the search term
       const firstRowName = await aotfTable.getEntityName(0);
       test.expect(firstRowName?.toLowerCase()).toContain("il6");
+    });
+  });
+
+  test.describe("Aotf target prioritisation functionality", () => {
+    test("Can switch to target prioritisation view and see data", async ({ page }) => {
+      const aotfActions = new AotfActions(page);
+      const aotfTable = new AotfTable(page);
+
+      // Switch to prioritisation view
+      await aotfActions.switchToPrioritisationView();
+      await aotfTable.waitForTableLoad();
+
+      // Verify table is visible
+      await test.expect(aotfTable.getTable()).toBeVisible();
+
+      // Verify rows are loaded
+      const rowCount = await aotfTable.getRowCount();
+      test.expect(rowCount).toBeGreaterThan(0);
+
+      // Verify first row has data
+      const firstRowName = await aotfTable.getEntityName(0);
+      test.expect(firstRowName).toBeTruthy();
+    });
+  });
+
+  test.describe("Aotf table section is rendered when data is present", () => {
+    test("if a target has data, the corresponding widget is shown", async ({ page }) => {
+      const aotfTable = new AotfTable(page);
+      const evidenceSection = new EvidenceSection(page);
+      await aotfTable.waitForTableLoad();
+
+      // Find the first row that has data cells with score > 0
+      const rowIndex = await aotfTable.findFirstRowWithData();
+      test.expect(rowIndex).not.toBeNull();
+
+      if (rowIndex === null) {
+        test.skip(true, "No rows with data found");
+        return;
+      }
+
+      // Get all data cells with scores in that row
+      const dataCells = await aotfTable.getDataCellsWithScores(rowIndex);
+      test.expect(dataCells.length).toBeGreaterThan(0);
+
+      // Skip the first cell since it's the total association score
+      const cellsToTest = dataCells.slice(1, dataCells.length);
+
+      for (const cell of cellsToTest) {
+        // Click on the data cell to open the evidence section
+        await aotfTable.clickDataCell(rowIndex, cell.columnId);
+        // dont use waitForTimeout here
+        await evidenceSection.waitForEvidenceSection(cell.columnId);
+
+        // Verify that an evidence section is visible
+        const hasSections = await evidenceSection.hasAnyEvidenceSection();
+        test.expect(hasSections).toBe(true);
+
+        // Verify the specific section for this data source is visible
+        // The section ID is typically the data source ID (e.g., 'gwas', 'eva', etc.)
+        const isVisible = await evidenceSection.isEvidenceSectionVisible(cell.columnId);
+        test.expect(isVisible).toBe(true);
+
+        // Click the same cell again to close/toggle the section
+        await aotfTable.clickDataCell(rowIndex, cell.columnId);
+        await page.waitForTimeout(300);
+      }
     });
   });
 
