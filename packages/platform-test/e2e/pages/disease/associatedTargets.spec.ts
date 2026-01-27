@@ -200,8 +200,9 @@ test.describe("Disease Page", () => {
       for (const cell of cellsToTest) {
         // Click on the data cell to open the evidence section
         await aotfTable.clickDataCell(rowIndex, cell.columnId);
-        // dont use waitForTimeout here
-        await evidenceSection.waitForEvidenceSection(cell.columnId);
+
+        // Wait for section to load (no loader, no error)
+        await evidenceSection.waitForSectionLoad(cell.columnId);
 
         // Verify that an evidence section is visible
         const hasSections = await evidenceSection.hasAnyEvidenceSection();
@@ -211,6 +212,10 @@ test.describe("Disease Page", () => {
         // The section ID is typically the data source ID (e.g., 'gwas', 'eva', etc.)
         const isVisible = await evidenceSection.isEvidenceSectionVisible(cell.columnId);
         test.expect(isVisible).toBe(true);
+
+        // Verify no loader is visible
+        const hasLoader = await evidenceSection.isLoaderVisible();
+        test.expect(hasLoader).toBe(false);
 
         // Click the same cell again to close/toggle the section
         await aotfTable.clickDataCell(rowIndex, cell.columnId);

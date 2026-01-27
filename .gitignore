@@ -47,3 +47,4 @@ yarn-error.log*
 ./packages/platform-test/.env
 playwright-report/
 test-results/
+./packages/platform-test/playwright-report/index.html
