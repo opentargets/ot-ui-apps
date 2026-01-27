@@ -155,10 +155,6 @@ const columns = [
     },
   },
   {
-    id: "colocalisationMethod",
-    label: "Colocalisation Method",
-  },
-  {
     id: "betaRatioSignAverage",
     label: "Directionality",
     tooltip: "Effect directionality based on the ratio of betas between the two credible sets",
@@ -266,8 +262,8 @@ function Body({ id, entity }: BodyProps) {
             dataDownloader
             showGlobalFilter
             dataDownloaderFileStem={`${id}-credibleSets`}
-            sortBy="pValue"
-            order="asc"
+            sortBy="h4"
+            order="desc"
             columns={columns}
             loading={request.loading}
             rows={request.data?.credibleSet.molqtlcolocalisation.rows}
