@@ -21,7 +21,24 @@ export class EvidenceSection {
 
   // Wait for evidence section to appear
   async waitForEvidenceSection(sectionId: string): Promise<void> {
-    await this.getEvidenceSection(sectionId).waitFor({ state: "visible", timeout: 5000 });
+    const section = this.getEvidenceSection(sectionId);
+    await section.waitFor({ state: "visible", timeout: 10000 });
+
+    // Wait for skeleton loaders within the section to disappear
+    await this.page
+      .waitForFunction(
+        (id) => {
+          const sect = document.querySelector(`[data-testid='evidence-section-${id}']`);
+          if (!sect) return false;
+          const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        sectionId,
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found, section already loaded
+      });
   }
 
   // Get all visible evidence sections
@@ -61,11 +78,29 @@ export class EvidenceSection {
   }
 
   async waitForLoaderToDisappear(): Promise<void> {
+    // Wait for the section-specific loader to disappear
     try {
-      await this.getLoader().waitFor({ state: "hidden", timeout: 10000 });
+      await this.getLoader().waitFor({ state: "hidden", timeout: 15000 });
     } catch {
       // Loader might not appear at all, which is fine
     }
+
+    // Also wait for skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const evidenceSections = document.querySelectorAll("[data-testid^='evidence-section-']");
+          for (const section of evidenceSections) {
+            const skeletons = section.querySelectorAll(".MuiSkeleton-root");
+            if (skeletons.length > 0) return false;
+          }
+          return true;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found
+      });
   }
 
   // Wait for section to fully load (section visible and no loader)

@@ -64,6 +64,7 @@ export class VariantEffectPredictorSection {
 
   async clickGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getGeneLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

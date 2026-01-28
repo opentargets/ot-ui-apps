@@ -1,0 +1,31 @@
+import { Link } from "ui";
+
+function Description({ symbol }) {
+  return (
+    <>
+      RNA and protein baseline expression for <strong>{symbol}</strong> (see{" "}
+      <Link external to="https://home.opentargets.org/documentation#New%20Baseline%20Expression">
+        our documentation
+      </Link>{" "}
+      for more information). Source:{" "}
+      <Link external to="https://tabula-sapiens.sf.czbiohub.org/">
+        Tabula Sapiens
+      </Link>
+      ,{" "}
+      <Link external to="https://www.gtexportal.org/home/">
+        GTEx
+      </Link>
+      ,{" "}
+      <Link external to="https://home.opentargets.org/OTAR3091">
+        PRIDE (OTAR3091)
+      </Link>{" "}
+      and{" "}
+      <Link external to="https://dice-database.org/">
+        DICE
+      </Link>
+      .
+    </>
+  );
+}
+
+export default Description;

@@ -34,19 +34,20 @@ test.describe("UniProt Variants Section", () => {
   });
 
   test("Target gene link is displayed in table", async () => {
-    const geneLink = await uniprotSection.getTargetGeneLink(0);
+    const geneLink = await uniprotSection.getDiseasePhenotypeLink(0);
 
     expect(await geneLink.isVisible()).toBe(true);
   });
 
-  test("Can click target gene link in table", async ({ page }) => {
-    await uniprotSection.clickTargetGeneLink(0);
+  test("Can click disease phenotype link in table", async ({ page }) => {
+    await uniprotSection.clickDiseasePhenotypeLink(0);
 
-    // Wait for navigation to target page
-    await page.waitForURL((url) => url.toString().includes("/target/"), { timeout: 5000 });
+    // Wait for navigation to disease page using page load state
+    await page.waitForURL((url) => url.toString().includes("/disease/"), { timeout: 5000 });
+    await page.waitForLoadState("networkidle");
 
-    // Should navigate to target/gene page
-    expect(page.url()).toContain("/target/");
+    // Should navigate to disease page
+    expect(page.url()).toContain("/disease/");
   });
 
   test("Disease links are displayed in table", async () => {

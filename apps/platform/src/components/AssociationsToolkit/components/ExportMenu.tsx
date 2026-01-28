@@ -1,23 +1,15 @@
+import { faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { MenuList, Popover } from "@mui/material";
+import type { MouseEvent } from "react";
 import { useState } from "react";
-import { Popover, Button, Box, MenuList } from "@mui/material";
-import { faCaretUp, faCaretDown, faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { styled } from "@mui/material/styles";
-
-import DataDownloader from "./DataDownloader";
+import { PopoverButton } from "ui";
 import AotfApiPlayground from "./AotfApiPlayground";
-
-const StyledBotton = styled(Button)({
-  border: "none",
-  "& .MuiButton-startIcon": {
-    fontSize: "14px !important",
-  },
-});
+import DataDownloader from "./DataDownloader";
 
 function ExportMenu() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const handleClick = event => {
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -30,23 +22,18 @@ function ExportMenu() {
 
   return (
     <>
-      <StyledBotton
-        data-testid="export-button"
-        aria-describedby={id}
-        onClick={handleClick}
-        variant="text"
+      <PopoverButton
+        popoverId={id}
+        testId="export-button"
+        open={open}
+        icon={faFileArrowDown}
+        label="Export"
+        handleClick={handleClick}
+        ariaLabel="Advanced options"
         disableElevation
+        iconSize="lg"
         sx={{ height: 1, maxHeight: "45px" }}
-        aria-label="Advanced options"
-      >
-        <Box component="span" sx={{ mr: 1 }}>
-          <FontAwesomeIcon icon={faFileArrowDown} size="lg" />
-        </Box>
-        Export
-        <Box component="span" sx={{ ml: 1 }}>
-          {open ? <FontAwesomeIcon icon={faCaretUp} /> : <FontAwesomeIcon icon={faCaretDown} />}
-        </Box>
-      </StyledBotton>
+      />
 
       <Popover
         data-testid="export-popover"

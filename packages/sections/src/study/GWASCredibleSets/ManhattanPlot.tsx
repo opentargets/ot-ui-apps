@@ -1,8 +1,17 @@
-import { useTheme, Box, Skeleton } from "@mui/material";
-import { ClinvarStars, Link, Tooltip, DisplayVariantId, Navigate } from "ui";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
-import { ScientificNotation, ObsPlot, ObsTooltipTable, ObsTooltipRow } from "ui";
-import { naLabel, credsetConfidenceMap } from "@ot/constants";
+import { credsetConfidenceMap, naLabel } from "@ot/constants";
+import {
+  ClinvarStars,
+  DisplayVariantId,
+  Link,
+  Navigate,
+  ObsPlot,
+  ScientificNotation,
+  Tooltip,
+  TooltipRow,
+  TooltipTable,
+} from "ui";
 
 function ManhattanPlot({ loading, data: originalData }) {
   const theme = useTheme();
@@ -16,7 +25,7 @@ function ManhattanPlot({ loading, data: originalData }) {
   if (originalData == null) return null;
 
   const data = structuredClone(
-    originalData.filter(d => {
+    originalData.filter((d) => {
       return d.pValueMantissa != null && d.pValueExponent != null && d.variant != null;
     })
   );
@@ -70,9 +79,9 @@ function ManhattanPlot({ loading, data: originalData }) {
         // x-axis
         PlotLib.axisX({
           stroke: "#888",
-          ticks: [0, ...chromosomeInfo.map(chromo => chromo.end)],
+          ticks: [0, ...chromosomeInfo.map((chromo) => chromo.end)],
           tickSize: 16,
-          tickFormat: v => "",
+          tickFormat: (v) => "",
         }),
         PlotLib.ruleY([0], {
           stroke: "#888",
@@ -84,7 +93,7 @@ function ManhattanPlot({ loading, data: originalData }) {
           label: "-log₁₀(pValue)",
           labelAnchor: "top",
           labelArrow: "none",
-          tickFormat: v => Math.abs(v),
+          tickFormat: (v) => Math.abs(v),
         }),
         PlotLib.ruleX([0], {
           stroke: "#888",
@@ -92,9 +101,9 @@ function ManhattanPlot({ loading, data: originalData }) {
 
         // grid lines
         PlotLib.gridX(
-          chromosomeInfo.map(chromo => chromo.end),
+          chromosomeInfo.map((chromo) => chromo.end),
           {
-            x: d => d,
+            x: (d) => d,
             stroke: "#cecece",
             strokeOpacity: 1,
             strokeDasharray: "3, 4",
@@ -103,25 +112,25 @@ function ManhattanPlot({ loading, data: originalData }) {
 
         // text mark for the x-axis labels
         PlotLib.text(chromosomeInfo, {
-          x: d => d.midpoint,
+          x: (d) => d.midpoint,
           y: yMax,
-          text: d => d.chromosome,
+          text: (d) => d.chromosome,
           lineAnchor: "top",
           dy: 6,
         }),
 
         // standard marks
         PlotLib.ruleX(data, {
-          x: d => d._genomePosition,
-          y: d => d._y,
+          x: (d) => d._genomePosition,
+          y: (d) => d._y,
           y2: yMax,
           strokeWidth: 1,
           stroke: markColor,
           className: "obs-tooltip",
         }),
         PlotLib.dot(data, {
-          x: d => d._genomePosition,
-          y: d => d._y,
+          x: (d) => d._genomePosition,
+          y: (d) => d._y,
           strokeWidth: 1,
           stroke: markColor,
           fill: background,
@@ -137,8 +146,8 @@ function ManhattanPlot({ loading, data: originalData }) {
       data={data}
       height={height}
       renderChart={renderChart}
-      xTooltip={d => d._genomePosition}
-      yTooltip={d => d._y}
+      xTooltip={(d) => d._genomePosition}
+      yTooltip={(d) => d._y}
       dxTooltip={10}
       dyTooltip={10}
       renderTooltip={renderTooltip}
@@ -153,64 +162,75 @@ export default ManhattanPlot;
 
 function renderTooltip(datum) {
   return (
-    <ObsTooltipTable>
-      <ObsTooltipRow label="Credible set">
-        <Box display="flex">
-          <Navigate to={`/credible-set/${datum.studyLocusId}`} />
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Lead variant">
-        <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
-          <DisplayVariantId
-            variantId={datum.variant.id}
-            referenceAllele={datum.variant.referenceAllele}
-            alternateAllele={datum.variant.alternateAllele}
-            expand={false}
-          />
-        </Link>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="P-value">
-        <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</ObsTooltipRow>
-      <ObsTooltipRow label="Fine-mapping">
-        <Box display="flex" flexDirection="column" gap={0.25}>
-          <Box display="flex" gap={0.5}>
-            Method: {datum.finemappingMethod ?? naLabel}
+    <Box
+      sx={{
+        background: "#fffc",
+        borderColor: "#ddd",
+        borderWidth: "1px",
+        borderStyle: "solid",
+        borderRadius: "0.2rem",
+        padding: "0.25em 0.5rem",
+      }}
+    >
+      <TooltipTable>
+        <TooltipRow label="Credible set">
+          <Box display="flex">
+            <Navigate to={`/credible-set/${datum.studyLocusId}`} />
           </Box>
-          <Box display="flex" gap={0.5}>
-            Confidence:{" "}
-            {datum.confidence ? (
-              <Tooltip title={datum.confidence} style="">
-                <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
-              </Tooltip>
-            ) : (
-              naLabel
-            )}
+        </TooltipRow>
+        <TooltipRow label="Lead variant">
+          <Link asyncTooltip to={`/variant/${datum.variant.id}`}>
+            <DisplayVariantId
+              variantId={datum.variant.id}
+              referenceAllele={datum.variant.referenceAllele}
+              alternateAllele={datum.variant.alternateAllele}
+              expand={false}
+            />
+          </Link>
+        </TooltipRow>
+        <TooltipRow label="P-value">
+          <ScientificNotation number={[datum.pValueMantissa, datum.pValueExponent]} dp={2} />
+        </TooltipRow>
+        <TooltipRow label="Beta">{datum.beta?.toPrecision(3) ?? naLabel}</TooltipRow>
+        <TooltipRow label="Fine-mapping">
+          <Box display="flex" flexDirection="column" gap={0.25}>
+            <Box display="flex" gap={0.5}>
+              Method: {datum.finemappingMethod ?? naLabel}
+            </Box>
+            <Box display="flex" gap={0.5}>
+              Confidence:{" "}
+              {datum.confidence ? (
+                <Tooltip title={datum.confidence} style="">
+                  <ClinvarStars num={credsetConfidenceMap[datum.confidence]} />
+                </Tooltip>
+              ) : (
+                naLabel
+              )}
+            </Box>
           </Box>
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="L2G">
-        <Box display="flex" flexDirection="column" gap={0.25}>
-          <Box display="flex" gap={0.5}>
-            Top:{" "}
-            {datum.l2GPredictions?.rows?.[0]?.target ? (
-              <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
-                {datum.l2GPredictions.rows[0].target.approvedSymbol}
-              </Link>
-            ) : (
-              naLabel
-            )}
+        </TooltipRow>
+        <TooltipRow label="L2G">
+          <Box display="flex" flexDirection="column" gap={0.25}>
+            <Box display="flex" gap={0.5}>
+              Top:{" "}
+              {datum.l2GPredictions?.rows?.[0]?.target ? (
+                <Link asyncTooltip to={`/target/${datum.l2GPredictions.rows[0].target.id}`}>
+                  {datum.l2GPredictions.rows[0].target.approvedSymbol}
+                </Link>
+              ) : (
+                naLabel
+              )}
+            </Box>
+            <Box display="flex" alignItems="center" gap={0.5}>
+              Score: {datum.l2GPredictions?.rows?.[0]?.score?.toFixed(3) ?? naLabel}
+            </Box>
           </Box>
-          <Box display="flex" alignItems="center" gap={0.5}>
-            Score: {datum.l2GPredictions?.rows?.[0]?.score?.toFixed(3) ?? naLabel}
-          </Box>
-        </Box>
-      </ObsTooltipRow>
-      <ObsTooltipRow label="Credible set size">
-        {datum.locus?.count ? datum.locus.count.toLocaleString() : naLabel}
-      </ObsTooltipRow>
-    </ObsTooltipTable>
+        </TooltipRow>
+        <TooltipRow label="Credible set size">
+          {datum.locus?.count ? datum.locus.count.toLocaleString() : naLabel}
+        </TooltipRow>
+      </TooltipTable>
+    </Box>
   );
 }
 
@@ -251,7 +271,7 @@ chromosomeInfo.forEach((chromo, i) => {
 
 const genomeLength = chromosomeInfo.at(-1).end;
 
-const chromosomeInfoMap = new Map(chromosomeInfo.map(obj => [obj.chromosome, obj]));
+const chromosomeInfoMap = new Map(chromosomeInfo.map((obj) => [obj.chromosome, obj]));
 
 function cumulativePosition({ chromosome, position }) {
   return chromosomeInfoMap.get(chromosome).start + position;
