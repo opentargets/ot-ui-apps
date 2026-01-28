@@ -56,7 +56,7 @@ test.describe("UniProt Variants Section", () => {
     expect(diseaseCount).toBeGreaterThan(0);
   });
 
-   test("Can click disease link in table", async ({ page }) => {
+  test("Can click disease link in table", async ({ page }) => {
     const hasLinks = await uniprotSection.getDiseaseLinksCount(0);
 
     if (hasLinks > 0) {
@@ -69,7 +69,6 @@ test.describe("UniProt Variants Section", () => {
       expect(page.url()).toContain("/disease/");
     }
   });
-
 
   test("Can search/filter UniProt variants", async () => {
     // Search for a specific term
