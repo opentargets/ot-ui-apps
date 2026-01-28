@@ -180,18 +180,36 @@ export class AotfTable {
 
   // Wait for table to load
   async waitForTableLoad(): Promise<void> {
-    await this.page.waitForSelector(".TAssociations", { state: "visible" });
-    // Wait for loading to finish if present
+    await this.page.waitForSelector(".TAssociations", { state: "visible", timeout: 10000 });
+
+    // Wait for skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const table = document.querySelector(".TAssociations");
+          if (!table) return false;
+          const skeletons = table.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found, table already loaded
+      });
+
+    // Wait for loading indicator to disappear if present
     const loadingVisible = await this.getLoadingIndicator()
       .isVisible()
       .catch(() => false);
     if (loadingVisible) {
-      await this.getLoadingIndicator().waitFor({ state: "hidden" });
+      await this.getLoadingIndicator().waitFor({ state: "hidden", timeout: 10000 });
     }
+
     // Wait for at least one row to be present with actual content
-    await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible" });
-    // Give a moment for content to populate
-    await this.page.waitForTimeout(500);
+    await this.page.waitForSelector("[data-testid^='table-row-core']", {
+      state: "visible",
+      timeout: 10000,
+    });
   }
 
   // Get all data cells with scores in a specific row
