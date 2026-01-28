@@ -64,6 +64,7 @@ export class UniProtVariantsSection {
 
   async clickDiseasePhenotypeLink(rowIndex: number): Promise<void> {
     const link = await this.getDiseasePhenotypeLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -80,7 +81,9 @@ export class UniProtVariantsSection {
 
   async clickDiseaseLink(rowIndex: number, linkIndex: number = 0): Promise<void> {
     const links = await this.getDiseaseLinks(rowIndex);
-    await links.nth(linkIndex).click();
+    const link = links.nth(linkIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
   }
 
   // Global filter/search

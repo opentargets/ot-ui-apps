@@ -80,6 +80,7 @@ jobs:
             yarn dev:test:platform:e2e
           fi
         env:
+          CI: true
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}
           DEBUG: pw:api
           TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}

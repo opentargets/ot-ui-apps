@@ -65,6 +65,7 @@ export class GWASCredibleSetsSection {
 
   async clickCredibleSetLink(rowIndex: number): Promise<void> {
     const link = await this.getCredibleSetLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -86,6 +87,7 @@ export class GWASCredibleSetsSection {
 
   async clickLeadVariantLink(rowIndex: number): Promise<void> {
     const link = await this.getLeadVariantLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -102,7 +104,9 @@ export class GWASCredibleSetsSection {
 
   async clickDiseaseLink(rowIndex: number, linkIndex: number = 0): Promise<void> {
     const links = await this.getDiseaseLinks(rowIndex);
-    await links.nth(linkIndex).click();
+    const link = links.nth(linkIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
   }
 
   // Study link
@@ -113,6 +117,7 @@ export class GWASCredibleSetsSection {
 
   async clickStudyLink(rowIndex: number): Promise<void> {
     const link = await this.getStudyLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -134,6 +139,7 @@ export class GWASCredibleSetsSection {
 
   async clickL2GGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getL2GGeneLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

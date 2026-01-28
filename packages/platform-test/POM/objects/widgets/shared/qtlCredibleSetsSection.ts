@@ -64,6 +64,7 @@ export class QTLCredibleSetsSection {
 
   async clickCredibleSetLink(rowIndex: number): Promise<void> {
     const link = await this.getCredibleSetLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -75,6 +76,7 @@ export class QTLCredibleSetsSection {
 
   async clickStudyLink(rowIndex: number): Promise<void> {
     const link = await this.getStudyLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -86,6 +88,7 @@ export class QTLCredibleSetsSection {
 
   async clickAffectedGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getAffectedGeneLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

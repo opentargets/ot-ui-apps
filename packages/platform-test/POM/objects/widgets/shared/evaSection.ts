@@ -64,6 +64,7 @@ export class EVASection {
 
   async clickDiseaseLink(rowIndex: number): Promise<void> {
     const link = await this.getDiseaseLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
