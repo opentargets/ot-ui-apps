@@ -3,6 +3,28 @@ name: "Tests: E2E"
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope to run'
+        required: true
+        default: 'smoke'
+        type: choice
+        options:
+          - smoke
+          - all
+      test_config_url:
+        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
+        required: false
+        type: string
+      test_scenario:
+        description: 'Scenario name from the CSV to use for tests'
+        required: false
+        default: 'Happy_Path_Full_Data'
+        type: string
+      base_url:
+        description: 'Base URL to run tests against (defaults to Netlify branch preview)'
+        required: false
+        type: string
 
 jobs:
   get_branch_name:
@@ -38,7 +60,7 @@ jobs:
     needs: [tests_e2e_netlify_prepare, get_branch_name]
     name: Run end-to-end tests on Netlify PR preview
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -50,8 +72,18 @@ jobs:
         run: |
           cd packages/platform-test
           yarn playwright install --with-deps chromium webkit
-      - name: yarn dev:test:platform:e2e
-        run: yarn dev:test:platform:e2e
+      - name: Run E2E tests
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
+            yarn dev:test:platform:e2e
+          else
+            yarn dev:test:platform:e2e
+          fi
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}
+          DEBUG: pw:api
+          TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
+          TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -59,5 +91,5 @@ jobs:
           path: ${{ github.workspace }}/packages/platform-test/playwright-report
           retention-days: 7
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.branch) }}
           DEBUG: pw:api

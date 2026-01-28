@@ -63,7 +63,7 @@ function ObsPlot({
   const chartElement = (
     <Box sx={{ width }}>
       <Fade in>
-        <div>
+        <Box>
           <ObsChart
             data={data}
             otherData={otherData}
@@ -91,9 +91,10 @@ function ObsPlot({
               renderTooltip={renderTooltip}
               chart={chart}
               datum={datum}
+              otherData={otherData}
             />
           )}
-        </div>
+        </Box>
       </Fade>
     </Box>
   );
