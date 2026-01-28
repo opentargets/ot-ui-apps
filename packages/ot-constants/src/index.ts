@@ -134,6 +134,11 @@ export const mainMenuItems: MenuItem[] = config.profile.mainMenuItems ?? [
     showOnlyPartner: true,
   },
   {
+    name: "Data metrics",
+    url: "/data-metrics",
+    external: false,
+  },
+  {
     name: "Documentation",
     url: "https://platform-docs.opentargets.org/getting-started",
     external: true,
