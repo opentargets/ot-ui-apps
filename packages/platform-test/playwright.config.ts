@@ -18,7 +18,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Use 6 workers in CI for faster execution */
-  workers: process.env.CI ? 6 : undefined,
+  workers: process.env.CI ? 6 : 10,
   /* Increase timeout for CI environments */
   timeout: process.env.CI ? 60000 : 30000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

@@ -11,7 +11,24 @@ export class QTLCredibleSetsSection {
     return this.page.locator("[data-testid='section-qtl-credible-sets']");
   }
 
+  /**
+   * Check if section is visible - waits for page loaders first
+   */
   async isSectionVisible(): Promise<boolean> {
+    // First wait for any page-level skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const skeletons = document.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found
+      });
+    
+    // Then check section visibility
     return await this.getSection()
       .isVisible()
       .catch(() => false);
@@ -65,7 +82,9 @@ export class QTLCredibleSetsSection {
   async clickCredibleSetLink(rowIndex: number): Promise<void> {
     const link = await this.getCredibleSetLink(rowIndex);
     await link.scrollIntoViewIfNeeded();
-    await link.click();
+    // Wait for the element to be visible and stable before clicking
+    await link.waitFor({ state: "visible", timeout: 10000 });
+    await link.click({ force: true });
   }
 
   // Study link

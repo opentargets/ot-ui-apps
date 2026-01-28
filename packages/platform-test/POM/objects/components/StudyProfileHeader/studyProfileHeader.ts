@@ -117,11 +117,40 @@ export class StudyProfileHeader {
   getPopulationChipValue = (index: number) => this.sample.getPopulationChipValue(index);
   hoverPopulationChip = (index: number) => this.sample.hoverPopulationChip(index);
 
-  // Wait for profile header to load
+  // Wait for profile header to load - check for loaders to disappear
   async waitForProfileHeaderLoad(): Promise<void> {
+    // Wait for the profile header block to be visible
     await this.page.waitForSelector("[data-testid='profile-page-header-block']", {
       state: "visible",
+      timeout: 10000,
     });
-    await this.page.waitForTimeout(500);
+    
+    // Wait for skeleton loaders within the header to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const headerBlock = document.querySelector("[data-testid='profile-page-header-block']");
+          if (!headerBlock) return false;
+          const skeletons = headerBlock.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found, header already loaded
+      });
+    
+    // Wait for header text to be populated (not empty)
+    await this.page
+      .waitForFunction(
+        () => {
+          const headerText = document.querySelector("[data-testid='profile-page-header-text']");
+          return headerText && headerText.textContent && headerText.textContent.trim().length > 0;
+        },
+        { timeout: 10000 }
+      )
+      .catch(() => {
+        // Header text might not be available
+      });
   }
 }
