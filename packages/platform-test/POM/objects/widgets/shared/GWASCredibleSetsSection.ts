@@ -28,7 +28,7 @@ export class GWASCredibleSetsSection {
       .catch(() => {
         // No skeletons found
       });
-    
+
     // Then check section visibility
     return await this.getSection()
       .isVisible()

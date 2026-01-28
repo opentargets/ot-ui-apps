@@ -124,7 +124,7 @@ export class StudyProfileHeader {
       state: "visible",
       timeout: 10000,
     });
-    
+
     // Wait for skeleton loaders within the header to disappear
     await this.page
       .waitForFunction(
@@ -139,13 +139,13 @@ export class StudyProfileHeader {
       .catch(() => {
         // No skeletons found, header already loaded
       });
-    
+
     // Wait for header text to be populated (not empty)
     await this.page
       .waitForFunction(
         () => {
           const headerText = document.querySelector("[data-testid='profile-page-header-text']");
-          return headerText && headerText.textContent && headerText.textContent.trim().length > 0;
+          return headerText?.textContent && headerText.textContent.trim().length > 0;
         },
         { timeout: 10000 }
       )

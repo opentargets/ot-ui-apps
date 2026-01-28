@@ -226,7 +226,7 @@ test.describe("Disease Page", () => {
   test("Disease header is correctly displayed", async ({ page }) => {
     const diseasePage = new DiseasePage(page);
     await diseasePage.waitForPageLoad();
-    
+
     const diseaseName = page.getByTestId("profile-page-header-text");
     await test.expect(diseaseName).toHaveText(DISEASE_NAME);
   });

@@ -28,7 +28,7 @@ export class QTLCredibleSetsSection {
       .catch(() => {
         // No skeletons found
       });
-    
+
     // Then check section visibility
     return await this.getSection()
       .isVisible()
@@ -122,7 +122,7 @@ export class QTLCredibleSetsSection {
   // Wait for section to load
   async waitForSectionLoad(): Promise<void> {
     await this.getSection().waitFor({ state: "visible", timeout: 10000 });
-    
+
     // Wait for skeleton loaders to disappear
     await this.page
       .waitForFunction(

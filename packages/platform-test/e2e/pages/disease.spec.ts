@@ -144,7 +144,7 @@ test.describe("Disease Page", () => {
 
       // Search for a specific target
       await aotfActions.applyNameFilterAndWaitForResults("IL6");
-      
+
       // Verify filtered results contain the search term
       const firstRowName = await aotfTable.getEntityName(0);
       test.expect(firstRowName?.toLowerCase()).toContain("il6");
@@ -154,7 +154,7 @@ test.describe("Disease Page", () => {
   test("Disease header is correctly displayed", async ({ page }) => {
     const diseasePage = new DiseasePage(page);
     await diseasePage.waitForPageLoad();
-    
+
     const diseaseName = page.getByTestId("profile-page-header-text");
     await test.expect(diseaseName).toHaveText(DISEASE_NAME);
   });

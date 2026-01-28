@@ -84,7 +84,7 @@ export class EvidenceSection {
     } catch {
       // Loader might not appear at all, which is fine
     }
-    
+
     // Also wait for skeleton loaders to disappear
     await this.page
       .waitForFunction(

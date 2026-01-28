@@ -181,7 +181,7 @@ export class AotfTable {
   // Wait for table to load
   async waitForTableLoad(): Promise<void> {
     await this.page.waitForSelector(".TAssociations", { state: "visible", timeout: 10000 });
-    
+
     // Wait for skeleton loaders to disappear
     await this.page
       .waitForFunction(
@@ -196,7 +196,7 @@ export class AotfTable {
       .catch(() => {
         // No skeletons found, table already loaded
       });
-    
+
     // Wait for loading indicator to disappear if present
     const loadingVisible = await this.getLoadingIndicator()
       .isVisible()
@@ -204,9 +204,12 @@ export class AotfTable {
     if (loadingVisible) {
       await this.getLoadingIndicator().waitFor({ state: "hidden", timeout: 10000 });
     }
-    
+
     // Wait for at least one row to be present with actual content
-    await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible", timeout: 10000 });
+    await this.page.waitForSelector("[data-testid^='table-row-core']", {
+      state: "visible",
+      timeout: 10000,
+    });
   }
 
   // Get all data cells with scores in a specific row

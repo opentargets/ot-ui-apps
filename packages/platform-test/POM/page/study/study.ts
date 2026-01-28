@@ -77,13 +77,15 @@ export class StudyPage {
   // Wait for page load - check for loaders to disappear
   async waitForStudyPageLoad(): Promise<void> {
     // Wait for the main page content to be visible
-    await this.page.waitForSelector("[data-testid='profile-page-header']", {
-      state: "visible",
-      timeout: 10000,
-    }).catch(() => {
-      // Header might not be immediately available
-    });
-    
+    await this.page
+      .waitForSelector("[data-testid='profile-page-header']", {
+        state: "visible",
+        timeout: 10000,
+      })
+      .catch(() => {
+        // Header might not be immediately available
+      });
+
     // Wait for skeleton loaders to disappear
     await this.page
       .waitForFunction(
@@ -96,7 +98,7 @@ export class StudyPage {
       .catch(() => {
         // No skeletons found, page already loaded
       });
-    
+
     // Also wait for any loading spinners
     await this.page
       .waitForFunction(
