@@ -87,7 +87,7 @@ test.describe("Disease Page", () => {
 
       // Click to sort by a different column (GWAS associations)
       await aotfTable.sortByColumn("GWAS associations");
-      await page.waitForTimeout(1000); // Wait for sort to complete
+      await aotfTable.waitForTableLoad(); // Wait for sort to complete
 
       // Verify sort filter is now active in the ActiveFiltersPanel
       const sortActive = await aotfActions.hasSortFilter();
@@ -107,7 +107,7 @@ test.describe("Disease Page", () => {
 
       // Go to next page
       await aotfTable.clickNextPage();
-      await page.waitForTimeout(1000); // Wait for new data to load
+      await aotfTable.waitForTableLoad(); // Wait for new data to load
 
       // Get second page data
       const secondPageFirstRow = await aotfTable.getEntityName(0);
@@ -117,7 +117,7 @@ test.describe("Disease Page", () => {
 
       // Go back to previous page
       await aotfTable.clickPreviousPage();
-      await page.waitForTimeout(1000);
+      await aotfTable.waitForTableLoad();
 
       const backToFirstRow = await aotfTable.getEntityName(0);
       test.expect(backToFirstRow).toBe(firstPageFirstRow);
@@ -129,7 +129,7 @@ test.describe("Disease Page", () => {
 
       // Change page size to 25
       await aotfTable.selectPageSize("25");
-      await page.waitForTimeout(1000);
+      await aotfTable.waitForTableLoad();
 
       // Verify more rows are displayed (up to 25)
       const rowCount = await aotfTable.getRowCount();
@@ -143,8 +143,7 @@ test.describe("Disease Page", () => {
       await aotfTable.waitForTableLoad();
 
       // Search for a specific target
-      await aotfActions.searchByName("IL6");
-      await page.waitForTimeout(1000); // Wait for filter + debounce
+      await aotfActions.applyNameFilterAndWaitForResults("il6");
 
       // Verify filtered results contain the search term
       const firstRowName = await aotfTable.getEntityName(0);
@@ -241,10 +240,7 @@ test.describe("Disease Page", () => {
 
       for (const geneSymbol of genesToTest) {
         // Search for the specific gene
-        await aotfActions.searchByName(geneSymbol);
-
-        // Wait for table to load with filtered results
-        await aotfTable.waitForTableLoad();
+        await aotfActions.applyNameFilterAndWaitForResults(geneSymbol);
 
         // Find the row for this gene
         const rowIndex = await aotfTable.findRowIndexByGeneSymbol(geneSymbol);
@@ -360,10 +356,7 @@ test.describe("Disease Page", () => {
 
       for (const geneSymbol of genesToTest) {
         // Search for the specific gene
-        await aotfActions.searchByName(geneSymbol);
-
-        // Wait for table to load with filtered results
-        await aotfTable.waitForTableLoad();
+        await aotfActions.applyNameFilterAndWaitForResults(geneSymbol);
 
         // Find the row for this gene
         const rowIndex = await aotfTable.findRowIndexByGeneSymbol(geneSymbol);
@@ -447,6 +440,9 @@ test.describe("Disease Page", () => {
   });
 
   test("Disease header is correctly displayed", async ({ page }) => {
+    const diseasePage = new DiseasePage(page);
+    await diseasePage.waitForPageLoad();
+
     const diseaseName = page.getByTestId("profile-page-header-text");
     await test.expect(diseaseName).toHaveText(DISEASE_NAME);
   });
@@ -461,6 +457,7 @@ test.describe("Disease Page", () => {
 
   test("External links in header are displayed and working", async ({ page, testConfig }) => {
     const diseasePage = new DiseasePage(page);
+    await diseasePage.waitForPageLoad();
 
     // Check for EFO external link
     const efoLink = diseasePage.getEfoLink();

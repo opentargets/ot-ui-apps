@@ -66,6 +66,7 @@ export class EnhancerToGenePredictionsSection {
 
   async clickTargetGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getTargetGeneLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

@@ -317,7 +317,7 @@ test.describe("Study Page - GWAS Study", () => {
 
           // Go to next page
           await gwasCredibleSets.clickNextPage();
-          await page.waitForTimeout(1000);
+          await gwasCredibleSets.waitForSectionLoad();
 
           // Get second page data
           const secondPageData = await gwasCredibleSets.getCellText(0, 1);
@@ -329,7 +329,7 @@ test.describe("Study Page - GWAS Study", () => {
           const isPrevEnabled = await gwasCredibleSets.isPreviousPageEnabled();
           if (isPrevEnabled) {
             await gwasCredibleSets.clickPreviousPage();
-            await page.waitForTimeout(1000);
+            await gwasCredibleSets.waitForSectionLoad();
           }
         }
       }
@@ -351,7 +351,7 @@ test.describe("Study Page - GWAS Study", () => {
           if (variantId) {
             // Search for it
             await gwasCredibleSets.searchCredibleSet(variantId);
-            await page.waitForTimeout(1000);
+            await gwasCredibleSets.waitForSectionLoad();
 
             // Verify filtered results
             const filteredRowCount = await gwasCredibleSets.getRowCount();

@@ -1,30 +1,27 @@
+import { faCaretDown, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { Box, Collapse, styled, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
-import { useReactTable, getCoreRowModel, createColumnHelper } from "@tanstack/react-table";
-
-import { styled, Typography, Box, Collapse } from "@mui/material";
-
-import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
-import prioritizationCols from "../../static_datasets/prioritisationColumns";
-
-import AggregationsTooltip from "./AssocTooltip";
-import TableCell from "./TableCell";
-import HeaderControls from "../HeaderControls";
-import CellName from "./CellName";
-import TableHeader from "./TableHeader";
-import TableFooter from "./TableFooter";
-import TableBody from "./TableBody";
-
-import useAotfContext from "../../hooks/useAotfContext";
-
 import {
   getScale,
   isPartnerPreview,
-  tableCSSVariables,
   TABLE_PREFIX,
+  tableCSSVariables,
 } from "../../associationsUtils";
-import { grey } from "@mui/material/colors";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import useAotfContext from "../../hooks/useAotfContext";
+import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../../static_datasets/prioritisationColumns";
+import HeaderControls from "../HeaderControls";
+import NameFilter from "../NameFilter";
+import AggregationsTooltip from "./AssocTooltip";
+import CellName from "./CellName";
+import TableBody from "./TableBody";
+import TableCell from "./TableCell";
+import TableFooter from "./TableFooter";
+import TableHeader from "./TableHeader";
 
 const TableElement = styled("main")({
   maxWidth: "1800px",
@@ -35,7 +32,7 @@ const TableSpacer = styled("div")({
   marginBottom: 5,
 });
 
-const getIndicatorLabel = prefix => {
+const getIndicatorLabel = (prefix) => {
   switch (prefix) {
     case TABLE_PREFIX.CORE:
       return "All";
@@ -122,7 +119,7 @@ function getDatasources({ displayedTable, colorScale }) {
   const datasources = [];
   baseCols.forEach(({ id, label, sectionId, description, aggregation, isPrivate, docsLink }) => {
     if (isPrivate && isPrivate !== isPartnerPreview) return;
-    const column = columnHelper.accessor(row => row[dataProp][id], {
+    const column = columnHelper.accessor((row) => row[dataProp][id], {
       id,
       sectionId,
       enableSorting: isAssociations,
@@ -138,7 +135,7 @@ function getDatasources({ displayedTable, colorScale }) {
           </div>
         </AggregationsTooltip>
       ),
-      cell: cell => (
+      cell: (cell) => (
         <TableCell cell={cell} colorScale={colorScale} displayedTable={displayedTable} />
       ),
     });
@@ -182,30 +179,35 @@ function TableAssociations() {
         header: "header",
         id: "naiming-cols",
         columns: [
-          columnHelper.accessor(row => row[entityToGet][rowNameEntity], {
+          columnHelper.accessor((row) => row[entityToGet][rowNameEntity], {
             id: "name",
             enableSorting: false,
-            cell: cell => {
+            cell: (cell) => {
               return <CellName cell={cell} colorScale={associationsColorScale} />;
             },
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
               return (
-                <Typography variant="assoc_header" data-testid="table-header-name">
-                  {label}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexDirection: "column",
+                    pr: 2,
+                  }}
+                >
+                  <Typography data-testid="table-header-name" variant="assoc_header">{label}</Typography>
+                  <NameFilter />
+                </Box>
               );
             },
           }),
-          columnHelper.accessor(row => row.score, {
+          columnHelper.accessor((row) => row.score, {
             id: "score",
-            header: (
-              <Typography variant="assoc_header" data-testid="table-header-score">
-                Association Score
-              </Typography>
-            ),
-            cell: cell => (
-              <Box sx={{ marginRight: "10px" }} data-testid="score-cell">
+            header: <Typography variant="assoc_header" data-testid="table-header-score">Association Score</Typography>,
+            cell: (cell) => (
+              <Box sx={{ marginRight: "10px" }}>
                 <TableCell
                   scoreValue={cell.getValue()}
                   globalScore
@@ -244,7 +246,7 @@ function TableAssociations() {
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: row => row[entityToGet].id,
+    getRowId: (row) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
@@ -265,7 +267,7 @@ function TableAssociations() {
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: row => row[entityToGet].id,
+    getRowId: (row) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
@@ -286,7 +288,7 @@ function TableAssociations() {
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: row => row[entityToGet].id,
+    getRowId: (row) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
