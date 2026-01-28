@@ -1,17 +1,15 @@
-import { test } from "@playwright/test";
+import { test } from "../../../fixtures";
 import { ProfileHeader } from "../../../POM/objects/components/ProfileHeader/profileHeader";
 import { BibliographySection } from "../../../POM/objects/widgets/Bibliography/bibliographySection";
 import { GWASStudiesSection } from "../../../POM/objects/widgets/GWAS/gwasStudiesSection";
-import { KnownDrugsSection } from "../../../POM/objects/widgets/KnownDrugs/knownDrugsSection";
+import { ClinicalPrecedenceSection } from "../../../POM/objects/widgets/KnownDrugs/knownDrugsSection";
 import { OntologySection } from "../../../POM/objects/widgets/Ontology/ontologySection";
 import { OTProjectsSection } from "../../../POM/objects/widgets/OTProjects/otProjectsSection";
 import { PhenotypesSection } from "../../../POM/objects/widgets/Phenotypes/phenotypesSection";
 
-const DISEASE_EFO_ID = "EFO_0000612";
-
 test.describe("Disease Profile Page", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
-    await page.goto(`${baseURL}/disease/${DISEASE_EFO_ID}`);
+  test.beforeEach(async ({ page, baseURL, testConfig }) => {
+    await page.goto(`${baseURL}/disease/${testConfig.disease.primary}`);
   });
 
   test.describe("Profile Header", () => {
@@ -100,7 +98,7 @@ test.describe("Disease Profile Page", () => {
     });
 
     test("Known Drugs section is visible when disease has drug data", async ({ page }) => {
-      const knownDrugsSection = new KnownDrugsSection(page);
+      const knownDrugsSection = new ClinicalPrecedenceSection(page);
 
       // Wait for section to potentially load
       const isVisible = await knownDrugsSection.isSectionVisible();
@@ -194,7 +192,7 @@ test.describe("Disease Profile Page", () => {
       // Create instances of all section interactors
       const sections = [
         { name: "Ontology", interactor: new OntologySection(page) },
-        { name: "Known Drugs", interactor: new KnownDrugsSection(page) },
+        { name: "Known Drugs", interactor: new ClinicalPrecedenceSection(page) },
         { name: "Phenotypes", interactor: new PhenotypesSection(page) },
         { name: "OT Projects", interactor: new OTProjectsSection(page) },
         { name: "GWAS Studies", interactor: new GWASStudiesSection(page) },

@@ -64,10 +64,10 @@ export class PharmacogenomicsSection {
     return await genotypeCell.textContent();
   }
 
-  // Drug links
+  // Drug links - Not applicable for Drug page, only for Variant page
   async getDrugLinks(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("td").nth(1).locator("a[href*='/drug/']");
+    return row.locator("a[href*='/drug/']");
   }
 
   async getDrugLinksCount(rowIndex: number): Promise<number> {
@@ -88,7 +88,7 @@ export class PharmacogenomicsSection {
   // Gene/Target link
   async getGeneLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/target/']");
+    return row.locator("td").first().locator("a[href*='/target/']");
   }
 
   async hasGeneLink(rowIndex: number): Promise<boolean> {

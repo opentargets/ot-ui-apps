@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { VariantEffectPredictorSection } from "../../../POM/objects/widgets/shared/variantEffectPredictorSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("Variant Effect Predictor / Transcript Consequences Section", () =
   let variantPage: VariantPage;
   let vepSection: VariantEffectPredictorSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     vepSection = new VariantEffectPredictorSection(page);
 
     // Navigate to a variant with transcript consequence data
-    await variantPage.goToVariantPage("1_154453788_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.primary);
 
     // Wait for the section to fully load
     await vepSection.waitForLoad();
