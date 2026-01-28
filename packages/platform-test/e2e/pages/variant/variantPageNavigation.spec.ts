@@ -44,5 +44,4 @@ test.describe("Variant Page Navigation", () => {
     const profileHeaderBlock = page.locator("[data-testid='profile-page-header-block']");
     await expect(profileHeaderBlock).toBeVisible();
   });
-
 });

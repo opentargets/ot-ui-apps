@@ -69,9 +69,9 @@ test.describe("Pharmacogenomics Section", () => {
       await pharmacoSection.clickDrugLink(0);
 
       // Wait for navigation to drug page
-      await page.waitForURL(url => url.toString().includes("/drug/"), { timeout: 5000 });
-  }
-});
+      await page.waitForURL((url) => url.toString().includes("/drug/"), { timeout: 5000 });
+    }
+  });
 
   test("Gene/Target link is displayed in table", async () => {
     const isVisible = await pharmacoSection.isSectionVisible();
@@ -161,5 +161,4 @@ test.describe("Pharmacogenomics Section", () => {
       test.skip();
     }
   });
-
 });

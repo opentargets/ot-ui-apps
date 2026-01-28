@@ -180,18 +180,36 @@ export class AotfTable {
 
   // Wait for table to load
   async waitForTableLoad(): Promise<void> {
-    await this.page.waitForSelector(".TAssociations", { state: "visible" });
-    // Wait for loading to finish if present
+    await this.page.waitForSelector(".TAssociations", { state: "visible", timeout: 10000 });
+
+    // Wait for skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const table = document.querySelector(".TAssociations");
+          if (!table) return false;
+          const skeletons = table.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found, table already loaded
+      });
+
+    // Wait for loading indicator to disappear if present
     const loadingVisible = await this.getLoadingIndicator()
       .isVisible()
       .catch(() => false);
     if (loadingVisible) {
-      await this.getLoadingIndicator().waitFor({ state: "hidden" });
+      await this.getLoadingIndicator().waitFor({ state: "hidden", timeout: 10000 });
     }
+
     // Wait for at least one row to be present with actual content
-    await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible" });
-    // Give a moment for content to populate
-    await this.page.waitForTimeout(500);
+    await this.page.waitForSelector("[data-testid^='table-row-core']", {
+      state: "visible",
+      timeout: 10000,
+    });
   }
 
   // Get all data cells with scores in a specific row
@@ -209,7 +227,11 @@ export class AotfTable {
   }
 
   // Get the score value from a data cell
-  async getDataCellScore(rowIndex: number, columnId: string, prefix: string = "core"): Promise<number | null> {
+  async getDataCellScore(
+    rowIndex: number,
+    columnId: string,
+    prefix: string = "core"
+  ): Promise<number | null> {
     const cell = this.getDataCell(rowIndex, columnId, prefix);
     const score = await cell.getAttribute("data-score");
     return score ? parseFloat(score) : null;
@@ -222,7 +244,10 @@ export class AotfTable {
   }
 
   // Get all data cells with score > 0 in a row
-  async getDataCellsWithScores(rowIndex: number, prefix: string = "core"): Promise<Array<{ columnId: string; score: number }>> {
+  async getDataCellsWithScores(
+    rowIndex: number,
+    prefix: string = "core"
+  ): Promise<Array<{ columnId: string; score: number }>> {
     const cells = this.getDataCellsInRow(rowIndex, prefix);
     const count = await cells.count();
     const cellsWithScores: Array<{ columnId: string; score: number }> = [];
@@ -231,7 +256,7 @@ export class AotfTable {
       const cell = cells.nth(i);
       const scoreAttr = await cell.getAttribute("data-score");
       const testId = await cell.getAttribute("data-testid");
-      
+
       if (scoreAttr && testId) {
         const score = parseFloat(scoreAttr);
         if (score > 0) {
@@ -248,14 +273,14 @@ export class AotfTable {
   // Find first row with data cells that have score > 0
   async findFirstRowWithData(prefix: string = "core"): Promise<number | null> {
     const rowCount = await this.getRowCount(prefix);
-    
+
     for (let i = 0; i < rowCount; i++) {
       const cellsWithScores = await this.getDataCellsWithScores(i, prefix);
       if (cellsWithScores.length > 0) {
         return i;
       }
     }
-    
+
     return null;
   }
 }

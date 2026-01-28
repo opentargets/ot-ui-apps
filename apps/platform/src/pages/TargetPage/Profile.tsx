@@ -11,6 +11,10 @@ import { Target, Widget } from "sections";
 
 import ProfileHeader from "./ProfileHeader";
 
+import { getConfig } from "@ot/config";
+
+const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
+
 const targetProfileWidgets = new Map<string, Widget>([
   [Target.KnownDrugs.definition.id, Target.KnownDrugs],
   [Target.Tractability.definition.id, Target.Tractability],
@@ -18,7 +22,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
   [Target.QTLCredibleSets.definition.id, Target.QTLCredibleSets],
   [Target.ChemicalProbes.definition.id, Target.ChemicalProbes],
-  [Target.Expression.definition.id, Target.Expression],
+  [Target[baselineName].definition.id, Target[baselineName]],
   [Target.DepMap.definition.id, Target.DepMap],
   [Target.SubcellularLocation.definition.id, Target.SubcellularLocation],
   [Target.GeneOntology.definition.id, Target.GeneOntology],
@@ -30,6 +34,7 @@ const targetProfileWidgets = new Map<string, Widget>([
   [Target.MousePhenotypes.definition.id, Target.MousePhenotypes],
   [Target.ComparativeGenomics.definition.id, Target.ComparativeGenomics],
   [Target.Bibliography.definition.id, Target.Bibliography],
+  // [Target.OverlappingVariants.definition.id, Target.OverlappingVariants],
 ]);
 
 const TARGET_WIDGETS = Array.from(targetProfileWidgets.values());

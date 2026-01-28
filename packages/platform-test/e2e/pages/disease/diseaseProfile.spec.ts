@@ -8,7 +8,6 @@ import { OTProjectsSection } from "../../../POM/objects/widgets/OTProjects/otPro
 import { PhenotypesSection } from "../../../POM/objects/widgets/Phenotypes/phenotypesSection";
 
 const DISEASE_EFO_ID = "EFO_0000612";
-const DISEASE_NAME = "myocardial infarction";
 
 test.describe("Disease Profile Page", () => {
   test.beforeEach(async ({ page, baseURL }) => {
