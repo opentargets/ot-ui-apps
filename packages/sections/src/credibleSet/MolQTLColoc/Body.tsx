@@ -80,7 +80,7 @@ const columns = [
       return (
         <Link
           external
-          to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}&ontology=uberon`}
+          to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
         >
           {biosample.biosampleName}
         </Link>
@@ -153,10 +153,6 @@ const columns = [
         ? numberColocalisingVariants.toLocaleString()
         : naLabel;
     },
-  },
-  {
-    id: "colocalisationMethod",
-    label: "Colocalisation Method",
   },
   {
     id: "betaRatioSignAverage",
@@ -266,8 +262,8 @@ function Body({ id, entity }: BodyProps) {
             dataDownloader
             showGlobalFilter
             dataDownloaderFileStem={`${id}-credibleSets`}
-            sortBy="pValue"
-            order="asc"
+            sortBy="h4"
+            order="desc"
             columns={columns}
             loading={request.loading}
             rows={request.data?.credibleSet.molqtlcolocalisation.rows}
