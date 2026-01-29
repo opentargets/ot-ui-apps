@@ -77,7 +77,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
             yarn dev:test:platform:e2e
           else
-            yarn dev:test:platform:e2e
+            yarn dev:test:platform:e2e:smoke
           fi
         env:
           CI: true
