@@ -53,7 +53,7 @@ export class AotfTable {
 
   getScoreCell(rowIndex: number, prefix: string = "core"): Locator {
     return this.page.locator(
-      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid*='score']`
+      `[data-testid='table-row-${prefix}-${rowIndex}'] [data-testid='score-cell-score']`
     );
   }
 
@@ -84,20 +84,21 @@ export class AotfTable {
 
   async selectPageSize(size: string): Promise<void> {
     await this.getPageSizeSelector().click();
-    await this.page.getByRole("option", { name: size }).click();
+    // MUI Select renders options in a listbox with data-value attribute
+    await this.page.locator(`[role='listbox'] [data-value='${size}']`).click();
   }
 
   // Section controls (Pinned, Uploaded, Core)
   getPinnedSection(): Locator {
-    return this.page.locator("text=Pinned").first();
+    return this.page.locator("[data-testid='section-pinning']");
   }
 
   getUploadedSection(): Locator {
-    return this.page.locator("text=Uploaded").first();
+    return this.page.locator("[data-testid='section-uploaded']");
   }
 
   getCoreSection(): Locator {
-    return this.page.locator("text=All").first();
+    return this.page.locator("[data-testid='section-core']");
   }
 
   async togglePinnedSection(): Promise<void> {
@@ -114,11 +115,11 @@ export class AotfTable {
 
   // Delete actions
   getDeletePinnedButton(): Locator {
-    return this.page.locator("[data-testid='delete-pinned-button']").first();
+    return this.page.locator("[data-testid='delete-pinning-button']");
   }
 
   getDeleteUploadedButton(): Locator {
-    return this.page.locator("[data-testid='delete-uploaded-button']").first();
+    return this.page.locator("[data-testid='delete-uploaded-button']");
   }
 
   async deletePinnedEntries(): Promise<void> {
@@ -136,8 +137,8 @@ export class AotfTable {
   }
 
   // Search/Filter in specific row
-  async getRowByName(name: string): Promise<Locator> {
-    return this.page.locator(`[data-testid*='table-row']`, { hasText: name });
+  getRowByName(name: string): Locator {
+    return this.page.locator(`[data-testid*='table-row']`, { hasText: name }).first();
   }
 
   // Find row index by gene symbol
@@ -178,13 +179,27 @@ export class AotfTable {
     return null;
   }
 
-  // Pin/Unpin row
-  getPinButtonForRow(rowIndex: number): Locator {
-    return this.page.locator(`[data-testid='pin-button-${rowIndex}']`);
+  // Pin/Unpin row via context menu
+  getContextMenuForRow(rowIndex: number): Locator {
+    return this.page.locator(`[data-testid='context-menu-${rowIndex}']`);
+  }
+
+  getPinEntityButton(): Locator {
+    return this.page.locator("[data-testid='pin-entity-button']");
+  }
+
+  getUnpinEntityButton(): Locator {
+    return this.page.locator("[data-testid='unpin-entity-button']");
   }
 
   async pinRow(rowIndex: number): Promise<void> {
-    await this.getPinButtonForRow(rowIndex).click();
+    await this.getContextMenuForRow(rowIndex).click();
+    await this.getPinEntityButton().click();
+  }
+
+  async unpinRow(rowIndex: number): Promise<void> {
+    await this.getContextMenuForRow(rowIndex).click();
+    await this.getUnpinEntityButton().click();
   }
 
   // Get association score value
@@ -194,8 +209,7 @@ export class AotfTable {
   ): Promise<string | null> {
     const scoreCell = this.getScoreCell(rowIndex, prefix);
     await scoreCell.waitFor({ state: "visible" });
-    const text = await scoreCell.textContent();
-    return text?.trim() || null;
+    return scoreCell.getAttribute("data-score");
   }
 
   // Get entity name (target or disease)
@@ -218,36 +232,18 @@ export class AotfTable {
 
   // Wait for table to load
   async waitForTableLoad(): Promise<void> {
-    await this.page.waitForSelector(".TAssociations", { state: "visible", timeout: 10000 });
-
-    // Wait for skeleton loaders to disappear
-    await this.page
-      .waitForFunction(
-        () => {
-          const table = document.querySelector(".TAssociations");
-          if (!table) return false;
-          const skeletons = table.querySelectorAll(".MuiSkeleton-root");
-          return skeletons.length === 0;
-        },
-        { timeout: 15000 }
-      )
-      .catch(() => {
-        // No skeletons found, table already loaded
-      });
-
-    // Wait for loading indicator to disappear if present
+    await this.page.waitForSelector(".TAssociations", { state: "visible" });
+    // Wait for loading to finish if present
     const loadingVisible = await this.getLoadingIndicator()
       .isVisible()
       .catch(() => false);
     if (loadingVisible) {
-      await this.getLoadingIndicator().waitFor({ state: "hidden", timeout: 10000 });
+      await this.getLoadingIndicator().waitFor({ state: "hidden" });
     }
-
     // Wait for at least one row to be present with actual content
-    await this.page.waitForSelector("[data-testid^='table-row-core']", {
-      state: "visible",
-      timeout: 10000,
-    });
+    await this.page.waitForSelector("[data-testid^='table-row-core']", { state: "visible" });
+    // Give a moment for content to populate
+    await this.page.waitForTimeout(500);
   }
 
   // Get all data cells with scores in a specific row
