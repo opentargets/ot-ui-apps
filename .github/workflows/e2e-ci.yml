@@ -55,13 +55,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
       - name: Enable Corepack
         run: corepack enable
+      
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: Cache npm global packages (Netlify CLI)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-netlify-cli-v1
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
+      
       - name: Deploy to Netlify (E2E Preview)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -76,15 +105,44 @@ jobs:
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
       - name: Enable Corepack
         run: corepack enable
+      
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: install playwright browsers
+      
+      - name: Install Playwright browsers
         run: |
           cd packages/platform-test
           yarn playwright install --with-deps chromium webkit
+      
       - name: Run E2E tests
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
