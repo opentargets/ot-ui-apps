@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { VariantEffectSection } from "../../../POM/objects/widgets/Variant/variantEffectSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("Variant Effect Section", () => {
   let variantPage: VariantPage;
   let variantEffectSection: VariantEffectSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     variantEffectSection = new VariantEffectSection(page);
 
     // Navigate to a variant with variant effect data
-    await variantPage.goToVariantPage("1_154453788_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.primary);
 
     // Wait for the section to fully load
     await variantEffectSection.waitForLoad();

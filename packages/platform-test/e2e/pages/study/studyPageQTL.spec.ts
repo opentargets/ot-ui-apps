@@ -1,15 +1,12 @@
-import { test } from "@playwright/test";
+import { test } from "../../../fixtures";
 import { StudyProfileHeader } from "../../../POM/objects/components/StudyProfileHeader/studyProfileHeader";
 import { QTLCredibleSetsSection } from "../../../POM/objects/widgets/Study/qtlCredibleSetsSection";
 import { StudyPage } from "../../../POM/page/study/study";
 
-// Test QTL study - eQTL
-const QTL_STUDY_ID = "UKB_PPP_EUR_LPA_P08519_OID30747_v1";
-
 test.describe("Study Page - QTL Study", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
+  test.beforeEach(async ({ page, baseURL, testConfig }) => {
     const studyPage = new StudyPage(page);
-    await studyPage.goToStudyPage(baseURL as string, QTL_STUDY_ID);
+    await studyPage.goToStudyPage(baseURL as string, testConfig.study.qtl?.primary as string);
     await studyPage.waitForStudyPageLoad();
   });
 
@@ -295,11 +292,11 @@ test.describe("Study Page - QTL Study", () => {
       test.expect(isActive).toBe(true);
     });
 
-    test("Study page displays correct study ID in header", async ({ page }) => {
+    test("Study page displays correct study ID in header", async ({ page, testConfig }) => {
       const studyPage = new StudyPage(page);
 
       const studyId = await studyPage.getStudyIdFromHeader();
-      test.expect(studyId).toContain(QTL_STUDY_ID);
+      test.expect(studyId).toContain(testConfig.study?.qtl?.primary);
     });
   });
 });

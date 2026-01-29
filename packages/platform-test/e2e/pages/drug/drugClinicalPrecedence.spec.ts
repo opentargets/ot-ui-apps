@@ -1,17 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { ClinicalPrecedenceSection } from "../../../POM/objects/widgets/KnownDrugs/knownDrugsSection";
 import { DrugPage } from "../../../POM/page/drug/drug";
 
-test.describe("Clinical Precedence Section", () => {
+test.describe("Drug Clinical Precedence Section", () => {
   let drugPage: DrugPage;
   let clinicalPrecedence: ClinicalPrecedenceSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     clinicalPrecedence = new ClinicalPrecedenceSection(page);
 
-    // Navigate to a drug with Clinical precedence data
-    await drugPage.goToDrugPage("CHEMBL1201585");
+    // Navigate to a drug with clinical precedence data
+    await drugPage.goToDrugPage(testConfig.drug.primary);
 
     // Check if section is visible
     const isVisible = await clinicalPrecedence.isSectionVisible();

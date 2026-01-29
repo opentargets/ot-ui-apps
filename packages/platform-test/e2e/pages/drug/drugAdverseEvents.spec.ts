@@ -9,8 +9,11 @@ test.describe("Drug Pharmacovigilance Section", () => {
   test.beforeEach(async ({ page, testConfig }) => {
     drugPage = new DrugPage(page);
     Pharmacovigilance = new PharmacovigilanceSection(page);
-    // Navigate to a drug with pharmacovigilance data
-    await drugPage.goToDrugPage(testConfig.drug.primary);
+
+    // Navigate to a drug with adverse events data
+    await drugPage.goToDrugPage(
+      testConfig.drug.alternatives?.withAdverseEvents ?? testConfig.drug.primary
+    );
 
     // Wait for the section to fully load
     await Pharmacovigilance.waitForLoad();

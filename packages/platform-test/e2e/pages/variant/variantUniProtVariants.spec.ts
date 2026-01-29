@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { UniProtVariantsSection } from "../../../POM/objects/widgets/shared/uniprotVariantsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,12 +6,12 @@ test.describe("UniProt Variants Section", () => {
   let variantPage: VariantPage;
   let uniprotSection: UniProtVariantsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     uniprotSection = new UniProtVariantsSection(page);
 
     // Navigate to a variant with UniProt data
-    await variantPage.goToVariantPage("19_44908822_C_T");
+    await variantPage.goToVariantPage(testConfig.variant.withMolecularStructure);
 
     // Check if section is visible
     const isVisible = await uniprotSection.isSectionVisible();

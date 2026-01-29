@@ -1,14 +1,14 @@
-import { test } from "@playwright/test";
+import { test } from "../../../fixtures";
 import { StudyProfileHeader } from "../../../POM/objects/components/StudyProfileHeader/studyProfileHeader";
 import { SharedTraitStudiesSection } from "../../../POM/objects/widgets/Study/sharedTraitStudiesSection";
 import { GWASCredibleSetsSection } from "../../../POM/objects/widgets/shared/GWASCredibleSetsSection";
 import { StudyPage } from "../../../POM/page/study/study";
 
 test.describe("Study Page - GWAS Study", () => {
-  test.beforeEach(async ({ page, baseURL }) => {
+  test.beforeEach(async ({ page, baseURL, testConfig }) => {
     const studyPage = new StudyPage(page);
-    // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(DISEASE_EFO_ID);
-    await studyPage.goToStudyPage(baseURL ?? "", "GCST90475211");
+    // await studyPage.goToStudyPageFromGWASWidgetOnDiseasePage(testConfig.disease.primary);
+    await studyPage.goToStudyPage(baseURL ?? "", testConfig.study.gwas.primary);
     await studyPage.waitForStudyPageLoad();
   });
 

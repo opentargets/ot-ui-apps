@@ -140,6 +140,44 @@ export class AotfTable {
     return this.page.locator(`[data-testid*='table-row']`, { hasText: name });
   }
 
+  // Find row index by gene symbol
+  async findRowIndexByGeneSymbol(
+    geneSymbol: string,
+    prefix: string = "core"
+  ): Promise<number | null> {
+    const rowCount = await this.getRowCount(prefix);
+
+    for (let i = 0; i < rowCount; i++) {
+      const nameCell = this.getNameCell(i, prefix);
+      const text = await nameCell.textContent();
+
+      if (text?.includes(geneSymbol)) {
+        return i;
+      }
+    }
+
+    return null;
+  }
+
+  // Wait for specific gene to appear in table
+  async waitForGeneInTable(
+    geneSymbol: string,
+    prefix: string = "core",
+    timeout: number = 10000
+  ): Promise<number | null> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const rowIndex = await this.findRowIndexByGeneSymbol(geneSymbol, prefix);
+      if (rowIndex !== null) {
+        return rowIndex;
+      }
+      await this.page.waitForTimeout(500);
+    }
+
+    return null;
+  }
+
   // Pin/Unpin row
   getPinButtonForRow(rowIndex: number): Locator {
     return this.page.locator(`[data-testid='pin-button-${rowIndex}']`);
@@ -274,7 +312,7 @@ export class AotfTable {
   async findFirstRowWithData(prefix: string = "core"): Promise<number | null> {
     const rowCount = await this.getRowCount(prefix);
 
-    for (let i = 0; i < rowCount; i++) {
+    for (let i = 1; i < rowCount; i++) {
       const cellsWithScores = await this.getDataCellsWithScores(i, prefix);
       if (cellsWithScores.length > 0) {
         return i;

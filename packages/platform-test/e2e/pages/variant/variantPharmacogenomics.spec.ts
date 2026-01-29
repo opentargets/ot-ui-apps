@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../../../fixtures";
 import { PharmacogenomicsSection } from "../../../POM/objects/widgets/shared/pharmacogenomicsSection";
 import { VariantPage } from "../../../POM/page/variant/variant";
 
@@ -6,14 +6,16 @@ test.describe("Pharmacogenomics Section", () => {
   let variantPage: VariantPage;
   let pharmacoSection: PharmacogenomicsSection;
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, testConfig }) => {
     variantPage = new VariantPage(page);
     pharmacoSection = new PharmacogenomicsSection(page);
 
     // Navigate to a variant with pharmacogenomics data
     // Using rs662 (PON1 gene) which should have pharmaco data
-    await variantPage.goToVariantPage("7_95308134_T_C");
-    
+    await variantPage.goToVariantPage(
+      testConfig.variant.withPharmacogenomics ?? testConfig.variant.primary
+    );
+
     // Wait for the section to load if it's visible
     const isVisible = await pharmacoSection.isSectionVisible();
     if (isVisible) {
