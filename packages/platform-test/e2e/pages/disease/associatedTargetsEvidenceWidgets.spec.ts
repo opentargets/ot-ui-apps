@@ -74,7 +74,11 @@ test.describe("Disease Page - AOTF Evidence Widgets", () => {
 
     for (const geneSymbol of genesToTest) {
       // Search for the specific gene
+<<<<<<< HEAD
       await aotfActions.searchByName(geneSymbol);
+=======
+      await aotfActions.applyNameFilterAndWaitForResults(geneSymbol);
+>>>>>>> main
 
       // Wait for table to load with filtered results
       await aotfTable.waitForTableLoad();
@@ -190,7 +194,7 @@ test.describe("Disease Page - AOTF Evidence Widgets", () => {
 
     for (const geneSymbol of genesToTest) {
       // Search for the specific gene
-      await aotfActions.searchByName(geneSymbol);
+      await aotfActions.applyNameFilterAndWaitForResults(geneSymbol);
 
       // Wait for table to load with filtered results
       await aotfTable.waitForTableLoad();

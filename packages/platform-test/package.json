@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.36.2",
+    "dotenv": "^17.2.3",
     "start-server-and-test": "^2.0.4"
   },
   "scripts": {
@@ -18,5 +19,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {}
 }

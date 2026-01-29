@@ -16,7 +16,6 @@ export class EVASection {
       .isVisible()
       .catch(() => false);
   }
-  
   /**
    * Wait for the section to finish loading (no skeleton loaders)
    */
@@ -64,6 +63,7 @@ export class EVASection {
 
   async clickDiseaseLink(rowIndex: number): Promise<void> {
     const link = await this.getDiseaseLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

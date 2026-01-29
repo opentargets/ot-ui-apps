@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   List,
   ListItem,
@@ -9,24 +9,24 @@ import {
   Box,
   Paper,
   IconButton,
-  Link as MUILink,
   Typography,
   ButtonBase,
+  Theme,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { CSSProperties, makeStyles } from "@mui/styles";
 import { faChevronDown, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import _ from "lodash";
 
 import { Link } from "ui";
 
-const sourceDrawerStyles = makeStyles(theme => ({
+const sourceDrawerStyles = makeStyles((theme: Theme) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
   drawerBody: {
     overflowY: "overlay",
-  },
+  } as unknown as CSSProperties,
   drawerModal: {
     "& .MuiBackdrop-root": {
       opacity: "0 !important",
@@ -70,18 +70,18 @@ const sourceDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-const tableSourceLabel = name =>
+const tableSourceLabel = (name: string) =>
   ({
-    ATC: "ATC",
-    ClinicalTrials: "ClinicalTrials.gov",
-    DailyMed: "DailyMed",
-    FDA: "FDA",
-    EMA: "European Medicines Agency",
-    INN: "International Nonproprietary Names",
-    USAN: "United States Adopted Name",
-  }[name]);
+  ATC: "ATC",
+  ClinicalTrials: "ClinicalTrials.gov",
+  DailyMed: "DailyMed",
+  FDA: "FDA",
+  EMA: "European Medicines Agency",
+  INN: "International Nonproprietary Names",
+  USAN: "United States Adopted Name",
+}[name]);
 
-const drawerSourceLabel = (name, url) => {
+const drawerSourceLabel = (name: string, url: string) => {
   if (name === "ClinicalTrials") {
     return url.split("%22")[1] || `${tableSourceLabel(name)} reference`;
   }
@@ -97,7 +97,17 @@ const drawerSourceLabel = (name, url) => {
   return `${name} entry`;
 };
 
-function KnownDrugsSourceDrawer({ references }) {
+type Reference = {
+  __typename: string;
+  name: string;
+  url: string;
+}
+
+type KnownDrugsSourceDrawerProps = {
+  references: Reference[];
+}
+
+function KnownDrugsSourceDrawer({ references }: KnownDrugsSourceDrawerProps): ReactNode {
   const [open, setOpen] = useState(false);
   const classes = sourceDrawerStyles();
 
@@ -113,10 +123,10 @@ function KnownDrugsSourceDrawer({ references }) {
     );
   }
 
-  const groupedReferences = _.groupBy(references, "name");
+  const groupedReferences: Record<string, Reference[]> = _.groupBy(references, "name");
 
-  const toggleDrawer = event => {
-    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
+  const toggleDrawer: React.MouseEventHandler = event => {
+    if (event.type === "keydown" && ((event as unknown as KeyboardEvent).key === "Tab" || (event as unknown as KeyboardEvent).key === "Shift")) {
       return;
     }
 
@@ -163,7 +173,7 @@ function KnownDrugsSourceDrawer({ references }) {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {groupedReferences[group].map(item => (
+                {groupedReferences[group].map((item: Reference) => (
                   <ListItem key={item.url}>
                     <Link external to={item.url}>
                       {drawerSourceLabel(item.name, item.url)}

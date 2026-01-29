@@ -12,6 +12,19 @@ on:
         options:
           - smoke
           - all
+      test_config_url:
+        description: 'Google Sheet CSV URL for test configuration (leave empty for defaults)'
+        required: false
+        type: string
+      test_scenario:
+        description: 'Scenario name from the CSV to use for tests'
+        required: false
+        default: 'Happy_Path_Full_Data'
+        type: string
+      base_url:
+        description: 'Base URL to run tests against (defaults to Netlify branch preview)'
+        required: false
+        type: string
 
 jobs:
   get_branch_name:
@@ -19,46 +32,117 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
+      deploy_alias: ${{ steps.extract_branch.outputs.deploy_alias }}
     steps:
       - name: Extract branch name
         shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          # Sanitize branch name for Netlify alias (lowercase, replace invalid chars)
+          # For main branch, use a safe e2e-specific alias to avoid production deployment
+          if [ "$BRANCH_NAME" = "main" ] || [ "$BRANCH_NAME" = "master" ]; then
+            DEPLOY_ALIAS="e2e-main-preview"
+          else
+            DEPLOY_ALIAS=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | cut -c1-37)
+          fi
+          echo "deploy_alias=${DEPLOY_ALIAS}" >> $GITHUB_OUTPUT
         id: extract_branch
 
   tests_e2e_netlify_prepare:
-    name: Wait for deployment on Netlify
+    needs: [get_branch_name]
+    name: Deploy preview for E2E tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
       - name: Enable Corepack
         run: corepack enable
+      
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: Cache npm global packages (Netlify CLI)
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-netlify-cli-v1
+          restore-keys: |
+            ${{ runner.os }}-npm-
+      
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
-      - name: Deploy to Netlify
+      
+      - name: Deploy to Netlify (E2E Preview)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
         run: |
-           yarn build:platform && ls ${{ github.workspace }}/ && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=cc-platform-e2e --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
+           echo "Deploying with alias: ${{ needs.get_branch_name.outputs.deploy_alias }}"
+           yarn build:platform && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=${{ needs.get_branch_name.outputs.deploy_alias }} --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
   tests_e2e_netlify:
     needs: [tests_e2e_netlify_prepare, get_branch_name]
     name: Run end-to-end tests on Netlify PR preview
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v3
+      
       - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      
       - name: Enable Corepack
         run: corepack enable
+      
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: install playwright browsers
+      
+      - name: Install Playwright browsers
         run: |
           cd packages/platform-test
           yarn playwright install --with-deps chromium webkit
+      
       - name: Run E2E tests
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
@@ -67,8 +151,11 @@ jobs:
             yarn dev:test:platform:e2e:smoke
           fi
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          CI: true
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.deploy_alias) }}
           DEBUG: pw:api
+          TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
+          TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -76,5 +163,5 @@ jobs:
           path: ${{ github.workspace }}/packages/platform-test/playwright-report
           retention-days: 7
         env:
-          PLAYWRIGHT_TEST_BASE_URL: "https://${{ needs.get_branch_name.outputs.branch }}--ot-platform.netlify.app"
+          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.deploy_alias) }}
           DEBUG: pw:api
