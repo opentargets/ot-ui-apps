@@ -13,13 +13,17 @@ test.describe("Study Page - GWAS Study", () => {
   });
 
   test.describe("GWAS Study Profile Header", () => {
-    test("Profile header is visible and displays study information", async ({ page }) => {
-      const profileHeader = new StudyProfileHeader(page);
-      await profileHeader.waitForProfileHeaderLoad();
+    test(
+      "Profile header is visible and displays study information",
+      { tag: "@smoke" },
+      async ({ page }) => {
+        const profileHeader = new StudyProfileHeader(page);
+        await profileHeader.waitForProfileHeaderLoad();
 
-      const isVisible = await profileHeader.isProfileHeaderVisible();
-      test.expect(isVisible).toBe(true);
-    });
+        const isVisible = await profileHeader.isProfileHeaderVisible();
+        test.expect(isVisible).toBe(true);
+      }
+    );
 
     test("Study type is displayed correctly as GWAS", async ({ page }) => {
       const profileHeader = new StudyProfileHeader(page);

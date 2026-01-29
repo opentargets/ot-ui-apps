@@ -6,7 +6,7 @@ test.describe("Disease Page - Header and Navigation", () => {
     await page.goto(`${baseURL}/disease/${testConfig.disease.primary}/associations`);
   });
 
-  test("Disease header is correctly displayed", async ({ page, testConfig }) => {
+  test("Disease header is correctly displayed", { tag: "@smoke" }, async ({ page, testConfig }) => {
     const diseaseName = page.getByTestId("profile-page-header-text");
     await test.expect(diseaseName).toHaveText(testConfig.disease.name || "");
   });
