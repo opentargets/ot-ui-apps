@@ -352,8 +352,6 @@ export interface Drug {
   crossReferences?: DrugReferences[];
   /** Molecule synonyms */
   synonyms: string[];
-  /** Year drug was approved for the first time */
-  yearOfFirstApproval?: number;
   /** Alert on life-threteaning drug side effects provided by FDA */
   blackBoxWarning: boolean;
   /** Molecule preferred name */
