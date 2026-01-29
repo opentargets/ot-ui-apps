@@ -8,7 +8,7 @@ import { referenceUrls } from "@ot/utils";
 
 import Description from "./Description";
 import RecordsDrawer from "./RecordsDrawer";
-
+import SideBySideTables from "./SideBySideTables";
 import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
 import { definition } from ".";
 
@@ -51,20 +51,29 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => {
         return (
-          <OtTable
-            columns={columns}
-            dataDownloader
-            dataDownloaderFileStem={`${chemblId}-indications`}
-            rows={localData}
-            // rows={request.data?.drug.indications.rows}
-            showGlobalFilter
-            // sortBy="maxPhaseForIndication"
-            // order="desc"
-            // ActionsComponent={PaginationActionsComplete}
-            query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
-            variables={variables}
-            loading={request.loading}
-          />
+          <>
+            <OtTable
+              columns={columns}
+              dataDownloader
+              dataDownloaderFileStem={`${chemblId}-indications`}
+              rows={localData}
+              // rows={request.data?.drug.indications.rows}
+              showGlobalFilter
+              // sortBy="maxPhaseForIndication"
+              // order="desc"
+              // ActionsComponent={PaginationActionsComplete}
+              query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
+              variables={variables}
+              loading={request.loading}
+            />
+            <div style={{ height: "50px"}}></div>
+            <SideBySideTables
+              rows={localData}
+              query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
+              variables={variables}
+              loading={request.loading}
+            />
+          </>
         );
       }}
     />
