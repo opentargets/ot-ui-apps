@@ -239,7 +239,7 @@ test.describe("Study Page - QTL Study", () => {
 
           // Go to next page
           await qtlCredibleSets.clickNextPage();
-          await page.waitForTimeout(1000);
+          await qtlCredibleSets.waitForSectionLoad();
 
           // Get second page data
           const secondPageData = await qtlCredibleSets.getCellText(1, 1);
@@ -251,7 +251,7 @@ test.describe("Study Page - QTL Study", () => {
           const isPrevEnabled = await qtlCredibleSets.isPreviousPageEnabled();
           if (isPrevEnabled) {
             await qtlCredibleSets.clickPreviousPage();
-            await page.waitForTimeout(1000);
+            await qtlCredibleSets.waitForSectionLoad();
           }
         }
       }
@@ -273,7 +273,7 @@ test.describe("Study Page - QTL Study", () => {
           if (variantId) {
             // Search for it
             await qtlCredibleSets.searchCredibleSet(variantId);
-            await page.waitForTimeout(1000);
+            await qtlCredibleSets.waitForSectionLoad();
 
             // Verify filtered results
             const filteredRowCount = await qtlCredibleSets.getRowCount();
