@@ -1,21 +1,22 @@
 import allRecords from "./clinical_record_CHEMBL2105708.json";  // !! UPDATE ONCE HAVE API !!
-
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   IconButton,
   Drawer,
+  Link,
   Typography,
   Paper,
-  CircularProgress,
   ButtonBase,
+  Button,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "@ot/constants";
 // import PublicationWrapper from "./PublicationWrapper";
 import { OtTable } from "ui";
+import { sentenceCase } from "@ot/utils";
 
 const sourceDrawerStyles = makeStyles(theme => ({
   drawerLink: {
@@ -84,118 +85,123 @@ const listComponentStyles = makeStyles(theme => ({
   },
 }));
 
-export function PublicationsList({ entriesIds, hideSearch = false, name, symbol }) {
-  const [publications, setPublications] = useState([]);
-  const [loading, setLoading] = useState(true);
+export function RecordsList({ records }) {
 
-  useEffect(() => {
-    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      },
-      body: formBody,
-    };
-    fetch(baseUrl, requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        setLoading(false);
-        setPublications(data.resultList.result);
-      });
-  }, [entriesIds]);
-
-  if (loading)
-    return (
-      <Box
-        my={20}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
-      >
-        <CircularProgress size={60} />
-        <Box mt={6}>
-          <Typography className={listComponentStyles.AccordionSubtitle}>
-            Loading Europe PMC search results
-          </Typography>
-        </Box>
-      </Box>
-    );
-
-  const parsedPublications = publications.map(pub => {
-    const row = {};
-    row.europePmcId = pub.id;
-    row.pmcId = pub.pmcid;
-    row.fullTextOpen = !!(pub.inEPMC === "Y" || pub.inPMC === "Y");
-    row.title = pub.title;
-    row.year = pub.pubYear;
-    row.abstract = pub.abstractText;
-    row.isOpenAccess = pub.isOpenAccess !== "N";
-    row.authors = pub.authorList?.author || [];
-    row.journal = {
-      ...pub.journalInfo,
-      page: pub.pageInfo,
-    };
-    return row;
-  });
+  // !! FILTER TO ONLY TRIALS FOR NOW !!
+  records = records.filter(record => record.type?.startsWith('clinical trial'));
 
   const columns = [
     {
-      id: "publications",
-      label: " ",
-      renderCell: publication => {
+      id: "trial",
+      label: "",
+      renderCell: (record) => {
         const {
-          europePmcId,
-          title,
-          titleHtml,
-          authors,
-          journal,
-          variant,
-          abstract,
-          fullTextOpen,
           source,
-          patentDetails,
-          pmcId,
-          isOpenAccess,
-        } = publication;
+          trialDescription,
+          trialStartDate,
+          clinicalStatus,
+          phase,
+          trialLiteratures,
+          type,
+          trialOverallStatus,
+          trialWhyStopped,
+          trialStopReasonCategories,
+          trialPrimaryPurpose,
+          url,
+          trialOfficialTitle,
+          diseases,
+          drugs,
+        } = record;
+        const diseaseIds = [...new Set(diseases.filter(d => d.diseaseId).map(d => d.diseaseId))];
+
         return (
-          <PublicationWrapper
-            europePmcId={europePmcId}
-            title={title}
-            titleHtml={titleHtml}
-            authors={authors}
-            journal={journal}
-            variant={variant}
-            abstract={abstract}
-            fullTextOpen={fullTextOpen}
-            source={source}
-            patentDetails={patentDetails}
-            isOpenAccess={isOpenAccess}
-            pmcId={pmcId}
-            symbol={symbol}
-            name={name}
-          />
+          <Box sx={{ mb: 1 }}>
+            <Link external="true" to={url} sx={{textDecoration: "none"}}>
+              <Box sx={{ display: "flex", width: "100%" }}>
+                <Typography
+                  variant={"subtitle1"}
+                  noWrap
+                  sx={{ 
+                    minWidth: 0,
+                    maxWidth: "100%",
+                    width: "200px",  // !! REUIQUIRED FOR ELLIPSES - IS IT DODGY FOR SHORT TITLES? !!
+                    flex: 1,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {trialOfficialTitle || `[${sentenceCase(type)}]`}
+                </Typography>
+              </Box>
+            </Link>
+
+            <Box sx={{ display: "flex", mt: 0.15 }}>
+              <Typography variant="caption" sx={{ width: "80px"}}>
+                <span style={{ fontWeight: 600}}>{sentenceCase(phase?.toLowerCase()) ?? " "}</span> {type}
+              </Typography>
+            </Box>
+
+            <Box sx={{ display: "flex", mt: 0.15 }}>
+              <Box sx={{ display: "flex", width: "150px", alignItems: "baseline", gap: 0.5 }}>
+                <Typography variant="caption">
+                  Start:
+                </Typography>
+                <Typography variant= "body2" sx={{width: "100px"}}>
+                  {trialStartDate}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+                <Typography variant="caption">
+                  Status:
+                </Typography>
+                <Typography variant= "body2">
+                  {trialOverallStatus}
+                </Typography>
+              </Box>
+            </Box>
+            
+            {diseaseIds.length > 0 && (
+              <Box sx={{ display: "flex", mt: 1.5, alignItems: "baseline" }}>
+                <Typography variant="caption" sx={{ mr: 0.5 }}>
+                  Diseases:
+                </Typography>
+                {diseaseIds.map((diseaseId, index) => (
+                  <Link key={index} to={`../disease/${diseaseId}`} sx={{textDecoration: "none"}}>
+                    {index > 0 ? ", " : "" } {diseaseId}
+                  </Link>
+                ))}
+              </Box>
+            )}
+
+            <Button
+              // className={classes.detailsButton}
+              variant="outlined"
+              size="small"
+              // disabled={!abstract}
+              // onClick={handleShowAbstractClick}
+              startIcon={<FontAwesomeIcon icon={faPlusCircle} size="sm" />}
+              sx={{ my: 2 }}
+            >
+              Show details
+            </Button>
+          
+          </Box>
         );
       },
-      filterValue: row =>
-        `${row.journal.journal?.title} ${row?.title} ${row?.year}
-        ${row.authors
-          .reduce((acc, author) => {
-            if (author.fullName) acc.push(author.fullName);
-            return acc;
-          }, [])
-          .join(" ")}`,
-    },
+    }
   ];
 
   return (
+    <Box sx={{position: "relative", mt: 0}}>
     <OtTable
       columns={columns}
-      rows={parsedPublications}
-      showGlobalFilter={!hideSearch}
+      rows={records}
+      showGlobalFilter={true}
+      // showGlobalFilter={!hideSearch}
       showColumnVisibilityControl={false}
     />
+    </Box>
   );
 }
 
@@ -204,6 +210,8 @@ function RecordsDrawer({ recordIds }) {
   const classes = sourceDrawerStyles();
 
   const records = allRecords.filter(record => recordIds.includes(record.id));
+  // const trials = records.filter(record => record.type?.startsWith("clinical trial"));
+  // const nonTrials = records.filter(record => !record.type?.startsWith("clinical trial"));
 
   const toggleDrawer = event => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -232,7 +240,7 @@ function RecordsDrawer({ recordIds }) {
       >
         <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography className={classes.drawerTitleCaption}>Approvals and Trials</Typography>
+            <Typography className={classes.drawerTitleCaption}>Records</Typography>
             <IconButton onClick={closeDrawer}>
               <FontAwesomeIcon icon={faXmark} />
             </IconButton>
@@ -242,8 +250,7 @@ function RecordsDrawer({ recordIds }) {
         <Box width={600} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
-              DRAWER CONTENT??
-              {/* <PublicationsList entriesIds={entriesIds} symbol={symbol} name={name} /> */}
+              <RecordsList records={records} />
             </Box>
           )}
         </Box>
@@ -253,3 +260,10 @@ function RecordsDrawer({ recordIds }) {
 }
 
 export default RecordsDrawer;
+
+
+/*
+
+- current appraoch (like PublicationsDrawer creates one draw per row, prob better to have single drawer that pass appropriate prop to?
+
+ */
