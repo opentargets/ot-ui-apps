@@ -8,6 +8,7 @@ import { EmailLink } from "./EmailLink";
 
 import PrivateWrapper from "./PrivateWrapper";
 import { useConfigContext } from "../providers/ConfigurationProvider";
+import { useAPIMetadata } from "../providers/APIMetadataProvider";
 
 const FOOTER_BACKGROUND_COLOR = "#2e2d35";
 
@@ -197,11 +198,13 @@ const LicenseCC0 = ({ link }: LicenseCC0Props) => {
   );
 };
 
-const UIVersion = () => {
+const DeployedVersion = () => {
   const { config } = useConfigContext();
+  const { version: { apiVersion } } = useAPIMetadata();
   return (
     <Typography color="inherit" variant="caption">
-      <b>{config?.gitVersion}</b>
+      <b>UI: </b>{config?.gitVersion}<br/>
+      <b>API: </b>{apiVersion.x}.{apiVersion.y}.{apiVersion.z}
     </Typography>
   );
 };
@@ -224,7 +227,7 @@ const Footer = ({ externalLinks }: FooterProps) => {
       <Grid item container xs={12} md={10} spacing={2}>
         <FooterSection heading="About" links={externalLinks.about}>
           <LicenseCC0 link={externalLinks.license} />
-          <UIVersion />
+          <DeployedVersion />
         </FooterSection>
         <FooterSection heading="Help" links={externalLinks.help} social={externalLinks.social} />
         <FooterSection heading="Partners" links={externalLinks.partners} />
