@@ -22,7 +22,9 @@ function OtTableSearch({ setGlobalSearchTerm }: OtTableSearchProps): ReactElemen
 
   return (
     <Input
-      data-testid="table-search-input"
+      inputProps={{
+        "data-testid": "table-search-input",
+      }}
       sx={{ width: 1 }}
       value={globalFilter ?? ""}
       onChange={e => setGlobalFilter(e.target.value)}

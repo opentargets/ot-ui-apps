@@ -124,8 +124,9 @@ export class MolecularInteractionsSection {
   }
 
   // Table (present in most tabs)
+  // The Molecular Interactions section uses plain table elements without data-testid
   getTable(): Locator {
-    return this.getSection().locator("[data-testid='ot-table']");
+    return this.getSection().locator("table").first();
   }
 
   async isTableVisible(): Promise<boolean> {
