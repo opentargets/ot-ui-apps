@@ -57,13 +57,14 @@ export class UniProtVariantsSection {
   }
 
   // Get target gene link
-  async getTargetGeneLink(rowIndex: number): Promise<Locator> {
+  async getDiseasePhenotypeLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("button");
+    return row.locator("a[href*='/disease/']");
   }
 
-  async clickTargetGeneLink(rowIndex: number): Promise<void> {
-    const link = await this.getTargetGeneLink(rowIndex);
+  async clickDiseasePhenotypeLink(rowIndex: number): Promise<void> {
+    const link = await this.getDiseasePhenotypeLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

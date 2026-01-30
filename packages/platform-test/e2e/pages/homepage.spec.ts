@@ -4,7 +4,7 @@ import { fillPolling } from "../../utils/fillPolling";
 
 test.describe("Home page actions", () => {
   test("Validate page title", { tag: "@smoke" }, async ({ page, baseURL }) => {
-    await page.goto(baseURL!);
+    await page.goto(baseURL ?? "/");
     const title = await page.title();
     await expect(title).toBe("Open Targets Platform");
   });
