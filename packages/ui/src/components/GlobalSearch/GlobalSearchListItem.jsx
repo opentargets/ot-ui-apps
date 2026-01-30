@@ -178,6 +178,7 @@ function TopHitListItem({ item, onItemClick }) {
       className="search-list-item"
       role="menuitem"
       data-item-details={JSON.stringify(item)}
+      data-testid={`top-hit-list-result-item`}
       tabIndex="0"
       onClick={() => {
         onItemClick(item);

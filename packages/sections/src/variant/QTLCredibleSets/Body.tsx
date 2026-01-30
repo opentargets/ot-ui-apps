@@ -120,7 +120,7 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
         const biosampleId = study?.biosample?.biosampleId;
         if (!biosampleId) return naLabel;
         return (
-          <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}>
+          <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}`}>
             {study?.biosample?.biosampleName}
           </Link>
         );

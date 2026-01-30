@@ -12,6 +12,18 @@
       "outputs": ["src/types/**", "graphql.schema.json"],
       "cache": false
     },
+    "dev-test": {
+      "cache": false
+    },
+    "dev-test:smoke": {
+      "cache": false
+    },
+    "test:platform:e2e": {
+      "dependsOn": ["^build"]
+    },
+    "test:platform:e2e:smoke": {
+      "dependsOn": ["^build"]
+    },
     "prettier:all": {
       "outputs": []
     },

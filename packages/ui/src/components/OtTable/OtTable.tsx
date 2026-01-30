@@ -199,7 +199,7 @@ function OtTable({
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
         {/* Table component */}
-        <OtTableContainer>
+        <OtTableContainer data-testid="ot-table">
           <thead>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
@@ -340,6 +340,7 @@ function OtTable({
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
               aria-label="First Page"
+              data-testid="pagination-first-button"
             >
               <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
             </IconButton>
@@ -347,12 +348,14 @@ function OtTable({
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
               aria-label="Previous Page"
+              data-testid="pagination-previous-button"
             >
               <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
             </IconButton>
 
             <IconButton
               onClick={() => table.nextPage()}
+              data-testid="pagination-next-button"
               disabled={!table.getCanNextPage()}
               aria-label="Next Page"
             >
@@ -361,6 +364,7 @@ function OtTable({
             <IconButton
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
+              data-testid="pagination-last-button"
               aria-label="last page"
             >
               <FontAwesomeIcon size="2xs" icon={faForwardStep} />

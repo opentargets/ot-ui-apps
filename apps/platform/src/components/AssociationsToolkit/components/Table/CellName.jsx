@@ -186,10 +186,10 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin}} />
 
   return (
-    <NameContainer>
+    <NameContainer data-testid="name-cell">
       <TextContainer onClick={handleToggle} onContextMenu={handleContextMenu}>
         <Typography sx={{ width: isSmallScreen ? "90px" : "150px" }} noWrap variant="body2">
           {name}
@@ -215,6 +215,7 @@ function CellName({ cell, colorScale }) {
         onClick={handleToggle}
         onContextMenu={handleContextMenu}
         active={openContext}
+        data-testid={`context-menu-${cell.row.index}`}
       >
         <FontAwesomeIcon icon={faEllipsisVertical} size="lg" />
       </ContextMenuContainer>
@@ -241,7 +242,7 @@ function CellName({ cell, colorScale }) {
           </Box>
           <Divider sx={{ marginBottom: 1 }} />
           {!isPinned && (
-            <StyledMenuItem onClick={handleClickPin}>
+            <StyledMenuItem onClick={handleClickPin} data-testid="pin-entity-button">
               <ListItemIcon>
                 <FontAwesomeIcon icon={faThumbTack} />
               </ListItemIcon>
@@ -249,7 +250,7 @@ function CellName({ cell, colorScale }) {
             </StyledMenuItem>
           )}
           {isPinned && (
-            <StyledMenuItem onClick={handleClickPin}>
+            <StyledMenuItem onClick={handleClickPin} data-testid="unpin-entity-button">
               <ListItemIcon>
                 <FontAwesomeIcon icon={faTrashCan} />
               </ListItemIcon>

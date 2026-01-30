@@ -40,6 +40,7 @@ function SliderControll({
 
   return (
     <OTSlider
+      data-testid={`weight-slider-${id}`}
       size="small"
       orientation="vertical"
       value={displayValue}
