@@ -1,14 +1,15 @@
 import type { Locator, Page } from "@playwright/test";
 
 /**
- * Interactor for EVA/ClinVar section on Variant page
+ * Interactor for Genetic Constraint section on Target page
+ * Displays constraint metrics from gnomAD
  */
-export class EVASection {
+export class GeneticConstraintSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-eva']");
+    return this.page.locator("[data-testid='section-geneticconstraint']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -16,6 +17,7 @@ export class EVASection {
       .isVisible()
       .catch(() => false);
   }
+
   /**
    * Wait for the section to finish loading (no skeleton loaders)
    */
@@ -27,7 +29,7 @@ export class EVASection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-eva']");
+          const sect = document.querySelector("[data-testid='section-geneticconstraint']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;
@@ -55,23 +57,54 @@ export class EVASection {
     return tbody.locator("tr").nth(index);
   }
 
-  // Get disease link
-  async getDiseaseLink(rowIndex: number): Promise<Locator> {
+  // Constraint type (pLI, LOEUF, etc.)
+  async getConstraintType(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/disease/']");
+    const typeCell = row.locator("td").first();
+    return await typeCell.textContent();
   }
 
-  async clickDiseaseLink(rowIndex: number): Promise<void> {
-    const link = await this.getDiseaseLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
-    await link.click();
+  // Observed value
+  async getObservedValue(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const obsCell = row.locator("td").nth(1);
+    return await obsCell.textContent();
   }
 
-  // Get clinical significance
-  async getClinicalSignificance(rowIndex: number): Promise<string | null> {
+  // Expected value
+  async getExpectedValue(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(1);
-    return await cell.textContent();
+    const expCell = row.locator("td").nth(2);
+    return await expCell.textContent();
+  }
+
+  // O/E ratio
+  async getOERatio(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const oeCell = row.locator("td").nth(3);
+    return await oeCell.textContent();
+  }
+
+  // Score/pLI value
+  async getScore(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const scoreCell = row.locator("td").last();
+    return await scoreCell.textContent();
+  }
+
+  // gnomAD link
+  getGnomadLink(): Locator {
+    return this.getSection().locator("a[href*='gnomad']");
+  }
+
+  async hasGnomadLink(): Promise<boolean> {
+    return await this.getGnomadLink()
+      .isVisible()
+      .catch(() => false);
+  }
+
+  async clickGnomadLink(): Promise<void> {
+    await this.getGnomadLink().click();
   }
 
   // Global filter/search

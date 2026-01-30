@@ -20,7 +20,7 @@ function Wrapper({ data, query, variables }) {
   const [ref, { width }] = useMeasure();
   const parsedData = prepareData(data);
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box sx={{ display: "flex", justifyContent: "center" }} data-testid="depmap-plot">
       <Box sx={{ width: "95%" }} ref={ref}>
         <ChartControls data={parsedData} query={query} variables={variables} />
         <DepmapPlot data={parsedData} width={width} />

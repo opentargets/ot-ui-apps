@@ -72,12 +72,13 @@ function LocationsList({ sls, hoveredCellPart, setHoveredCellPart }) {
     return aLocationMain.localeCompare(bLocationMain);
   });
   return (
-    <List>
+    <List data-testid="subcellular-locations-list">
       {sortedSls.map(({ location, termSL }) => {
         const locationCode = parseLocationTerm(membraneCodes[termSL]?.parentCode ?? termSL);
         return (
           <ListItem
             key={location}
+            data-testid="subcellular-location-item"
             sx={{
               display: "flex",
               alignItems: "baseline",
@@ -113,6 +114,7 @@ function SubcellularTabPanel({ target, source, sourcesLocations, uniprotId, valu
       hidden={value !== index}
       id={`subcellular-tabpanel-${index}`}
       aria-labelledby={`subcellular-tab-${index}`}
+      data-testid={`subcellular-tabpanel-${source.id.toLowerCase()}`}
       sx={{ display: "flex", gap: 4 }}
     >{value === index && (
         <>
@@ -158,9 +160,9 @@ function SubcellularViz({ data: target }) {
 
   return (
     <>
-      <Tabs value={activeTabIndex} onChange={onTabChange} aria-label="Subcellular location sources">
+      <Tabs data-testid="subcellular-tabs" value={activeTabIndex} onChange={onTabChange} aria-label="Subcellular location sources">
         {activeSources.map((source) => (
-          <Tab label={source.label} key={source.id} />
+          <Tab data-testid={`subcellular-tab-${source.id.toLowerCase()}`} label={source.label} key={source.id} />
         ))}
       </Tabs>
 
