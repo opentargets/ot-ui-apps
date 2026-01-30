@@ -8,7 +8,7 @@
     "lint": {
       "outputs": []
     },
-    "codegen": {
+    "generateAPITypes": {
       "outputs": ["src/types/**", "graphql.schema.json"],
       "cache": false
     },
