@@ -1,6 +1,7 @@
 name: "Auto-Generate Tests for New Widgets"
 
 on:
+  workflow_dispatch:
   pull_request:
     types: [opened, synchronize]
     paths:
