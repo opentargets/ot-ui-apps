@@ -47,7 +47,7 @@ function BodyContent({ data }) {
   return (
     <GenTrackProvider initialState={{ data, xMin, xMax }} >
       <GenTrackTooltipProvider >
-        <BodyContentInner data={data} />
+        <BodyContentInner />
       </GenTrackTooltipProvider>
     </GenTrackProvider>
   );

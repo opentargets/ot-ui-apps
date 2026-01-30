@@ -1,16 +1,26 @@
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, Fragment } from "react";
 import {
   GenTrack,
   useGenTrackState,
   useGenTrackTooltipDispatch,
   useGenTrackTooltipState
 } from "ui";
-import { Container, Sprite, Graphics, ParticleContainer } from '@pixi/react';
-import { Graphics as PixiGraphics } from "pixi.js";
+import { Container, Sprite, Graphics, ParticleContainer, Text  } from '@pixi/react';
+import {
+  Graphics as PixiGraphics,
+  Sprite as PixiSprite,
+  Text as PixiText,
+  TextStyle,
+} from "pixi.js";
 import { Box, Typography } from "@mui/material";
-import { useRectangleTexture, useCircleTexture, useRingTexture } from "ui/src/components/GenTrack/shapes";
-import { scaleLinear, axisTop, select, max } from "d3";
+import {
+  Rectangle,
+  useRectangleTexture,
+  useCircleTexture,
+  useRingTexture,
+} from "ui/src/components/GenTrack/shapes";
+import { schemePaired, scaleLinear, axisTop, select, max } from "d3";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -22,9 +32,13 @@ function MyTooltip() {
   );
 }
 
-const colorScheme = [
+// const colorPairs = [[6, 7], [8, 9], [12, 13]].map(([i, j]) => {
+//   return [schemePaired[i], schemePaired[j]];
+// });
+
+const geneScheme = [
   // d3 schemeCategory10
-  0x1f77b4,
+  // 0x1f77b4,
   0xff7f0e,
   0x2ca02c,
   0xd62728,
@@ -36,16 +50,16 @@ const colorScheme = [
   0x17becf,
 
   // d3 schemeTableau10
-  0x4e79a7,
-  0xf28e2b,
-  0xe15759,
-  0x76b7b2,
-  0x59a14f,
-  0xedc948,
-  0xb07aa1,
-  0xff9da7,
-  0x9c755f,
-  0xbab0ab,
+  // 0x4e79a7,
+  // 0xf28e2b,
+  // 0xe15759,
+  // 0x76b7b2,
+  // 0x59a14f,
+  // 0xedc948,
+  // 0xb07aa1,
+  // 0xff9da7,
+  // 0x9c755f,
+  // 0xbab0ab,
 ];
 
 function XInfo({ start, end, canvasWidth }) {
@@ -93,84 +107,218 @@ function XYInfo({ data }) {
   );
 }
 
-function BodyContentInner({ data }) {
+function tickScaleFactory(filterActionPairs) {
+  return (wrapper) => {
+    objectLoop: for (const obj of wrapper.children[0].children) {
+      for (const { filterFn, actionFn } of filterActionPairs) {
+        if (filterFn(obj)) {
+          actionFn(obj, wrapper);
+          continue objectLoop;
+        }
+      }
+    }
+  };
+}
+
+function BodyContentInner() {
 
   const genTrackState = useGenTrackState();
-  const { xMin, xMax } = genTrackState;
+  const { data, xMin, xMax } = genTrackState;
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
   const variantWidth = 10;
   const circleTrackHeight = 30;
-  const tracks = [
+  const labelColor = 0x222222;
+  const tracks = [];
     
-    // fixed-circle size variants
-    {
-      id: `circle-variants`,
-      height: circleTrackHeight,
+  // fixed-circle size variants
+  tracks.push({
+    id: `variants`,
+    height: circleTrackHeight,
+    paddingTop: 16,
+    yMin: 0,
+    yMax: 100,
+    YInfo: () => (
+      <Box sx={infoStyle}> 
+        <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+          Variants
+        </Typography>
+      </Box>
+    ),
+    Track: ({ isInner }) => {
+      const ringTexture = useRingTexture(32, 10);
+      const circleTexture = useCircleTexture(32);
+      
+      const draw = useCallback((g) => {
+        g.clear();
+        g.lineStyle(2, 0xaaaaaa, 1);
+        g.moveTo(xMin, 50);
+        g.lineTo(xMax, 50);
+      }, [xMin, xMax]);
+      
+      return (
+        <Container>
+
+          {/* horizontal line */}
+          <Graphics draw={draw} />
+          
+          {/* all variants */}
+          {data.locus.rows.map(({ variant }, i) => (
+            <Sprite
+              key={i}
+              texture={ringTexture}
+              x={variant.position}
+              y={50}
+              anchor={[0.5, 0.5]}
+              height={variantWidth / circleTrackHeight * 100}
+              tint="steelblue"
+              // tint={0x444444}
+              // alpha={0.9}
+            />
+          ))}
+
+          {/* lead variants */}
+          <Sprite
+            texture={circleTexture}
+            x={data.variant.position}
+            y={50}
+            anchor={[0.5, 0.5]}
+            height={variantWidth / circleTrackHeight * 100}
+            // tint={0x444444}
+            tint="steelblue"
+            // alpha={0.9}
+          />
+
+          {/* label the lead variant */}
+          <Text
+            text="Lead"
+            x={data.variant.position}
+            y={25}
+            anchor={[0.5, 1]}
+            style={
+              new TextStyle({
+                align: 'center',
+                fill: labelColor,
+                // fill: 0x457093,
+                fontSize: 11,
+                fontWeight: '100',
+                wordWrap: false,
+              })
+            }
+          />
+        </Container>
+      );
+    },
+    // scale circles and text to stop stretched/squished appearance
+    onTick: tickScaleFactory([
+      {
+        filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
+        actionFn: (obj, wrapper) => {
+          obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
+          obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
+        }
+      },
+      {
+        filterFn: obj => obj instanceof PixiSprite,
+        actionFn: (obj, wrapper) => {
+          obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
+        }
+      },
+    ])
+  });
+
+
+  //   onTick: wrapper => {
+  //     const xScale = wrapper.scale.x * wrapper.parent.scale.x;
+  //     const yScale = wrapper.scale.y * wrapper.parent.scale.y;
+  //     for (const obj of wrapper.children[0].children) {
+  //       // if (obj instanceof PixiGraphics) continue;
+  //       if (obj instanceof PixiText) {
+  //         obj.scale.x = 1 / xScale;
+  //         obj.scale.y = 1 / yScale;
+  //       } else if (obj instanceof PixiSprite) {
+  //         obj.width = variantWidth / xScale;
+  //       }
+  //     }
+  //   },
+  // });
+
+
+  // genes and L2G scores
+  if (data.l2GPredictions.count) {
+    tracks.push({
+      id: `genes`,
+      height: 30,
       paddingTop: 16,
       yMin: 0,
       yMax: 100,
-      YInfo: ({}) => (
+      YInfo: () => (
         <Box sx={infoStyle}> 
-          <Typography component="div" variant="caption" sx={{ fontWeight: 600 }}>
-            Variants
+          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+            Genes and L2G scores
           </Typography>
         </Box>
       ),
-      Track: () => {
-        const ringTexture = useRingTexture(32, 10);
-        const circleTexture = useCircleTexture(32);
+      Track: ({ isInner }) => {
+
         const draw = useCallback((g) => {
           g.clear();
           g.lineStyle(2, 0xaaaaaa, 1);
           g.moveTo(xMin, 50);
           g.lineTo(xMax, 50);
         }, [xMin, xMax]);
+
         return (
           <Container>
 
             {/* horizontal line */}
             <Graphics draw={draw} />
             
-            {/* all variants */}
-            {data.locus.rows.map(({ variant }, i) => (
-              <Sprite
-                key={i}
-                texture={ringTexture}
-                x={variant.position}
-                y={50}
-                anchor={[0.5, 0.5]}
-                height={variantWidth / circleTrackHeight * 100}
-                tint="steelblue"
-                alpha={0.9}
-              />
-            ))}
-
-            {/* lead variants */}
-            <Sprite
-              texture={circleTexture}
-              x={data.variant.position}
-              y={50}
-              anchor={[0.5, 0.5]}
-              height={variantWidth / circleTrackHeight * 100}
-              tint="steelblue"
-              alpha={0.9}
-            />
+            {/* genes - use graphics objects since not many */}
+            {data.l2GPredictions.rows.map(({ score, target }, i) => {
+              const { start, end } = target.genomicLocation
+              return (
+                <Fragment key={i}>
+                  <Rectangle
+                    x={start}
+                    y={34}
+                    width={end - start}
+                    height={32}
+                    color={geneScheme[i]}
+                  />
+                  <Text
+                    text={`${target.approvedSymbol}: ${score.toFixed(3)}`}
+                    x={start}
+                    y={25}
+                    anchor={[0, 1]}
+                    style={
+                      new TextStyle({
+                        align: 'center',
+                        fill: labelColor,
+                        fontSize: 11,
+                        fontWeight: '100',
+                        wordWrap: false,
+                      })
+                    }
+                  />
+                </Fragment>
+              );
+            })}
           </Container>
         );
       },
-      // fix circle pixel widths - ugly, particularly since need to skip horintal graphics line
-      onTick: wrapper => {
-        const xScale = wrapper.scale.x * wrapper.parent.scale.x;
-        for (const obj of wrapper.children[0].children) {
-          if (obj instanceof PixiGraphics) continue;
-          obj.width = variantWidth / xScale;
-        }
-      }
-    },
-
-  ];
+      onTick: tickScaleFactory([
+        {
+          filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
+          actionFn: (obj, wrapper) => {
+            obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
+            obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
+          }
+        },
+      ]),
+    });
+  }
 
   return (
     <Box sx={{mr: 3}}>
@@ -182,7 +330,7 @@ function BodyContentInner({ data }) {
         innerTracks={tracks}
         // InnerXYInfo={XYInfo}
         yInfoGap={8}
-        yInfoWidth={100}
+        yInfoWidth={140}
         zoomLines
       />
       {/* <Intro /> */}
@@ -192,50 +340,15 @@ function BodyContentInner({ data }) {
 
 export default BodyContentInner;
 
-// !!!!! THE VARIANTS ARE NOT IN EXACTLY THE CORRECT PLACE RELATIVE TO THE AXES!
-//   - AND THERE POSITION RELATIVE TO IT CHANGES!
-//   - FIRST CHECK HOW COMPUTING XMIN AND XMAX - AND ID USING CONSISTENTLY FOR TRACKS AND AXIS
+/*
+TO DO:
+
+- get x-limits from all data - not just variants + padding
+- give labels (partic e.g. gene: L2G score) a background so clear when over lap
+- make scaling for fixed pixel size or text aspect rario efficient - only scale on init,
+  canvas width changes and x-limit changes
+    - since use a factory function, can store canvasWidth, xMin, xMax and return early if
+      no change
 
 
-//
-
-  // fixed-width rectangular variants
-    // {
-    //   id: `variants`,
-    //   height: 30,
-    //   paddingTop: 16,
-    //   yMin: 0,
-    //   yMax: 100,
-    //   YInfo: ({}) => (
-    //     <Box sx={{ background: "#f0f0f0", width: "100%", height: "100%", p: 1 }}>
-    //     <Typography variant="body2">
-    //       <Box component="span" sx={{fontWeight: 600, pr: 2 }}>Variants</Box><br />
-    //     </Typography>
-    //     </Box>
-    //   ),
-    //   Track: () => {
-    //     const texture = useRectangleTexture();
-    //     return (
-    //       <Container>
-    //         {data.locus.rows.map(({ variant }, i) => (
-    //           <Sprite
-    //             key={i}
-    //             texture={texture}
-    //             x={variant.position}
-    //             y={0}
-    //             anchor={[0.5, 0]}
-    //             height={100}
-    //             tint="steelblue"
-    //             alpha={0.8}
-    //           />
-    //         ))}
-    //       </Container>
-    //     );
-    //   },
-    //   onTick: wrapper => {  // to fix pixel width
-    //     const xScale = wrapper.scale.x * wrapper.parent.scale.x;
-    //     for (const rect of wrapper.children[0].children) {
-    //       rect.width = variantWidth / xScale;
-    //     }
-    //   }
-    // },
+*/

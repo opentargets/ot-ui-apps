@@ -43,7 +43,7 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
   );
 });
 
-function Tracks({ tracks, canvasWidth, xMin, xMax, yTrackStarts, _isInner }) {
+function Tracks({ tracks, canvasWidth, xMin, xMax, yTrackStarts, isInner }) {
   const app = useApp();
   const trackContainersRef = useRef([]);  // ref to the wrapper container for each track
 
@@ -68,13 +68,13 @@ function Tracks({ tracks, canvasWidth, xMin, xMax, yTrackStarts, _isInner }) {
           width={px(canvasWidth)}
           height={px(height)}
           y={-yMin * (height / (yMax - yMin)) + yTrackStarts[index]}
-          x={_isInner ? 0 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
+          x={isInner ? 0 : -xMin * (canvasWidth / (xMax - xMin))}  // x-shift is on tracks container if inner
           scale={{ 
-            x: _isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
+            x: isInner ? 1 : canvasWidth / (xMax - xMin),  // x-scale is on tracks container if inner
             y: height / (yMax - yMin),
           }}
         >
-          <Track />
+          <Track isInner={isInner}/>
         </Container>
       ))}
     </>
@@ -175,12 +175,24 @@ function GenTrack({
       {canvasWidth > 0 && (XInfo || XYInfo) && (
         <Box sx={{ display: "flex", columnGap: px(yInfoGap) }}>
           <Box sx={{ height: px(xyInfoHeight), width: px(yInfoWidth) }}>
-            {XYInfo && <XYInfo data={data} />}
+            {XYInfo && <XYInfo data={data} isInner={_isInner} />}
           </Box>
           <Box sx={{ height: px(xyInfoHeight), width: px(canvasWidth) }}>
             {XInfo && (_isInner 
-              ? <NestedXInfo data={data} viewModel={_viewModel} XInfo={XInfo} canvasWidth={canvasWidth} />
-              : <XInfo data={data} start={xMin} end={xMax} canvasWidth={canvasWidth} />
+              ? <NestedXInfo
+                  data={data}
+                  viewModel={_viewModel}
+                  isInner={_isInner}
+                  XInfo={XInfo}
+                  canvasWidth={canvasWidth}
+                />
+              : <XInfo
+                  data={data}
+                  start={xMin}
+                  end={xMax}
+                  isInner={_isInner}
+                  canvasWidth={canvasWidth}
+                />
             )}
           </Box>
         </Box>
@@ -200,7 +212,7 @@ function GenTrack({
           }}>
             {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
               <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
-                <YInfo data={data} start={yMin} end={yMax} />
+                <YInfo data={data} start={yMin} end={yMax} isInner={_isInner}/>
               </Box>
             ))}
           </Box>
@@ -219,7 +231,7 @@ function GenTrack({
                   xMin={xMin}
                   xMax={xMax}
                   yTrackStarts={yTrackStarts}
-                  _isInner={_isInner}
+                  isInner={_isInner}
                 />
               </Container>
             </Stage>

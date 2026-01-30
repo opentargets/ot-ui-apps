@@ -31,6 +31,25 @@ query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
         r2Overall
       }
     }
+    l2GPredictions {
+      count
+      rows {
+        score
+        target {
+          id
+          approvedSymbol
+          genomicLocation {
+            chromosome
+            start
+            end
+          }
+        }
+      }
+    }
   }
 }
+
+
+
+
 
