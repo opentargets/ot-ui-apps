@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useViewerState } from "ui";
 
-function Dropdown({ options, stateProperty, onChange }) {
+function ViewerDropdown({ options, stateProperty, onChange }) {
 
   const viewerState = useViewerState();
 
@@ -41,4 +41,4 @@ function Dropdown({ options, stateProperty, onChange }) {
   );
 }
 
-export default Dropdown;
+export default ViewerDropdown;
