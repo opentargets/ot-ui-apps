@@ -1,14 +1,15 @@
 import type { Locator, Page } from "@playwright/test";
 
 /**
- * Interactor for EVA/ClinVar section on Variant page
+ * Interactor for Pathways section on Target page
+ * Displays Reactome pathway membership
  */
-export class EVASection {
+export class PathwaysSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-eva']");
+    return this.page.locator("[data-testid='section-pathways']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -16,6 +17,7 @@ export class EVASection {
       .isVisible()
       .catch(() => false);
   }
+
   /**
    * Wait for the section to finish loading (no skeleton loaders)
    */
@@ -27,7 +29,7 @@ export class EVASection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-eva']");
+          const sect = document.querySelector("[data-testid='section-pathways']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;
@@ -55,23 +57,44 @@ export class EVASection {
     return tbody.locator("tr").nth(index);
   }
 
-  // Get disease link
-  async getDiseaseLink(rowIndex: number): Promise<Locator> {
+  // Pathway link (Reactome)
+  async getPathwayLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/disease/']");
+    return row.locator("a[href*='reactome']").first();
   }
 
-  async clickDiseaseLink(rowIndex: number): Promise<void> {
-    const link = await this.getDiseaseLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
+  async clickPathwayLink(rowIndex: number): Promise<void> {
+    const link = await this.getPathwayLink(rowIndex);
     await link.click();
   }
 
-  // Get clinical significance
-  async getClinicalSignificance(rowIndex: number): Promise<string | null> {
+  async getPathwayName(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(1);
-    return await cell.textContent();
+    const firstCell = row.locator("td").first();
+    return await firstCell.textContent();
+  }
+
+  // Top-level parent pathway
+  async getTopLevelPathway(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const parentCell = row.locator("td").nth(1);
+    return await parentCell.textContent();
+  }
+
+  // Pathway browser link (opens Reactome browser)
+  async getPathwayBrowserLink(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("a[href*='PathwayBrowser']");
+  }
+
+  async clickPathwayBrowserLink(rowIndex: number): Promise<void> {
+    const link = await this.getPathwayBrowserLink(rowIndex);
+    await link.click();
+  }
+
+  async hasPathwayBrowserLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getPathwayBrowserLink(rowIndex);
+    return await link.isVisible().catch(() => false);
   }
 
   // Global filter/search
