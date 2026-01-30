@@ -4,47 +4,77 @@ This package contains constants, types, and utilities used across the Open Targe
 
 ## GraphQL Types Generation
 
-This package includes automatically generated TypeScript types from the Open Targets Platform GraphQL API.
+This package includes automatically generated TypeScript types from the Open Targets Platform GraphQL API using `@graphql-codegen/cli`.
+
+### Prerequisites
+
+Ensure the `VITE_API_URL` environment variable is set in `apps/platform/.env`. The codegen script uses this URL for GraphQL schema introspection.
 
 ### Generating GraphQL Types
 
 To generate the latest GraphQL types from the Open Targets Platform API:
 
 ```bash
-npm run generate-graphql-types
+yarn generateAPITypes
 ```
 
-This script will:
+This command runs `graphql-codegen --config codegen.ts` which will:
 
-1. Test multiple possible GraphQL endpoints to find a working one
-2. Fetch the complete GraphQL schema using introspection
-3. Generate TypeScript interfaces, enums, and union types
-4. Save the generated types to `src/graphql-types.ts`
+1. Load the GraphQL schema from the API URL specified in `VITE_API_URL`
+2. Scan GraphQL operations from source files across the monorepo
+3. Generate namespaced TypeScript types for each entity
+4. Output type files to `src/types/` directory
+5. Generate schema introspection to `graphql.schema.json`
 
 ### Generated Types
 
-The script generates:
+The codegen generates separate type files for each entity, wrapped in namespaces:
 
-- **Interfaces**: TypeScript interfaces for all GraphQL object and input types
-- **Enums**: TypeScript enums for GraphQL enum types
-- **Union Types**: TypeScript union types for GraphQL union types
-- **Scalar Mappings**: Proper TypeScript type mappings for GraphQL scalars
+| Namespace      | Output File              | Source Documents                           |
+| -------------- | ------------------------ | ------------------------------------------ |
+| `Disease`      | `src/types/disease.ts`   | `packages/sections/src/disease/**`         |
+| `Drug`         | `src/types/drug.ts`      | `packages/sections/src/drug/**`            |
+| `Target`       | `src/types/target.ts`    | `packages/sections/src/target/**`          |
+| `Variant`      | `src/types/variant.ts`   | `packages/sections/src/variant/**`         |
+| `Study`        | `src/types/study.ts`     | `packages/sections/src/study/**`           |
+| `CredibleSet`  | `src/types/credibleSet.ts` | `packages/sections/src/credibleSet/**`   |
+| `Evidence`     | `src/types/evidence.ts`  | `packages/sections/src/evidence/**`        |
+| `Common`       | `src/types/common.ts`    | `packages/sections/src/common/**`          |
+| `Platform`     | `src/types/platform.ts`  | `apps/platform/src/**`                     |
+| `UI`           | `src/types/ui.ts`        | `packages/ui/src/**`                       |
+
+Each file contains:
+
+- **TypeScript interfaces** for GraphQL object and input types
+- **Enums** for GraphQL enum types
+- **Operation types** for queries, mutations, and their variables
 
 ### Usage
 
-The generated types are automatically exported from the main package index and can be imported in other packages:
+Import the namespaced types directly from their type files:
 
 ```typescript
-import { Target, Disease, Drug, Variant } from "@ot/constants";
+import { Disease } from "@ot/constants/src/types/disease";
+import { Drug } from "@ot/constants/src/types/drug";
+import { Target } from "@ot/constants/src/types/target";
+import { Variant } from "@ot/constants/src/types/variant";
+
+// Use types with namespace prefix
+type KnownDrugsData = Disease.KnownDrugsQuery;
+type DrugWarnings = Drug.DrugWarningsQuery;
+type TargetInfo = Target.TargetInfoQuery;
 ```
+
+> **Note:** Due to non-unique GraphQL query names across the codebase, each entity's types are kept in separate files to avoid naming conflicts. Import from the specific type file you need.
 
 ### Manual Updates
 
-If you need to update the types manually:
+If you need to update the types:
 
-1. Run the generation script
-2. Review the generated types in `src/graphql-types.ts`
-3. Commit the changes
+1. Ensure `VITE_API_URL` is correctly set in `apps/platform/.env`
+2. Run `yarn generateAPITypes`
+3. Review the generated types in `src/types/`
+4. Commit the changes
 
 ## Other Exports
 

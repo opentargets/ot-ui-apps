@@ -7,12 +7,16 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 import CREDIBLE_SET_PAGE_QUERY from "./CredibleSetPage.gql";
 import Profile from "./Profile";
+import { Platform } from "@ot/constants";
 
 function CredibleSetPage(): ReactElement {
   const location = useLocation();
   const { studyLocusId } = useParams() as { studyLocusId: string };
 
-  const { loading, data } = useQuery(CREDIBLE_SET_PAGE_QUERY, {
+  const { loading, data } = useQuery<
+    Platform.CredibleSetPageQueryQuery,
+    Platform.CredibleSetPageQueryQueryVariables
+  >(CREDIBLE_SET_PAGE_QUERY, {
     variables: { studyLocusId },
   });
 
@@ -34,10 +38,10 @@ function CredibleSetPage(): ReactElement {
       <>
         <Header
           loading={loading}
-          studyId={studyId}
-          variantId={variantId}
-          referenceAllele={referenceAllele}
-          alternateAllele={alternateAllele}
+          studyId={studyId ?? ""}
+          variantId={variantId ?? ""}
+          referenceAllele={referenceAllele ?? ""}
+          alternateAllele={alternateAllele ?? ""}
         />
         <ScrollToTop />
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
