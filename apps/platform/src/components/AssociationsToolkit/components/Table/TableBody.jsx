@@ -115,9 +115,10 @@ function TableBody({ core, cols, noInteractors }) {
       <div>
         <TableBodyContent prefix={prefix}>
           <RowsContainer>
-            {rows.map(row => (
+            {rows.map((row, index) => (
               <Fragment key={row.id}>
                 <RowContainer
+                  data-testid={`table-row-${prefix.toLowerCase()}-${index}`}
                   interactors={prefix === TABLE_PREFIX.INTERACTORS}
                   rowExpanded={
                     focusState.filter(e => e.row === row.id && e.table === prefix).length > 0

@@ -1,0 +1,253 @@
+import type { Locator, Page } from "@playwright/test";
+
+/**
+ * Shared interactor for GWAS Credible Sets section
+ * Used in both Variant and Study pages
+ */
+export class GWASCredibleSetsSection {
+  constructor(private page: Page) {}
+
+  // Section container
+  getSection(): Locator {
+    return this.page.locator("[data-testid='section-gwas-credible-sets']");
+  }
+
+  /**
+   * Check if section is visible - waits for page loaders first
+   */
+  async isSectionVisible(): Promise<boolean> {
+    // First wait for any page-level skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const skeletons = document.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // No skeletons found
+      });
+
+    // Then check section visibility
+    return await this.getSection()
+      .isVisible()
+      .catch(() => false);
+  }
+
+  /**
+   * Wait for the section to finish loading (no skeleton loaders)
+   */
+  async waitForLoad(): Promise<void> {
+    const section = this.getSection();
+    await section.waitFor({ state: "visible", timeout: 10000 });
+
+    // Wait for skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const sect = document.querySelector("[data-testid='section-gwas-credible-sets']");
+          if (!sect) return false;
+          const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // If no skeletons found, section already loaded
+      });
+  }
+
+  // Table
+  getTable(): Locator {
+    return this.getSection().locator("table");
+  }
+
+  async getTableRows(): Promise<number> {
+    const tbody = this.getTable().locator("tbody");
+    const rows = tbody.locator("tr");
+    return await rows.count();
+  }
+
+  async getTableRow(index: number): Promise<Locator> {
+    const tbody = this.getTable().locator("tbody");
+    return tbody.locator("tr").nth(index);
+  }
+
+  // Credible set link
+  async getCredibleSetLink(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("a[href*='/credible-set/']");
+  }
+
+  async clickCredibleSetLink(rowIndex: number): Promise<void> {
+    const link = await this.getCredibleSetLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
+    // Wait for the element to be visible and stable before clicking
+    await link.waitFor({ state: "visible", timeout: 10000 });
+    await link.click({ force: true });
+  }
+
+  async getCredibleSetId(rowIndex: number): Promise<string | null> {
+    const link = await this.getCredibleSetLink(rowIndex);
+    return await link.textContent();
+  }
+
+  // Lead variant
+  async getLeadVariantLink(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("td").nth(1).locator("a[href*='/variant/']");
+  }
+
+  async hasLeadVariantLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getLeadVariantLink(rowIndex);
+    return await link.isVisible().catch(() => false);
+  }
+
+  async clickLeadVariantLink(rowIndex: number): Promise<void> {
+    const link = await this.getLeadVariantLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+  }
+
+  // Disease links
+  async getDiseaseLinks(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("td").nth(3).locator("a[href*='/disease/']");
+  }
+
+  async getDiseaseLinksCount(rowIndex: number): Promise<number> {
+    const links = await this.getDiseaseLinks(rowIndex);
+    return await links.count();
+  }
+
+  async clickDiseaseLink(rowIndex: number, linkIndex: number = 0): Promise<void> {
+    const links = await this.getDiseaseLinks(rowIndex);
+    const link = links.nth(linkIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+  }
+
+  // Study link
+  async getStudyLink(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("td").nth(4).locator("a[href*='/study/']");
+  }
+
+  async clickStudyLink(rowIndex: number): Promise<void> {
+    const link = await this.getStudyLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+  }
+
+  async getStudyId(rowIndex: number): Promise<string | null> {
+    const link = await this.getStudyLink(rowIndex);
+    return await link.textContent();
+  }
+
+  // L2G gene link
+  async getL2GGeneLink(rowIndex: number): Promise<Locator> {
+    const row = await this.getTableRow(rowIndex);
+    return row.locator("a[href*='/target/']");
+  }
+
+  async hasL2GGeneLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getL2GGeneLink(rowIndex);
+    return await link.isVisible().catch(() => false);
+  }
+
+  async clickL2GGeneLink(rowIndex: number): Promise<void> {
+    const link = await this.getL2GGeneLink(rowIndex);
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+  }
+
+  async getL2GGeneName(rowIndex: number): Promise<string | null> {
+    const link = await this.getL2GGeneLink(rowIndex);
+    return await link.textContent();
+  }
+
+  // Pagination
+  getNextPageButton(): Locator {
+    return this.getSection().locator("button[aria-label='Next Page']");
+  }
+
+  getPreviousPageButton(): Locator {
+    return this.getSection().locator("button[aria-label='Previous Page']");
+  }
+
+  async clickNextPage(): Promise<void> {
+    await this.getNextPageButton().click();
+    await this.waitForLoad();
+  }
+
+  async clickPreviousPage(): Promise<void> {
+    await this.getPreviousPageButton().click();
+    await this.waitForLoad();
+  }
+
+  async isNextPageEnabled(): Promise<boolean> {
+    return await this.getNextPageButton().isEnabled();
+  }
+
+  async isPreviousPageEnabled(): Promise<boolean> {
+    return await this.getPreviousPageButton().isEnabled();
+  }
+
+  // Global filter/search
+  getSearchInput(): Locator {
+    return this.getSection().locator("input[placeholder*='Search']");
+  }
+
+  async search(searchTerm: string): Promise<void> {
+    await this.getSearchInput().fill(searchTerm);
+    await this.waitForLoad();
+  }
+
+  async clearSearch(): Promise<void> {
+    await this.getSearchInput().clear();
+    await this.waitForLoad();
+  }
+
+  // Additional methods for Study page compatibility
+  getSectionHeader(): Locator {
+    return this.page.locator("[data-testid='section-gwas-credible-sets-header']");
+  }
+
+  async getSectionTitle(): Promise<string | null> {
+    return await this.getSectionHeader().textContent();
+  }
+
+  async isTableVisible(): Promise<boolean> {
+    return await this.getTable()
+      .isVisible()
+      .catch(() => false);
+  }
+
+  async getRowCount(): Promise<number> {
+    return await this.getTableRows();
+  }
+
+  async getCellText(rowIndex: number, columnIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const cell = row.locator("td").nth(columnIndex);
+    return await cell.textContent();
+  }
+
+  async getVariantId(rowIndex: number): Promise<string | null> {
+    const link = await this.getLeadVariantLink(rowIndex);
+    return await link.textContent();
+  }
+
+  async clickVariantLink(rowIndex: number): Promise<void> {
+    await this.clickLeadVariantLink(rowIndex);
+  }
+
+  async searchCredibleSet(searchTerm: string): Promise<void> {
+    await this.search(searchTerm);
+  }
+
+  async waitForSectionLoad(): Promise<void> {
+    await this.waitForLoad();
+  }
+}
