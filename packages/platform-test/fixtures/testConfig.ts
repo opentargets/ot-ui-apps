@@ -41,6 +41,11 @@ function getDefaultConfig(): TestConfig {
         alternatives: [],
       },
     },
+    credibleSet: {
+      primary: "1aac7a781b1395adad7daa04e5d13970",
+      withGWASColoc: "8990f5e6515a5e24a3534da8ab339a92",
+      withQTLColoc: "5f4e2f4f4e2f4e2f4e2f4e2f4e2f4e2f",
+    },
   };
 }
 

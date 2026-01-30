@@ -3,13 +3,14 @@ import type { Locator, Page } from "@playwright/test";
 /**
  * Interactor for MolQTL Colocalisation section on Credible Set page
  * Section ID: molqtl_coloc
+ * data-testid: section-molqtl-coloc (underscore replaced with hyphen)
  */
 export class MolQTLColocSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-molqtl_coloc']");
+    return this.page.locator("[data-testid='section-molqtl-coloc']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -29,7 +30,7 @@ export class MolQTLColocSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-molqtl_coloc']");
+          const sect = document.querySelector("[data-testid='section-molqtl-coloc']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;

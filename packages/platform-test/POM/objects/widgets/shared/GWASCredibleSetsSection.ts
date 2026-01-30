@@ -70,7 +70,9 @@ export class GWASCredibleSetsSection {
 
   async getCredibleSetId(rowIndex: number): Promise<string | null> {
     const link = await this.getCredibleSetLink(rowIndex);
-    return await link.textContent();
+    const href = await link.getAttribute("href");
+    // Extract ID from href like "/credible-set/3afad64401516cb9221ad8d17656d547"
+    return href?.split("/credible-set/")[1] || null;
   }
 
   // Lead variant

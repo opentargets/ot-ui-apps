@@ -45,6 +45,11 @@ export interface TestConfig {
       alternatives?: string[];
     };
   };
+  credibleSet?: {
+    primary?: string;
+    withGWASColoc?: string;
+    withQTLColoc?: string; 
+  };
 } /**
  * CSV row structure from Google Sheet
  */

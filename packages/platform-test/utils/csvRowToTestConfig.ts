@@ -44,5 +44,10 @@ export function csvRowToTestConfig(row: CSVRow): TestConfig {
           }
         : undefined,
     },
+    credibleSet: {
+      primary: row.credible_set || undefined,
+      withGWASColoc: row.credible_set_GWAS_coloc || undefined,
+      withQTLColoc: row.credible_set_QTL_coloc || undefined,
+    },
   };
 }

@@ -3,13 +3,14 @@ import type { Locator, Page } from "@playwright/test";
 /**
  * Interactor for Enhancer-to-Gene Predictions section on Credible Set page
  * Section ID: Enhancer_to_gene_predictions
+ * data-testid: section-enhancer-to-gene-predictions (lowercase with hyphens)
  */
 export class CredibleSetEnhancerToGenePredictionsSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-Enhancer_to_gene_predictions']");
+    return this.page.locator("[data-testid='section-enhancer-to-gene-predictions']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -30,7 +31,7 @@ export class CredibleSetEnhancerToGenePredictionsSection {
       .waitForFunction(
         () => {
           const sect = document.querySelector(
-            "[data-testid='section-Enhancer_to_gene_predictions']"
+            "[data-testid='section-enhancer-to-gene-predictions']"
           );
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");

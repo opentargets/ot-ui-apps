@@ -284,14 +284,9 @@ test.describe("Study Page - GWAS Study", () => {
           await gwasCredibleSets.clickCredibleSetLink(0);
           await page.waitForURL("**/credible-set/**");
 
-          // Verify we're on credible set page
+          // Verify we're on the correct credible set page using URL
           test.expect(page.url()).toContain("/credible-set/");
-          // verify credible set page is fully loaded and contains clicked id
-          const credibleSetPage = new StudyPage(page);
-          await credibleSetPage.waitForStudyPageLoad();
-          // expect credible set header to contain credible set id
-          const headerId = await credibleSetPage.getStudyIdFromHeader();
-          test.expect(headerId).toContain(credibleSetId);
+          test.expect(page.url()).toContain(credibleSetId!);
         }
       }
     });

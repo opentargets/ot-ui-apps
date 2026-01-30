@@ -58,7 +58,7 @@ export class CredibleSetPage {
 
   // Header elements
   getHeader(): Locator {
-    return this.page.locator("[data-testid='profile-page-header']");
+    return this.page.locator("[data-testid='profile-page-header-block']");
   }
 
   async isHeaderVisible(): Promise<boolean> {

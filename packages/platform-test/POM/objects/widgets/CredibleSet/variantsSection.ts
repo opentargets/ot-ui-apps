@@ -1,16 +1,16 @@
 import type { Locator, Page } from "@playwright/test";
 
 /**
- * Interactor for GWAS Colocalisation section on Credible Set page
- * Section ID: gwas_coloc
- * data-testid: section-gwas-coloc (underscore replaced with hyphen)
+ * Interactor for Credible Set Variants section on Credible Set page
+ * Section ID: variants
+ * data-testid: section-variants
  */
-export class GWASColocSection {
+export class CredibleSetVariantsSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-gwas-coloc']");
+    return this.page.locator("[data-testid='section-variants']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -30,7 +30,7 @@ export class GWASColocSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-gwas-coloc']");
+          const sect = document.querySelector("[data-testid='section-variants']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;
@@ -64,123 +64,90 @@ export class GWASColocSection {
     return tbody.locator("tr").nth(index);
   }
 
-  // Credible set link (Navigate component)
-  async getCredibleSetLink(rowIndex: number): Promise<Locator> {
-    const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/credible-set/']");
-  }
-
-  async clickCredibleSetLink(rowIndex: number): Promise<void> {
-    const link = await this.getCredibleSetLink(rowIndex);
-    await link.click();
-  }
-
-  async hasCredibleSetLink(rowIndex: number): Promise<boolean> {
-    const link = await this.getCredibleSetLink(rowIndex);
-    return await link.isVisible().catch(() => false);
-  }
-
-  // Study link
-  async getStudyLink(rowIndex: number): Promise<Locator> {
-    const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/study/']");
-  }
-
-  async clickStudyLink(rowIndex: number): Promise<void> {
-    const link = await this.getStudyLink(rowIndex);
-    await link.click();
-  }
-
-  async getStudyId(rowIndex: number): Promise<string | null> {
-    const link = await this.getStudyLink(rowIndex);
-    return await link.textContent();
-  }
-
-  async hasStudyLink(rowIndex: number): Promise<boolean> {
-    const link = await this.getStudyLink(rowIndex);
-    return await link.isVisible().catch(() => false);
-  }
-
-  // Lead variant link
-  async getLeadVariantLink(rowIndex: number): Promise<Locator> {
+  // Variant link
+  async getVariantLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
     return row.locator("a[href*='/variant/']");
   }
 
-  async clickLeadVariantLink(rowIndex: number): Promise<void> {
-    const link = await this.getLeadVariantLink(rowIndex);
+  async clickVariantLink(rowIndex: number): Promise<void> {
+    const link = await this.getVariantLink(rowIndex);
     await link.click();
   }
 
-  async hasLeadVariantLink(rowIndex: number): Promise<boolean> {
-    const link = await this.getLeadVariantLink(rowIndex);
+  async getVariantId(rowIndex: number): Promise<string | null> {
+    const link = await this.getVariantLink(rowIndex);
+    return await link.textContent();
+  }
+
+  async hasVariantLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getVariantLink(rowIndex);
     return await link.isVisible().catch(() => false);
   }
 
-  // Reported trait
-  async getReportedTrait(rowIndex: number): Promise<string | null> {
+  // Lead variant badge
+  async isLeadVariant(rowIndex: number): Promise<boolean> {
     const row = await this.getTableRow(rowIndex);
-    // Reported trait is typically in column 2 (0-indexed)
+    const leadBadge = row.locator("text=lead");
+    return await leadBadge.isVisible().catch(() => false);
+  }
+
+  // P-value
+  async getPValue(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    const cell = row.locator("td").nth(1);
+    return await cell.textContent();
+  }
+
+  // Beta
+  async getBeta(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
     const cell = row.locator("td").nth(2);
     return await cell.textContent();
   }
 
-  // First author
-  async getFirstAuthor(rowIndex: number): Promise<string | null> {
+  // Standard error
+  async getStandardError(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
-    // First author is typically in column 3 (0-indexed)
     const cell = row.locator("td").nth(3);
     return await cell.textContent();
   }
 
-  // P-Value
-  async getPValue(rowIndex: number): Promise<string | null> {
+  // LD (r²)
+  async getLDR2(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
-    // P-Value column index may vary
+    const cell = row.locator("td").nth(4);
+    return await cell.textContent();
+  }
+
+  // Posterior Probability
+  async getPosteriorProbability(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
     const cell = row.locator("td").nth(5);
     return await cell.textContent();
   }
 
-  // Colocalising variants count
-  async getColocalisingVariantsCount(rowIndex: number): Promise<string | null> {
+  // log(BF)
+  async getLogBF(rowIndex: number): Promise<string | null> {
     const row = await this.getTableRow(rowIndex);
     const cell = row.locator("td").nth(6);
     return await cell.textContent();
   }
 
-  // Colocalisation method
-  async getColocalisationMethod(rowIndex: number): Promise<string | null> {
+  // Predicted consequence link
+  async getPredictedConsequenceLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(7);
-    return await cell.textContent();
+    return row.locator("a[href*='identifiers.org/SO']");
   }
 
-  // Directionality
-  async getDirectionality(rowIndex: number): Promise<string | null> {
-    const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(8);
-    return await cell.textContent();
+  async getPredictedConsequence(rowIndex: number): Promise<string | null> {
+    const link = await this.getPredictedConsequenceLink(rowIndex);
+    return await link.textContent();
   }
 
-  // H3 value
-  async getH3(rowIndex: number): Promise<string | null> {
-    const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(9);
-    return await cell.textContent();
-  }
-
-  // H4 value
-  async getH4(rowIndex: number): Promise<string | null> {
-    const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(10);
-    return await cell.textContent();
-  }
-
-  // CLPP value
-  async getCLPP(rowIndex: number): Promise<string | null> {
-    const row = await this.getTableRow(rowIndex);
-    const cell = row.locator("td").nth(11);
-    return await cell.textContent();
+  async hasPredictedConsequenceLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getPredictedConsequenceLink(rowIndex);
+    return await link.isVisible().catch(() => false);
   }
 
   // Cell text by column index
@@ -232,12 +199,18 @@ export class GWASColocSection {
     return await this.getPreviousPageButton().isEnabled();
   }
 
-  // Data downloader
-  getDataDownloaderButton(): Locator {
-    return this.getSection().locator("button[aria-label*='download']");
+  // Column visibility button
+  getColumnsButton(): Locator {
+    return this.getSection().locator("button:has-text('Columns')");
   }
 
-  async clickDataDownloader(): Promise<void> {
-    await this.getDataDownloaderButton().click();
+  // Export button
+  getExportButton(): Locator {
+    return this.getSection().locator("button:has-text('Export')");
+  }
+
+  // API query button
+  getAPIQueryButton(): Locator {
+    return this.getSection().locator("button:has-text('API query')");
   }
 }
