@@ -1,0 +1,15 @@
+[
+  {
+    "type": "widget",
+    "entity": "target",
+    "name": "TestWidget",
+    "path": "packages/sections/src/target/TestWidget",
+    "id": "testWidget",
+    "displayName": "Test Widget",
+    "sources": {
+      "index": "export const definition = {\n  id: 'testWidget',\n  name: 'Test Widget',\n  shortName: 'TW',\n  hasData: (data) => data.testWidget?.count > 0,\n};\n\nexport { default as Summary } from './Summary';\nexport const getBodyComponent = () => lazy(() => import('./Body'));",
+      "Body": "import { useQuery } from '@apollo/client';\nimport { SectionItem, DataTable, Link } from 'ui';\nimport Description from './Description';\nimport TEST_WIDGET_QUERY from './TestWidgetQuery.gql';\n\nconst columns = [\n  { id: 'name', label: 'Name' },\n  { id: 'score', label: 'Score', numeric: true },\n  { id: 'source', label: 'Source' },\n];\n\nfunction Body({ definition, id, label }) {\n  const request = useQuery(TEST_WIDGET_QUERY, { variables: { ensemblId: id } });\n  return (\n    <SectionItem\n      definition={definition}\n      request={request}\n      renderDescription={() => <Description symbol={label} />}\n      renderBody={(data) => {\n        const rows = data.target.testWidget.rows;\n        return <DataTable columns={columns} rows={rows} />;\n      }}\n    />\n  );\n}\n\nexport default Body;",
+      "Summary": "import { usePlatformApi } from 'hooks/usePlatformApi';\nimport { SummaryItem } from 'ui';\nimport TEST_WIDGET_SUMMARY from './TestWidgetSummaryFragment.gql';\n\nfunction Summary({ definition }) {\n  const request = usePlatformApi(TEST_WIDGET_SUMMARY);\n  return (\n    <SummaryItem\n      definition={definition}\n      request={request}\n      renderSummary={(data) => data.testWidget.count + ' entries'}\n    />\n  );\n}\n\nSummary.fragments = { TestWidgetSummaryFragment: TEST_WIDGET_SUMMARY };\nexport default Summary;"
+    }
+  }
+]

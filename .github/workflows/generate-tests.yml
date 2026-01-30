@@ -1,0 +1,93 @@
+name: "Auto-Generate Tests for New Widgets"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'packages/sections/src/**'
+      - 'apps/platform/src/pages/**'
+
+jobs:
+  detect-and-generate:
+    name: Detect New Widgets & Generate Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Fetch main branch for comparison
+        run: git fetch origin main:main
+
+      - name: Detect new widgets and pages
+        id: detect
+        run: node ${{ github.workspace }}/.github/scripts/detect-new-widgets.js
+        env:
+          GITHUB_BASE_REF: main
+
+      - name: Generate tests and interactors
+        if: steps.detect.outputs.has_new_widgets == 'true'
+        run: node ${{ github.workspace }}/.github/scripts/generate-tests.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          NEW_WIDGETS_JSON: ${{ steps.detect.outputs.new_widgets }}
+
+      - name: Check for generated files
+        id: check_files
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changed files:"
+            git status --porcelain
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit generated files
+        if: steps.check_files.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add ${{ github.workspace }}/packages/platform-test/
+          git commit -m "🤖 Auto-generated tests, interactors, and fixture updates for new widgets"
+          git push
+
+      - name: Comment on PR
+        if: steps.check_files.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const newWidgets = JSON.parse(process.env.NEW_WIDGETS_JSON || '[]');
+            const widgetList = newWidgets.map(w => `- **${w.name}** (${w.entity})`).join('\n');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🤖 Auto-Generated Tests & Interactors\n\nI detected the following new widgets/sections and generated tests for them:\n\n${widgetList}\n\n### Generated Files:\n- Interactors in \`packages/platform-test/POM/objects/widgets/\`\n- Test specs in \`packages/platform-test/e2e/pages/\`\n- Fixture updates in \`packages/platform-test/fixtures/testConfig.ts\`\n\n> **Note:** Please review the generated tests and adjust as needed. The LLM-generated code may require fine-tuning based on actual component behavior and data availability.`
+            });
+        env:
+          NEW_WIDGETS_JSON: ${{ steps.detect.outputs.new_widgets }}
+
+      - name: No new widgets detected
+        if: steps.detect.outputs.has_new_widgets != 'true'
+        run: echo "No new widgets or pages detected in this PR."
