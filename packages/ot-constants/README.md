@@ -15,7 +15,7 @@ Ensure the `VITE_API_URL` environment variable is set in `apps/platform/.env`. T
 To generate the latest GraphQL types from the Open Targets Platform API:
 
 ```bash
-yarn codegen
+yarn generateAPITypes
 ```
 
 This command runs `graphql-codegen --config codegen.ts` which will:
@@ -72,7 +72,7 @@ type TargetInfo = Target.TargetInfoQuery;
 If you need to update the types:
 
 1. Ensure `VITE_API_URL` is correctly set in `apps/platform/.env`
-2. Run `yarn codegen`
+2. Run `yarn generateAPITypes`
 3. Review the generated types in `src/types/`
 4. Commit the changes
 
