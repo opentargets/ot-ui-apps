@@ -13,7 +13,7 @@ test.describe("Home page actions", () => {
     let searchInput: Locator;
 
     test.beforeEach(async ({ page, baseURL }) => {
-      await page.goto(baseURL!);
+      await page.goto(baseURL ?? "/");
       await page.getByTestId("global-search-input-trigger").click();
 
       // Verify that the global search input is rendered

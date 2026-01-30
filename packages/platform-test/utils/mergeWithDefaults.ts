@@ -63,10 +63,8 @@ export function mergeWithDefaults(fetched: TestConfig, defaults: TestConfig): Te
     },
     credibleSet: {
       primary: fetched.credibleSet?.primary || defaults.credibleSet?.primary,
-      withGWASColoc:
-        fetched.credibleSet?.withGWASColoc || defaults.credibleSet?.withGWASColoc,
-      withQTLColoc:
-        fetched.credibleSet?.withQTLColoc || defaults.credibleSet?.withQTLColoc,
+      withGWASColoc: fetched.credibleSet?.withGWASColoc || defaults.credibleSet?.withGWASColoc,
+      withQTLColoc: fetched.credibleSet?.withQTLColoc || defaults.credibleSet?.withQTLColoc,
     },
   };
 }

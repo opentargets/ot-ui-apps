@@ -1,6 +1,6 @@
 import Papa from "papaparse";
-import { csvRowToTestConfig } from "./csvRowToTestConfig";
 import type { CSVRow, TestConfig } from "../types";
+import { csvRowToTestConfig } from "./csvRowToTestConfig";
 
 /**
  * Fetch test configuration from Google Sheet CSV URL

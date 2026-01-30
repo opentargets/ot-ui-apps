@@ -25,6 +25,7 @@ export const test = base.extend<TestFixtures>({
     const config = await getTestConfig();
     await use(config);
   },
+  // biome-ignore lint/correctness/noEmptyPattern: <an object pattern is required by playwright config empty or not>
   baseURL: async ({}, use) => {
     const url = process.env.PLAYWRIGHT_TEST_BASE_URL || DEFAULT_BASE_URL;
     await use(url);

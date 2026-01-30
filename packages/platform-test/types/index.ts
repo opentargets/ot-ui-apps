@@ -48,7 +48,7 @@ export interface TestConfig {
   credibleSet?: {
     primary?: string;
     withGWASColoc?: string;
-    withQTLColoc?: string; 
+    withQTLColoc?: string;
   };
 } /**
  * CSV row structure from Google Sheet

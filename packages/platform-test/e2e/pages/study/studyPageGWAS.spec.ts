@@ -286,7 +286,7 @@ test.describe("Study Page - GWAS Study", () => {
 
           // Verify we're on the correct credible set page using URL
           test.expect(page.url()).toContain("/credible-set/");
-          test.expect(page.url()).toContain(credibleSetId!);
+          test.expect(page.url()).toContain(credibleSetId);
         }
       }
     });

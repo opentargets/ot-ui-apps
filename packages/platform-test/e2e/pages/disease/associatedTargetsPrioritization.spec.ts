@@ -4,7 +4,7 @@ import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
 
 test.describe("Disease Page - AOTF Prioritization", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
-     //if no disease id, skip all tests
+    //if no disease id, skip all tests
     if (!testConfig.disease.primary) {
       test.skip();
     }
