@@ -14,7 +14,7 @@ import summaryStyles from "./summaryStyles";
 import { createShortName } from "./utils";
 import PartnerLockIcon from "../PartnerLockIcon";
 
-function SummaryItem({ definition, request, subText }) {
+function SummaryItem<T>({ definition, request, subText }: { definition: any; request: { loading: boolean; error?: any; data: T }; subText?: React.ReactNode }) {
   const classes = summaryStyles();
   const { loading, error, data } = request;
   const shortName = createShortName(definition);

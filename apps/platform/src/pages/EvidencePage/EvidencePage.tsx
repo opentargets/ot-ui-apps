@@ -7,14 +7,15 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
 import EVIDENCE_PAGE_QUERY from "./EvidencePageQuery.gql";
+import { Platform } from "@ot/constants";
 
 import Profile from "./Profile";
 
 function EvidencePage() {
   const location = useLocation();
-  const { ensgId, efoId } = useParams();
-  const { loading, data } = useQuery(EVIDENCE_PAGE_QUERY, {
-    variables: { ensgId, efoId },
+  const { ensgId, efoId } = useParams<{ ensgId: string; efoId: string }>();
+  const { loading, data } = useQuery<Platform.EvidencePageQueryQuery, Platform.EvidencePageQueryQueryVariables>(EVIDENCE_PAGE_QUERY, {
+    variables: { ensgId: ensgId!, efoId: efoId! },
   });
 
   if (data && !(data.target && data.disease)) {
@@ -30,9 +31,11 @@ function EvidencePage() {
       description={`${symbol} is associated with ${name} through Open Targets Platform evidence that is aggregated from genetic evidence, somatic mutations, known drugs, differential expression experiments, pathways & systems biology, text mining, and animal model data sources`}
       location={location}
     >
-      <Header loading={loading} efoId={efoId} ensgId={ensgId} symbol={symbol} name={name} />
+      <>
+      <Header loading={loading}  symbol={symbol} name={name} />
       <ScrollToTop />
-      <Profile ensgId={ensgId} efoId={efoId} symbol={symbol} name={name} />
+      <Profile ensgId={ensgId!} efoId={efoId!} symbol={symbol!} name={name!} />
+      </>
     </BasePage>
   );
 }
