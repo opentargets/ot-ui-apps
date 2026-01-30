@@ -34,6 +34,7 @@ function GlobalSearchEntityFilter() {
               <>
                 <Checkbox
                   checked={getAllFilter()}
+                  role=""
                   onChange={onAllFilterClick}
                   inputProps={{ "aria-label": "controlled" }}
                   size="small"
@@ -103,6 +104,7 @@ function GlobalSearchEntityFilter() {
                       checked={value}
                       onChange={e => handleChangeFilter(key, e)}
                       inputProps={{ "aria-label": "controlled" }}
+                      data-testid={`entity-filter-${key.toLowerCase()}`}
                       size="small"
                       icon={
                         <Chip
