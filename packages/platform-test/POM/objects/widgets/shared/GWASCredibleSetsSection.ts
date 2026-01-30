@@ -12,24 +12,7 @@ export class GWASCredibleSetsSection {
     return this.page.locator("[data-testid='section-gwas-credible-sets']");
   }
 
-  /**
-   * Check if section is visible - waits for page loaders first
-   */
   async isSectionVisible(): Promise<boolean> {
-    // First wait for any page-level skeleton loaders to disappear
-    await this.page
-      .waitForFunction(
-        () => {
-          const skeletons = document.querySelectorAll(".MuiSkeleton-root");
-          return skeletons.length === 0;
-        },
-        { timeout: 15000 }
-      )
-      .catch(() => {
-        // No skeletons found
-      });
-
-    // Then check section visibility
     return await this.getSection()
       .isVisible()
       .catch(() => false);
@@ -82,15 +65,14 @@ export class GWASCredibleSetsSection {
 
   async clickCredibleSetLink(rowIndex: number): Promise<void> {
     const link = await this.getCredibleSetLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
-    // Wait for the element to be visible and stable before clicking
-    await link.waitFor({ state: "visible", timeout: 10000 });
-    await link.click({ force: true });
+    await link.click();
   }
 
   async getCredibleSetId(rowIndex: number): Promise<string | null> {
     const link = await this.getCredibleSetLink(rowIndex);
-    return await link.textContent();
+    const href = await link.getAttribute("href");
+    // Extract ID from href like "/credible-set/3afad64401516cb9221ad8d17656d547"
+    return href?.split("/credible-set/")[1] || null;
   }
 
   // Lead variant
@@ -106,7 +88,6 @@ export class GWASCredibleSetsSection {
 
   async clickLeadVariantLink(rowIndex: number): Promise<void> {
     const link = await this.getLeadVariantLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -123,9 +104,7 @@ export class GWASCredibleSetsSection {
 
   async clickDiseaseLink(rowIndex: number, linkIndex: number = 0): Promise<void> {
     const links = await this.getDiseaseLinks(rowIndex);
-    const link = links.nth(linkIndex);
-    await link.scrollIntoViewIfNeeded();
-    await link.click();
+    await links.nth(linkIndex).click();
   }
 
   // Study link
@@ -136,7 +115,6 @@ export class GWASCredibleSetsSection {
 
   async clickStudyLink(rowIndex: number): Promise<void> {
     const link = await this.getStudyLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -158,7 +136,6 @@ export class GWASCredibleSetsSection {
 
   async clickL2GGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getL2GGeneLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
