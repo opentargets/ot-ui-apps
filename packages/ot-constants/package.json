@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "codegen": "graphql-codegen --config codegen.ts",
+    "generateAPITypes": "graphql-codegen --config codegen.ts",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format .",

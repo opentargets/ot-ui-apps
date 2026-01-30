@@ -14,7 +14,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:no-cache": "turbo run build --parallel --no-cache",
-    "codegen": "turbo run codegen",
+    "generateAPITypes": "turbo run generateAPITypes",
     "dev": "turbo run dev --parallel",
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
