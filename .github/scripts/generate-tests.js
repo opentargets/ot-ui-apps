@@ -403,17 +403,7 @@ function applyFixtureUpdates(fixtureUpdates) {
   return null;
 }
 
-  const response = await callClaude(systemPrompt, userPrompt);
-  
-  // Extract code from response
-  let code = response;
-  const codeMatch = response.match(/```typescript\n([\s\S]*?)```/);
-  if (codeMatch) {
-    code = codeMatch[1];
-  }
-  
-  return code.trim();
-}
+
 
 /**
  * Write generated files to disk
@@ -548,7 +538,7 @@ async function main() {
   }
 
   // Summary
-  console.log('\n' + '='.repeat(50));
+  console.log(`\n${'='.repeat(50)}`);
   console.log('📊 Generation Summary');
   console.log('='.repeat(50));
   
