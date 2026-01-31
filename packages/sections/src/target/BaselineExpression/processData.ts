@@ -5,9 +5,6 @@ export function processData(
 ) {
   const [topLevelName, otherName] = groupByTissue ? ["tissue", "celltype"] : ["celltype", "tissue"];
 
-  // !! REMOVE !!
-  window.data = data;
-
   data = structuredClone(data);
 
   const firstLevel = []; // array of data rows - unique parent biosample ids
@@ -16,7 +13,7 @@ export function processData(
 
   // 2nd and 3rd levels
   for (const row of data) {
-    const topLevelBiosampleId = row[`${topLevelName}Biosample`]?.biosampleId; // the 2nd level id!
+    const topLevelBiosampleId = row[`${topLevelName}Biosample`]?.biosampleId;
     const otherBiosampleId = row[`${otherName}Biosample`]?.biosampleId;
     if (!topLevelBiosampleId) continue;
     if (!otherBiosampleId) {
@@ -105,6 +102,9 @@ export function processData(
         // also add first level name and id within per-datatype objects
         firstLevelRow[datatypeId]._firstLevelName ??= biosampleParent.biosampleName;
         firstLevelRow[datatypeId]._firstLevelId ??= biosampleParent.biosampleId;
+
+        // units are same within a column
+        firstLevelRow[datatypeId].unit ??= row.unit;
 
         // distribution score - same for all 2nd-level entries with same datatype
         firstLevelRow[datatypeId].distribution_score ??= row.distribution_score;

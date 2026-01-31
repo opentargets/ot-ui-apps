@@ -111,6 +111,7 @@ function SwissBioVis({ locationIds, taxonId, sourceId, hoveredCellPart, setHover
 
   return (
     <Box
+        data-testid="subcellular-visualization"
         sx={{
           flexGrow: 1,
           maxWidth: "600px",
@@ -120,7 +121,7 @@ function SwissBioVis({ locationIds, taxonId, sourceId, hoveredCellPart, setHover
         }}
       >
         {message && <Message text={message} />}
-      <Box ref={wrapperRef} />
+      <Box data-testid="subcellular-cell-diagram" ref={wrapperRef} />
     </Box>
   );
 }
