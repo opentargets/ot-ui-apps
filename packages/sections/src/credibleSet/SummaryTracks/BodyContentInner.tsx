@@ -6,9 +6,8 @@ import {
   useGenTrackTooltipDispatch,
   useGenTrackTooltipState
 } from "ui";
-import { Container, Sprite, Graphics, ParticleContainer, Text  } from '@pixi/react';
+import { Container, Sprite, Graphics, Text  } from '@pixi/react';
 import {
-  Graphics as PixiGraphics,
   Sprite as PixiSprite,
   Text as PixiText,
   TextStyle,
@@ -16,11 +15,10 @@ import {
 import { Box, Typography } from "@mui/material";
 import {
   Rectangle,
-  useRectangleTexture,
   useCircleTexture,
   useRingTexture,
 } from "ui/src/components/GenTrack/shapes";
-import { schemePaired, scaleLinear, axisTop, select, max } from "d3";
+import { scaleLinear, axisTop, select, max, sum } from "d3";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -120,6 +118,38 @@ function tickScaleFactory(filterActionPairs) {
   };
 }
 
+function sumInclusiveIntervals(intervals) {
+  const events = new Map();
+
+  for (const { start, end, score } of intervals) {
+    // interval is [start, end] inclusive
+    events.set(start, (events.get(start) || 0) + score);
+    events.set(end + 1, (events.get(end + 1) || 0) - score);
+  }
+
+  const positions = [...events.keys()].sort((a, b) => a - b);
+
+  const result = [];
+  let totalScore = 0;
+
+  for (const pos of positions) {
+    const delta = events.get(pos);
+    const nextTotal = totalScore + delta;
+
+    // only emit when score changes
+    if (result.length === 0 || nextTotal !== totalScore) {
+      result.push({
+        position: pos,
+        totalScore: nextTotal
+      });
+    }
+
+    totalScore = nextTotal;
+  }
+
+  return result;
+}
+
 function BodyContentInner() {
 
   const genTrackState = useGenTrackState();
@@ -128,10 +158,12 @@ function BodyContentInner() {
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
   const variantWidth = 10;
+  const yGridDenominator = 50;
+  const yGridColor = 0xbbbbbb;
   const circleTrackHeight = 30;
   const labelColor = 0x222222;
   const tracks = [];
-    
+
   // fixed-circle size variants
   tracks.push({
     id: `variants`,
@@ -150,9 +182,9 @@ function BodyContentInner() {
       const ringTexture = useRingTexture(32, 10);
       const circleTexture = useCircleTexture(32);
       
-      const draw = useCallback((g) => {
+      const drawHLine = useCallback((g) => {
         g.clear();
-        g.lineStyle(2, 0xaaaaaa, 1);
+        g.lineStyle(100 / yGridDenominator, yGridColor, 1);
         g.moveTo(xMin, 50);
         g.lineTo(xMax, 50);
       }, [xMin, xMax]);
@@ -161,7 +193,7 @@ function BodyContentInner() {
         <Container>
 
           {/* horizontal line */}
-          <Graphics draw={draw} />
+          <Graphics draw={drawHLine} />
           
           {/* all variants */}
           {data.locus.rows.map(({ variant }, i) => (
@@ -228,24 +260,11 @@ function BodyContentInner() {
     ])
   });
 
-
-  //   onTick: wrapper => {
-  //     const xScale = wrapper.scale.x * wrapper.parent.scale.x;
-  //     const yScale = wrapper.scale.y * wrapper.parent.scale.y;
-  //     for (const obj of wrapper.children[0].children) {
-  //       // if (obj instanceof PixiGraphics) continue;
-  //       if (obj instanceof PixiText) {
-  //         obj.scale.x = 1 / xScale;
-  //         obj.scale.y = 1 / yScale;
-  //       } else if (obj instanceof PixiSprite) {
-  //         obj.width = variantWidth / xScale;
-  //       }
-  //     }
-  //   },
-  // });
-
-
   // genes and L2G scores
+  const geneLookup = {};
+  for (const [i, { target }] of data.l2GPredictions.rows.entries()) {
+    geneLookup[target.id] = { symbol: target.approvedSymbol, color: geneScheme[i] };
+  }
   if (data.l2GPredictions.count) {
     tracks.push({
       id: `genes`,
@@ -260,11 +279,11 @@ function BodyContentInner() {
           </Typography>
         </Box>
       ),
-      Track: ({ isInner }) => {
+      Track: () => {
 
-        const draw = useCallback((g) => {
+        const drawHLine = useCallback((g) => {
           g.clear();
-          g.lineStyle(2, 0xaaaaaa, 1);
+          g.lineStyle(100 / yGridDenominator, yGridColor, 1);
           g.moveTo(xMin, 50);
           g.lineTo(xMax, 50);
         }, [xMin, xMax]);
@@ -273,7 +292,7 @@ function BodyContentInner() {
           <Container>
 
             {/* horizontal line */}
-            <Graphics draw={draw} />
+            <Graphics draw={drawHLine} />
             
             {/* genes - use graphics objects since not many */}
             {data.l2GPredictions.rows.map(({ score, target }, i) => {
@@ -320,6 +339,121 @@ function BodyContentInner() {
     });
   }
 
+  // enhancer-to-gene
+  if (data.variant.intervals.count > 0) {
+    const enhancersByGene = Object.groupBy(data.variant.intervals.rows, row => row.target.id);
+    const distributionByGene = {};
+    // console.log(enhancersByGene);
+    for (const [geneId, enhancers] of Object.entries(enhancersByGene)) {
+      distributionByGene[geneId] = sumInclusiveIntervals(enhancers);
+    }
+    const maxTotalScores = [];
+    for (const [geneId, distribution] of Object.entries(distributionByGene)) {
+      maxTotalScores.push({
+        geneId,
+        maxTotalScore: max(distribution, d => d.totalScore)
+      });
+    }
+    maxTotalScores.sort((a, b) => b.maxTotalScore - a.maxTotalScore);
+    const maxTotal = maxTotalScores[0].maxTotalScore;
+    for (const { geneId } of maxTotalScores) {
+      const distribution = distributionByGene[geneId];
+      tracks.push({
+        id: `e2g-${geneId}`,
+        height: 30,
+        paddingTop: 16,
+        yMin: 0,
+        yMax: maxTotal,
+        YInfo: () => (
+          <Box sx={infoStyle}> 
+            <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+              {geneLookup[geneId].symbol} enhancers
+            </Typography>
+          </Box>
+        ),
+        Track: () => {
+
+          const drawHLine = useCallback((g) => {
+            g.clear();
+            g.lineStyle(maxTotal / yGridDenominator, yGridColor, 1);
+            g.moveTo(xMin, maxTotal - (maxTotal / yGridDenominator) / 2);  // shift up by 1/2 line width since at bottom
+            g.lineTo(xMax, maxTotal - (maxTotal / yGridDenominator) / 2 );
+          }, [xMin, xMax]);
+
+          const drawDistribution = useCallback((g) => {
+            g.clear();
+            g.beginFill(geneLookup[geneId].color, 0.75);
+
+            // move to baseline start
+            g.moveTo(distribution[0].position, maxTotal);
+
+            // draw top line
+            for (const { position, totalScore } of distribution) {
+              g.lineTo(position, maxTotal - totalScore);
+            }
+
+            // close shape back to baseline
+            g.lineTo(distribution.at(-1).position, maxTotal);
+            g.closePath();
+
+            g.endFill();
+          }, [xMin, xMax]);
+
+          return (
+            <Container>
+
+              {/* horizontal line */}
+              <Graphics draw={drawHLine} />
+
+              {/* enhancer distribution */}
+              <Graphics draw={drawDistribution} />
+
+            </Container>
+          );
+        },
+      });
+    }
+  }
+
+  // mol-QTL
+  if (data.molqtlcolocalisation.count > 0) {
+    const qtlsByPosition = Object.groupBy(
+      data.molqtlcolocalisation.rows,
+      d => d.otherStudyLocus.variant.position
+    );
+    const qtlsAggregated = [];
+    for (const [position, positionGroup] of Object.entries(qtlsByPosition)) {
+      const groupByGene = [...Map.groupBy(positionGroup, obj => obj.otherStudyLocus.study.target.id)];
+      let dominantGeneId = null;
+      let dominantGeneClpp = -Infinity;
+      for (const [geneId, geneGroup] of groupByGene) {
+        const geneClpp = sum(geneGroup, obj => obj.clpp);
+        if (geneClpp > dominantGeneClpp) {
+          dominantGeneId = geneId;
+          dominantGeneClpp = geneClpp;
+        }
+      }
+      const summedClpp = sum(positionGroup, obj => obj.clpp)
+      const direction = sum(positionGroup, ({ clpp, betaRatioSignAverage }) => {
+        const wt = betaRatioSignAverage > 0 ? 1 : (betaRatioSignAverage < 0 ? -1 : 0);
+        return clpp * wt;
+      });
+      const isTrans = sum(positionGroup, obj => {
+        const { isTransQtl } = obj.otherStudyLocus;
+        return (isTransQtl ? 1 : -1) * obj.clpp;  // !! ASSUMES FALSY MEANS CIS - IS THIS CORRECT OR CAN HAVE NULL?
+      });
+      qtlsAggregated.push({
+        position,
+        summedClpp,
+        direction,
+        dominantGeneId,
+        isTrans, 
+      });
+    }
+    console.log(qtlsAggregated)
+    !!!! NOW PLOT !!!!!!
+  }
+
   return (
     <Box sx={{mr: 3}}>
       <GenTrack
@@ -342,13 +476,23 @@ export default BodyContentInner;
 
 /*
 TO DO:
-
+- getting error for many ssets, e.g d75d13864ef5532c8f5bbe7c8334c99e
+- why gene sometimes has no label? e.g. credible-set/4a5402cdec4ba249d1e6c944803950d5
+- abstrct repeated code in to functions, inc:
+  - draw functions for graphics (e.g. horizontal line)
+- e2g
+  - are we guaranteed that all genes that have enhancers assigend to them are in the L2G track?
+  - smooth the enhancer distributions? - e.g. bezier and may also need to look at Pixi options like resolutin so
+    actually displayed smoothly
+  - what if a very narrow spike? - is it visible?
+- should show intros and exons on genes? - do we have them?
 - get x-limits from all data - not just variants + padding
 - give labels (partic e.g. gene: L2G score) a background so clear when over lap
+- l2g scores: make highest bold
 - make scaling for fixed pixel size or text aspect rario efficient - only scale on init,
   canvas width changes and x-limit changes
     - since use a factory function, can store canvasWidth, xMin, xMax and return early if
       no change
-
-
+- inner track showing bases: base color (when not at too high a range) and base letter (when zoomed closer)? 
+  - what is the gene is on the other strand? - if not shwoing this info base info poss useless/misleading?
 */

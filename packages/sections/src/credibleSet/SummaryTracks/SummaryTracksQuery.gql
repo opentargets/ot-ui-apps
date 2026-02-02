@@ -1,11 +1,52 @@
 query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
+    molqtlcolocalisation: colocalisation(
+        studyTypes: [scsqtl, sceqtl, scpqtl, sctuqtl, sqtl, eqtl, pqtl, tuqtl]
+        page: { size: $size, index: $index }
+    ) {
+      count
+      rows {
+        otherStudyLocus {
+          studyLocusId
+          isTransQtl
+          study {
+            id
+            studyType
+            target {
+              approvedSymbol
+              id
+            }
+          }
+          variant {
+            id
+            chromosome
+            position
+          }
+        }
+        colocalisationMethod
+        clpp
+        betaRatioSignAverage
+      }
+    }
     variant {
       id
       chromosome
       position
       referenceAllele
       alternateAllele
+      intervals(page: { size: 3000, index: 0 }) {  # E2G
+        count
+        rows {
+          chromosome
+          start
+          end
+          target {
+            id
+            approvedSymbol
+          }
+          score
+        }
+      }
     }
     studyLocusId
     locus(page: { size: $size, index: $index }) {
