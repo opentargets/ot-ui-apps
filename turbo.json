@@ -37,6 +37,13 @@
     "build-ppp": {
       "dependsOn": ["^build"],
       "outputs": ["bundle-platform/**"]
+    },
+    "docs:widgets": {
+      "outputs": ["docs/widgets-api/**"]
+    },
+    "docs:widgets:serve": {
+      "cache": false,
+      "persistent": true
     }
   }
 }
