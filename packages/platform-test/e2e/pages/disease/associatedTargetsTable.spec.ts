@@ -1,11 +1,11 @@
 import { test } from "../../../fixtures";
+import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import {
   AotfInteractors,
   InteractorsSource,
 } from "../../../POM/objects/widgets/AOTF/aotfInteractors";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
-import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection/evidenceSection";
 
 test.describe("Disease Page - AOTF Table", () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
@@ -323,7 +323,7 @@ test.describe("Disease Page - Target Interactors", () => {
 
     // Filter out non-evidence columns
     const nonEvidenceColumns = ["score"];
-    const cellsToTest = dataCells.filter(cell => !nonEvidenceColumns.includes(cell.columnId));
+    const cellsToTest = dataCells.filter((cell) => !nonEvidenceColumns.includes(cell.columnId));
 
     if (cellsToTest.length === 0) {
       test.skip(true, `Interactor ${interactorName} has no evidence data cells`);
