@@ -1,0 +1,5 @@
+query RecordDetailQuery($chemblId: String!) {
+  drug(chemblId: $chemblId) {
+    id  # !! UPDATE ONCE HAVE API !!
+  }
+}

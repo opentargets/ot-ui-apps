@@ -309,7 +309,7 @@ function OtTable({
               table.setPageSize(Number(e.target.value));
             }}
           >
-            {[10, 25, 100].map(pageSize => (
+            {[5, 10, 25, 100].map(pageSize => (  // !! CHANGE BACK TO NO 5 !!
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>

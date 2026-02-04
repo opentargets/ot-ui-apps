@@ -14,7 +14,6 @@ import { makeStyles } from "@mui/styles";
 import { faXmark, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "@ot/constants";
-// import PublicationWrapper from "./PublicationWrapper";
 import { OtTable } from "ui";
 import { sentenceCase } from "@ot/utils";
 
