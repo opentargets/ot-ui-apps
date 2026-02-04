@@ -1,4 +1,10 @@
-import { type Action, ActionType, type AssociationsState } from "./types";
+import {
+  type Action,
+  ActionType,
+  type AnalysisInputs,
+  type AnalysisRun,
+  type AssociationsState,
+} from "./types";
 
 export function setModalOpen(modalOpen: boolean): Action {
   return {
@@ -37,5 +43,43 @@ export function fetchLibrariesFailure(error: string): Action {
   return {
     type: ActionType.FETCH_LIBRARIES_FAILURE,
     error,
+  };
+}
+
+export function setAnalysisInputs(inputs: Partial<AnalysisInputs>): Action {
+  return {
+    type: ActionType.SET_ANALYSIS_INPUTS,
+    payload: inputs,
+  };
+}
+
+export function addRun(run: AnalysisRun): Action {
+  return {
+    type: ActionType.ADD_RUN,
+    payload: run,
+  };
+}
+
+export function updateRun(
+  id: string,
+  updates: Partial<Omit<AnalysisRun, "id">>
+): Action {
+  return {
+    type: ActionType.UPDATE_RUN,
+    payload: { id, ...updates },
+  };
+}
+
+export function setActiveRun(id: string | null): Action {
+  return {
+    type: ActionType.SET_ACTIVE_RUN,
+    payload: id,
+  };
+}
+
+export function deleteRun(id: string): Action {
+  return {
+    type: ActionType.DELETE_RUN,
+    payload: id,
   };
 }

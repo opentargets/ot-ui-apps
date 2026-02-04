@@ -11,7 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { Link } from "ui";
 import { setModalOpen } from "./actions";
-import GeneEnrichmentAnalysisForm from "./GeneEnrichmentAnalysisForm";
+import AnalysisContainer from "./components/AnalysisContainer";
 import { useGeneEnrichment } from "./Provider";
 
 interface GeneEnrichmentAnalysisModalProps {
@@ -68,7 +68,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
             Read more details here.
           </Link>
         </Typography>
-        {children || <GeneEnrichmentAnalysisForm />}
+        {children || <AnalysisContainer />}
       </DialogContent>
       <DialogActions>
         {/* You could add dialog action buttons here if needed, or leave blank for now */}

@@ -21,6 +21,13 @@ export const initialState: State = {
     pinnedEntities: [],
     uploadedEntities: [],
   },
+  analysisInputs: {
+    selectedLibrary: "",
+    geneSetSource: "all",
+    analysisDirection: "one_sided_positive",
+  },
+  runs: [],
+  activeRunId: null,
 };
 
 /*****************
@@ -67,6 +74,44 @@ export function geneEnrichmentReducer(state: State = initialState, action: Actio
         ...state,
         librariesError: action.error,
         librariesLoading: false,
+      };
+    }
+    case ActionType.SET_ANALYSIS_INPUTS: {
+      return {
+        ...state,
+        analysisInputs: {
+          ...state.analysisInputs,
+          ...action.payload,
+        },
+      };
+    }
+    case ActionType.ADD_RUN: {
+      return {
+        ...state,
+        runs: [...state.runs, action.payload],
+        activeRunId: action.payload.id,
+      };
+    }
+    case ActionType.UPDATE_RUN: {
+      const { id, ...updates } = action.payload;
+      return {
+        ...state,
+        runs: state.runs.map((run) => (run.id === id ? { ...run, ...updates } : run)),
+      };
+    }
+    case ActionType.SET_ACTIVE_RUN: {
+      return {
+        ...state,
+        activeRunId: action.payload,
+      };
+    }
+    case ActionType.DELETE_RUN: {
+      const newRuns = state.runs.filter((run) => run.id !== action.payload);
+      return {
+        ...state,
+        runs: newRuns,
+        // Clear activeRunId if the deleted run was active
+        activeRunId: state.activeRunId === action.payload ? null : state.activeRunId,
       };
     }
     default: {
