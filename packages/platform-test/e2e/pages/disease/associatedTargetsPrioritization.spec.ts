@@ -2,7 +2,7 @@ import { test } from "../../../fixtures";
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
 
-test.describe("Disease Page - AOTF Prioritization", () => {
+test.describe("Disease Page - AOTF Prioritization", { tag: "@smoke" }, () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
     await page.goto(`${baseURL}/disease/${testConfig.disease.primary}/associations`);
   });
