@@ -126,9 +126,9 @@ function IndicationsTable({
 
   return (
     <>
-      <Typography variant="body1" gutterBottom>
+      {/* <Typography variant="body1" gutterBottom>
         Clinical Indications
-      </Typography>
+      </Typography> */}
       <OtTable
         showGlobalFilter
         columns={columns}

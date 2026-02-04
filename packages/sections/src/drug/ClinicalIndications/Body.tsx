@@ -12,6 +12,7 @@ import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
 import { definition } from ".";
 import IndicationsTable from "./IndicationsTable";
 import RecordsTable from "./RecordsTable";
+import RecordsCards from "./RecordsCards";
 
 function Body({ id: chemblId, label: name, entity }) {
   const variables = { chemblId };
@@ -33,7 +34,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => {
         return (
-          <Grid container spacing={10}>
+          <Grid container spacing={8}>
             {/* LHS table */}
             <Grid item xs={12} md={6}>
               {rows?.length > 0 && (  
@@ -51,7 +52,8 @@ function Body({ id: chemblId, label: name, entity }) {
             {/* RHS table */}
             <Grid item xs={12} md={6}>
               {records && (
-                <RecordsTable selectedDisease={selectedDisease} records={records}/>
+                // <RecordsTable selectedDisease={selectedDisease} records={records}/>
+                <RecordsCards selectedDisease={selectedDisease} records={records}/>
               )}
             </Grid>
           </Grid>
