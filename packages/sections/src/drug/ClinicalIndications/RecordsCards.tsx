@@ -1,11 +1,10 @@
-
-import { OtTable, useApolloClient } from "ui";
+import { useState, useEffect } from "react";
+import { OtTable, useApolloClient, Link} from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   IconButton,
   Drawer,
-  Link,
   Typography,
   Paper,
   ButtonBase,
@@ -13,9 +12,10 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faPlay, faXmark, faPlusCircle, faChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { defaultRowsPerPageOptions } from "@ot/constants";
+import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
+import StageFilter from "./StageFilter";
 
 const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -50,8 +50,8 @@ const columns = [
       const diseaseIds = [...new Set(diseases.filter(d => d.diseaseId).map(d => d.diseaseId))];
 
       return (
-        <Box sx={{ mb: 1 }}>
-          <Link external="true" to={url} sx={{textDecoration: "none"}}>
+        <Box sx={{ mb: 0.5 }}>
+          <Link external="true" to={url}>
             <Box sx={{ display: "flex", width: "100%" }}>
               <Typography
                 variant={"subtitle1"}
@@ -77,7 +77,7 @@ const columns = [
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", mt: 0.15, alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+          <Box sx={{ display: "flex", mt: -0.15, alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Box sx={{ display: "flex", width: "150px", alignItems: "baseline", gap: 0.5 }}>
                 <Typography variant="caption">
@@ -119,6 +119,20 @@ const columns = [
   }
 ];
 
+function getMaxStage(records) {
+  let maxIndex = -Infinity;
+  let maxStage;
+  for (const stage of Object.keys(records)) {
+    const index = clinicalStageCategories[stage].index;
+    if (index > maxIndex) {
+      maxIndex = index;
+      maxStage = stage;
+    }
+  }
+  // console.log({ index: maxIndex, stage: maxStage })
+  return { index: maxIndex, stage: maxStage };
+}
+
 function selectRecord({ recordId }) {
   // !! ONCE HAVE API, USE getRecordDetail TO FETCH THE RECORD DETAILS
   console.log("open detail modal!")
@@ -131,27 +145,55 @@ function RecordsCards({
   // variables,
   // loading,
 }) {
-
   const client = useApolloClient();
+  const [selectedStage, setSelectedStage] = useState({});
+  
+  useEffect(() => {
+    if (records && Object.keys(records).length > 0) {
+      setSelectedStage(getMaxStage(records));
+    }
+  }, [records]);
+
+  // if (!records || Object.keys(records).length === 0) return null;
+  if (!selectedStage?.stage) return null;
 
   return (
     <>
-      <Typography variant="body1" gutterBottom>
+      {/* <Typography variant="body1" gutterBottom>
         Records for {selectedDisease}
-      </Typography>
-        <Box sx={{ '& thead': { display: 'none' } }}>
+      </Typography> */}
+        <StageFilter
+          records={records}
+          setSelectedStage={setSelectedStage}
+          selectedStage={selectedStage}
+        />
+        <Box
+          sx={{
+            mr: 4,
+            mt: 0.5,
+            "& thead": { display: 'none' },
+            "& tr": {
+              padding: "0 !important",
+              ":hover": {bgcolor: "transparent"}
+            },
+            "& td": {
+              padding: "0 !important",
+              ":hover": {bgcolor: "transparent"}
+            },
+          }}
+        >
           <OtTable
             // showGlobalFilter
             columns={columns}
-            rows={records}
+            rows={records[selectedStage.stage]}
             // dataDownloader
-            // dataDownloaderFileStem="clinical-records"
+            // dataDownloaderFileStem="clinical-records"`
             // fixed
             noWrapHeader={false}
             rowsPerPageOptions={defaultRowsPerPageOptions}
             // loading={loading}
             showGlobalFilter={false}
-            hover
+            // hover={false}
             showColumnVisibilityControl={false}
           />
         </Box>

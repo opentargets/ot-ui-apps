@@ -99,12 +99,13 @@ function selectRecords({ setSelectedDisease, setRecords, row }) {
   // !! ONCE HAVE API, USE getRecords AND CLINICAL_RECORDS_QUERY HERE TO FETCH FROM API
   setSelectedDisease(row.diseaseName);
   const recordsData = row.clinicalReportIds
-  .map((reportId: any) => {
-    const record = clinicalRecordsData.find((r: any) => r.id === reportId);
-    return record ? { ...record } : null;
-  })
-  .filter((r: any) => r !== null);
-  setRecords(recordsData);
+    .map((reportId: any) => {
+      const record = clinicalRecordsData.find((r: any) => r.id === reportId);
+      return record ? { ...record } : null;
+    })
+    .filter((r: any) => r !== null);
+  const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStatus);
+  setRecords(groupedRecordsData);
 }
 
 function IndicationsTable({

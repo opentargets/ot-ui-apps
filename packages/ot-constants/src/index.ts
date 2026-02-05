@@ -349,6 +349,23 @@ export const getGenomicLocation = (
     Math.sign(genomicLocation?.strand ?? 1) === 1 ? "+" : "-"
   }`;
 };
+
+export const clinicalStageCategories = {
+  UNKNOWN: { index: 0, label: "Unknown" },
+  PRECLINICAL: { index: 1, label: "Preclinical" },
+  IND: { index: 2, label: "Ind" },
+  EARLY_PHASE_1: { index: 3, label: "Early phase 1" },
+  PHASE_1: { index: 4, label: "Phase 1" },
+  PHASE_1_2: { index: 5, label: "Phase 1-2" },
+  PHASE_2: { index: 6, label: "Phase 2" },
+  PHASE_2_3: { index: 7, label: "Phase 2-3" },
+  PHASE_3: { index: 8, label: "Phase 3" },
+  PREAPPROVAL: { index: 9, label: "Preapproval" },
+  PHASE_4: { index: 10, label: "Phase 4" },
+  APPROVED: { index: 11, label: "Approved" },
+  WITHDRAWN: { index: 12, label: "Withdrawn" },
+};
+
 export * from "./alphaFold";
 export * from "./dataTypes";
 export * from "./particlesBackground";

@@ -1,10 +1,12 @@
-
+import { useState, useEffect } from "react";
+import { Box } from "@mui/material";
 import { OtTable, useApolloClient } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Typography } from "@mui/material";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import { defaultRowsPerPageOptions } from "@ot/constants";
+import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
+import StageFilter from "./StageFilter";
 
 const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -112,6 +114,20 @@ const columns = [
   },
 ];
 
+function getMaxStage(records) {
+  let maxIndex = -Infinity;
+  let maxStage;
+  for (const stage of Object.keys(records)) {
+    const index = clinicalStageCategories[stage].index;
+    if (index > maxIndex) {
+      maxIndex = index;
+      maxStage = stage;
+    }
+  }
+  // console.log({ index: maxIndex, stage: maxStage })
+  return { index: maxIndex, stage: maxStage };
+}
+
 function selectRecord({ recordId }) {
   // !! ONCE HAVE API, USE getRecordDetail TO FETCH THE RECORD DETAILS
   console.log("open detail modal!")
@@ -126,24 +142,39 @@ function RecordsTable({
 }) {
 
   const client = useApolloClient();
+  const [selectedStage, setSelectedStage] = useState({});
+
+  useEffect(() => {
+    if (records && Object.keys(records).length > 0) {
+      setSelectedStage(getMaxStage(records));
+    }
+  }, [records]);
 
   return (
     <>
-      <Typography variant="body1" gutterBottom>
-        Records for {selectedDisease}
-      </Typography>
-      <OtTable
-        // showGlobalFilter
-        columns={columns}
-        rows={records}
-        dataDownloader
-        dataDownloaderFileStem="clinical-records"
-        // fixed
-        noWrapHeader={false}
-        rowsPerPageOptions={defaultRowsPerPageOptions}
-        // loading={loading}
-        hover
-      />
+      <Box sx={{ ml: 1 }}>
+        <StageFilter
+          records={records}
+          setSelectedStage={setSelectedStage}
+          selectedStage={selectedStage}
+        />
+      </Box>
+      <Box sx={{position: "relative", top: "-12px"}}>
+        <OtTable
+          // showGlobalFilter
+          columns={columns}
+          rows={records[selectedStage.stage]}
+          // dataDownloader
+          dataDownloaderFileStem="clinical-records"
+          // fixed
+          noWrapHeader={false}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
+          showColumnVisibilityControl={false}
+          showGlobalFilter={false}
+          // loading={loading}
+          hover
+        />
+      </Box>
     </>
   );
 }
