@@ -3,15 +3,18 @@ import type { AnalysisDirection, Gene } from "../types";
 const GSEA_API_BASE_URL = "http://127.0.0.1:8000/api/gsea";
 
 export interface GseaResult {
-  term: string;
-  es: number;
-  nes: number;
-  pval: number;
-  fdr: number;
-  geneset_size: number;
-  matched_size: number;
-  genes: string[];
-  // Add other fields as needed based on actual API response
+  ID: string;
+  Pathway: string;
+  ES: number;
+  NES: number;
+  FDR: number;
+  "p-value": number;
+  "Sidak's p-value"?: number;
+  "Pathway size": number;
+  "Number of input genes": number;
+  "Leading edge genes": string; // comma-separated string
+  Link?: string;
+  "Parent pathway"?: string;
 }
 
 export interface GseaAnalyzeResponse {

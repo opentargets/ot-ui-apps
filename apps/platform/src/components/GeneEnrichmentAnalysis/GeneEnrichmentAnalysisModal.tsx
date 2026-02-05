@@ -25,14 +25,23 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
     dispatch(setModalOpen(false));
   };
 
+  // Check if we have results to show (active run with complete status)
+  const activeRun = state.activeRunId
+    ? state.runs.find((run) => run.id === state.activeRunId)
+    : null;
+  const hasResults = activeRun?.status === "complete" && activeRun.results.length > 0;
+
   return (
     <Dialog
       onClose={handleClose}
       open={state.modalOpen}
+      maxWidth={hasResults ? false : "md"}
+      fullWidth
       sx={{
         ".MuiDialog-paper": {
-          // width: "70%",
-          minWidth: "800px !important",
+          minWidth: hasResults ? "90vw" : "800px",
+          maxWidth: hasResults ? "95vw" : undefined,
+          height: hasResults ? "90vh" : "auto",
           borderRadius: (theme) => `${theme.spacing(1)} !important`,
         },
       }}
