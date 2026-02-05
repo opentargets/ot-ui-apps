@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Box, Button, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { faTableColumns, faSitemap } from "@fortawesome/free-solid-svg-icons";
+import { faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { useState } from "react";
 import type { GseaResult } from "../api/gseaApi";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
@@ -31,7 +31,7 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mb: 2,
+          mb: 6,
         }}
       >
         <Box>
@@ -52,10 +52,6 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
               Tree View
             </ToggleButton>
           </ToggleButtonGroup>
-
-          <Button variant="outlined" size="small" onClick={onReset}>
-            New Analysis
-          </Button>
         </Box>
       </Box>
 
