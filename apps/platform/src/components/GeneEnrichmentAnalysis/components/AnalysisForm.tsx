@@ -88,7 +88,7 @@ function AnalysisForm({
           disabled={!analysisInputs.selectedLibrary}
           sx={{ width: "50%" }}
         >
-          Run enrichment analysis
+          Run Gene Set Enrichment Analysis
         </Button>
       </Box>
     </Box>

@@ -49,7 +49,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
       <DialogTitle
         sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 2 }}
       >
-        Gene Enrichment Analysis
+        Gene Set Enrichment Analysis (GSEA)
         <IconButton
           onClick={handleClose}
           size="small"
@@ -68,7 +68,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           variant="subtitle2"
           gutterBottom
         >
-          Help text
+          Identifying overrepresented biological pathways and functional categories in ranked lists of disease-associated genes.
           <br />
           <Link
             to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
