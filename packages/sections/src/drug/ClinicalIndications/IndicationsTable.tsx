@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, PaginationActionsComplete, OtTable, useApolloClient } from "ui";
 import { Typography } from "@mui/material";
-import { defaultRowsPerPageOptions } from "@ot/constants";
+import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
+import StageFilter from "./StageFilter";
 
 const getRecords = (client, query, chemblId) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -18,6 +19,14 @@ const getRecords = (client, query, chemblId) =>   // WILL NEED TO PUT ACTUAL PAR
 const onLinkClick = (e: any) => {
   e.stopPropagation();
 };
+
+function stageAndRecordCountComparator(a, b) {
+  if (a.maxClinicalStatus === b.maxClinicalStatus) {
+    return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
+  }
+  return clinicalStageCategories[a.maxClinicalStatus]?.index -
+    clinicalStageCategories[b.maxClinicalStatus]?.index;
+}
 
 const columns = [
   {
@@ -39,11 +48,10 @@ const columns = [
         </Link>
       </Typography>
     ),
-    width: "35%",
   },
   {
-    id: "maxClinicalStatus",
-    label: "Max status",
+    id: "maxClinicalStage",
+    label: "Max stage",
     renderCell: ({ maxClinicalStatus }: any) => (
       <Typography
         sx={{
@@ -55,33 +63,15 @@ const columns = [
         }}
         title={maxClinicalStatus}
       >
-        {maxClinicalStatus}
+        {clinicalStageCategories[maxClinicalStatus].label}
       </Typography>
     ),
-    width: "25%",
+    sortable: true,
+    comparator: stageAndRecordCountComparator,
   },
   {
-    id: "mappingConfidence",
-    label: "Mapping",
-    renderCell: ({ mappingConfidence }: any) => (
-      <Typography
-        sx={{
-          maxWidth: "120px",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "14px",
-        }}
-        title={mappingConfidence}
-      >
-        {mappingConfidence}
-      </Typography>
-    ),
-    width: "20%",
-  },
-  {
-    id: "records",
-    label: "Records",
+    id: "reports",
+    label: "Reports",
     renderCell: ({ clinicalReportIds }: any) => (
       <>
         {clinicalReportIds.length}
@@ -90,14 +80,17 @@ const columns = [
         </span>
       </>
     ),
+    numeric: true,
     exportValue: (row: any) => row.clinicalReportIds.length,
-    width: "20%",
+    sortable: true,
+    comparator: (a, b) => {
+      return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
+    }
   },
 ];
 
-function selectRecords({ setSelectedDisease, setRecords, row }) {
+function selectRecords({ setRecords, row }) {
   // !! ONCE HAVE API, USE getRecords AND CLINICAL_RECORDS_QUERY HERE TO FETCH FROM API
-  setSelectedDisease(row.diseaseName);
   const recordsData = row.clinicalReportIds
     .map((reportId: any) => {
       const record = clinicalRecordsData.find((r: any) => r.id === reportId);
@@ -110,7 +103,6 @@ function selectRecords({ setSelectedDisease, setRecords, row }) {
 
 function IndicationsTable({
   rows,
-  setSelectedDisease,
   setRecords,
   query,
   variables,
@@ -119,31 +111,23 @@ function IndicationsTable({
 
   const client = useApolloClient();
 
-  useEffect(() => {
-    if (rows?.length > 0) {
-      selectRecords({ setSelectedDisease, setRecords, row: rows[0] });
-    }
-  }, [rows, setSelectedDisease, setRecords]);
+  // always use sorted rows from this point - avoids issues with selecting initial row
+  const sortedRows = rows.toSorted(stageAndRecordCountComparator).reverse();
 
   return (
     <>
-      {/* <Typography variant="body1" gutterBottom>
-        Clinical Indications
-      </Typography> */}
       <OtTable
         showGlobalFilter
         columns={columns}
-        rows={rows}
+        rows={sortedRows}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
-        // getSelectedRows={a => console.log(a)}
+        showColumnVisibilityControl={false}
         getSelectedRows={rowsInfo => {
           if (!(rowsInfo?.length > 0)) return;
-          selectRecords({ setSelectedDisease, setRecords, row: rows[rowsInfo[0].index] })
+          selectRecords({ setRecords, row: sortedRows[rowsInfo[0].index] })
         }}
         onPagination={a => console.log(a)}
-        // hover
-        // selected
         // onRowClick={row => selectRecords({ setSelectedDisease, setRecords, row })}
         // rowIsSelectable
         // fixed
@@ -166,6 +150,8 @@ function IndicationsTable({
         loading={loading}
         query={query}
         variables={variables}
+        sortBy="maxClinicalStage"
+        order="desc"
       />
     </>
   );

@@ -17,9 +17,6 @@ import RecordsCards from "./RecordsCards";
 function Body({ id: chemblId, label: name, entity }) {
   const variables = { chemblId };
   const request = useQuery(CLINICAL_INDICATIONS_QUERY, { variables });
-
-  // disease of selected row in first table
-  const [selectedDisease, setSelectedDisease] = useState("");
   
   // records to be showing in 2nd table
   const [records, setRecords] = useState([]);
@@ -36,11 +33,10 @@ function Body({ id: chemblId, label: name, entity }) {
         return (
           <Grid container spacing={8}>
             {/* LHS table */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               {rows?.length > 0 && (  
                 <IndicationsTable
                   rows={rows}
-                  setSelectedDisease={setSelectedDisease}
                   setRecords={setRecords}
                   query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
                   variables={variables}
@@ -50,10 +46,9 @@ function Body({ id: chemblId, label: name, entity }) {
             </Grid>
 
             {/* RHS table */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={7}>
               {records && (
-                // <RecordsTable selectedDisease={selectedDisease} records={records}/>
-                <RecordsCards selectedDisease={selectedDisease} records={records}/>
+                <RecordsCards records={records}/>
               )}
             </Grid>
           </Grid>

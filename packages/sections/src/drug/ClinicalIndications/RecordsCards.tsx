@@ -139,7 +139,6 @@ function selectRecord({ recordId }) {
 }
 
 function RecordsCards({
-  selectedDisease,
   records,
   // query,
   // variables,
@@ -159,9 +158,6 @@ function RecordsCards({
 
   return (
     <>
-      {/* <Typography variant="body1" gutterBottom>
-        Records for {selectedDisease}
-      </Typography> */}
         <StageFilter
           records={records}
           setSelectedStage={setSelectedStage}
