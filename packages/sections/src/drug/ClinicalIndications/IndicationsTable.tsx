@@ -68,6 +68,7 @@ const columns = [
     ),
     sortable: true,
     comparator: stageAndRecordCountComparator,
+    filterValue: row => clinicalStageCategories[row.maxClinicalStatus]?.label,
   },
   {
     id: "reports",
@@ -110,6 +111,7 @@ function IndicationsTable({
 }) {
 
   const client = useApolloClient();
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
 
   // always use sorted rows from this point - avoids issues with selecting initial row
   const sortedRows = rows.toSorted(stageAndRecordCountComparator).reverse();
@@ -125,7 +127,11 @@ function IndicationsTable({
         showColumnVisibilityControl={false}
         getSelectedRows={rowsInfo => {
           if (!(rowsInfo?.length > 0)) return;
-          selectRecords({ setRecords, row: sortedRows[rowsInfo[0].index] })
+          const newIndex = rowsInfo[0].index;
+          if (newIndex !== selectedRowIndex) {  // avoids render loop from calling setRecords unnecessarily
+            setSelectedRowIndex(newIndex);
+            selectRecords({ setRecords, row: sortedRows[newIndex] });
+          }
         }}
         onPagination={a => console.log(a)}
         // onRowClick={row => selectRecords({ setSelectedDisease, setRecords, row })}
