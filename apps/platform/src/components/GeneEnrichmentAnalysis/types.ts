@@ -22,6 +22,7 @@ export enum ActionType {
  ***************/
 export interface AssociationsState {
   efoId: string;
+  efoName: string;
   filter: string;
   sortBy: string;
   enableIndirect: boolean;

@@ -11,6 +11,7 @@ export const initialState: State = {
   librariesError: null,
   associationsState: {
     efoId: "",
+    efoName: "",
     filter: "",
     sortBy: "",
     entitySearch: "",
@@ -43,6 +44,8 @@ export function geneEnrichmentReducer(state: State = initialState, action: Actio
       return {
         ...state,
         modalOpen: action.modalOpen,
+        // Clear activeRunId when opening modal so form is shown first
+        activeRunId: action.modalOpen ? null : state.activeRunId,
       };
     }
     case ActionType.RESET_STATE: {

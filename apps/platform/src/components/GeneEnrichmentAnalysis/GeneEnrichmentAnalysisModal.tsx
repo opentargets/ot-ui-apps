@@ -1,13 +1,6 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 import { Link } from "ui";
 import { setModalOpen } from "./actions";
@@ -25,31 +18,34 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
     dispatch(setModalOpen(false));
   };
 
-  // Check if we have results to show (active run with complete status)
-  const activeRun = state.activeRunId
-    ? state.runs.find((run) => run.id === state.activeRunId)
-    : null;
-  const hasResults = activeRun?.status === "complete" && activeRun.results.length > 0;
-
   return (
     <Dialog
       onClose={handleClose}
       open={state.modalOpen}
-      maxWidth={hasResults ? false : "md"}
+      maxWidth={false}
       fullWidth
+      disableScrollLock={false}
       sx={{
         ".MuiDialog-paper": {
-          minWidth: hasResults ? "90vw" : "800px",
-          maxWidth: hasResults ? "95vw" : undefined,
-          height: hasResults ? "90vh" : "auto",
+          width: "85vw",
+          maxWidth: "95vw",
+          height: "90vh",
           borderRadius: (theme) => `${theme.spacing(1)} !important`,
         },
       }}
     >
       <DialogTitle
-        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 2 }}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          py: 2,
+          px: 3,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+        }}
       >
-        Gene Enrichment Analysis
+        <Box>Gene Enrichment Analysis</Box>
         <IconButton
           onClick={handleClose}
           size="small"
@@ -62,26 +58,21 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           <FontAwesomeIcon icon={faXmark} />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers>
-        <Typography
-          sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
-          variant="subtitle2"
-          gutterBottom
-        >
-          Help text
-          <br />
-          <Link
-            to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
-            external
-          >
-            Read more details here.
-          </Link>
-        </Typography>
+      <DialogContent sx={{ p: 0, display: "flex", flexDirection: "column" }}>
+        <Box sx={{ px: 3, py: 2.5, borderBottom: "1px solid", borderColor: "divider" }}>
+          <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+            Identify enriched biological pathways from your gene associations using Gene Set
+            Enrichment Analysis (GSEA).{" "}
+            <Link
+              to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
+              external
+            >
+              Read more details here.
+            </Link>
+          </Typography>
+        </Box>
         {children || <AnalysisContainer />}
       </DialogContent>
-      <DialogActions>
-        {/* You could add dialog action buttons here if needed, or leave blank for now */}
-      </DialogActions>
     </Dialog>
   );
 }

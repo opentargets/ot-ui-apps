@@ -82,7 +82,16 @@ function AnalysisContainer() {
     if (isLoading) {
       return (
         <Box
-          sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2, p: 4 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            p: 4,
+            flex: 1,
+            height: "100%",
+          }}
         >
           <CircularProgress />
           <Typography>{STEP_MESSAGES[step]}</Typography>
@@ -93,7 +102,18 @@ function AnalysisContainer() {
     // Error state
     if (step === "error") {
       return (
-        <Box sx={{ p: 2, textAlign: "center" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 2,
+            textAlign: "center",
+            flex: 1,
+            height: "100%",
+          }}
+        >
           <Typography color="error" sx={{ mb: 2 }}>
             {error}
           </Typography>
@@ -136,7 +156,9 @@ function AnalysisContainer() {
           onNewAnalysis={handleNewAnalysis}
         />
       )}
-      <Box sx={{ flex: 1, overflow: "auto" }}>{renderMainContent()}</Box>
+      <Box sx={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column" }}>
+        {renderMainContent()}
+      </Box>
     </Box>
   );
 }

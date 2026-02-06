@@ -1,12 +1,13 @@
-import { faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useState } from "react";
 import type { GseaResult } from "../api/gseaApi";
+import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
 
-type ViewMode = "table" | "tree";
+type ViewMode = "table" | "tree" | "sunburst";
 
 interface AnalysisResultsProps {
   results: GseaResult[];
@@ -25,13 +26,17 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
   const significantCount = results.filter((r) => r.FDR < 0.05).length;
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", flex: 1 }}>
+      {/* Fixed header */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mb: 6,
+          p: 2,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          flexShrink: 0,
         }}
       >
         <Box>
@@ -49,14 +54,22 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
             </ToggleButton>
             <ToggleButton value="tree">
               <FontAwesomeIcon icon={faSitemap} style={{ marginRight: 6 }} />
-              Tree View
+              Tree
+            </ToggleButton>
+            <ToggleButton value="sunburst">
+              <FontAwesomeIcon icon={faCircle} style={{ marginRight: 6 }} />
+              Sunburst
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
       </Box>
 
-      {viewMode === "table" && <ResultsTable results={results} />}
-      {viewMode === "tree" && <ResultsTreeView results={results} />}
+      {/* Scrollable content */}
+      <Box sx={{ flex: 1, overflow: "auto", p: 2 }}>
+        {viewMode === "table" && <ResultsTable results={results} />}
+        {viewMode === "tree" && <ResultsTreeView results={results} />}
+        {viewMode === "sunburst" && <ResultsSunburst results={results} />}
+      </Box>
     </Box>
   );
 }
