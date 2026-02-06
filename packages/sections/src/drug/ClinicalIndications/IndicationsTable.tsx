@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { Link, PaginationActionsComplete, OtTable, useApolloClient } from "ui";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
+
 import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 import StageFilter from "./StageFilter";
@@ -14,7 +15,7 @@ const getRecords = (client, query, chemblId) =>   // WILL NEED TO PUT ACTUAL PAR
     variables: {
       chemblId,  // ... AND USE THE PARAMETERS HERE
     },
-});
+  });
 
 const onLinkClick = (e: any) => {
   e.stopPropagation();
@@ -27,68 +28,6 @@ function stageAndRecordCountComparator(a, b) {
   return clinicalStageCategories[a.maxClinicalStatus]?.index -
     clinicalStageCategories[b.maxClinicalStatus]?.index;
 }
-
-const columns = [
-  {
-    id: "diseaseId",
-    label: "Indication",
-    renderCell: ({ diseaseName, diseaseId }: any) => (
-      <Typography
-        sx={{
-          maxWidth: "120px",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "14px",
-        }}
-        title={diseaseName}
-      >
-        <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
-          {diseaseName}
-        </Link>
-      </Typography>
-    ),
-  },
-  {
-    id: "maxClinicalStage",
-    label: "Max stage",
-    renderCell: ({ maxClinicalStatus }: any) => (
-      <Typography
-        sx={{
-          maxWidth: "120px",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          fontSize: "14px",
-        }}
-        title={maxClinicalStatus}
-      >
-        {clinicalStageCategories[maxClinicalStatus].label}
-      </Typography>
-    ),
-    sortable: true,
-    comparator: stageAndRecordCountComparator,
-    filterValue: row => clinicalStageCategories[row.maxClinicalStatus]?.label,
-  },
-  {
-    id: "reports",
-    label: "Reports",
-    renderCell: ({ clinicalReportIds }: any) => (
-      <>
-        {clinicalReportIds.length}
-        <span className="selected-evidence">
-          <FontAwesomeIcon icon={faPlay} />
-        </span>
-      </>
-    ),
-    numeric: true,
-    exportValue: (row: any) => row.clinicalReportIds.length,
-    sortable: true,
-    comparator: (a, b) => {
-      return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
-    }
-  },
-];
 
 function selectRecords({ setRecords, row }) {
   // !! ONCE HAVE API, USE getRecords AND CLINICAL_RECORDS_QUERY HERE TO FETCH FROM API
@@ -111,26 +50,125 @@ function IndicationsTable({
 }) {
 
   const client = useApolloClient();
-  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
 
-  // always use sorted rows from this point - avoids issues with selecting initial row
-  const sortedRows = rows.toSorted(stageAndRecordCountComparator).reverse();
+  // always use copied, sorted rows from this point - avoids issues with selecting initial row
+
+  const sortedRows = useMemo(() => {
+    return structuredClone(rows).sort(stageAndRecordCountComparator).reverse();
+  }, [rows]);  // Only depend on rows, not selectedRowIndex
+
+  const displayRows = useMemo(() => {
+    return sortedRows.map((row: any) => ({
+      ...row,
+      _isSelected: selectedRowId != null && row.id === selectedRowId,
+    }));
+  }, [sortedRows, selectedRowId]);
+
+  // defined columns inside component so can see selectedRowIndex
+  const columns = [
+    {
+      id: "diseaseId",
+      label: "Indication",
+      renderCell: ({ diseaseName, diseaseId }: any) => (
+        <Typography
+          sx={{
+            maxWidth: "120px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            fontSize: "14px",
+          }}
+          title={diseaseName}
+        >
+          <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
+            {diseaseName}
+          </Link>
+        </Typography>
+      ),
+    },
+    {
+      id: "maxClinicalStage",
+      label: "Max stage",
+      renderCell: ({ maxClinicalStatus }: any) => (
+        <Typography
+          sx={{
+            maxWidth: "120px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            fontSize: "14px",
+          }}
+          title={maxClinicalStatus}
+        >
+          {clinicalStageCategories[maxClinicalStatus].label}
+        </Typography>
+      ),
+      sortable: true,
+      comparator: stageAndRecordCountComparator,
+      filterValue: row => clinicalStageCategories[row.maxClinicalStatus]?.label,
+    },
+    {
+      id: "reports",
+      label: "Reports",
+      renderCell: ({ clinicalReportIds }: any) => clinicalReportIds.length,
+      numeric: true,
+      exportValue: (row: any) => row.clinicalReportIds.length,
+      sortable: true,
+      comparator: (a, b) => {
+        return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
+      }
+    },
+    {
+      id: "arrow",
+      label: "",
+      renderCell: ({ _isSelected }: any) => (
+        _isSelected && (
+          <Box
+            sx={{
+              width: "0px",
+              fontSize: "10px",
+              position: "relative",
+              left: "-20px",
+              display: "flex",
+              alignItems: "end",
+              color: "#999",
+            }}
+          >
+            <FontAwesomeIcon icon={faPlay} />
+          </Box>
+        )
+      ),
+      exportValue: false,
+      enableColumnFilter: false, 
+    },
+  ];
 
   return (
     <>
       <OtTable
+        // key={selectedRowIndex}
         showGlobalFilter
         columns={columns}
-        rows={sortedRows}
+        rows={displayRows}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
         showColumnVisibilityControl={false}
         getSelectedRows={rowsInfo => {
           if (!(rowsInfo?.length > 0)) return;
-          const newIndex = rowsInfo[0].index;
-          if (newIndex !== selectedRowIndex) {  // avoids render loop from calling setRecords unnecessarily
-            setSelectedRowIndex(newIndex);
-            selectRecords({ setRecords, row: sortedRows[newIndex] });
+
+          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+          if (!selectedOriginalRows.length) return;
+
+          const nextRow =
+            selectedOriginalRows.find(r => r.id !== selectedRowId) ??
+            selectedOriginalRows[0];
+
+          if (!nextRow?.id) return;
+
+          if (nextRow.id !== selectedRowId) {  // avoids render loop from calling setRecords unnecessarily
+            setSelectedRowId(nextRow.id);
+            selectRecords({ setRecords, row: nextRow });
           }
         }}
         onPagination={a => console.log(a)}
