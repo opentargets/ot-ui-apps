@@ -203,27 +203,6 @@ function SunburstFilters({
             />
           </Box>
 
-          {/* NES Range */}
-          <Box sx={{ minWidth: 180, flex: "0 0 180px" }}>
-            <Typography variant="caption" color="text.secondary">
-              NES Range
-            </Typography>
-            <Slider
-              size="small"
-              value={filters.nesRange}
-              onChange={(_, value) => handleNESRangeChange(value as [number, number])}
-              valueLabelDisplay="auto"
-              min={nesDataRange.min}
-              max={nesDataRange.max}
-              step={0.1}
-              sx={{ mt: 1 }}
-            />
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="caption">{filters.nesRange[0].toFixed(1)}</Typography>
-              <Typography variant="caption">{filters.nesRange[1].toFixed(1)}</Typography>
-            </Box>
-          </Box>
-
           {/* P-value threshold */}
           <Box sx={{ minWidth: 130, flex: "0 0 130px" }}>
             <FormControl fullWidth size="small">
@@ -260,18 +239,25 @@ function SunburstFilters({
             </FormControl>
           </Box>
 
-          {/* Significant only */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <FormControlLabel
-              control={
-                <Switch
-                  size="small"
-                  checked={filters.showSignificantOnly}
-                  onChange={(e) => handleSignificantOnlyChange(e.target.checked)}
-                />
-              }
-              label={<Typography variant="body2">Significant only (p {"<"} 0.05)</Typography>}
+          {/* NES Range */}
+          <Box sx={{ minWidth: 180, flex: "0 0 180px" }}>
+            <Typography variant="caption" color="text.secondary">
+              NES Range
+            </Typography>
+            <Slider
+              size="small"
+              value={filters.nesRange}
+              onChange={(_, value) => handleNESRangeChange(value as [number, number])}
+              valueLabelDisplay="auto"
+              min={nesDataRange.min}
+              max={nesDataRange.max}
+              step={0.1}
+              sx={{ mt: 1 }}
             />
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="caption">{filters.nesRange[0].toFixed(1)}</Typography>
+              <Typography variant="caption">{filters.nesRange[1].toFixed(1)}</Typography>
+            </Box>
           </Box>
         </Box>
       </Collapse>

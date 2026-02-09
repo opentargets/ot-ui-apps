@@ -56,7 +56,7 @@ function GeneEnrichmentAnalysis() {
       <ListItemIcon>
         <FontAwesomeIcon icon={faChartPie} />
       </ListItemIcon>
-      <ListItemText>GSEA</ListItemText>
+      <ListItemText>Gene set enrichment analysis (GSEA)</ListItemText>
     </StyledMenuItem>
   );
 }
