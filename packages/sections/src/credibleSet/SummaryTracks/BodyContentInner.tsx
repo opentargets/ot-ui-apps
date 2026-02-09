@@ -19,6 +19,7 @@ import {
   useRingTexture,
 } from "ui/src/components/GenTrack/shapes";
 import { scaleLinear, axisTop, select, max, sum } from "d3";
+import { dom } from "@fortawesome/fontawesome-svg-core";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -150,6 +151,18 @@ function sumInclusiveIntervals(intervals) {
   return result;
 }
 
+function HLine({ xMin, xMax, yValue, width, color }) {
+  const drawHLine = useCallback((g) => {
+    g.clear();
+    g.lineStyle(width, color, 1);
+    g.moveTo(xMin, yValue);
+    g.lineTo(xMax, yValue);
+  }, [xMin, xMax]);
+
+  return <Graphics draw={drawHLine} />;
+}
+
+
 function BodyContentInner() {
 
   const genTrackState = useGenTrackState();
@@ -157,108 +170,112 @@ function BodyContentInner() {
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
-  const variantWidth = 10;
-  const yGridDenominator = 50;
-  const yGridColor = 0xbbbbbb;
-  const circleTrackHeight = 30;
+  const hLineDenominator = 50;
+  const hLineColor = 0xbbbbbb;
   const labelColor = 0x222222;
   const tracks = [];
+  
+  const variantTrackHeight = 30;
+  const colocTrackHeight = 100;
 
   // fixed-circle size variants
-  tracks.push({
-    id: `variants`,
-    height: circleTrackHeight,
-    paddingTop: 16,
-    yMin: 0,
-    yMax: 100,
-    YInfo: () => (
-      <Box sx={infoStyle}> 
-        <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-          Variants
-        </Typography>
-      </Box>
-    ),
-    Track: ({ isInner }) => {
-      const ringTexture = useRingTexture(32, 10);
-      const circleTexture = useCircleTexture(32);
-      
-      const drawHLine = useCallback((g) => {
-        g.clear();
-        g.lineStyle(100 / yGridDenominator, yGridColor, 1);
-        g.moveTo(xMin, 50);
-        g.lineTo(xMax, 50);
-      }, [xMin, xMax]);
-      
-      return (
-        <Container>
+  {
+    const variantWidth = 10;
+    tracks.push({
+      id: `variants`,
+      height: variantTrackHeight,
+      paddingTop: 16,
+      yMin: 0,
+      yMax: 100,
+      YInfo: () => (
+        <Box sx={infoStyle}> 
+          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+            Variants
+          </Typography>
+        </Box>
+      ),
+      Track: ({ isInner }) => {
+        const ringTexture = useRingTexture(32, 10);
+        const circleTexture = useCircleTexture(32);
+        
+        return (
+          <Container>
+            <HLine
+              xMin={xMin}
+              xMax={xMax}
+              yValue={50}
+              width={100 / hLineDenominator}
+              color={hLineColor}
+            />
+            
+            {/* all variants */}
+            {data.locus.rows.map(({ variant }, i) => (
+              <Sprite
+                key={i}
+                texture={variant.position === data.variant.position
+                  ? circleTexture  // lead variant
+                  : ringTexture
+                }
+                x={variant.position}
+                y={50}
+                anchor={[0.5, 0.5]}
+                height={variantWidth / variantTrackHeight * 100}
+                tint="steelblue"
+                // tint={0x444444}
+                // alpha={0.9}
+              />
+            ))}
 
-          {/* horizontal line */}
-          <Graphics draw={drawHLine} />
-          
-          {/* all variants */}
-          {data.locus.rows.map(({ variant }, i) => (
+            {/* lead variant
             <Sprite
-              key={i}
-              texture={ringTexture}
-              x={variant.position}
+              texture={circleTexture}
+              x={data.variant.position}
               y={50}
               anchor={[0.5, 0.5]}
-              height={variantWidth / circleTrackHeight * 100}
-              tint="steelblue"
+              height={variantWidth / variantTrackHeight * 100}
               // tint={0x444444}
+              tint="steelblue"
               // alpha={0.9}
+            /> */}
+
+            {/* label the lead variant */}
+            <Text
+              text="Lead"
+              x={data.variant.position}
+              y={25}
+              anchor={[0.5, 1]}
+              style={
+                new TextStyle({
+                  align: 'center',
+                  fill: labelColor,
+                  // fill: 0x457093,
+                  fontSize: 11,
+                  fontWeight: '100',
+                  wordWrap: false,
+                })
+              }
             />
-          ))}
-
-          {/* lead variants */}
-          <Sprite
-            texture={circleTexture}
-            x={data.variant.position}
-            y={50}
-            anchor={[0.5, 0.5]}
-            height={variantWidth / circleTrackHeight * 100}
-            // tint={0x444444}
-            tint="steelblue"
-            // alpha={0.9}
-          />
-
-          {/* label the lead variant */}
-          <Text
-            text="Lead"
-            x={data.variant.position}
-            y={25}
-            anchor={[0.5, 1]}
-            style={
-              new TextStyle({
-                align: 'center',
-                fill: labelColor,
-                // fill: 0x457093,
-                fontSize: 11,
-                fontWeight: '100',
-                wordWrap: false,
-              })
-            }
-          />
-        </Container>
-      );
-    },
-    // scale circles and text to stop stretched/squished appearance
-    onTick: tickScaleFactory([
-      {
-        filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
-        actionFn: (obj, wrapper) => {
-          obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
-          obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
-        }
+          </Container>
+        );
       },
-      {
-        filterFn: obj => obj instanceof PixiSprite,
-        actionFn: (obj, wrapper) => {
-          obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
-        }
-      },
-    ])
-  });
+      // scale circles and text to stop stretched/squished appearance
+      onTick: tickScaleFactory([
+        {
+          filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
+          actionFn: (obj, wrapper) => {
+            obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
+            obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
+          }
+        },
+        {
+          filterFn: obj => obj instanceof PixiSprite,
+          actionFn: (obj, wrapper) => {
+            obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
+          }
+        },
+      ])
+    });
+  }
 
   // genes and L2G scores
   const geneLookup = {};
@@ -281,18 +298,15 @@ function BodyContentInner() {
       ),
       Track: () => {
 
-        const drawHLine = useCallback((g) => {
-          g.clear();
-          g.lineStyle(100 / yGridDenominator, yGridColor, 1);
-          g.moveTo(xMin, 50);
-          g.lineTo(xMax, 50);
-        }, [xMin, xMax]);
-
         return (
           <Container>
-
-            {/* horizontal line */}
-            <Graphics draw={drawHLine} />
+            <HLine
+              xMin={xMin}
+              xMax={xMax}
+              yValue={50}
+              width={100 / hLineDenominator}
+              color={hLineColor}
+            />
             
             {/* genes - use graphics objects since not many */}
             {data.l2GPredictions.rows.map(({ score, target }, i) => {
@@ -372,14 +386,6 @@ function BodyContentInner() {
           </Box>
         ),
         Track: () => {
-
-          const drawHLine = useCallback((g) => {
-            g.clear();
-            g.lineStyle(maxTotal / yGridDenominator, yGridColor, 1);
-            g.moveTo(xMin, maxTotal - (maxTotal / yGridDenominator) / 2);  // shift up by 1/2 line width since at bottom
-            g.lineTo(xMax, maxTotal - (maxTotal / yGridDenominator) / 2 );
-          }, [xMin, xMax]);
-
           const drawDistribution = useCallback((g) => {
             g.clear();
             g.beginFill(geneLookup[geneId].color, 0.75);
@@ -401,9 +407,13 @@ function BodyContentInner() {
 
           return (
             <Container>
-
-              {/* horizontal line */}
-              <Graphics draw={drawHLine} />
+              <HLine
+                xMin={xMin}
+                xMax={xMax}
+                yValue={maxTotal - (maxTotal / hLineDenominator) / 2}
+                width={maxTotal / hLineDenominator}
+                color={hLineColor}
+              />
 
               {/* enhancer distribution */}
               <Graphics draw={drawDistribution} />
@@ -417,6 +427,7 @@ function BodyContentInner() {
 
   // mol-QTL
   if (data.molqtlcolocalisation.count > 0) {
+    // const totalClpp = sum(data.molqtlcolocalisation.rows, obj => obj.clpp);
     const qtlsByPosition = Object.groupBy(
       data.molqtlcolocalisation.rows,
       d => d.otherStudyLocus.variant.position
@@ -450,8 +461,83 @@ function BodyContentInner() {
         isTrans, 
       });
     }
-    console.log(qtlsAggregated)
-    !!!! NOW PLOT !!!!!!
+    
+    console.log(qtlsAggregated);
+
+    const maxColocWidth = 20;
+    const minColocWidth = 8;
+    const maxSummedClpp = max(qtlsAggregated, obj => obj.summedClpp);
+
+    function getCircleWidth(summedClpp) {
+      return Math.max(maxColocWidth * Math.sqrt(summedClpp / maxSummedClpp), minColocWidth);
+    }
+
+    tracks.push({
+      id: `qtlColoc`,
+      height: colocTrackHeight,
+      paddingTop: 16,
+      yMin: -1,
+      yMax: 1,
+      YInfo: () => (
+        <Box sx={infoStyle}> 
+          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+            MolQTL Colocalisation
+          </Typography>
+        </Box>
+      ),
+      Track: ({ isInner }) => {
+        const ringTexture = useRingTexture(32, 10);
+        const circleTexture = useCircleTexture(32);
+        
+        return (
+          <Container>
+            <HLine
+              xMin={xMin}
+              xMax={xMax}
+              yValue={0}
+              width={1 / hLineDenominator}  // !! I THINK SHOULD USE Y-RANGE (2) HERE? - BUT THEN LINE TOO THICK!
+              color={hLineColor}
+            />
+            
+            {/* circles */}
+            {qtlsAggregated.map((obj, i) => {
+              const { position, isTrans, dominantGeneId, summedClpp } = obj;
+              return (
+                <Sprite
+                  key={i}
+                  texture={isTrans ? ringTexture : circleTexture}
+                  x={position}
+                  y={0}
+                  anchor={[0.5, 0.5]}
+                  height={getCircleWidth(summedClpp) / colocTrackHeight * 2}
+                  tint={geneLookup[dominantGeneId]?.color ?? "#888"}
+                  ref={(sprite) => {  // need access to qtl data in onTick callback
+                    if (sprite) {
+                      sprite._qtlColocData = obj;
+                    }
+                  }}
+                />
+              );
+            })}
+
+          </Container>
+        );
+      },
+      // scale circles to stop stretched/squished appearance
+      onTick: tickScaleFactory([
+        {
+          filterFn: obj => obj instanceof PixiSprite,
+          actionFn: (obj, wrapper) => {
+            obj.width = getCircleWidth(obj._qtlColocData.summedClpp) / (wrapper.scale.x * wrapper.parent.scale.x);
+          }
+        },
+      ])
+    });
+
+    !! NOW:
+      - USE DARK AND PALE FILLED CIRCLES FOR TRANS - CAN USE PAIRED SCHEME FOR GENES
+      - ADD Y BASED ON NORMALISED DIRECTION AND SHOW STEMS
+
   }
 
   return (
@@ -474,25 +560,24 @@ function BodyContentInner() {
 
 export default BodyContentInner;
 
-/*
-TO DO:
-- getting error for many ssets, e.g d75d13864ef5532c8f5bbe7c8334c99e
-- why gene sometimes has no label? e.g. credible-set/4a5402cdec4ba249d1e6c944803950d5
-- abstrct repeated code in to functions, inc:
-  - draw functions for graphics (e.g. horizontal line)
-- e2g
-  - are we guaranteed that all genes that have enhancers assigend to them are in the L2G track?
-  - smooth the enhancer distributions? - e.g. bezier and may also need to look at Pixi options like resolutin so
-    actually displayed smoothly
-  - what if a very narrow spike? - is it visible?
-- should show intros and exons on genes? - do we have them?
-- get x-limits from all data - not just variants + padding
-- give labels (partic e.g. gene: L2G score) a background so clear when over lap
-- l2g scores: make highest bold
-- make scaling for fixed pixel size or text aspect rario efficient - only scale on init,
-  canvas width changes and x-limit changes
-    - since use a factory function, can store canvasWidth, xMin, xMax and return early if
-      no change
-- inner track showing bases: base color (when not at too high a range) and base letter (when zoomed closer)? 
-  - what is the gene is on the other strand? - if not shwoing this info base info poss useless/misleading?
-*/
+// TO DO:
+// - getting error for many ssets, e.g d75d13864ef5532c8f5bbe7c8334c99e
+// - why gene sometimes has no label? e.g. credible-set/4a5402cdec4ba249d1e6c944803950d5
+// - abstrct repeated code in to functions, inc:
+//   - draw functions for graphics (e.g. horizontal line)
+// - e2g
+//   - are we guaranteed that all genes that have enhancers assigend to them are in the L2G track?
+//   - smooth the enhancer distributions? - e.g. bezier and may also need to look at Pixi options like resolutin so
+//     actually displayed smoothly
+//   - what if a very narrow spike? - is it visible?
+// - should show intros and exons on genes? - do we have them?
+// - get x-limits from all data - not just variants + padding
+// - give labels (partic e.g. gene: L2G score) a background so clear when over lap
+// - l2g scores: make highest bold
+// - make scaling for fixed pixel size or text aspect rario efficient - only scale on init,
+//   canvas width changes and x-limit changes
+//     - since use a factory function, can store canvasWidth, xMin, xMax and return early if
+//       no change
+// - inner track showing bases: base color (when not at too high a range) and base letter (when zoomed closer)? 
+//   - what is the gene is on the other strand? - if not shwoing this info base info poss useless/misleading?
+// - coloc: stroke width should not scale - but tricky snce baked into texture unless use Graphics objects?
