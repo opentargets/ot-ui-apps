@@ -1,13 +1,14 @@
-import { faCircle, faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faChartPie, faCircle, faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useState } from "react";
 import type { GseaResult } from "../api/gseaApi";
+import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
 import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
 
-type ViewMode = "table" | "tree" | "sunburst";
+type ViewMode = "table" | "tree" | "plotly";
 
 interface AnalysisResultsProps {
   results: GseaResult[];
@@ -56,8 +57,12 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
               <FontAwesomeIcon icon={faSitemap} style={{ marginRight: 6 }} />
               Tree
             </ToggleButton>
-            <ToggleButton value="sunburst">
+            {/* <ToggleButton value="sunburst">
               <FontAwesomeIcon icon={faCircle} style={{ marginRight: 6 }} />
+              Sunburst
+            </ToggleButton> */}
+            <ToggleButton value="plotly">
+              <FontAwesomeIcon icon={faChartPie} style={{ marginRight: 6 }} />
               Sunburst
             </ToggleButton>
           </ToggleButtonGroup>
@@ -65,10 +70,11 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
       </Box>
 
       {/* Scrollable content */}
-      <Box sx={{ flex: 1, overflow: "auto", p: 2 }}>
+      <Box sx={{ flex: 1, overflow: "auto", p: viewMode === "plotly" ? 0 : 2 }}>
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
         {viewMode === "sunburst" && <ResultsSunburst results={results} />}
+        {viewMode === "plotly" && <ResultsPlotlySunburst results={results} />}
       </Box>
     </Box>
   );
