@@ -73,7 +73,7 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
       <Box sx={{ flex: 1, overflow: "auto", p: viewMode === "plotly" ? 0 : 2 }}>
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
-        {viewMode === "sunburst" && <ResultsSunburst results={results} />}
+        {/* {viewMode === "sunburst" && <ResultsSunburst results={results} />} */}
         {viewMode === "plotly" && <ResultsPlotlySunburst results={results} />}
       </Box>
     </Box>
