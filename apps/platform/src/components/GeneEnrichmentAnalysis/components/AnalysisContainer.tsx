@@ -11,7 +11,7 @@ import RunHistorySidebar from "./RunHistorySidebar";
 
 const STEP_MESSAGES: Record<string, string> = {
   fetching_associations: "Fetching associations...",
-  running_gsea: "Running enrichment analysis...",
+  running_gsea: "Running Gene Set Enrichment Analysis...",
 };
 
 function AnalysisContainer() {

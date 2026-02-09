@@ -180,7 +180,7 @@ function AnalysisForm({
             fontSize: "1rem",
           }}
         >
-          Run Enrichment Analysis
+          Run Gene Set Enrichment Analysis
         </Button>
       </Box>
     </Box>

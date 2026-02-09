@@ -45,7 +45,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           borderColor: "divider",
         }}
       >
-        <Box>Gene Enrichment Analysis</Box>
+        <Box> Gene Set Enrichment Analysis (GSEA)</Box>
         <IconButton
           onClick={handleClose}
           size="small"
@@ -61,8 +61,9 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
       <DialogContent sx={{ p: 0, display: "flex", flexDirection: "column" }}>
         <Box sx={{ px: 3, py: 2.5, borderBottom: "1px solid", borderColor: "divider" }}>
           <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-            Identify enriched biological pathways from your gene associations using Gene Set
-            Enrichment Analysis (GSEA).{" "}
+            Identifying overrepresented biological pathways and functional categories in ranked
+            lists of disease-associated genes.
+            <br />
             <Link
               to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
               external
