@@ -49,70 +49,73 @@ const columns = [
       } = record;
       const diseaseIds = [...new Set(diseases.filter(d => d.diseaseId).map(d => d.diseaseId))];
 
-      return (
-        <Box sx={{ mb: 0.5 }}>
-          <Link external="true" to={url}>
-            <Box sx={{ display: "flex", width: "100%" }}>
-              <Typography
-                variant={"subtitle1"}
-                noWrap
-                sx={{ 
-                  minWidth: 0,
-                  maxWidth: "100%",
-                  width: "200px",  // !! REUIQUIRED FOR ELLIPSES - IS IT DODGY FOR SHORT TITLES? !!
-                  flex: 1,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {trialOfficialTitle || `[${sentenceCase(type)}]`}
-              </Typography>
-            </Box>
-          </Link>
+      const displayTitle = (
+        <Typography
+          variant={"body1"}
+          noWrap
+          sx={{ 
+            minWidth: 0,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {trialOfficialTitle || `[${sentenceCase(type)}]`}
+        </Typography>
+      );
 
-          <Box sx={{ display: "flex", mt: 0.15 }}>
-            <Typography variant="caption" sx={{ width: "80px"}}>
-              <span style={{ fontWeight: 500}}>{type}</span>
-            </Typography>
+      return (
+        <Box sx={{ mb: 0.5, overflow: "hidden" }}>
+          <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
+            {url ? (
+              <Link external="true" to={url}>{displayTitle}</Link>
+            ) : (
+              <Box>{displayTitle}</Box>
+            )}
           </Box>
 
-          <Box sx={{ display: "flex", mt: -0.15, alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Box sx={{ display: "flex", width: "150px", alignItems: "baseline", gap: 0.5 }}>
+              {source && (
+                <Box sx={{ display: "flex", width: "150px", alignItems: "baseline", gap: 0.5 }}>
+                  <Typography variant="caption">
+                    Source:
+                  </Typography>
+                  <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                    {source}
+                  </Typography>
+                </Box>
+              )}
+              {trialOverallStatus && (
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+                  <Typography variant="caption">
+                    Status:
+                  </Typography>
+                  <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                    {trialOverallStatus?.toLowerCase()}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+            {trialStartDate && (
+              <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
                 <Typography variant="caption">
                   Start:
                 </Typography>
-                <Typography variant= "body2" sx={{width: "100px"}}>
-                  {trialStartDate}
+                {/* <Typography variant= "caption" sx={{ fontSize: 13 }}> */}
+                <Typography
+                  variant= "caption"
+                  sx={{
+                    fontSize: 13,
+                    fontVariant: "common-ligatures tabular-nums",
+                    letterSpacing: "-0.05em",
+                  }}
+                >
+                  {trialStartDate.slice(0, 4)}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-                <Typography variant="caption">
-                  Status:
-                </Typography>
-                <Typography variant= "body2">
-                  {trialOverallStatus?.toLowerCase()}
-                </Typography>
-              </Box>
-            </Box>
-            <Button
-              // className={classes.detailsButton}
-              variant="text"
-              size="small"
-              sx={{ border: "none" }}
-              // disabled={!abstract}
-              // onClick={handleShowAbstractClick}
-              // startIcon={<FontAwesomeIcon icon={faPlusCircle} size="sm" />}
-              // sx={{ my: 2 }}
-            >
-              <Typography variant="caption">Details</Typography>&nbsp;
-              <FontAwesomeIcon size="sm" icon={faChevronRight} />
-            </Button>
+            )}
           </Box>
-          
-
-        
         </Box>
       );
     },
@@ -156,7 +159,6 @@ function RecordsCards({
     }
   }, [records]);
 
-  // if (!records || Object.keys(records).length === 0) return null;
   if (!selectedStage?.stage) return null;
 
   return (
@@ -170,14 +172,15 @@ function RecordsCards({
       <Box
         sx={{
           mr: 4,
-          mt: 0.5,
+          mt: 0.25,
           "& thead": { display: 'none' },
           "& tr": {
-            padding: "0 !important",
-            ":hover": {bgcolor: "transparent"}
+            padding: "0.15rem 0 !important",
+            ":hover": {bgcolor: "transparent"},
           },
           "& td": {
-            padding: "0 !important",
+            padding: "0.15rem 0 !important",
+            maxWidth: 0,  // forces td to respect overflow
             ":hover": {bgcolor: "transparent"}
           },
         }}
