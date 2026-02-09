@@ -146,10 +146,13 @@ function RecordsCards({
 }) {
   const client = useApolloClient();
   const [selectedStage, setSelectedStage] = useState({});
+  const [maxStage, setMaxStage] = useState(null);
   
   useEffect(() => {
     if (records && Object.keys(records).length > 0) {
-      setSelectedStage(getMaxStage(records));
+      const _maxStage = getMaxStage(records);
+      setMaxStage(_maxStage);
+      setSelectedStage(_maxStage);
     }
   }, [records]);
 
@@ -158,41 +161,42 @@ function RecordsCards({
 
   return (
     <>
-        <StageFilter
-          records={records}
-          setSelectedStage={setSelectedStage}
-          selectedStage={selectedStage}
+      <StageFilter
+        records={records}
+        setSelectedStage={setSelectedStage}
+        selectedStage={selectedStage}
+        maxStage={maxStage}
+      />
+      <Box
+        sx={{
+          mr: 4,
+          mt: 0.5,
+          "& thead": { display: 'none' },
+          "& tr": {
+            padding: "0 !important",
+            ":hover": {bgcolor: "transparent"}
+          },
+          "& td": {
+            padding: "0 !important",
+            ":hover": {bgcolor: "transparent"}
+          },
+        }}
+      >
+        <OtTable
+          // showGlobalFilter
+          columns={columns}
+          rows={records[selectedStage.stage]}
+          // dataDownloader
+          // dataDownloaderFileStem="clinical-records"`
+          // fixed
+          noWrapHeader={false}
+          rowsPerPageOptions={defaultRowsPerPageOptions}
+          // loading={loading}
+          showGlobalFilter={false}
+          // hover={false}
+          showColumnVisibilityControl={false}
         />
-        <Box
-          sx={{
-            mr: 4,
-            mt: 0.5,
-            "& thead": { display: 'none' },
-            "& tr": {
-              padding: "0 !important",
-              ":hover": {bgcolor: "transparent"}
-            },
-            "& td": {
-              padding: "0 !important",
-              ":hover": {bgcolor: "transparent"}
-            },
-          }}
-        >
-          <OtTable
-            // showGlobalFilter
-            columns={columns}
-            rows={records[selectedStage.stage]}
-            // dataDownloader
-            // dataDownloaderFileStem="clinical-records"`
-            // fixed
-            noWrapHeader={false}
-            rowsPerPageOptions={defaultRowsPerPageOptions}
-            // loading={loading}
-            showGlobalFilter={false}
-            // hover={false}
-            showColumnVisibilityControl={false}
-          />
-        </Box>
+      </Box>
     </>
   );
 }
