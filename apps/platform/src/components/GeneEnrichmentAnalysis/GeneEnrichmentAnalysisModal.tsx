@@ -5,6 +5,7 @@ import { type ReactNode, useEffect } from "react";
 import { Link } from "ui";
 import { setModalOpen } from "./actions";
 import AnalysisContainer from "./components/AnalysisContainer";
+import { PATHWAYS_API_BASE_URL } from "./config";
 import { useGeneEnrichment } from "./Provider";
 
 interface GeneEnrichmentAnalysisModalProps {
@@ -79,11 +80,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
             Identifying overrepresented biological pathways and functional categories in ranked
             lists of disease-associated genes.{" "}
-            <Link
-              to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
-              external
-              newTab
-            >
+            <Link to={`${PATHWAYS_API_BASE_URL}/ui`} external newTab>
               Read more details here
             </Link>
           </Typography>

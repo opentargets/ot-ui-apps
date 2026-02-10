@@ -1,6 +1,7 @@
+import { PATHWAYS_API_BASE_URL } from "../config";
 import type { AnalysisDirection, Gene } from "../types";
 
-const GSEA_API_BASE_URL = "https://demo-pathways-api-426265110888.europe-west1.run.app/api/gsea";
+const GSEA_API_BASE_URL = `${PATHWAYS_API_BASE_URL}/api/gsea`;
 
 export interface GseaResult {
   ID: string;

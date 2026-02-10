@@ -60,10 +60,10 @@ function AnalysisForm({
         {/* Pathway Library Section */}
         <Paper variant="outlined" sx={{ p: 3 }}>
           <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-            Pathway Library
+            Gene Sets
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Select a pathway database to use for the enrichment analysis. Different libraries
+            Select a gene set library to use for the enrichment analysis. Different libraries
             contain curated gene sets from various biological pathway sources.
           </Typography>
           <FormControl fullWidth size="small">
@@ -91,11 +91,11 @@ function AnalysisForm({
         {/* Gene Set Source Section */}
         <Paper variant="outlined" sx={{ p: 3 }}>
           <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-            Gene Set
+            Ranked List of Genes
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Choose which genes to include in the analysis. You can use all genes from the current
-            association results, or select a specific subset.
+            association results, or select a specific subset. Filters and weights included.
           </Typography>
           <FormControl component="fieldset">
             <RadioGroup
@@ -106,7 +106,7 @@ function AnalysisForm({
               <FormControlLabel
                 value="all"
                 control={<Radio size="small" />}
-                label="All associated genes"
+                label="List from Association Page"
                 sx={{ mb: 1 }}
               />
               <FormControlLabel
@@ -115,7 +115,7 @@ function AnalysisForm({
                 disabled={!hasUploadedGenes}
                 label={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <span>Uploaded gene set</span>
+                    <span>Uploaded List of Genes</span>
                     {hasUploadedGenes && (
                       <Chip
                         label={`${associationsState.uploadedEntities.length} genes`}
@@ -134,7 +134,7 @@ function AnalysisForm({
                 disabled={!hasPinnedGenes}
                 label={
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <span>Pinned gene set</span>
+                    <span>Pinned List of Genes</span>
                     {hasPinnedGenes && (
                       <Chip
                         label={`${associationsState.pinnedEntities.length} genes`}

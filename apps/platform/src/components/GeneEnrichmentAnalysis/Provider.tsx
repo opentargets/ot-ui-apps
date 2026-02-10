@@ -7,11 +7,11 @@ import {
   useReducer,
 } from "react";
 import { fetchLibrariesFailure, fetchLibrariesRequest, fetchLibrariesSuccess } from "./actions";
+import { PATHWAYS_API_BASE_URL } from "./config";
 import { geneEnrichmentReducer, initialState } from "./reducer";
 import type { Action, State } from "./types";
 
-const PATHWAYS_API_URL =
-  "https://demo-pathways-api-426265110888.europe-west1.run.app/api/gsea/libraries";
+const PATHWAYS_API_URL = `${PATHWAYS_API_BASE_URL}/api/gsea/libraries`;
 
 /*****************
  * CONTEXTS *
