@@ -10,7 +10,8 @@ import { fetchLibrariesFailure, fetchLibrariesRequest, fetchLibrariesSuccess } f
 import { geneEnrichmentReducer, initialState } from "./reducer";
 import type { Action, State } from "./types";
 
-const PATHWAYS_API_URL = "http://127.0.0.1:8000/api/gsea/libraries";
+const PATHWAYS_API_URL =
+  "https://demo-pathways-api-426265110888.europe-west1.run.app/api/gsea/libraries";
 
 /*****************
  * CONTEXTS *
