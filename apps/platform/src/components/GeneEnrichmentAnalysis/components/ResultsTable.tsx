@@ -15,7 +15,7 @@ function getColumns() {
       renderCell: (row: GseaResult) => (
         <Box>
           {row.Link ? (
-            <Link external to={row.Link}>
+            <Link external to={row.Link} newTab>
               {row.Pathway}
             </Link>
           ) : (
