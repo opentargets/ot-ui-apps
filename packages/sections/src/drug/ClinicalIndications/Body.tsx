@@ -31,7 +31,7 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => {
         return (
-          <Grid container spacing={8}>
+          <Grid container columnSpacing={8}>
             {/* LHS table */}
             <Grid item xs={12} md={6}>
               {rows?.length > 0 && (  
