@@ -13,9 +13,10 @@ type ViewMode = "table" | "tree" | "plotly";
 interface AnalysisResultsProps {
   results: GseaResult[];
   onReset: () => void;
+  activeRunId?: string | null;
 }
 
-function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
+function AnalysisResults({ results, onReset, activeRunId }: AnalysisResultsProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
 
   const handleViewChange = (_: React.MouseEvent<HTMLElement>, newMode: ViewMode | null) => {
@@ -55,7 +56,7 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
             </ToggleButton>
             <ToggleButton value="tree">
               <FontAwesomeIcon icon={faSitemap} style={{ marginRight: 6 }} />
-              Tree
+              Tree view
             </ToggleButton>
             {/* <ToggleButton value="sunburst">
               <FontAwesomeIcon icon={faCircle} style={{ marginRight: 6 }} />
@@ -74,7 +75,7 @@ function AnalysisResults({ results, onReset }: AnalysisResultsProps) {
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
         {/* {viewMode === "sunburst" && <ResultsSunburst results={results} />} */}
-        {viewMode === "plotly" && <ResultsPlotlySunburst results={results} />}
+        {viewMode === "plotly" && <ResultsPlotlySunburst key={activeRunId} results={results} />}
       </Box>
     </Box>
   );

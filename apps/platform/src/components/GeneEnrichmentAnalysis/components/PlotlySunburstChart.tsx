@@ -1,4 +1,5 @@
 import {
+  faArrowRotateLeft,
   faCompress,
   faDownload,
   faMagnifyingGlassMinus,
@@ -95,6 +96,12 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
 
   const handleZoomOut = useCallback(() => {
     setZoom((prev) => Math.max(MIN_ZOOM, prev - ZOOM_STEP * 2));
+  }, []);
+
+  const handleResetChart = useCallback(() => {
+    setSunburstLevel("");
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
   }, []);
 
   const handleDownloadPng = useCallback(() => {
@@ -239,6 +246,10 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
           borderColor: "divider",
         }}
       >
+        <IconButton size="small" onClick={handleResetChart} title="Reset chart">
+          <FontAwesomeIcon icon={faArrowRotateLeft} fontSize="0.85rem" />
+        </IconButton>
+        <Box sx={{ borderTop: "1px solid", borderColor: "divider" }} />
         <IconButton size="small" onClick={handleZoomIn} title="Zoom in">
           <FontAwesomeIcon icon={faMagnifyingGlassPlus} fontSize="0.85rem" />
         </IconButton>

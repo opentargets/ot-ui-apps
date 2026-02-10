@@ -70,7 +70,7 @@ const DEFAULT_SETTINGS: TreeViewSettings = {
   showES: false,
   showGenes: false,
   showGeneCount: true,
-  sortBy: "p-value",
+  sortBy: "FDR",
   sortDirection: "asc",
   groupBy: "hierarchy",
 };
@@ -636,39 +636,102 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
   }
 
   return (
-    <Box sx={{ height: "100%" }}>
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-          <Typography variant="h6">Results Tree View</Typography>
-          <Tooltip title="Settings">
-            <IconButton onClick={() => setSettingsOpen(true)}>
-              <FontAwesomeIcon icon={faGear} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-          <Chip label={`${results.length} total results`} color="primary" size="small" />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Header */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2,
+          py: 1,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          flexShrink: 0,
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              cursor: "pointer",
+              "&:hover": { opacity: 0.7 },
+            }}
+            onClick={() => setSettingsOpen(true)}
+          >
+            <FontAwesomeIcon icon={faGear} />
+            <Typography variant="body2" fontWeight={500}>
+              View settings
+            </Typography>
+          </Box>
+          <Chip label={`${results.length} total`} size="small" variant="outlined" />
           <Chip
             label={`${significantCount} significant`}
             color="success"
             size="small"
-            icon={<FontAwesomeIcon icon={faArrowTrendUp} />}
+            variant="outlined"
           />
+          <Chip label={`Sorted by ${settings.sortBy} (${settings.sortDirection})`} size="small" variant="outlined" />
           {settings.groupBy === "hierarchy" && (
-            <Chip
-              label={`${rootCount} root pathways`}
-              size="small"
-              icon={<FontAwesomeIcon icon={faSitemap} />}
-            />
+            <Chip label={`${rootCount} root pathways`} size="small" variant="outlined" />
           )}
-          <Chip label={`Sorted by ${settings.sortBy}`} variant="outlined" size="small" />
           {!hasHierarchyData && settings.groupBy === "hierarchy" && (
             <Chip label="No hierarchy data" color="warning" size="small" variant="outlined" />
           )}
         </Box>
-      </Paper>
+      </Box>
 
-      <Paper sx={{ height: "calc(100% - 120px)", overflow: "auto" }}>
+      {/* Legend */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: 3,
+          px: 2,
+          py: 1,
+          flexShrink: 0,
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box sx={{ width: 3, height: 14, backgroundColor: "#4caf50", borderRadius: 0.5 }} />
+            <Typography variant="caption" color="text.disabled">
+              Significant (FDR {"<"} 0.05)
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faFolder}
+              style={{ fontSize: "0.7rem", color: "#1976d2", opacity: 0.7 }}
+            />
+            <Typography variant="caption" color="text.disabled">
+              Parent pathway
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faFlask}
+              style={{ fontSize: "0.7rem", color: "#4caf50", opacity: 0.7 }}
+            />
+            <Typography variant="caption" color="text.disabled">
+              Significant leaf
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon icon={faFlask} style={{ fontSize: "0.7rem", color: "#bdbdbd" }} />
+            <Typography variant="caption" color="text.disabled">
+              Not significant
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Tree content */}
+      <Box sx={{ flex: 1, overflow: "auto" }}>
         <List>
           {/* Hierarchy view */}
           {settings.groupBy === "hierarchy" &&
@@ -751,7 +814,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
               />
             ))}
         </List>
-      </Paper>
+      </Box>
 
       {/* Settings Dialog */}
       <Dialog open={settingsOpen} onClose={() => setSettingsOpen(false)} maxWidth="sm" fullWidth>

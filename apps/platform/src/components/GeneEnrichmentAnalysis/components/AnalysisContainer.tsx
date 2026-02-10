@@ -126,7 +126,7 @@ function AnalysisContainer() {
 
     // Analysis complete
     if (step === "complete") {
-      return <AnalysisResults results={results} onReset={reset} />;
+      return <AnalysisResults results={results} onReset={reset} activeRunId={activeRunId} />;
     }
 
     // Default: input form
