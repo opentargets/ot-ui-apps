@@ -1,4 +1,15 @@
-import { useCallback, useMemo, useState } from "react";
+import {
+  faArrowTrendUp,
+  faChevronDown,
+  faChevronRight,
+  faCircleInfo,
+  faFlask,
+  faFolder,
+  faFolderOpen,
+  faGear,
+  faSitemap,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
   Button,
@@ -26,18 +37,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import {
-  faChevronDown,
-  faChevronRight,
-  faCircleInfo,
-  faFlask,
-  faFolder,
-  faFolderOpen,
-  faGear,
-  faArrowTrendUp,
-  faSitemap,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useCallback, useMemo, useState } from "react";
 import type { GseaResult } from "../api/gseaApi";
 
 interface ResultsTreeViewProps {
@@ -79,7 +79,10 @@ const DEFAULT_SETTINGS: TreeViewSettings = {
 function getGeneList(result: GseaResult): string[] {
   const genes = result["Leading edge genes"];
   if (!genes || genes === "") return [];
-  return genes.split(",").map((g) => g.trim()).filter(Boolean);
+  return genes
+    .split(",")
+    .map((g) => g.trim())
+    .filter(Boolean);
 }
 
 /** Helper to get sortable value from result */
@@ -191,7 +194,12 @@ function buildHierarchy(results: GseaResult[], settings: TreeViewSettings): Tree
 function groupBySignificance(
   results: GseaResult[],
   settings: TreeViewSettings
-): { id: string; label: string; results: GseaResult[]; color: "success" | "warning" | "default" }[] {
+): {
+  id: string;
+  label: string;
+  results: GseaResult[];
+  color: "success" | "warning" | "default";
+}[] {
   const sortedResults = [...results].sort((a, b) => {
     const aValue = getSortValue(a, settings.sortBy);
     const bValue = getSortValue(b, settings.sortBy);
@@ -221,7 +229,12 @@ function groupBySignificance(
     }
   });
 
-  const groups: { id: string; label: string; results: GseaResult[]; color: "success" | "warning" | "default" }[] = [];
+  const groups: {
+    id: string;
+    label: string;
+    results: GseaResult[];
+    color: "success" | "warning" | "default";
+  }[] = [];
 
   if (highlySignificant.length > 0) {
     groups.push({
@@ -385,10 +398,21 @@ function TreeNodeComponent({
                   </Typography>
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
                     {geneList.slice(0, 8).map((gene, idx) => (
-                      <Chip key={idx} label={gene} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
+                      <Chip
+                        key={idx}
+                        label={gene}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: "0.65rem" }}
+                      />
                     ))}
                     {geneList.length > 8 && (
-                      <Chip label={`+${geneList.length - 8} more`} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
+                      <Chip
+                        label={`+${geneList.length - 8} more`}
+                        size="small"
+                        variant="outlined"
+                        sx={{ fontSize: "0.65rem" }}
+                      />
                     )}
                   </Box>
                 </Box>
@@ -440,7 +464,10 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
     >
       <ListItemButton onClick={() => onNodeClick(result)} sx={{ borderRadius: 1 }}>
         <ListItemIcon sx={{ minWidth: 36 }}>
-          <FontAwesomeIcon icon={faFlask} style={{ color: isSignificant ? "#4caf50" : "#bdbdbd" }} />
+          <FontAwesomeIcon
+            icon={faFlask}
+            style={{ color: isSignificant ? "#4caf50" : "#bdbdbd" }}
+          />
         </ListItemIcon>
         <ListItemText
           primary={
@@ -502,10 +529,21 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
                 </Typography>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>
                   {geneList.slice(0, 8).map((gene, idx) => (
-                    <Chip key={idx} label={gene} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
+                    <Chip
+                      key={idx}
+                      label={gene}
+                      size="small"
+                      variant="outlined"
+                      sx={{ fontSize: "0.65rem" }}
+                    />
                   ))}
                   {geneList.length > 8 && (
-                    <Chip label={`+${geneList.length - 8} more`} size="small" variant="outlined" sx={{ fontSize: "0.65rem" }} />
+                    <Chip
+                      label={`+${geneList.length - 8} more`}
+                      size="small"
+                      variant="outlined"
+                      sx={{ fontSize: "0.65rem" }}
+                    />
                   )}
                 </Box>
               </Box>
@@ -875,7 +913,10 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
                   color={selectedResult.FDR < 0.05 ? "success" : "default"}
                 />
                 <Chip label={`Pathway size: ${selectedResult["Pathway size"]}`} color="primary" />
-                <Chip label={`Matched genes: ${selectedResult["Number of input genes"]}`} color="secondary" />
+                <Chip
+                  label={`Overlap genes: ${selectedResult["Number of input genes"]}`}
+                  color="secondary"
+                />
               </Box>
 
               <Box>

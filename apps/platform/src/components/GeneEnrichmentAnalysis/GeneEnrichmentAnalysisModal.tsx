@@ -1,7 +1,7 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Dialog, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { Link } from "ui";
 import { setModalOpen } from "./actions";
 import AnalysisContainer from "./components/AnalysisContainer";
@@ -18,6 +18,21 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
     dispatch(setModalOpen(false));
   };
 
+  useEffect(() => {
+    if (state.modalOpen) {
+      // Save current overflow values
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+
+      // Lock scroll
+      document.body.style.overflow = "hidden";
+
+      // Cleanup: restore scroll on close
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [state.modalOpen]);
+
   return (
     <Dialog
       onClose={handleClose}
@@ -25,6 +40,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
       maxWidth={false}
       fullWidth
       disableScrollLock={false}
+      // scroll="paper"
       sx={{
         ".MuiDialog-paper": {
           width: "85vw",
@@ -62,13 +78,13 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
         <Box sx={{ px: 3, py: 2.5, borderBottom: "1px solid", borderColor: "divider" }}>
           <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
             Identifying overrepresented biological pathways and functional categories in ranked
-            lists of disease-associated genes.
-            <br />
+            lists of disease-associated genes.{" "}
             <Link
               to="https://platform-docs.opentargets.org/web-interface/associations-on-the-fly#upload-functionality"
               external
+              newTab
             >
-              Read more details here.
+              Read more details here
             </Link>
           </Typography>
         </Box>

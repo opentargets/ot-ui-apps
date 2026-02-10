@@ -1,6 +1,13 @@
-import { Box } from "@mui/material";
+import {
+  faComputerMouse,
+  faHandPointer,
+  faUpDownLeftRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 import type { GseaResult } from "../api/gseaApi";
+import { PRIORITISATION_COLORS } from "../utils/colorPalettes";
 import PlotlySunburstChart from "./PlotlySunburstChart";
 import SunburstFilters, { type PathwayFilters } from "./SunburstFilters";
 
@@ -81,6 +88,16 @@ function ResultsPlotlySunburst({ results }: ResultsPlotlySunburstProps) {
     });
   }, [results, filters]);
 
+  // NES range from filtered results for legend
+  const nesRange = useMemo(() => {
+    const nesValues = filteredResults.map((r) => r.NES || 0);
+    if (nesValues.length === 0) return { min: 0, max: 0 };
+    return {
+      min: Math.min(...nesValues),
+      max: Math.max(...nesValues),
+    };
+  }, [filteredResults]);
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <SunburstFilters
@@ -89,6 +106,62 @@ function ResultsPlotlySunburst({ results }: ResultsPlotlySunburstProps) {
         onFiltersChange={setFilters}
         filteredCount={filteredResults.length}
       />
+      {/* Color legend + interaction hints */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: 3,
+          px: 2,
+          pt: 1.5,
+        }}
+      >
+        {/* NES color scale */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Typography variant="caption" color="text.secondary">
+            NES: {nesRange.min.toFixed(2)}
+          </Typography>
+          <Box
+            sx={{
+              width: 150,
+              height: 12,
+              background: `linear-gradient(to right, ${PRIORITISATION_COLORS[0]}, ${PRIORITISATION_COLORS[Math.floor(PRIORITISATION_COLORS.length / 2)]}, ${PRIORITISATION_COLORS[PRIORITISATION_COLORS.length - 1]})`,
+              borderRadius: 1,
+            }}
+          />
+          <Typography variant="caption" color="text.secondary">
+            {nesRange.max.toFixed(2)}
+          </Typography>
+        </Box>
+        {/* Separator */}
+        <Box sx={{ width: "1px", height: 16, backgroundColor: "divider" }} />
+        {/* Interaction hints */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon icon={faHandPointer} style={{ fontSize: "0.7rem", opacity: 0.5 }} />
+            <Typography variant="caption" color="text.disabled">
+              Click to drill down
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon icon={faComputerMouse} style={{ fontSize: "0.7rem", opacity: 0.5 }} />
+            <Typography variant="caption" color="text.disabled">
+              Scroll to zoom
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <FontAwesomeIcon
+              icon={faUpDownLeftRight}
+              style={{ fontSize: "0.7rem", opacity: 0.5 }}
+            />
+            <Typography variant="caption" color="text.disabled">
+              Shift+drag to pan
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
       <Box sx={{ flex: 1, overflow: "auto", p: 2 }}>
         <PlotlySunburstChart results={filteredResults} />
       </Box>

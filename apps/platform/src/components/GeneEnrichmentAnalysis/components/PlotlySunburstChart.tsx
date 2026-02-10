@@ -1,11 +1,22 @@
-import { Box, Typography } from "@mui/material";
-import { useMemo } from "react";
-// @ts-ignore - Plotly types are complex
+import {
+  faCompress,
+  faDownload,
+  faMagnifyingGlassMinus,
+  faMagnifyingGlassPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, IconButton, Typography } from "@mui/material";
+// @ts-expect-error - Plotly types are complex
 import Plotly from "plotly.js-dist";
-// @ts-ignore
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// @ts-expect-error
 import createPlotlyComponent from "react-plotly.js/factory";
 import type { GseaResult } from "../api/gseaApi";
-import { mapToPrioritizationColor, PRIORITISATION_COLORS, ROOT_NODE_COLOR } from "../utils/colorPalettes";
+import {
+  mapToPrioritizationColor,
+  PRIORITISATION_COLORS,
+  ROOT_NODE_COLOR,
+} from "../utils/colorPalettes";
 import { buildPathwayHierarchy, getEffectiveRootPathways } from "../utils/pathwayHierarchy";
 
 const Plot = createPlotlyComponent(Plotly);
@@ -27,7 +38,77 @@ interface SunburstData {
   };
 }
 
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 5;
+const ZOOM_STEP = 0.15;
+
 function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const plotRef = useRef<any>(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [sunburstLevel, setSunburstLevel] = useState("");
+  const isPanning = useRef(false);
+  const lastMouse = useRef({ x: 0, y: 0 });
+
+  // Attach wheel listener in capture phase so it fires before Plotly sees the event
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+      setZoom((prev) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, prev + delta)));
+    };
+    el.addEventListener("wheel", onWheel, { capture: true, passive: false });
+    return () => el.removeEventListener("wheel", onWheel, { capture: true });
+  }, []);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 1 && !e.shiftKey) return; // middle click or shift+click to pan
+    e.preventDefault();
+    isPanning.current = true;
+    lastMouse.current = { x: e.clientX, y: e.clientY };
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isPanning.current) return;
+    const dx = e.clientX - lastMouse.current.x;
+    const dy = e.clientY - lastMouse.current.y;
+    lastMouse.current = { x: e.clientX, y: e.clientY };
+    setPan((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    isPanning.current = false;
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  }, []);
+
+  const handleZoomIn = useCallback(() => {
+    setZoom((prev) => Math.min(MAX_ZOOM, prev + ZOOM_STEP * 2));
+  }, []);
+
+  const handleZoomOut = useCallback(() => {
+    setZoom((prev) => Math.max(MIN_ZOOM, prev - ZOOM_STEP * 2));
+  }, []);
+
+  const handleDownloadPng = useCallback(() => {
+    const plotEl = plotRef.current?.el;
+    if (!plotEl) return;
+    Plotly.toImage(plotEl, { format: "png", width: 1200, height: 1200, scale: 2 }).then(
+      (dataUrl: string) => {
+        const link = document.createElement("a");
+        link.download = "sunburst-pathways.png";
+        link.href = dataUrl;
+        link.click();
+      }
+    );
+  }, []);
   // Build sunburst data
   const sunburstData = useMemo(() => {
     if (results.length === 0) return null;
@@ -72,7 +153,10 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
       const nes = pathway.NES || 0;
       const pValue = pathway["p-value"] || 1;
       const genes = pathway["Leading edge genes"] || "";
-      const geneList = genes.split(",").map((g) => g.trim()).filter(Boolean);
+      const geneList = genes
+        .split(",")
+        .map((g) => g.trim())
+        .filter(Boolean);
 
       // Get children first to determine if this is a leaf
       const children = childrenMap.get(id) || [];
@@ -118,15 +202,6 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
     return data;
   }, [results]);
 
-  // NES range for legend
-  const nesRange = useMemo(() => {
-    const nesValues = results.map((r) => r.NES || 0);
-    return {
-      min: Math.min(...nesValues),
-      max: Math.max(...nesValues),
-    };
-  }, [results]);
-
   if (!sunburstData || results.length === 0) {
     return (
       <Box sx={{ p: 4, textAlign: "center" }}>
@@ -139,7 +214,7 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
   const hasHierarchy = results.some((r) => r["Parent pathway"]);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
       {!hasHierarchy && (
         <Box sx={{ p: 1, backgroundColor: "warning.light", borderRadius: 1, mb: 1 }}>
           <Typography variant="body2" color="warning.dark">
@@ -147,71 +222,113 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
           </Typography>
         </Box>
       )}
-      <Box sx={{ flex: 1, minHeight: height }}>
-        <Plot
-          data={[
-            {
-              type: "sunburst",
-              ids: sunburstData.ids,
-              labels: sunburstData.labels,
-              parents: sunburstData.parents,
-              values: sunburstData.values,
-              customdata: sunburstData.customdata,
-              marker: sunburstData.marker,
-              branchvalues: "remainder",
-              hovertemplate:
-                "<b>%{label}</b><br>" +
-                "NES: %{customdata.nes:.3f}<br>" +
-                "p-value: %{customdata.pValue:.2e}<br>" +
-                "FDR: %{customdata.fdr:.2e}<br>" +
-                "Pathway size: %{customdata.pathwaySize}<br>" +
-                "Matched genes: %{customdata.matchedGenes}<br>" +
-                "<extra></extra>",
-              textinfo: "label",
-              insidetextorientation: "radial",
-            },
-          ]}
-          layout={{
-            margin: { l: 0, r: 0, t: 10, b: 10 },
-            sunburstcolorway: PRIORITISATION_COLORS,
-            extendsunburstcolors: true,
-          }}
-          config={{
-            displayModeBar: true,
-            modeBarButtonsToRemove: ["pan2d", "lasso2d", "select2d"],
-            displaylogo: false,
-            responsive: true,
-          }}
-          style={{ width: "100%", height: "100%" }}
-          useResizeHandler
-        />
-      </Box>
-      {/* Color legend */}
+      {/* Zoom controls */}
       <Box
         sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+          zIndex: 10,
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 2,
-          py: 2,
-          borderTop: "1px solid",
+          flexDirection: "column",
+          gap: 0.5,
+          backgroundColor: "background.paper",
+          borderRadius: 1,
+          boxShadow: 1,
+          border: "1px solid",
           borderColor: "divider",
         }}
       >
-        <Typography variant="caption" color="text.secondary">
-          NES: {nesRange.min.toFixed(2)}
+        <IconButton size="small" onClick={handleZoomIn} title="Zoom in">
+          <FontAwesomeIcon icon={faMagnifyingGlassPlus} fontSize="0.85rem" />
+        </IconButton>
+        <IconButton size="small" onClick={handleZoomOut} title="Zoom out">
+          <FontAwesomeIcon icon={faMagnifyingGlassMinus} fontSize="0.85rem" />
+        </IconButton>
+        <IconButton size="small" onClick={handleReset} title="Reset zoom">
+          <FontAwesomeIcon icon={faCompress} fontSize="0.85rem" />
+        </IconButton>
+        <Box sx={{ borderTop: "1px solid", borderColor: "divider" }} />
+        <IconButton size="small" onClick={handleDownloadPng} title="Download PNG">
+          <FontAwesomeIcon icon={faDownload} fontSize="0.85rem" />
+        </IconButton>
+      </Box>
+      {zoom !== 1 && (
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ position: "absolute", bottom: 8, right: 8, zIndex: 10 }}
+        >
+          {Math.round(zoom * 100)}%
         </Typography>
+      )}
+      {/* Zoomable container */}
+      <Box
+        ref={containerRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        sx={{
+          flex: 1,
+          minHeight: height,
+          overflow: "hidden",
+          cursor: isPanning.current ? "grabbing" : "default",
+        }}
+      >
         <Box
           sx={{
-            width: 150,
-            height: 12,
-            background: `linear-gradient(to right, ${PRIORITISATION_COLORS[0]}, ${PRIORITISATION_COLORS[Math.floor(PRIORITISATION_COLORS.length / 2)]}, ${PRIORITISATION_COLORS[PRIORITISATION_COLORS.length - 1]})`,
-            borderRadius: 1,
+            width: "100%",
+            height: "100%",
+            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+            transformOrigin: "center center",
           }}
-        />
-        <Typography variant="caption" color="text.secondary">
-          {nesRange.max.toFixed(2)}
-        </Typography>
+        >
+          <Plot
+            ref={plotRef}
+            data={[
+              {
+                type: "sunburst",
+                ids: sunburstData.ids,
+                labels: sunburstData.labels,
+                parents: sunburstData.parents,
+                values: sunburstData.values,
+                customdata: sunburstData.customdata,
+                marker: sunburstData.marker,
+                branchvalues: "remainder",
+                level: sunburstLevel || undefined,
+                hovertemplate:
+                  "<b>%{label}</b><br>" +
+                  "NES: %{customdata.nes:.3f}<br>" +
+                  "p-value: %{customdata.pValue:.2e}<br>" +
+                  "FDR: %{customdata.fdr:.2e}<br>" +
+                  "Pathway size: %{customdata.pathwaySize}<br>" +
+                  "Overlap genes: %{customdata.matchedGenes}<br>" +
+                  "<extra></extra>",
+                textinfo: "label",
+                insidetextorientation: "radial",
+              },
+            ]}
+            layout={{
+              margin: { l: 0, r: 0, t: 10, b: 10 },
+              sunburstcolorway: PRIORITISATION_COLORS,
+              extendsunburstcolors: true,
+            }}
+            config={{
+              displayModeBar: false,
+              displaylogo: false,
+              responsive: true,
+            }}
+            style={{ width: "100%", height: "100%" }}
+            useResizeHandler
+            onSunburstClick={(e: any) => {
+              const point = e.points?.[0];
+              if (point) {
+                setSunburstLevel(point.id || "");
+              }
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );

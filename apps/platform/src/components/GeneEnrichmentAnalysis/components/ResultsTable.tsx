@@ -22,7 +22,10 @@ function getColumns() {
             row.Pathway
           )}
           {row.ID && (
-            <Box component="span" sx={{ display: "block", fontSize: "0.75rem", color: "text.secondary" }}>
+            <Box
+              component="span"
+              sx={{ display: "block", fontSize: "0.75rem", color: "text.secondary" }}
+            >
               {row.ID}
             </Box>
           )}
@@ -97,7 +100,7 @@ function getColumns() {
     },
     {
       id: "Number of input genes",
-      label: "Matched Genes",
+      label: "Overlap Genes",
       numeric: true,
       sortable: true,
       renderCell: (row: GseaResult) => row["Number of input genes"]?.toString() ?? "-",
@@ -111,18 +114,32 @@ function getColumns() {
       renderCell: (row: GseaResult) => {
         const genes = row["Leading edge genes"];
         if (!genes || genes === "") return "-";
-        const geneList = genes.split(",").map((g) => g.trim()).filter(Boolean);
+        const geneList = genes
+          .split(",")
+          .map((g) => g.trim())
+          .filter(Boolean);
         if (geneList.length === 0) return "-";
         const displayGenes = geneList.slice(0, 5);
         const remaining = geneList.length - 5;
         return (
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
             {displayGenes.map((gene, idx) => (
-              <Chip key={idx} label={gene} size="small" variant="outlined" sx={{ fontSize: "0.7rem" }} />
+              <Chip
+                key={idx}
+                label={gene}
+                size="small"
+                variant="outlined"
+                sx={{ fontSize: "0.7rem" }}
+              />
             ))}
             {remaining > 0 && (
               <Tooltip title={geneList.slice(5).join(", ")}>
-                <Chip label={`+${remaining}`} size="small" variant="outlined" sx={{ fontSize: "0.7rem" }} />
+                <Chip
+                  label={`+${remaining}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ fontSize: "0.7rem" }}
+                />
               </Tooltip>
             )}
           </Box>

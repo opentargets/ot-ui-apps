@@ -64,9 +64,7 @@ function ResultsSunburst({ results }: ResultsSunburstProps) {
       .outerRadius((d) => d.y1 - 1);
 
     // Create group and center it
-    const g = svg
-      .append("g")
-      .attr("transform", `translate(${width / 2},${height / 2})`);
+    const g = svg.append("g").attr("transform", `translate(${width / 2},${height / 2})`);
 
     // Create tooltip
     const tooltip = d3
@@ -120,12 +118,12 @@ function ResultsSunburst({ results }: ResultsSunburstProps) {
             <strong>p-value:</strong> ${pathway["p-value"]?.toExponential(2) || "N/A"}<br/>
             <strong>FDR:</strong> ${pathway.FDR?.toExponential(2) || "N/A"}<br/>
             <strong>Pathway size:</strong> ${pathway["Pathway size"] || "N/A"}<br/>
-            <strong>Matched genes:</strong> ${pathway["Number of input genes"] || "N/A"}<br/>
+            <strong>Overlap genes:</strong> ${pathway["Number of input genes"] || "N/A"}<br/>
             ${geneList.length > 0 ? `<strong>Leading genes:</strong> ${geneList.slice(0, 5).join(", ")}${geneList.length > 5 ? "..." : ""}` : ""}
           `);
         }
       })
-      .on("mousemove", function (event) {
+      .on("mousemove", (event) => {
         const containerRect = container.getBoundingClientRect();
         tooltip
           .style("left", `${event.clientX - containerRect.left + 15}px`)
@@ -145,7 +143,7 @@ function ResultsSunburst({ results }: ResultsSunburstProps) {
         })
       )
       .join("text")
-      .attr("transform", function (d) {
+      .attr("transform", (d) => {
         const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
         const y = (d.y0 + d.y1) / 2;
         return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;

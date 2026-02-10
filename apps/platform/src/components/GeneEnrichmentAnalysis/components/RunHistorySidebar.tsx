@@ -204,6 +204,7 @@ function RunHistorySidebar({
                     placement="right"
                   >
                     <ListItemButton
+                      disableRipple
                       selected={isActive}
                       onClick={() => onSelectRun(run.id)}
                       sx={{
@@ -247,6 +248,7 @@ function RunHistorySidebar({
                   }
                 >
                   <ListItemButton
+                    disableRipple
                     selected={isActive}
                     onClick={() => onSelectRun(run.id)}
                     sx={{

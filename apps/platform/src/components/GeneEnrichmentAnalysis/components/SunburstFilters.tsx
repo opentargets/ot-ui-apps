@@ -165,26 +165,27 @@ function SunburstFilters({
           sx={{
             display: "flex",
             flexWrap: "wrap",
-            gap: 3,
+            alignItems: "flex-end",
+            gap: 2,
             px: 2,
             py: 2,
             backgroundColor: "grey.50",
           }}
         >
           {/* Search */}
-          <Box sx={{ minWidth: 200, flex: "1 1 200px", maxWidth: 300 }}>
+          <Box sx={{ width: 180 }}>
             <TextField
               fullWidth
               size="small"
               label="Search pathways"
               value={filters.searchText}
               onChange={(e) => handleSearchTextChange(e.target.value)}
-              placeholder="Search by name or ID..."
+              placeholder="Name or ID..."
             />
           </Box>
 
           {/* Categories */}
-          <Box sx={{ minWidth: 200, flex: "1 1 200px", maxWidth: 350 }}>
+          <Box sx={{ width: 220 }}>
             <Autocomplete
               multiple
               size="small"
@@ -199,12 +200,12 @@ function SunburstFilters({
                   <Chip {...getTagProps({ index })} key={option} label={option} size="small" />
                 ))
               }
-              limitTags={2}
+              limitTags={1}
             />
           </Box>
 
           {/* P-value threshold */}
-          <Box sx={{ minWidth: 130, flex: "0 0 130px" }}>
+          <Box sx={{ width: 110 }}>
             <FormControl fullWidth size="small">
               <InputLabel>P-value</InputLabel>
               <Select
@@ -222,7 +223,7 @@ function SunburstFilters({
           </Box>
 
           {/* FDR threshold */}
-          <Box sx={{ minWidth: 130, flex: "0 0 130px" }}>
+          <Box sx={{ width: 110 }}>
             <FormControl fullWidth size="small">
               <InputLabel>FDR</InputLabel>
               <Select
@@ -240,9 +241,12 @@ function SunburstFilters({
           </Box>
 
           {/* NES Range */}
-          <Box sx={{ minWidth: 180, flex: "0 0 180px" }}>
-            <Typography variant="caption" color="text.secondary">
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 240 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
               NES Range
+            </Typography>
+            <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
+              {filters.nesRange[0].toFixed(1)}
             </Typography>
             <Slider
               size="small"
@@ -252,12 +256,10 @@ function SunburstFilters({
               min={nesDataRange.min}
               max={nesDataRange.max}
               step={0.1}
-              sx={{ mt: 1 }}
             />
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="caption">{filters.nesRange[0].toFixed(1)}</Typography>
-              <Typography variant="caption">{filters.nesRange[1].toFixed(1)}</Typography>
-            </Box>
+            <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
+              {filters.nesRange[1].toFixed(1)}
+            </Typography>
           </Box>
         </Box>
       </Collapse>
