@@ -16,6 +16,7 @@ import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constant
 import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
+import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
 
 const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -67,11 +68,14 @@ const columns = [
       return (
         <Box sx={{ mb: 0.5, overflow: "hidden" }}>
           <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
-            {url ? (
+            <ClinicalRecordDrawer record={record}>
+              {displayTitle}
+            </ClinicalRecordDrawer>
+            {/* {url ? (
               <Link component="button">{displayTitle}</Link>
             ) : (
               <Box>{displayTitle}</Box>
-            )}
+            )} */}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
