@@ -68,12 +68,11 @@ const columns = [
         <Box sx={{ mb: 0.5, overflow: "hidden" }}>
           <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
             {url ? (
-              <Link external="true" to={url}>{displayTitle}</Link>
+              <Link component="button">{displayTitle}</Link>
             ) : (
               <Box>{displayTitle}</Box>
             )}
           </Box>
-
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {source && (
@@ -198,6 +197,7 @@ function RecordsCards({
           showGlobalFilter={false}
           // hover={false}
           showColumnVisibilityControl={false}
+          showRowsPerPageControl={false}
         />
       </Box>
     </>

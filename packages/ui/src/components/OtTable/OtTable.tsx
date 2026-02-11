@@ -94,6 +94,7 @@ function OtTable({
   query,
   variables,
   showColumnVisibilityControl = true,
+  showRowsPerPageControl = true, 
   loading,
   enableMultipleRowSelection = false,
   getSelectedRows,
@@ -297,25 +298,27 @@ function OtTable({
           padding: theme => `${theme.spacing(2)} 0 `,
         }}
       >
-        <div>
-          <label htmlFor="paginationSelect">Rows per page:</label>
-          <NativeSelect
-            id="paginationSelect"
-            disableUnderline
-            disabled={loading}
-            sx={{ pl: theme => theme.spacing(2) }}
-            value={table.getState().pagination.pageSize}
-            onChange={e => {
-              table.setPageSize(Number(e.target.value));
-            }}
-          >
-            {[5, 10, 25, 100].map(pageSize => (  // !! CHANGE BACK TO NO 5 !!
-              <option key={pageSize} value={pageSize}>
-                {pageSize}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
+        {showRowsPerPageControl && (
+          <div>
+            <label htmlFor="paginationSelect">Rows per page:</label>
+            <NativeSelect
+              id="paginationSelect"
+              disableUnderline
+              disabled={loading}
+              sx={{ pl: theme => theme.spacing(2) }}
+              value={table.getState().pagination.pageSize}
+              onChange={e => {
+                table.setPageSize(Number(e.target.value));
+              }}
+            >
+              {[5, 10, 25, 100].map(pageSize => (  // !! CHANGE BACK TO NO 5 !!
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
+        )}
 
         <Box
           sx={{
