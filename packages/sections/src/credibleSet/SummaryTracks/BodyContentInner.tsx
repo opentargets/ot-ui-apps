@@ -11,6 +11,7 @@ import {
   Sprite as PixiSprite,
   Text as PixiText,
   TextStyle,
+  Texture,
 } from "pixi.js";
 import { Box, Typography } from "@mui/material";
 import {
@@ -18,8 +19,7 @@ import {
   useCircleTexture,
   useRingTexture,
 } from "ui/src/components/GenTrack/shapes";
-import { scaleLinear, axisTop, select, max, sum } from "d3";
-import { dom } from "@fortawesome/fontawesome-svg-core";
+import { scaleLinear, axisTop, select, max, sum, schemePaired } from "d3";
 
 function MyTooltip() {
   const { datum } = useGenTrackTooltipState() ?? {};
@@ -35,31 +35,17 @@ function MyTooltip() {
 //   return [schemePaired[i], schemePaired[j]];
 // });
 
-const geneScheme = [
-  // d3 schemeCategory10
-  // 0x1f77b4,
-  0xff7f0e,
-  0x2ca02c,
-  0xd62728,
-  0x9467bd,
-  0x8c564b,
-  0xe377c2,
-  0x7f7f7f,
-  0xbcbd22,
-  0x17becf,
-
-  // d3 schemeTableau10
-  // 0x4e79a7,
-  // 0xf28e2b,
-  // 0xe15759,
-  // 0x76b7b2,
-  // 0x59a14f,
-  // 0xedc948,
-  // 0xb07aa1,
-  // 0xff9da7,
-  // 0x9c755f,
-  // 0xbab0ab,
-];
+const geneScheme = [];
+for (const i of [0, 2, 6, 8, 10, 4]) {
+  geneScheme.push({
+    primary: schemePaired[i + 1],
+    faint: schemePaired[i],
+  });
+}
+const remoteGeneScheme = {
+  primary: "#666",
+  faint: "#ccc",
+};
 
 function XInfo({ start, end, canvasWidth }) {
   const axisRef = useRef(null);
@@ -170,13 +156,15 @@ function BodyContentInner() {
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
-  const hLineDenominator = 50;
-  const hLineColor = 0xbbbbbb;
+  const hLineWidth = 0.5;  // in pixels, convert to data width using: hLineWidth * yDataRange / trackHeightInPixels
+  const hLineColor = 0xaaaaaa;
   const labelColor = 0x222222;
   const tracks = [];
   
   const variantTrackHeight = 30;
-  const colocTrackHeight = 100;
+  const geneTrackHeight = 30;
+  const e2gTrackHeight = 30;
+  const colocTrackHeight = 80;
 
   // fixed-circle size variants
   {
@@ -204,7 +192,7 @@ function BodyContentInner() {
               xMin={xMin}
               xMax={xMax}
               yValue={50}
-              width={100 / hLineDenominator}
+              width={hLineWidth * 100 / variantTrackHeight}
               color={hLineColor}
             />
             
@@ -220,25 +208,12 @@ function BodyContentInner() {
                 y={50}
                 anchor={[0.5, 0.5]}
                 height={variantWidth / variantTrackHeight * 100}
-                tint="steelblue"
-                // tint={0x444444}
+                tint={0x555555}
                 // alpha={0.9}
               />
             ))}
 
-            {/* lead variant
-            <Sprite
-              texture={circleTexture}
-              x={data.variant.position}
-              y={50}
-              anchor={[0.5, 0.5]}
-              height={variantWidth / variantTrackHeight * 100}
-              // tint={0x444444}
-              tint="steelblue"
-              // alpha={0.9}
-            /> */}
-
-            {/* label the lead variant */}
+            {/* lead variant label */}
             <Text
               text="Lead"
               x={data.variant.position}
@@ -248,7 +223,6 @@ function BodyContentInner() {
                 new TextStyle({
                   align: 'center',
                   fill: labelColor,
-                  // fill: 0x457093,
                   fontSize: 11,
                   fontWeight: '100',
                   wordWrap: false,
@@ -285,7 +259,7 @@ function BodyContentInner() {
   if (data.l2GPredictions.count) {
     tracks.push({
       id: `genes`,
-      height: 30,
+      height: geneTrackHeight,
       paddingTop: 16,
       yMin: 0,
       yMax: 100,
@@ -304,7 +278,7 @@ function BodyContentInner() {
               xMin={xMin}
               xMax={xMax}
               yValue={50}
-              width={100 / hLineDenominator}
+              width={hLineWidth * 100 / geneTrackHeight}
               color={hLineColor}
             />
             
@@ -318,7 +292,7 @@ function BodyContentInner() {
                     y={34}
                     width={end - start}
                     height={32}
-                    color={geneScheme[i]}
+                    color={geneScheme[i].primary}
                   />
                   <Text
                     text={`${target.approvedSymbol}: ${score.toFixed(3)}`}
@@ -353,11 +327,10 @@ function BodyContentInner() {
     });
   }
 
-  // enhancer-to-gene
+  // E2G
   if (data.variant.intervals.count > 0) {
     const enhancersByGene = Object.groupBy(data.variant.intervals.rows, row => row.target.id);
     const distributionByGene = {};
-    // console.log(enhancersByGene);
     for (const [geneId, enhancers] of Object.entries(enhancersByGene)) {
       distributionByGene[geneId] = sumInclusiveIntervals(enhancers);
     }
@@ -374,21 +347,21 @@ function BodyContentInner() {
       const distribution = distributionByGene[geneId];
       tracks.push({
         id: `e2g-${geneId}`,
-        height: 30,
+        height: e2gTrackHeight,
         paddingTop: 16,
         yMin: 0,
         yMax: maxTotal,
         YInfo: () => (
           <Box sx={infoStyle}> 
             <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-              {geneLookup[geneId].symbol} enhancers
+              {geneLookup[geneId]?.symbol ?? "???"} enhancers
             </Typography>
           </Box>
         ),
         Track: () => {
           const drawDistribution = useCallback((g) => {
             g.clear();
-            g.beginFill(geneLookup[geneId].color, 0.75);
+            g.beginFill(geneLookup[geneId]?.color?.primary ?? 0xaaaaaa, 0.75);
 
             // move to baseline start
             g.moveTo(distribution[0].position, maxTotal);
@@ -410,8 +383,8 @@ function BodyContentInner() {
               <HLine
                 xMin={xMin}
                 xMax={xMax}
-                yValue={maxTotal - (maxTotal / hLineDenominator) / 2}
-                width={maxTotal / hLineDenominator}
+                yValue={maxTotal}
+                width={hLineWidth * maxTotal / e2gTrackHeight}
                 color={hLineColor}
               />
 
@@ -425,15 +398,14 @@ function BodyContentInner() {
     }
   }
 
-  // mol-QTL
+  // molQTL coloc
   if (data.molqtlcolocalisation.count > 0) {
-    // const totalClpp = sum(data.molqtlcolocalisation.rows, obj => obj.clpp);
-    const qtlsByPosition = Object.groupBy(
+    const colocsByPosition = Object.groupBy(
       data.molqtlcolocalisation.rows,
       d => d.otherStudyLocus.variant.position
     );
-    const qtlsAggregated = [];
-    for (const [position, positionGroup] of Object.entries(qtlsByPosition)) {
+    const colocsAggregated = [];
+    for (const [position, positionGroup] of Object.entries(colocsByPosition)) {
       const groupByGene = [...Map.groupBy(positionGroup, obj => obj.otherStudyLocus.study.target.id)];
       let dominantGeneId = null;
       let dominantGeneClpp = -Infinity;
@@ -453,7 +425,7 @@ function BodyContentInner() {
         const { isTransQtl } = obj.otherStudyLocus;
         return (isTransQtl ? 1 : -1) * obj.clpp;  // !! ASSUMES FALSY MEANS CIS - IS THIS CORRECT OR CAN HAVE NULL?
       });
-      qtlsAggregated.push({
+      colocsAggregated.push({
         position,
         summedClpp,
         direction,
@@ -462,18 +434,17 @@ function BodyContentInner() {
       });
     }
     
-    console.log(qtlsAggregated);
-
-    const maxColocWidth = 20;
-    const minColocWidth = 8;
-    const maxSummedClpp = max(qtlsAggregated, obj => obj.summedClpp);
+    const maxCircleWidth = 16;
+    const minCircleWidth = 7;
+    const stemWidth = 1.5;
+    const maxSummedClpp = max(colocsAggregated, obj => obj.summedClpp);
 
     function getCircleWidth(summedClpp) {
-      return Math.max(maxColocWidth * Math.sqrt(summedClpp / maxSummedClpp), minColocWidth);
+      return Math.max(maxCircleWidth * Math.sqrt(summedClpp / maxSummedClpp), minCircleWidth);
     }
 
     tracks.push({
-      id: `qtlColoc`,
+      id: "qtlColoc",
       height: colocTrackHeight,
       paddingTop: 16,
       yMin: -1,
@@ -486,7 +457,6 @@ function BodyContentInner() {
         </Box>
       ),
       Track: ({ isInner }) => {
-        const ringTexture = useRingTexture(32, 10);
         const circleTexture = useCircleTexture(32);
         
         return (
@@ -495,31 +465,59 @@ function BodyContentInner() {
               xMin={xMin}
               xMax={xMax}
               yValue={0}
-              width={1 / hLineDenominator}  // !! I THINK SHOULD USE Y-RANGE (2) HERE? - BUT THEN LINE TOO THICK!
+              width={hLineWidth * 2 / colocTrackHeight}
               color={hLineColor}
             />
             
-            {/* circles */}
-            {qtlsAggregated.map((obj, i) => {
-              const { position, isTrans, dominantGeneId, summedClpp } = obj;
+            {/* circles and stems */}
+            {colocsAggregated.map((obj, i) => {
+              const { position, isTrans, dominantGeneId, direction, summedClpp } = obj;
+              const isRemote = !geneLookup[dominantGeneId];
               return (
-                <Sprite
-                  key={i}
-                  texture={isTrans ? ringTexture : circleTexture}
-                  x={position}
-                  y={0}
-                  anchor={[0.5, 0.5]}
-                  height={getCircleWidth(summedClpp) / colocTrackHeight * 2}
-                  tint={geneLookup[dominantGeneId]?.color ?? "#888"}
-                  ref={(sprite) => {  // need access to qtl data in onTick callback
-                    if (sprite) {
-                      sprite._qtlColocData = obj;
+                <Fragment key={i}>
+                  {/* circle */}
+                  <Sprite
+                    texture={ circleTexture}
+                    x={position}
+                    y={-direction / summedClpp}
+                    anchor={[0.5, 0.5]}
+                    height={getCircleWidth(summedClpp) / colocTrackHeight * 2}
+                    tint={isRemote
+                      ? remoteGeneScheme[isTrans ? "faint" : "primary"]
+                      : geneLookup[dominantGeneId].color[isTrans ? "faint" : "primary"]
                     }
-                  }}
-                />
+                    alpha={1}
+                    ref={(sprite) => {  // need access to qtl data in onTick callback
+                      if (sprite) {
+                        sprite._qtlColocData = obj;
+                        sprite._shape = "circle";
+                      }
+                    }}
+                  />
+
+                  {/* stem */}
+                  <Sprite
+                    texture={Texture.WHITE}
+                    x={position}
+                    y={ -direction / summedClpp / 2}
+                    anchor={[0.5, 0.5]}
+                    width={stemWidth}
+                    height={direction / summedClpp}
+                    tint={isRemote
+                      ? remoteGeneScheme[isTrans ? "faint" : "primary"]
+                      : geneLookup[dominantGeneId].color[isTrans ? "faint" : "primary"]
+                    }
+                    alpha={1}
+                    ref={(sprite) => {  // need access to data in onTick callback
+                      if (sprite) {
+                        sprite._qtlColocData = obj;
+                        sprite._shape = "line";
+                      }
+                    }}
+                  />
+                </Fragment>
               );
             })}
-
           </Container>
         );
       },
@@ -528,17 +526,130 @@ function BodyContentInner() {
         {
           filterFn: obj => obj instanceof PixiSprite,
           actionFn: (obj, wrapper) => {
-            obj.width = getCircleWidth(obj._qtlColocData.summedClpp) / (wrapper.scale.x * wrapper.parent.scale.x);
+            obj.width = obj._shape ===  "circle"
+              ? getCircleWidth(obj._qtlColocData.summedClpp) / (wrapper.scale.x * wrapper.parent.scale.x)
+              : stemWidth / (wrapper.scale.x * wrapper.parent.scale.x)
           }
         },
       ])
     });
-
-    !! NOW:
-      - USE DARK AND PALE FILLED CIRCLES FOR TRANS - CAN USE PAIRED SCHEME FOR GENES
-      - ADD Y BASED ON NORMALISED DIRECTION AND SHOW STEMS
-
   }
+
+  // GWAS coloc
+   if (data.colocalisation.count > 0) {
+    const colocsByPosition = Object.groupBy(
+      data.colocalisation.rows,
+      d => d.otherStudyLocus.variant.position
+    );
+
+    const colocsAggregated = [];
+    for (const [position, positionGroup] of Object.entries(colocsByPosition)) {
+      const summedClpp = sum(positionGroup, obj => obj.clpp)
+      const direction = sum(positionGroup, ({ clpp, betaRatioSignAverage }) => {
+        const wt = betaRatioSignAverage > 0 ? 1 : (betaRatioSignAverage < 0 ? -1 : 0);
+        return clpp * wt;
+      });
+      colocsAggregated.push({
+        position,
+        summedClpp,
+        direction,
+      });
+    }
+    
+    const maxCircleWidth = 16;
+    const minCircleWidth = 7;
+    const stemWidth = 1.5;
+    const maxSummedClpp = max(colocsAggregated, obj => obj.summedClpp);
+
+    function getCircleWidth(summedClpp) {
+      return Math.max(maxCircleWidth * Math.sqrt(summedClpp / maxSummedClpp), minCircleWidth);
+    }
+
+    tracks.push({
+      id: "gwasColoc",
+      height: colocTrackHeight,
+      paddingTop: 16,
+      yMin: -1,
+      yMax: 1,
+      YInfo: () => (
+        <Box sx={infoStyle}> 
+          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+            GWAS Colocalisation
+          </Typography>
+        </Box>
+      ),
+      Track: ({ isInner }) => {
+        const circleTexture = useCircleTexture(32);
+        
+        return (
+          <Container>
+            <HLine
+              xMin={xMin}
+              xMax={xMax}
+              yValue={0}
+              width={hLineWidth * 2 / colocTrackHeight}  // !! I THINK SHOULD USE Y-RANGE (I.E. 2) HERE? - BUT THEN LINE TOO THICK!
+              color={hLineColor}
+            />
+            
+            {/* circles and stems */}
+            {colocsAggregated.map((obj, i) => {
+              const { position, direction, summedClpp } = obj;
+              return (
+                <Fragment key={i}>
+                  {/* circle */}
+                  <Sprite
+                    texture={ circleTexture}
+                    x={position}
+                    y={-direction / summedClpp}
+                    anchor={[0.5, 0.5]}
+                    height={getCircleWidth(summedClpp) / colocTrackHeight * 2}
+                    tint={0x888888}
+                    alpha={1}
+                    ref={(sprite) => {  // need access to data in onTick callback
+                      if (sprite) {
+                        sprite._gwasColocData = obj;
+                        sprite._shape = "circle";
+                      }
+                    }}
+                  />
+
+                  {/* stem */}
+                  <Sprite
+                    texture={Texture.WHITE}
+                    x={position}
+                    y={ -direction / summedClpp / 2}
+                    anchor={[0.5, 0.5]}
+                    width={stemWidth}
+                    height={direction / summedClpp}
+                    tint={0x888888}
+                    alpha={1}
+                    ref={(sprite) => {  // need access to qtl data in onTick callback
+                      if (sprite) {
+                        sprite._gwasColocData = obj;
+                        sprite._shape = "line";
+                      }
+                    }}
+                  />
+                </Fragment>
+              );
+            })}
+          </Container>
+        );
+      },
+      // scale circles to stop stretched/squished appearance
+      onTick: tickScaleFactory([
+        {
+          filterFn: obj => obj instanceof PixiSprite,
+          actionFn: (obj, wrapper) => {
+            obj.width = obj._shape ===  "circle"
+              ? getCircleWidth(obj._gwasColocData.summedClpp) / (wrapper.scale.x * wrapper.parent.scale.x)
+              : stemWidth / (wrapper.scale.x * wrapper.parent.scale.x)
+          }
+        },
+      ])
+    });
+  }
+
 
   return (
     <Box sx={{mr: 3}}>
@@ -561,7 +672,17 @@ function BodyContentInner() {
 export default BodyContentInner;
 
 // TO DO:
+// - GenTrack component:
+//   - alllow specifying top and bottom padding for the canvas so nothing cut off top/bottom track
+//      - e.g. get this with coloc now oat bottom if direction -1
+// - genes:
+//   - handle overlapping better - either y offsets or opacity so can see overlap
+// - draw vertical line through lead variant?
+// - increase length of geneScheme
 // - getting error for many ssets, e.g d75d13864ef5532c8f5bbe7c8334c99e
+// - show more gene details? e.g.
+//    - introns and exons
+//    - strand? - is this what is normally displayed by arrow-end?
 // - why gene sometimes has no label? e.g. credible-set/4a5402cdec4ba249d1e6c944803950d5
 // - abstrct repeated code in to functions, inc:
 //   - draw functions for graphics (e.g. horizontal line)
@@ -574,10 +695,20 @@ export default BodyContentInner;
 // - get x-limits from all data - not just variants + padding
 // - give labels (partic e.g. gene: L2G score) a background so clear when over lap
 // - l2g scores: make highest bold
+// - coloc:
+//    - currently all at same position and assigned trans or cis, but better to have separate cis and trans
+//      lollipops when this situation arises? 
 // - make scaling for fixed pixel size or text aspect rario efficient - only scale on init,
 //   canvas width changes and x-limit changes
 //     - since use a factory function, can store canvasWidth, xMin, xMax and return early if
 //       no change
 // - inner track showing bases: base color (when not at too high a range) and base letter (when zoomed closer)? 
 //   - what is the gene is on the other strand? - if not shwoing this info base info poss useless/misleading?
-// - coloc: stroke width should not scale - but tricky snce baked into texture unless use Graphics objects?
+// - coloc
+//   - suse opacity and or rings so can see overlapping better
+//      - rings tricky since variable sizes and stroke width should not scale - but we are using a texture
+//      - opacity easier, just need to make stem only go to edge of circle rather than center
+//   - pale (i.e. trans) kollipos too faint?
+// - there can probably be genes in the displayed range with below threshold L2G score?
+//    - we should show thes in grey?
+//    - how know what they are?

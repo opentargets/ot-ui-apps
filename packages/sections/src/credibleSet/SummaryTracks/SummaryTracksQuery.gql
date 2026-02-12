@@ -28,6 +28,35 @@ query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
         betaRatioSignAverage
       }
     }
+    colocalisation(studyTypes: [gwas], page: { size: $size, index: $index }) {
+      count
+      rows {
+        otherStudyLocus {
+          studyLocusId
+          study {
+            id
+            projectId
+            traitFromSource
+            publicationFirstAuthor
+          }
+          variant {
+            id
+            chromosome
+            position
+            referenceAllele
+            alternateAllele
+          }
+          pValueMantissa
+          pValueExponent
+        }
+        numberColocalisingVariants
+        colocalisationMethod
+        h3
+        h4
+        clpp
+        betaRatioSignAverage
+      }
+    }
     variant {
       id
       chromosome
