@@ -42,7 +42,7 @@ const useDrawerStyles = makeStyles(theme => ({
 
 function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <Typography variant="caption" sx={{ fontWeight: 600, minWidth: 90, mr: 1 }}>
+    <Typography variant="caption" sx={{ fontWeight: 400, minWidth: 65, mr: 1 }}>
       {children}
     </Typography>
   );
@@ -51,7 +51,7 @@ function FieldLabel({ children }: { children: ReactNode }) {
 function FieldRow({ label, children }: { label: string; children: ReactNode }) {
   if (!children) return null;
   return (
-    <Box sx={{ display: "flex", alignItems: "baseline", mb: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "baseline", my: 1 }}>
       <FieldLabel>{label}</FieldLabel>
       <Box sx={{ flex: 1 }}>{children}</Box>
     </Box>
@@ -88,7 +88,13 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
     setOpen(false);
   };
 
-  const filteredDiseases = diseases?.filter((d: any) => d.diseaseId) || [];
+  const filteredDiseases = [
+    ...new Map(
+      (diseases || [])
+        .filter((d: any) => d.diseaseId)
+        .map((d: any) => [d.diseaseId, d])
+    ).values(),
+  ];
 
   return (
     <>
@@ -128,7 +134,9 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
 
               {/* Status */}
               <FieldRow label="Status">
-                <Typography variant="body2">{trialOverallStatus || naLabel}</Typography>
+                <Typography variant="body2">
+                  {trialOverallStatus?.toLowerCase() || naLabel}
+                </Typography>
               </FieldRow>
 
               {/* Start */}
@@ -139,42 +147,44 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
               {/* URL */}
               <FieldRow label="URL">
                 {url ? (
-                  <Link external to={url}>
-                    {url}
-                  </Link>
+                  <Typography variant="body2" sx={{ fontSize: 14 }}>
+                    <Link external to={url}>
+                      {url}
+                    </Link>
+                  </Typography>
                 ) : (
                   <Typography variant="body2">{naLabel}</Typography>
                 )}
               </FieldRow>
 
-              {/* Description */}
-              <FieldRow label="Description">
-                <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
-                  {trialDescription || naLabel}
-                </Typography>
-              </FieldRow>
-
               {/* Diseases */}
               {filteredDiseases.length > 0 && (
                 <FieldRow label="Diseases">
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  <Typography variant="body2" sx={{ fontSize: 14 }}>
                     {filteredDiseases.map((disease: any, index: number) => (
                       <span key={disease.diseaseId + index}>
-                        {index > 0 && ", "}
+                        {index > 0 ? ", " : ""}
                         <Link to={`/disease/${disease.diseaseId}`}>
                           {disease.diseaseFromSource || disease.diseaseId}
                         </Link>
                       </span>
                     ))}
-                  </Box>
+                  </Typography>
                 </FieldRow>
               )}
 
+              {/* Description */}
+              <Box sx={{ mt: 2.5, mb: 3.5 }}>
+                <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
+                  {trialDescription || naLabel}
+                </Typography>
+              </Box>
+
               {/* Literature */}
               {trialLiterature && trialLiterature.length > 0 && (
-                <Box sx={{ mt: 2 }}>
-                  <FieldLabel>Literature</FieldLabel>
-                  <Box sx={{ mt: 1 }}>
+                <Box>
+                  <Typography variant="subtitle2">Literature</Typography>
+                  <Box sx={{ mt: -5 }}>
                     <PublicationsList
                       entriesIds={trialLiterature}
                       hideSearch
