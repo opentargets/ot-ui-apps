@@ -118,7 +118,7 @@ const columns = [
     },
     sortable: true,
     comparator: (a, b) => {
-      new Date(a.trialStartDate).getTime() - new Date(b.trialStartDate).getTime();
+      return new Date(a.trialStartDate).getTime() - new Date(b.trialStartDate).getTime();
     },
   }
 ];
