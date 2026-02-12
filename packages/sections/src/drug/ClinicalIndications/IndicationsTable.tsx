@@ -5,7 +5,8 @@ import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constant
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
 
-import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
+import clinicalRecordsData from "./clinical_report_CHEMBL192.json";
+// import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 import StageFilter from "./StageFilter";
 
@@ -22,11 +23,11 @@ const onLinkClick = (e: any) => {
 };
 
 function stageAndRecordCountComparator(a, b) {
-  if (a.maxClinicalStatus === b.maxClinicalStatus) {
+  if (a.maxClinicalStage === b.maxClinicalStage) {
     return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
   }
-  return clinicalStageCategories[a.maxClinicalStatus]?.index -
-    clinicalStageCategories[b.maxClinicalStatus]?.index;
+  return clinicalStageCategories[a.maxClinicalStage]?.index -
+    clinicalStageCategories[b.maxClinicalStage]?.index;
 }
 
 function selectRecords({ setRecords, row }) {
@@ -37,7 +38,7 @@ function selectRecords({ setRecords, row }) {
       return record ? { ...record } : null;
     })
     .filter((r: any) => r !== null);
-  const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStatus);
+  const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
   setRecords(groupedRecordsData);
 }
 
@@ -70,7 +71,7 @@ function IndicationsTable({
     {
       id: "diseaseId",
       label: "Indication",
-      renderCell: ({ diseaseName, diseaseId }: any) => (
+      renderCell: ({ diseaseId }: any) => (
         <Typography
           sx={{
             maxWidth: "120px",
@@ -79,10 +80,10 @@ function IndicationsTable({
             textOverflow: "ellipsis",
             fontSize: "14px",
           }}
-          title={diseaseName}
+          title={diseaseId}
         >
           <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
-            {diseaseName}
+            {diseaseId}
           </Link>
         </Typography>
       ),
@@ -90,7 +91,7 @@ function IndicationsTable({
     {
       id: "maxClinicalStage",
       label: "Max stage",
-      renderCell: ({ maxClinicalStatus }: any) => (
+      renderCell: ({ maxClinicalStage }: any) => (
         <Typography
           sx={{
             maxWidth: "120px",
@@ -99,14 +100,14 @@ function IndicationsTable({
             textOverflow: "ellipsis",
             fontSize: "14px",
           }}
-          title={maxClinicalStatus}
+          title={maxClinicalStage}
         >
-          {clinicalStageCategories[maxClinicalStatus].label}
+          {clinicalStageCategories[maxClinicalStage].label}
         </Typography>
       ),
       sortable: true,
       comparator: stageAndRecordCountComparator,
-      filterValue: row => clinicalStageCategories[row.maxClinicalStatus]?.label,
+      filterValue: row => clinicalStageCategories[row.maxClinicalStage]?.label,
     },
     {
       id: "reports",

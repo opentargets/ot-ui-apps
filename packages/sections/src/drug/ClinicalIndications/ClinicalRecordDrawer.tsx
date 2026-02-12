@@ -6,6 +6,7 @@ import {
   Typography,
   Paper,
   ButtonBase,
+  Chip,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -71,6 +72,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
     trialDescription,
     diseases,
     trialLiterature,
+    hasExpertReview,
   } = record;
 
   const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -98,7 +100,12 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
 
   return (
     <>
-      <ButtonBase disableRipple onClick={toggleDrawer} className={classes.drawerLink}>
+      <ButtonBase
+        disableRipple
+        onClick={toggleDrawer}
+        className={classes.drawerLink}
+        sx={{ maxWidth: "100%", overflow: "hidden", display: "block" }}
+      >
         {children}
       </ButtonBase>
 
@@ -128,9 +135,17 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
               )}
 
               {/* Source */}
-              <FieldRow label="Source">
-                <Typography variant="body2">{source || naLabel}</Typography>
-              </FieldRow>
+              <Box sx={{ position: "relative" }}>
+                <FieldRow label="Source">
+                  <Typography variant="body2">{source || naLabel}</Typography>
+                </FieldRow>
+                <Chip
+                  sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
+                  label={`${hasExpertReview ? "" : "no"} expert review`}
+                  variant="outlined"
+                  size="small"
+                />
+              </Box>
 
               {/* Status */}
               <FieldRow label="Status">

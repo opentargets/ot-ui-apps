@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 
-import localData from "./clinical_indication_CHEMBL2105708.json"  // !! IMPORT LOCAL DATA FOR NOW !!
+import localData from "./clinical_indication_CHEMBL102.json"  // !! IMPORT LOCAL DATA FOR NOW !!
+// import localData from "./clinical_indication_CHEMBL2105708.json"  // !! IMPORT LOCAL DATA FOR NOW !!
 import { Grid } from "@mui/material";
 import { SectionItem, PaginationActionsComplete, OtTable } from "ui";
 import { sourceMap, phaseMap } from "@ot/constants";
@@ -11,7 +12,6 @@ import Description from "./Description";
 import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
 import { definition } from ".";
 import IndicationsTable from "./IndicationsTable";
-import RecordsTable from "./RecordsTable";
 import RecordsCards from "./RecordsCards";
 
 function Body({ id: chemblId, label: name, entity }) {

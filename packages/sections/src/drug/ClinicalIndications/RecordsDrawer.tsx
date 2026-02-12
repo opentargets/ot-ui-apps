@@ -98,7 +98,7 @@ export function RecordsList({ records }) {
           source,
           trialDescription,
           trialStartDate,
-          clinicalStatus,
+          clinicalStage,
           phase,
           trialLiteratures,
           type,

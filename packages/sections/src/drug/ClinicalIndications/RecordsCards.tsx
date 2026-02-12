@@ -35,7 +35,7 @@ const columns = [
         source,
         trialDescription,
         trialStartDate,
-        clinicalStatus,
+        clinicalStage,
         phase,
         trialLiteratures,
         type,
@@ -71,11 +71,6 @@ const columns = [
             <ClinicalRecordDrawer record={record}>
               {displayTitle}
             </ClinicalRecordDrawer>
-            {/* {url ? (
-              <Link component="button">{displayTitle}</Link>
-            ) : (
-              <Box>{displayTitle}</Box>
-            )} */}
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
