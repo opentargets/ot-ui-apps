@@ -42,10 +42,26 @@ export class ExpressionSection {
   }
 
   /**
-   * Wait for the section to be visible
+   * Wait for the section to finish loading (no skeleton loaders)
    */
   async waitForLoad(): Promise<void> {
-    await this.getSection().waitFor({ state: "visible", timeout: 10000 });
+    const section = this.getSection();
+    await section.waitFor({ state: "visible", timeout: 10000 });
+
+    // Wait for skeleton loaders to disappear
+    await this.page
+      .waitForFunction(
+        () => {
+          const sect = document.querySelector("[data-testid='section-expressions']");
+          if (!sect) return false;
+          const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
+          return skeletons.length === 0;
+        },
+        { timeout: 15000 }
+      )
+      .catch(() => {
+        // If no skeletons found, section already loaded
+      });
   }
 
   // Section header
