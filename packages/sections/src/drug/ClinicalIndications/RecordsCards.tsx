@@ -100,7 +100,6 @@ const columns = [
                 <Typography variant="caption">
                   Start:
                 </Typography>
-                {/* <Typography variant= "caption" sx={{ fontSize: 13 }}> */}
                 <Typography
                   variant= "caption"
                   sx={{
@@ -116,6 +115,10 @@ const columns = [
           </Box>
         </Box>
       );
+    },
+    sortable: true,
+    comparator: (a, b) => {
+      new Date(a.trialStartDate).getTime() - new Date(b.trialStartDate).getTime();
     },
   }
 ];
@@ -197,6 +200,8 @@ function RecordsCards({
           // hover={false}
           showColumnVisibilityControl={false}
           showRowsPerPageControl={false}
+          sortBy="trial"
+          order="desc"
         />
       </Box>
     </>
