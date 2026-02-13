@@ -33,7 +33,7 @@ function Body({ id: chemblId, label: name, entity }) {
         return (
           <Grid container columnSpacing={8}>
             {/* LHS table */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={5}>
               {rows?.length > 0 && (  
                 <IndicationsTable
                   rows={rows}
@@ -46,7 +46,7 @@ function Body({ id: chemblId, label: name, entity }) {
             </Grid>
 
             {/* RHS table */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={7}>
               {records && (
                 <RecordsCards records={records}/>
               )}

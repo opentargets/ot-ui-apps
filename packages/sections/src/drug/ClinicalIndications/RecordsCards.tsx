@@ -75,10 +75,7 @@ const columns = [
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               {source && (
-                <Box sx={{ display: "flex", width: "150px", alignItems: "baseline", gap: 0.5 }}>
-                  <Typography variant="caption">
-                    Source:
-                  </Typography>
+                <Box sx={{ display: "flex", minWidth: "100px", alignItems: "baseline", gap: 0.5 }}>
                   <Typography variant= "caption" sx={{ fontSize: 13 }}>
                     {source}
                   </Typography>

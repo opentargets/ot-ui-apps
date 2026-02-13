@@ -4,7 +4,6 @@ import { clinicalStageCategories } from "@ot/constants";
 const usedCircleWidth = 30;
 const emptyCircleWidth = 17;
 const lineWidth = 1;
-const strokeColor = "#888";  // !! ARBITRATY COLOR !!
 const labelSize = 13;
 
 function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
@@ -32,10 +31,10 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
           right: 0,
           height: `${lineWidth}px`,
           // !! ARBITRARY COLORS !!
-          background: `linear-gradient(
+          background: theme => `linear-gradient(
             to right,
-            ${strokeColor} 0%,
-            ${strokeColor} ${(maxStage.index / (totalStages - 1)) * 100}%,
+            ${theme.palette.primary.main} 0%,
+            ${theme.palette.primary.main} ${(maxStage.index / (totalStages - 1)) * 100}%,
             rgba(136,136,136,0.25) ${(maxStage.index / (totalStages - 1)) * 100}%,
             rgba(136,136,136,0.25) 100%
           )`,
@@ -71,7 +70,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                   transformOrigin: "bottom left",
                   whiteSpace: "nowrap",
                   fontWeight: stage === selectedStage.stage ? 700 : 400,
-                  opacity: index > maxStage.index ? 0.4 : 1,
+                  opacity: index > maxStage.index ? 0.42 : 1,
                 }}
               >
                 {label}
@@ -81,9 +80,13 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
               component={hasRecords ? "button" : "div"}
               sx={{
                 borderRadius: `${circleWidth / 2}px`,
+                boxShadow: theme => (hasRecords && stage !== selectedStage.stage
+                  ? theme.boxShadow.md
+                  : "none"
+                ),
                 borderStyle: "solid",
                 borderWidth: `${stage === selectedStage.stage ? 2 : 1}px`,
-                borderColor: `${index > maxStage.index ? "rgba(136,136,136,0.3)" : hasRecords ? "primary.main" : strokeColor }`,
+                borderColor: `${index > maxStage.index ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",

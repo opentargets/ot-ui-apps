@@ -124,7 +124,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
           </Box>
         </Paper>
 
-        <Box width={600} maxWidth="100%" className={classes.drawerBody}>
+        <Box width={700} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
               {/* Title */}
