@@ -31,10 +31,6 @@ function MyTooltip() {
   );
 }
 
-// const colorPairs = [[6, 7], [8, 9], [12, 13]].map(([i, j]) => {
-//   return [schemePaired[i], schemePaired[j]];
-// });
-
 const geneScheme = [];
 for (const i of [0, 2, 6, 8, 10, 4]) {
   geneScheme.push({
@@ -156,8 +152,8 @@ function BodyContentInner() {
 
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
 
-  const hLineWidth = 0.5;  // in pixels, convert to data width using: hLineWidth * yDataRange / trackHeightInPixels
-  const hLineColor = 0xaaaaaa;
+  const hLineWidth = 1;  // in pixels, convert to data width using: hLineWidth * yDataRange / trackHeightInPixels
+  const hLineColor = 0xdddddd;
   const labelColor = 0x222222;
   const tracks = [];
   
@@ -165,6 +161,7 @@ function BodyContentInner() {
   const geneTrackHeight = 30;
   const e2gTrackHeight = 30;
   const colocTrackHeight = 80;
+  const xExtremes = [];
 
   // fixed-circle size variants
   {
@@ -197,21 +194,21 @@ function BodyContentInner() {
             />
             
             {/* all variants */}
-            {data.locus.rows.map(({ variant }, i) => (
-              <Sprite
-                key={i}
-                texture={variant.position === data.variant.position
-                  ? circleTexture  // lead variant
-                  : ringTexture
-                }
-                x={variant.position}
-                y={50}
-                anchor={[0.5, 0.5]}
-                height={variantWidth / variantTrackHeight * 100}
-                tint={0x555555}
-                // alpha={0.9}
-              />
-            ))}
+            {data.locus.rows.map(({ variant }, i) => {
+              const isLead = variant.position === data.variant.position;
+              return (
+                <Sprite
+                  key={i}
+                  texture={isLead ? circleTexture : ringTexture}
+                  x={variant.position}
+                  y={50}
+                  anchor={[0.5, 0.5]}
+                  height={variantWidth / variantTrackHeight * 100}
+                  tint={0x000000}
+                  alpha={isLead ? 1 : 0.6}
+                />
+              );
+            })}
 
             {/* lead variant label */}
             <Text
@@ -398,6 +395,11 @@ function BodyContentInner() {
     }
   }
 
+  // shared coloc options
+  const maxCircleWidth = 16;
+  const minCircleWidth = 7;
+  const stemWidth = 1.5;
+
   // molQTL coloc
   if (data.molqtlcolocalisation.count > 0) {
     const colocsByPosition = Object.groupBy(
@@ -433,10 +435,7 @@ function BodyContentInner() {
         isTrans, 
       });
     }
-    
-    const maxCircleWidth = 16;
-    const minCircleWidth = 7;
-    const stemWidth = 1.5;
+
     const maxSummedClpp = max(colocsAggregated, obj => obj.summedClpp);
 
     function getCircleWidth(summedClpp) {
@@ -483,8 +482,8 @@ function BodyContentInner() {
                     anchor={[0.5, 0.5]}
                     height={getCircleWidth(summedClpp) / colocTrackHeight * 2}
                     tint={isRemote
-                      ? remoteGeneScheme[isTrans ? "faint" : "primary"]
-                      : geneLookup[dominantGeneId].color[isTrans ? "faint" : "primary"]
+                      ? remoteGeneScheme[isTrans > 0 ? "faint" : "primary"]
+                      : geneLookup[dominantGeneId].color[isTrans > 0 ? "faint" : "primary"]
                     }
                     alpha={1}
                     ref={(sprite) => {  // need access to qtl data in onTick callback
@@ -504,8 +503,8 @@ function BodyContentInner() {
                     width={stemWidth}
                     height={direction / summedClpp}
                     tint={isRemote
-                      ? remoteGeneScheme[isTrans ? "faint" : "primary"]
-                      : geneLookup[dominantGeneId].color[isTrans ? "faint" : "primary"]
+                      ? remoteGeneScheme[isTrans > 0 ? "faint" : "primary"]
+                      : geneLookup[dominantGeneId].color[isTrans > 0 ? "faint" : "primary"]
                     }
                     alpha={1}
                     ref={(sprite) => {  // need access to data in onTick callback
@@ -556,9 +555,6 @@ function BodyContentInner() {
       });
     }
     
-    const maxCircleWidth = 16;
-    const minCircleWidth = 7;
-    const stemWidth = 1.5;
     const maxSummedClpp = max(colocsAggregated, obj => obj.summedClpp);
 
     function getCircleWidth(summedClpp) {
@@ -672,6 +668,7 @@ function BodyContentInner() {
 export default BodyContentInner;
 
 // TO DO:
+// - NOW: get x-limits from all data - not just variants + padding
 // - GenTrack component:
 //   - alllow specifying top and bottom padding for the canvas so nothing cut off top/bottom track
 //      - e.g. get this with coloc now oat bottom if direction -1
@@ -692,7 +689,7 @@ export default BodyContentInner;
 //     actually displayed smoothly
 //   - what if a very narrow spike? - is it visible?
 // - should show intros and exons on genes? - do we have them?
-// - get x-limits from all data - not just variants + padding
+
 // - give labels (partic e.g. gene: L2G score) a background so clear when over lap
 // - l2g scores: make highest bold
 // - coloc:
