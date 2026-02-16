@@ -1,10 +1,7 @@
 import { useState, useMemo } from "react";
-import { Link, PaginationActionsComplete, OtTable, useApolloClient } from "ui";
+import { Link, OtTable, useApolloClient } from "ui";
 import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
-
 import clinicalRecordsData from "./clinical_report_CHEMBL192.json";
 // import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
@@ -69,84 +66,87 @@ function IndicationsTable({
   // defined columns inside component so can see selectedRowIndex
   const columns = [
     {
-      id: "diseaseId",
-      label: "Indication",
-      renderCell: ({ diseaseId }: any) => (
-        <Typography
-          sx={{
-            maxWidth: "120px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            fontSize: "14px",
+      id: "indicationCard",
+      label: "",
+      renderCell: ({ diseaseId, maxClinicalStage, clinicalReportIds, _isSelected }: any) => (
+        <Box 
+          className="main-card"
+          sx={{ 
+            p: 0.75, 
+            border: '1px solid grey.200',
+            borderRadius: 1,
+            bgcolor: _isSelected ? 'grey.100' : 'background.paper',
+            borderLeft: _isSelected ? '4px solid red' : '1px solid grey.200',
+            cursor: 'pointer',
+            '&:hover': {
+              bgcolor: 'grey.100',
+              borderLeft: '1px solid grey.200'
+            }
           }}
-          title={diseaseId}
         >
-          <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
-            {diseaseId}
-          </Link>
-        </Typography>
-      ),
-    },
-    {
-      id: "maxClinicalStage",
-      label: "Max stage",
-      renderCell: ({ maxClinicalStage }: any) => (
-        <Typography
-          sx={{
-            maxWidth: "120px",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            fontSize: "14px",
-          }}
-          title={maxClinicalStage}
-        >
-          {clinicalStageCategories[maxClinicalStage].label}
-        </Typography>
+          {/* Top: Indication link as title */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: "14px",
+              fontWeight: 'bold',
+              mb: 0.25,
+              color: 'primary.main'
+            }}
+          >
+            <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
+              {diseaseId}
+            </Link>
+          </Typography>
+
+          {/* Bottom section with max phase and record count */}
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Bottom left: Max clinical stage */}
+            <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+              <Typography variant="caption">
+                Max phase:
+              </Typography>
+              <Typography variant="caption" sx={{ fontSize: 13 }}>
+                {clinicalStageCategories[maxClinicalStage].label}
+              </Typography>
+            </Box>
+
+            {/* Bottom right: Number of records */}
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: 12,
+                color: 'text.secondary'
+              }}
+            >
+              {clinicalReportIds.length} records
+            </Typography>
+          </Box>
+        </Box>
       ),
       sortable: true,
       comparator: stageAndRecordCountComparator,
       filterValue: row => clinicalStageCategories[row.maxClinicalStage]?.label,
     },
-    {
-      id: "reports",
-      label: "Reports",
-      renderCell: ({ clinicalReportIds }: any) => clinicalReportIds.length,
-      numeric: true,
-      exportValue: (row: any) => row.clinicalReportIds.length,
-      sortable: true,
-      comparator: (a, b) => {
-        return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
-      }
-    },
-    {
-      id: "arrow",
-      label: "",
-      renderCell: ({ _isSelected }: any) => (
-        _isSelected && (
-          <Box
-            sx={{
-              width: "0px",
-              fontSize: "10px",
-              position: "relative",
-              left: "-20px",
-              display: "flex",
-              alignItems: "end",
-              color: "#999",
-            }}
-          >
-            <FontAwesomeIcon icon={faPlay} />
-          </Box>
-        )
-      ),
-      exportValue: false,
-      enableColumnFilter: false, 
-    },
   ];
 
   return (
-    <>
+    <Box
+      sx={{
+        mr: 4,
+        mt: 0.25,
+        "& thead": { display: 'none' },
+        "& tr": {
+          padding: "0.15rem 0 !important",
+          ":hover": {bgcolor: "transparent"},
+        },
+        "& td": {
+          padding: "0.15rem 0 !important",
+          maxWidth: 0,  // forces td to respect overflow
+          ":hover": {bgcolor: "transparent"}
+        },
+      }}
+    >
       <OtTable
         // key={selectedRowIndex}
         showGlobalFilter
@@ -173,7 +173,6 @@ function IndicationsTable({
             selectRecords({ setRecords, row: nextRow });
           }
         }}
-        onPagination={a => console.log(a)}
         // onRowClick={row => selectRecords({ setSelectedDisease, setRecords, row })}
         // rowIsSelectable
         // fixed
@@ -191,16 +190,12 @@ function IndicationsTable({
         //     setRecords(recordsData);
         //   }
         // }}
-        rowsPerPageOptions={[5, 10, 25]}
-        // rowsPerPageOptions={defaultRowsPerPageOptions}
         loading={loading}
-        query={query}
-        variables={variables}
-        sortBy="maxClinicalStage"
+        sortBy="indicationCard"
         order="desc"
       />
-    </>
+    </Box>
   );
 }
 
-export default IndicationsTable
+export default IndicationsTable;
