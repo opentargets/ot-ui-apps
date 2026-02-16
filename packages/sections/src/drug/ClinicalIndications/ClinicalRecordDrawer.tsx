@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -12,7 +12,7 @@ import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "@ot/constants";
-import { Link, PublicationsList } from "ui";
+import { Link, PublicationsList, OtLongText } from "ui";
 
 const useDrawerStyles = makeStyles(theme => ({
   drawerLink: {
@@ -61,6 +61,7 @@ function FieldRow({ label, children }: { label: string; children: ReactNode }) {
 
 function ClinicalRecordDrawer({ record, children }: { record: any; children: ReactNode }) {
   const [open, setOpen] = useState(false);
+
   const classes = useDrawerStyles();
 
   const {
@@ -71,6 +72,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
     url,
     trialDescription,
     diseases,
+    drugs,
     trialLiterature,
     hasExpertReview,
   } = record;
@@ -90,11 +92,19 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
     setOpen(false);
   };
 
-  const filteredDiseases = [
+  const dedupedDiseases = [
     ...new Map(
       (diseases || [])
-        .filter((d: any) => d.diseaseId)
-        .map((d: any) => [d.diseaseId, d])
+        .filter(d => d.diseaseId)
+        .map(d => [d.diseaseId, d])
+    ).values(),
+  ];
+
+  const dedupedDrugs = [
+    ...new Map(
+      (drugs || [])
+        .filter(d => d.drugId)
+        .map(d => [d.drugId, d])
     ).values(),
   ];
 
@@ -173,18 +183,38 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
               </FieldRow>
 
               {/* Diseases */}
-              {filteredDiseases.length > 0 && (
+              {dedupedDiseases.length > 0 && (
                 <FieldRow label="Diseases">
-                  <Typography variant="body2" sx={{ fontSize: 14 }}>
-                    {filteredDiseases.map((disease: any, index: number) => (
-                      <span key={disease.diseaseId + index}>
-                        {index > 0 ? ", " : ""}
-                        <Link to={`/disease/${disease.diseaseId}`}>
-                          {disease.diseaseFromSource || disease.diseaseId}
-                        </Link>
-                      </span>
-                    ))}
-                  </Typography>
+                  <OtLongText variant="body2" lineLimit={3} displayText="... more">
+                    <Typography variant="body2" sx={{ fontSize: 14 }}>
+                      {dedupedDiseases.map((disease: any, index: number) => (
+                        <span key={disease.diseaseId}>
+                          {index > 0 ? ", " : ""}
+                          <Link to={`/disease/${disease.diseaseId}`}>
+                            {disease.diseaseFromSource || disease.diseaseId}
+                          </Link>
+                        </span>
+                      ))}
+                    </Typography>
+                  </OtLongText>
+                </FieldRow>
+              )}
+
+              {/* Drugs */}
+              {dedupedDrugs.length > 0 && (
+                <FieldRow label="Drugs">
+                  <OtLongText variant="body2" lineLimit={3} displayText="... more">
+                    <Typography variant="body2" sx={{ fontSize: 14 }}>
+                      {dedupedDrugs.map((drug: any, index: number) => (
+                        <span key={drug.drugId}>
+                          {index > 0 ? ", " : ""}
+                          <Link to={`/drug/${drug.drugId}`}>
+                            {drug.drugFromSource || drug.drugId}
+                          </Link>
+                        </span>
+                      ))}
+                    </Typography>
+                  </OtLongText>
                 </FieldRow>
               )}
 

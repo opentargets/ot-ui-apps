@@ -1,17 +1,6 @@
 import { useState, useEffect } from "react";
-import { OtTable, useApolloClient, Link} from "ui";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Box,
-  IconButton,
-  Drawer,
-  Typography,
-  Paper,
-  ButtonBase,
-  Button,
-} from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { faPlay, faXmark, faPlusCircle, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { OtTable } from "ui";
+import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
@@ -26,6 +15,20 @@ const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED 
     },
 });
 
+function getMaxStage(records) {
+  let maxIndex = -Infinity;
+  let maxStage;
+  for (const stage of Object.keys(records)) {
+    const index = clinicalStageCategories[stage].index;
+    if (index > maxIndex) {
+      maxIndex = index;
+      maxStage = stage;
+    }
+  }
+  // console.log({ index: maxIndex, stage: maxStage })
+  return { index: maxIndex, stage: maxStage };
+}
+
 const columns = [
   {
     id: "trial",
@@ -33,22 +36,11 @@ const columns = [
     renderCell: (record) => {
       const {
         source,
-        trialDescription,
         trialStartDate,
-        clinicalStage,
-        phase,
-        trialLiteratures,
         type,
         trialOverallStatus,
-        trialWhyStopped,
-        trialStopReasonCategories,
-        trialPrimaryPurpose,
-        url,
         trialOfficialTitle,
-        diseases,
-        drugs,
       } = record;
-      const diseaseIds = [...new Set(diseases.filter(d => d.diseaseId).map(d => d.diseaseId))];
 
       const displayTitle = (
         <Typography
@@ -120,35 +112,15 @@ const columns = [
   }
 ];
 
-function getMaxStage(records) {
-  let maxIndex = -Infinity;
-  let maxStage;
-  for (const stage of Object.keys(records)) {
-    const index = clinicalStageCategories[stage].index;
-    if (index > maxIndex) {
-      maxIndex = index;
-      maxStage = stage;
-    }
-  }
-  // console.log({ index: maxIndex, stage: maxStage })
-  return { index: maxIndex, stage: maxStage };
-}
-
-function selectRecord({ recordId }) {
-  // !! ONCE HAVE API, USE getRecordDetail TO FETCH THE RECORD DETAILS
-  console.log("open detail modal!")
-}
-
 function RecordsCards({
   records,
   // query,
   // variables,
   // loading,
 }) {
-  const client = useApolloClient();
   const [selectedStage, setSelectedStage] = useState({});
   const [maxStage, setMaxStage] = useState(null);
-  
+
   useEffect(() => {
     if (records && Object.keys(records).length > 0) {
       const _maxStage = getMaxStage(records);
