@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState } from "react";
 import {
   Box,
   IconButton,
@@ -186,7 +186,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
               {dedupedDiseases.length > 0 && (
                 <FieldRow label="Diseases">
                   <OtLongText variant="body2" lineLimit={3} displayText="... more">
-                    <Typography variant="body2" sx={{ fontSize: 14 }}>
+                    <Box component="span" sx={{ fontSize: 14 }}>
                       {dedupedDiseases.map((disease: any, index: number) => (
                         <span key={disease.diseaseId}>
                           {index > 0 ? ", " : ""}
@@ -195,7 +195,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
                           </Link>
                         </span>
                       ))}
-                    </Typography>
+                    </Box>
                   </OtLongText>
                 </FieldRow>
               )}
@@ -204,7 +204,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
               {dedupedDrugs.length > 0 && (
                 <FieldRow label="Drugs">
                   <OtLongText variant="body2" lineLimit={3} displayText="... more">
-                    <Typography variant="body2" sx={{ fontSize: 14 }}>
+                    <Box component="span" sx={{ fontSize: 14 }}>
                       {dedupedDrugs.map((drug: any, index: number) => (
                         <span key={drug.drugId}>
                           {index > 0 ? ", " : ""}
@@ -213,7 +213,7 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
                           </Link>
                         </span>
                       ))}
-                    </Typography>
+                    </Box>
                   </OtLongText>
                 </FieldRow>
               )}
