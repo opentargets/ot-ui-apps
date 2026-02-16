@@ -10,6 +10,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
   const entries = Object.entries(clinicalStageCategories);
   const totalStages = entries.length;
 
+  if (!maxStage) return null;
+
   return (
     <Box
       sx={{
@@ -32,7 +34,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
             : `${((totalStages - 2) / (totalStages - 1)) * 100}%`,
           height: `${lineWidth}px`,
           background: theme => {
-            const pct = Math.min((maxStage.index / (totalStages - 2)) * 100, 100);
+            const pct = Math.min((clinicalStageCategories[maxStage].index / (totalStages - 2)) * 100, 100);
             return `linear-gradient(
               to right,
               ${theme.palette.primary.main} 0%,
@@ -72,8 +74,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                   transform: "rotate(-45deg)",
                   transformOrigin: "bottom left",
                   whiteSpace: "nowrap",
-                  fontWeight: stage === selectedStage.stage ? 700 : 400,
-                  opacity: index > maxStage.index ? 0.42 : 1,
+                  fontWeight: stage === selectedStage ? 700 : 400,
+                  opacity: index > clinicalStageCategories[maxStage].index ? 0.42 : 1,
                 }}
               >
                 {label}
@@ -83,36 +85,36 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
               component={hasRecords ? "button" : "div"}
               sx={{
                 borderRadius: `${circleWidth / 2}px`,
-                boxShadow: theme => (hasRecords && stage !== selectedStage.stage
+                boxShadow: theme => (hasRecords && stage !== selectedStage
                   ? theme.boxShadow.md
                   : "none"
                 ),
                 borderStyle: "solid",
-                borderWidth: `${stage === selectedStage.stage ? 2 : 1}px`,
-                borderColor: `${index > maxStage.index ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
+                borderWidth: `${stage === selectedStage ? 2 : 1}px`,
+                borderColor: `${index > clinicalStageCategories[maxStage].index ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 width: `${circleWidth}px`,
                 height: `${circleWidth}px`,
-                cursor: hasRecords && stage !== selectedStage.stage ? "pointer" : "auto",  
+                cursor: hasRecords && stage !== selectedStage ? "pointer" : "auto",  
                 my: hasRecords ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
-                color: stage === selectedStage.stage ? "#fff" : "primary.main",
+                color: stage === selectedStage ? "#fff" : "primary.main",
                 // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
-                bgcolor: stage === selectedStage.stage ? "primary.main" : hasRecords ? "#ecf7ff" : "background.paper",
+                bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#ecf7ff" : "background.paper",
                 "&:hover": {
                   // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
-                  bgcolor: stage === selectedStage.stage ? "primary.main" : hasRecords ? "#e1eff9" : "background.paper",
+                  bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#e1eff9" : "background.paper",
 
                 },
               }}
-              onClick={hasRecords ? () => setSelectedStage({ index, stage }) : undefined}
+              onClick={hasRecords ? () => setSelectedStage(stage) : undefined}
             >
               {hasRecords && (
                 <Typography
                   variant="caption"
                   sx={{
-                    fontWeight: hasRecords ? 700 : 400, opacity: index > maxStage.index ? 0.3 : 1,
+                    fontWeight: hasRecords ? 700 : 400, opacity: index > clinicalStageCategories[maxStage].index ? 0.3 : 1,
                     fontSize: 11.5,
                   }}
                 >

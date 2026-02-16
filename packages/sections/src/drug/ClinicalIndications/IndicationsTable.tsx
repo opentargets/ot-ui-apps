@@ -8,7 +8,6 @@ import { faPlay } from "@fortawesome/free-solid-svg-icons";
 import clinicalRecordsData from "./clinical_report_CHEMBL192.json";
 // import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
-import StageFilter from "./StageFilter";
 
 const getRecords = (client, query, chemblId) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -45,6 +44,7 @@ function selectRecords({ setRecords, row }) {
 function IndicationsTable({
   rows,
   setRecords,
+  setMaxClinicalStage,
   query,
   variables,
   loading,
@@ -169,6 +169,7 @@ function IndicationsTable({
 
           if (nextRow.id !== selectedRowId) {  // avoids render loop from calling setRecords unnecessarily
             setSelectedRowId(nextRow.id);
+            setMaxClinicalStage(nextRow.maxClinicalStage);
             selectRecords({ setRecords, row: nextRow });
           }
         }}

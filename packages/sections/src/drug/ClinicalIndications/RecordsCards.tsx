@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { OtTable } from "ui";
 import { Box, Typography } from "@mui/material";
-import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
+import { defaultRowsPerPageOptions } from "@ot/constants";
 import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
@@ -14,20 +14,6 @@ const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED 
        // ... AND USE THE PARAMETERS HERE
     },
 });
-
-function getMaxStage(records) {
-  let maxIndex = -Infinity;
-  let maxStage;
-  for (const stage of Object.keys(records)) {
-    const index = clinicalStageCategories[stage].index;
-    if (index > maxIndex) {
-      maxIndex = index;
-      maxStage = stage;
-    }
-  }
-  // console.log({ index: maxIndex, stage: maxStage })
-  return { index: maxIndex, stage: maxStage };
-}
 
 const columns = [
   {
@@ -114,22 +100,18 @@ const columns = [
 
 function RecordsCards({
   records,
+  maxClinicalStage
   // query,
   // variables,
   // loading,
 }) {
-  const [selectedStage, setSelectedStage] = useState({});
-  const [maxStage, setMaxStage] = useState(null);
+  const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
-    if (records && Object.keys(records).length > 0) {
-      const _maxStage = getMaxStage(records);
-      setMaxStage(_maxStage);
-      setSelectedStage(_maxStage);
-    }
-  }, [records]);
+    setSelectedStage(maxClinicalStage);
+  }, [maxClinicalStage]);
 
-  if (!selectedStage?.stage) return null;
+  if (!selectedStage) return null;
 
   return (
     <>
@@ -137,7 +119,7 @@ function RecordsCards({
         records={records}
         setSelectedStage={setSelectedStage}
         selectedStage={selectedStage}
-        maxStage={maxStage}
+        maxStage={maxClinicalStage}
       />
       <Box
         sx={{
@@ -158,7 +140,7 @@ function RecordsCards({
         <OtTable
           // showGlobalFilter
           columns={columns}
-          rows={records[selectedStage.stage]}
+          rows={records[selectedStage]}
           // dataDownloader
           // dataDownloaderFileStem="clinical-records"`
           // fixed

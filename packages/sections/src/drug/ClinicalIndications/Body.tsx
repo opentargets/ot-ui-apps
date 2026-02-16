@@ -3,9 +3,8 @@ import { useQuery } from "@apollo/client";
 import localData from "./clinical_indication_CHEMBL102.json"  // !! IMPORT LOCAL DATA FOR NOW !!
 // import localData from "./clinical_indication_CHEMBL2105708.json"  // !! IMPORT LOCAL DATA FOR NOW !!
 import { Grid } from "@mui/material";
-import { SectionItem, PaginationActionsComplete, OtTable } from "ui";
-import { sourceMap, phaseMap } from "@ot/constants";
-import { referenceUrls } from "@ot/utils";
+import { SectionItem, PaginationActionsComplete } from "ui";
+
 
 import { useState } from "react";
 import Description from "./Description";
@@ -20,6 +19,7 @@ function Body({ id: chemblId, label: name, entity }) {
   
   // records to be showing in 2nd table
   const [records, setRecords] = useState([]);
+  const [maxClinicalStage, setMaxClinicalStage] = useState(null);
 
   const rows = localData;  // !! CHECNGE TO ROWS FROM REQUEST WHEN HAVE API !!
 
@@ -38,6 +38,7 @@ function Body({ id: chemblId, label: name, entity }) {
                 <IndicationsTable
                   rows={rows}
                   setRecords={setRecords}
+                  setMaxClinicalStage={setMaxClinicalStage}
                   query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
                   variables={variables}
                   loading={request.loading}
@@ -48,7 +49,7 @@ function Body({ id: chemblId, label: name, entity }) {
             {/* RHS table */}
             <Grid item xs={12} md={7}>
               {records && (
-                <RecordsCards records={records}/>
+                <RecordsCards records={records} maxClinicalStage={maxClinicalStage} />
               )}
             </Grid>
           </Grid>
