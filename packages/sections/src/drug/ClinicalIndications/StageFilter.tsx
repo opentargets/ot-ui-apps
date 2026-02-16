@@ -21,23 +21,26 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         mr: 6,
       }}
     >
-
-      {/* single absolute line behind all circles */}
+      {/* single absolute line behind all circles – stops at Phase IV */}
       <Box
         sx={{
           position: "absolute",
           bottom: `${usedCircleWidth / 2 - lineWidth / 2}px`,
           left: 0,
-          right: 0,
+          width: records[entries[entries.length - 1][0]]?.length > 0
+            ? `calc(${((totalStages - 2) / (totalStages - 1)) * 100}% - ${(usedCircleWidth - emptyCircleWidth) / 2}px)`
+            : `${((totalStages - 2) / (totalStages - 1)) * 100}%`,
           height: `${lineWidth}px`,
-          // !! ARBITRARY COLORS !!
-          background: theme => `linear-gradient(
-            to right,
-            ${theme.palette.primary.main} 0%,
-            ${theme.palette.primary.main} ${(maxStage.index / (totalStages - 1)) * 100}%,
-            rgba(136,136,136,0.25) ${(maxStage.index / (totalStages - 1)) * 100}%,
-            rgba(136,136,136,0.25) 100%
-          )`,
+          background: theme => {
+            const pct = Math.min((maxStage.index / (totalStages - 2)) * 100, 100);
+            return `linear-gradient(
+              to right,
+              ${theme.palette.primary.main} 0%,
+              ${theme.palette.primary.main} ${pct}%,
+              rgba(136,136,136,0.25) ${pct}%,
+              rgba(136,136,136,0.25) 100%
+            )`;
+          },
           zIndex: 0,
         }}
       />
