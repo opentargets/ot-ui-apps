@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 
 import localData from "./clinical_indication_CHEMBL102.json"  // !! IMPORT LOCAL DATA FOR NOW !!
 // import localData from "./clinical_indication_CHEMBL2105708.json"  // !! IMPORT LOCAL DATA FOR NOW !!
-import { Grid } from "@mui/material";
+import { Grid, Box } from "@mui/material";
 import { SectionItem, PaginationActionsComplete } from "ui";
 
 
@@ -24,38 +24,44 @@ function Body({ id: chemblId, label: name, entity }) {
   const rows = localData;  // !! CHECNGE TO ROWS FROM REQUEST WHEN HAVE API !!
 
   return (
-    <SectionItem
-      definition={definition}
-      request={request}
-      entity={entity}
-      renderDescription={() => <Description name={name} />}
-      renderBody={() => {
-        return (
-          <Grid container columnSpacing={8}>
-            {/* LHS table */}
-            <Grid item xs={12} md={5}>
-              {rows?.length > 0 && (  
-                <IndicationsTable
-                  rows={rows}
-                  setRecords={setRecords}
-                  setMaxClinicalStage={setMaxClinicalStage}
-                  query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
-                  variables={variables}
-                  loading={request.loading}
-                />
-              )}
-            </Grid>
+    <Box sx={{ 
+      "& .MuiCardContent-root": { 
+        padding: "0 !important" 
+      } 
+    }}>
+      <SectionItem
+        definition={definition}
+        request={request}
+        entity={entity}
+        renderDescription={() => <Description name={name} />}
+        renderBody={() => {
+          return (
+            <Grid container columnSpacing={6}>
+              {/* LHS table */}
+              <Grid item xs={12} md={4}>
+                {rows?.length > 0 && (  
+                  <IndicationsTable
+                    rows={rows}
+                    setRecords={setRecords}
+                    setMaxClinicalStage={setMaxClinicalStage}
+                    query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
+                    variables={variables}
+                    loading={request.loading}
+                  />
+                )}
+              </Grid>
 
-            {/* RHS table */}
-            <Grid item xs={12} md={7}>
-              {records && (
-                <RecordsCards records={records} maxClinicalStage={maxClinicalStage} />
-              )}
+              {/* RHS table */}
+              <Grid item xs={12} md={8}>
+                {records && (
+                  <RecordsCards records={records} maxClinicalStage={maxClinicalStage} />
+                )}
+              </Grid>
             </Grid>
-          </Grid>
-        );
-      }}
-    />
+          );
+        }}
+      />
+    </Box>
   );
 }
 

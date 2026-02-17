@@ -19,8 +19,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "end",
-        mt: 2,
-        mr: 6,
+        mt: 4,
+        mr: 10,
       }}
     >
       {/* single absolute line behind all circles – stops at Phase IV */}
@@ -50,7 +50,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
       {/* evenly spaced stage columns */}
       {entries.map(([stage, { index, label }]) => {
         const hasRecords = records[stage]?.length > 0;
-        const circleWidth = hasRecords ? usedCircleWidth : emptyCircleWidth;
+        const circleWidth = hasRecords || index === entries.length -1 ? usedCircleWidth : emptyCircleWidth;
 
         return (
           <Box
@@ -84,7 +84,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
             <Box
               component={hasRecords ? "button" : "div"}
               sx={{
-                borderRadius: `${circleWidth / 2}px`,
+                borderRadius: index === entries.length - 1 ? 0 : `${circleWidth / 2}px`,
                 boxShadow: theme => (hasRecords && stage !== selectedStage
                   ? theme.boxShadow.md
                   : "none"

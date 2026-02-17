@@ -123,11 +123,12 @@ function RecordsCards({
       />
       <Box
         sx={{
-          mr: 4,
-          mt: 0.25,
+          mr: 6,
+          mt: 0.75,
           "& thead": { display: 'none' },
           "& tr": {
             padding: "0.15rem 0 !important",
+            // borderBottom: "none !important",
             ":hover": {bgcolor: "transparent"},
           },
           "& td": {

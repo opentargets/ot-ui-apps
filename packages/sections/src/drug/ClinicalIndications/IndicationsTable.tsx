@@ -3,6 +3,8 @@ import { Link, OtTable, useApolloClient } from "ui";
 import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import clinicalRecordsData from "./clinical_report_CHEMBL192.json";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 // import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
@@ -70,17 +72,17 @@ function IndicationsTable({
       label: "",
       renderCell: ({ diseaseId, maxClinicalStage, clinicalReportIds, _isSelected }: any) => (
         <Box 
-          className="main-card"
           sx={{ 
-            p: 0.75, 
-            border: '1px solid grey.200',
+            p: "0.6rem 0.5rem 0.6rem 1rem",
+            borderWidth: "0 0 0 4px",
+            borderStyle: "solid",
             borderRadius: 1,
-            bgcolor: _isSelected ? 'grey.100' : 'background.paper',
-            borderLeft: _isSelected ? '4px solid red' : '1px solid grey.200',
+            borderColor: _isSelected ? "primary.main" : "background.paper",
+            bgcolor: _isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
             cursor: 'pointer',
             '&:hover': {
-              bgcolor: 'grey.100',
-              borderLeft: '1px solid grey.200'
+              bgcolor: _isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
+              borderColor: _isSelected ? "primary.main" : "grey.300",
             }
           }}
         >
@@ -90,7 +92,7 @@ function IndicationsTable({
             sx={{
               fontSize: "14px",
               fontWeight: 'bold',
-              mb: 0.25,
+              mb: 0,
               color: 'primary.main'
             }}
           >
@@ -112,15 +114,26 @@ function IndicationsTable({
             </Box>
 
             {/* Bottom right: Number of records */}
-            <Typography
-              variant="caption"
-              sx={{
-                fontSize: 12,
-                color: 'text.secondary'
-              }}
-            >
-              {clinicalReportIds.length} records
-            </Typography>
+            <Box sx={{ display: "flex", gap: 0.75, alignItems: "center" }}>
+              <Typography
+                variant="caption"
+                sx={{
+                  fontSize: 12,
+                  color: 'text.secondary'
+                }}
+              >
+                {clinicalReportIds.length} records
+              </Typography>
+              <Box
+                sx={{
+                  fontSize: "11px",
+                  color: "grey.600", // !! ARBITRARY COLOR !!
+                  visibility: _isSelected ? "visible" : "hidden",
+                }}
+              >
+                <FontAwesomeIcon icon={faArrowRight} />
+              </Box>
+            </Box>
           </Box>
         </Box>
       ),
@@ -133,18 +146,33 @@ function IndicationsTable({
   return (
     <Box
       sx={{
-        mr: 4,
-        mt: 0.25,
+        p: 2,
+        borderRightWidth: "1px",
+        borderRightStyle: "solid",
+        borderRightColor: "grey.300",
         "& thead": { display: 'none' },
+        "& table": {
+          borderCollapse: "collapse",
+          borderSpacing: 0,
+        },
         "& tr": {
           padding: "0.15rem 0 !important",
-          ":hover": {bgcolor: "transparent"},
+          borderBottom: "none !important",
+          ":hover": { bgcolor: "transparent" },
         },
         "& td": {
-          padding: "0.15rem 0 !important",
+          padding: "0 !important",
           maxWidth: 0,  // forces td to respect overflow
+          borderBottom: "none !important",
           ":hover": {bgcolor: "transparent"}
         },
+        "& > div > :nth-child(2)": theme => ({
+          paddingTop: "1rem",  // !! FLAKY !! - TO UNDO PADDING TO MAKE ROWS FULL BLEED !!
+          marginLeft: "-1rem",
+          marginRight: "-1rem",
+          width: `calc(100% + ${theme.spacing(4)})`,
+        }),
+
       }}
     >
       <OtTable
@@ -193,6 +221,7 @@ function IndicationsTable({
         loading={loading}
         sortBy="indicationCard"
         order="desc"
+        showRowsPerPageControl={false}
       />
     </Box>
   );
