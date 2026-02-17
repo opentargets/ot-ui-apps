@@ -9,7 +9,7 @@ const DEFAULT_BASE_URL = "http://localhost:3000";
 
 /**
  * Extended test fixtures with test configuration
- */   
+ */
 type TestFixtures = {
   testConfig: TestConfig;
   baseURL: string;

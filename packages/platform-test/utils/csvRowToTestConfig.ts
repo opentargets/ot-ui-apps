@@ -8,7 +8,6 @@ import { parseCsvStringToArray } from "../utils/parseCsvStringToArray";
  */
 export function csvRowToTestConfig(row: CSVRow): TestConfig {
   const col = CSV_COLUMNS;
-  console.log(row, "parsing CSV row to test config");
 
   return {
     drug: {
