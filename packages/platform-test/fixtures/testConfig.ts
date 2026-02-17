@@ -82,6 +82,7 @@ export async function getTestConfig(): Promise<TestConfig> {
     if (fetchedConfig) {
       // Merge fetched config with defaults to fill any empty cells
       cachedConfig = mergeWithDefaults(fetchedConfig, defaults);
+      console.log(cachedConfig.disease, "disease config parsed from sheet");
       return cachedConfig;
     }
     console.log("Falling back to default configuration");
