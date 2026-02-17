@@ -5,13 +5,12 @@ import {
   SectionItem,
   Tooltip,
   ChipList,
-  TableDrawer,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
   OtTableSSP,
 } from "ui";
 
-import { phaseMap, sourceMap, naLabel, dataTypesMap } from "@ot/constants";
+import { phaseMap, stopReasonMap, naLabel, dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 
@@ -89,20 +88,12 @@ const exportColumns = [
     },
   },
   {
-    label: "clinicalPhase",
-    exportValue: row => row.clinicalPhase,
-  },
-  {
-    label: "clinicalStatus",
-    exportValue: row => row.clinicalStatus,
+    label: "clinicalStage",
+    exportValue: row => row.clinicalStage,
   },
   {
     label: "studyStartDate",
     exportValue: row => row.studyStartDate,
-  },
-  {
-    label: "source",
-    exportValue: row => row.urls,
   },
 ];
 
@@ -245,30 +236,30 @@ function getColumns(classes) {
       },
     },
     {
-      id: "clinicalPhase",
+      id: "clinicalStage",
       label: "Phase",
       sortable: true,
-      renderCell: ({ clinicalPhase }) => phaseMap(clinicalPhase),
-      filterValue: ({ clinicalPhase }) => phaseMap(clinicalPhase),
+      renderCell: ({ clinicalStage }) => phaseMap(clinicalStage),
+      filterValue: ({ clinicalStage }) => phaseMap(clinicalStage),
     },
     {
-      id: "clinicalStatus",
-      label: "Status",
-      renderCell: ({ studyStopReason, clinicalStatus, studyStopReasonCategories }) => {
-        if (clinicalStatus && studyStopReason)
+      id: "trialWhyStopped",
+      label: "Why Stopped",
+      renderCell: ({ trialWhyStopped, trialStopReasonCategories }) => {
+        if (trialWhyStopped)
           return (
             <Tooltip
               showHelpIcon
               title={
                 <div className={classes.tooltipContainer}>
                   <div>
-                    <span>Study stop reason: {studyStopReason}</span>
+                    <span>Trial stop reason: {trialWhyStopped}</span>
                   </div>
                   <div className={classes.chipContainer}>
-                    {studyStopReasonCategories ? (
+                    {trialStopReasonCategories ? (
                       <ChipList
-                        items={studyStopReasonCategories.map(reason => ({
-                          label: reason,
+                        items={trialStopReasonCategories.map(reason => ({
+                          label: stopReasonMap(reason),
                           customClass: classes.chipStyle,
                         }))}
                       />
@@ -277,10 +268,9 @@ function getColumns(classes) {
                 </div>
               }
             >
-              {clinicalStatus}
+              {trialWhyStopped}
             </Tooltip>
           );
-        if (clinicalStatus) return clinicalStatus;
         return naLabel;
       },
     },
@@ -290,23 +280,6 @@ function getColumns(classes) {
       numeric: true,
       renderCell: ({ studyStartDate }) =>
         studyStartDate ? new Date(studyStartDate).getFullYear() : naLabel,
-    },
-    {
-      label: "Source",
-      renderCell: ({ urls }) => {
-        const urlList = urls.map(({ niceName, url }) => ({
-          name: sourceMap[niceName] ? sourceMap[niceName] : niceName,
-          url,
-          group: "sources",
-        }));
-        return <TableDrawer entries={urlList} caption="Sources" />;
-      },
-      filterValue: ({ urls }) => {
-        const labels = urls.map(({ niceName }) =>
-          sourceMap[niceName] ? sourceMap[niceName] : niceName
-        );
-        return labels.join();
-      },
     },
   ];
 }
@@ -321,7 +294,7 @@ function Body({ id, label, entity }) {
   return (
     <SectionItem
       definition={definition}
-      chipText={dataTypesMap.known_drug}
+      chipText={dataTypesMap.clinical}
       entity={entity}
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
@@ -331,9 +304,9 @@ function Body({ id, label, entity }) {
           columns={columns}
           dataDownloader
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem={`chembl-evidence-${id}`}
+          dataDownloaderFileStem={`clinical-precedence-evidence-${id}`}
           entity={entity}
-          sectionName="chembl"
+          sectionName="clinical_precedence"
           showGlobalFilter={false}
           setInitialRequestData={req => {
             setRequest(req);

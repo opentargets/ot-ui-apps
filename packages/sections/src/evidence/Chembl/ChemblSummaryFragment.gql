@@ -1,8 +1,8 @@
 fragment ChemblSummaryFragment on Disease {
-  chembl: evidences(
+  clinical_precedence: evidences(
     ensemblIds: [$ensgId]
     enableIndirect: true
-    datasourceIds: ["chembl"]
+    datasourceIds: ["clinical_precedence"]
     size: 0
   ) {
     count

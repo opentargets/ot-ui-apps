@@ -11,11 +11,11 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ chembl }) => {
-        const { count } = chembl;
+      renderSummary={({ clinical_precedence }) => {
+        const { count } = clinical_precedence;
         return `${count} ${count === 1 ? "entry" : "entries"}`;
       }}
-      subText={dataTypesMap.known_drug}
+      subText={dataTypesMap.clinical}
     />
   );
 }

@@ -17,6 +17,11 @@ const dataTypes = [
     isPrivate: isPrivateDataType("known_drug"),
   },
   {
+    id: "clinical",
+    label: "Clinical Precedence",
+    isPrivate: isPrivateDataType("clinical"),
+  },
+  {
     id: "affected_pathway",
     label: "Pathways & systems biology",
     isPrivate: isPrivateDataType("affected_pathway"),
