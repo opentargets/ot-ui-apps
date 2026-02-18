@@ -109,7 +109,7 @@ function IndicationsTable({
             {/* Bottom left: Max clinical stage */}
             <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
               <Typography variant="caption">
-                Max phase:
+                Max stage:
               </Typography>
               <Typography variant="caption" sx={{ fontSize: 13 }}>
                 {clinicalStageCategories[maxClinicalStage].label}

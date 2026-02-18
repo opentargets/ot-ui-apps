@@ -29,9 +29,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
           position: "absolute",
           bottom: `${usedCircleWidth / 2 - lineWidth / 2}px`,
           left: 0,
-          width: records[entries[entries.length - 1][0]]?.length > 0
-            ? `calc(${((totalStages - 2) / (totalStages - 1)) * 100}% - ${(usedCircleWidth - emptyCircleWidth) / 2}px)`
-            : `${((totalStages - 2) / (totalStages - 1)) * 100}%`,
+          width: `calc(${((totalStages - 2) / (totalStages - 1)) * 100}% - ${(usedCircleWidth - emptyCircleWidth) / 2}px)`,
           height: `${lineWidth}px`,
           background: theme => {
             const pct = Math.min((clinicalStageCategories[maxStage].index / (totalStages - 2)) * 100, 100);
@@ -50,7 +48,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
       {/* evenly spaced stage columns */}
       {entries.map(([stage, { index, label }]) => {
         const hasRecords = records[stage]?.length > 0;
-        const circleWidth = hasRecords || index === entries.length -1 ? usedCircleWidth : emptyCircleWidth;
+        const isWithdrawnIndex = index === entries.length -1;
+        const circleWidth = hasRecords || isWithdrawnIndex ? usedCircleWidth : emptyCircleWidth;
 
         return (
           <Box
@@ -84,7 +83,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
             <Box
               component={hasRecords ? "button" : "div"}
               sx={{
-                borderRadius: index === entries.length - 1 ? 0 : `${circleWidth / 2}px`,
+                borderRadius: isWithdrawnIndex ? 0 : `${circleWidth / 2}px`,
                 boxShadow: theme => (hasRecords && stage !== selectedStage
                   ? theme.boxShadow.md
                   : "none"
@@ -98,7 +97,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                 width: `${circleWidth}px`,
                 height: `${circleWidth}px`,
                 cursor: hasRecords && stage !== selectedStage ? "pointer" : "auto",  
-                my: hasRecords ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
+                my: hasRecords || isWithdrawnIndex ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
                 color: stage === selectedStage ? "#fff" : "primary.main",
                 // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
                 bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#ecf7ff" : "background.paper",
