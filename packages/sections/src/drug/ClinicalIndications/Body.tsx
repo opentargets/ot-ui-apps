@@ -24,21 +24,22 @@ function Body({ id: chemblId, label: name, entity }) {
   const rows = localData;  // !! CHECNGE TO ROWS FROM REQUEST WHEN HAVE API !!
 
   return (
-    <Box sx={{ 
-      "& .MuiCardContent-root": { 
-        padding: "0 !important" 
-      } 
-    }}>
-      <SectionItem
-        definition={definition}
-        request={request}
-        entity={entity}
-        renderDescription={() => <Description name={name} />}
-        renderBody={() => {
-          return (
-            <Grid container columnSpacing={6}>
+    <SectionItem
+      definition={definition}
+      request={request}
+      entity={entity}
+      renderDescription={() => <Description name={name} />}
+      renderBody={() => {
+        return (
+          <Box sx={{ 
+            height: '100%',
+            "& .MuiCardContent-root": { 
+              padding: "0 !important" 
+            } 
+          }}>
+            <Grid container columnSpacing={6} sx={{ height: '100%' }}>
               {/* LHS table */}
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4} sx={{ height: '100%' }}>
                 {rows?.length > 0 && (  
                   <IndicationsTable
                     rows={rows}
@@ -58,10 +59,10 @@ function Body({ id: chemblId, label: name, entity }) {
                 )}
               </Grid>
             </Grid>
-          );
-        }}
-      />
-    </Box>
+          </Box>
+        );
+      }}
+    />
   );
 }
 

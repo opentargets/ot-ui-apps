@@ -114,7 +114,7 @@ function IndicationsTable({
             </Box>
 
             {/* Bottom right: Number of records */}
-            <Box sx={{ display: "flex", gap: 0.75, alignItems: "center" }}>
+            <Box sx={{ display: "flex", gap: 0.6, alignItems: "baseline" }}>
               <Typography
                 variant="caption"
                 sx={{
@@ -146,10 +146,19 @@ function IndicationsTable({
   return (
     <Box
       sx={{
-        p: 2,
-        borderRightWidth: "1px",
-        borderRightStyle: "solid",
-        borderRightColor: "grey.300",
+        px: 1,  
+        py: 0,  
+        position: 'relative',
+        "&::after": {  // vertical line full height of section
+          content: '""',
+          position: 'absolute',
+          right: 0,
+          top: -16,  
+          bottom: -24,  
+          width: '1px',
+          backgroundColor: 'divider',  
+          opacity: 0.8,  
+        },
         "& thead": { display: 'none' },
         "& table": {
           borderCollapse: "collapse",
@@ -162,17 +171,16 @@ function IndicationsTable({
         },
         "& td": {
           padding: "0 !important",
-          maxWidth: 0,  // forces td to respect overflow
+          maxWidth: 0,  
           borderBottom: "none !important",
           ":hover": {bgcolor: "transparent"}
         },
-        "& > div > :nth-child(2)": theme => ({
-          paddingTop: "1rem",  // !! FLAKY !! - TO UNDO PADDING TO MAKE ROWS FULL BLEED !!
-          marginLeft: "-1rem",
-          marginRight: "-1rem",
+        "& > div > :nth-of-type(2)": theme => ({
+          paddingTop: "1rem",
+          marginLeft: "-1.5rem",  // to reach left edge
+          marginRight: "-0.5rem",  // to not overshoot right border
           width: `calc(100% + ${theme.spacing(4)})`,
         }),
-
       }}
     >
       <OtTable
