@@ -1,14 +1,15 @@
 import type { Locator, Page } from "@playwright/test";
 
 /**
- * Interactor for QTL Credible Sets section on Variant page
+ * Interactor for Locus-to-Gene (L2G) section on Credible Set page
+ * Section ID: locus2gene
  */
-export class QTLCredibleSetsSection {
+export class Locus2GeneSection {
   constructor(private page: Page) {}
 
   // Section container
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-qtl-credible-sets']");
+    return this.page.locator("[data-testid='section-locus2gene']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -28,7 +29,7 @@ export class QTLCredibleSetsSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-qtl-credible-sets']");
+          const sect = document.querySelector("[data-testid='section-locus2gene']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;
@@ -40,53 +41,55 @@ export class QTLCredibleSetsSection {
       });
   }
 
-  // Table
-  getTable(): Locator {
+  // L2G uses a HeatmapTable, so we interact with it differently
+  getHeatmapTable(): Locator {
     return this.getSection().locator("table");
   }
 
+  async isHeatmapVisible(): Promise<boolean> {
+    return await this.getHeatmapTable()
+      .isVisible()
+      .catch(() => false);
+  }
+
   async getTableRows(): Promise<number> {
-    const tbody = this.getTable().locator("tbody");
+    const tbody = this.getHeatmapTable().locator("tbody");
     const rows = tbody.locator("tr");
     return await rows.count();
   }
 
   async getTableRow(index: number): Promise<Locator> {
-    const tbody = this.getTable().locator("tbody");
+    const tbody = this.getHeatmapTable().locator("tbody");
     return tbody.locator("tr").nth(index);
   }
 
-  // Credible set link
-  async getCredibleSetLink(rowIndex: number): Promise<Locator> {
-    const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/credible-set/']");
-  }
-
-  async clickCredibleSetLink(rowIndex: number): Promise<void> {
-    const link = await this.getCredibleSetLink(rowIndex);
-    await link.click();
-  }
-
-  // Study link
-  async getStudyLink(rowIndex: number): Promise<Locator> {
-    const row = await this.getTableRow(rowIndex);
-    return row.locator("a[href*='/study/']");
-  }
-
-  async clickStudyLink(rowIndex: number): Promise<void> {
-    const link = await this.getStudyLink(rowIndex);
-    await link.click();
-  }
-
-  // Affected gene link
-  async getAffectedGeneLink(rowIndex: number): Promise<Locator> {
+  // Target gene link
+  async getTargetGeneLink(rowIndex: number): Promise<Locator> {
     const row = await this.getTableRow(rowIndex);
     return row.locator("a[href*='/target/']");
   }
 
-  async clickAffectedGeneLink(rowIndex: number): Promise<void> {
-    const link = await this.getAffectedGeneLink(rowIndex);
+  async clickTargetGeneLink(rowIndex: number): Promise<void> {
+    const link = await this.getTargetGeneLink(rowIndex);
     await link.click();
+  }
+
+  async getTargetGeneName(rowIndex: number): Promise<string | null> {
+    const link = await this.getTargetGeneLink(rowIndex);
+    return await link.textContent();
+  }
+
+  async hasTargetGeneLink(rowIndex: number): Promise<boolean> {
+    const link = await this.getTargetGeneLink(rowIndex);
+    return await link.isVisible().catch(() => false);
+  }
+
+  // L2G Score
+  async getL2GScore(rowIndex: number): Promise<string | null> {
+    const row = await this.getTableRow(rowIndex);
+    // L2G score is typically in the second column
+    const cell = row.locator("td").nth(1);
+    return await cell.textContent();
   }
 
   // Global filter/search
@@ -96,6 +99,11 @@ export class QTLCredibleSetsSection {
 
   async search(searchTerm: string): Promise<void> {
     await this.getSearchInput().fill(searchTerm);
+    await this.waitForLoad();
+  }
+
+  async clearSearch(): Promise<void> {
+    await this.getSearchInput().clear();
     await this.waitForLoad();
   }
 }
