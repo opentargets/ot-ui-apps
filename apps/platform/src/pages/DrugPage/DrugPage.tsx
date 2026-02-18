@@ -9,13 +9,13 @@ import DRUG_PAGE_QUERY from "./DrugPage.gql";
 
 import Profile from "./Profile";
 import { ReactNode } from "react";
-import { Platform } from "@ot/constants";
+
 
 function DrugPage(): ReactNode {
   const location = useLocation();
   const { chemblId } = useParams();
 
-  const { loading, data } = useQuery<Platform.DrugPageQueryQuery, Platform.DrugPageQueryQueryVariables>(DRUG_PAGE_QUERY, {
+  const { loading, data } = useQuery(DRUG_PAGE_QUERY, {
     variables: { chemblId: chemblId! },
   });
 

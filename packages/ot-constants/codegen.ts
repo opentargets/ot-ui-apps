@@ -39,7 +39,7 @@ const config: CodegenConfig = {
   schema: `${VITE_API_URL}`,
   errorsOnly: false,
   generates: {
-    "./src/types/graphql.ts": {
+    "./src/types/index.ts": {
       // documents: ["../../packages/sections/src/**/*.{ts,tsx,jsx,js,gql,graphql}"],
       plugins: ['typescript','typescript-operations','typescript-graphql-request'],
       config: { gqlTagName: 'gql', rawRequest: false }

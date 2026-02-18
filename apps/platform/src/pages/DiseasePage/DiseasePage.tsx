@@ -6,7 +6,6 @@ import { BasePage, ScrollToTop } from "ui";
 
 import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
-import { Platform, } from "@ot/constants";
 
 import DISEASE_PAGE_QUERY from "./DiseasePage.gql";
 import Associations from "./DiseaseAssociations";
@@ -19,7 +18,7 @@ type DiseaseURLParams = {
 function DiseasePage(): ReactElement {
   const location = useLocation();
   const { efoId } = useParams<DiseaseURLParams>();
-  const { loading, data } = useQuery<Platform.DiseasePageQueryQuery, Platform.DiseasePageQueryQueryVariables>(DISEASE_PAGE_QUERY, {
+  const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
     variables: { efoId: efoId! },
 
   });

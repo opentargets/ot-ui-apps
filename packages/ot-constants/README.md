@@ -23,25 +23,11 @@ This command runs `graphql-codegen --config codegen.ts` which will:
 1. Load the GraphQL schema from the API URL specified in `VITE_API_URL`
 2. Scan GraphQL operations from source files across the monorepo
 3. Generate namespaced TypeScript types for each entity
-4. Output type files to `src/types/` directory
+4. Output type files to `src/types/index.ts` file
 5. Generate schema introspection to `graphql.schema.json`
 
 ### Generated Types
 
-The codegen generates separate type files for each entity, wrapped in namespaces:
-
-| Namespace      | Output File              | Source Documents                           |
-| -------------- | ------------------------ | ------------------------------------------ |
-| `Disease`      | `src/types/disease.ts`   | `packages/sections/src/disease/**`         |
-| `Drug`         | `src/types/drug.ts`      | `packages/sections/src/drug/**`            |
-| `Target`       | `src/types/target.ts`    | `packages/sections/src/target/**`          |
-| `Variant`      | `src/types/variant.ts`   | `packages/sections/src/variant/**`         |
-| `Study`        | `src/types/study.ts`     | `packages/sections/src/study/**`           |
-| `CredibleSet`  | `src/types/credibleSet.ts` | `packages/sections/src/credibleSet/**`   |
-| `Evidence`     | `src/types/evidence.ts`  | `packages/sections/src/evidence/**`        |
-| `Common`       | `src/types/common.ts`    | `packages/sections/src/common/**`          |
-| `Platform`     | `src/types/platform.ts`  | `apps/platform/src/**`                     |
-| `UI`           | `src/types/ui.ts`        | `packages/ui/src/**`                       |
 
 Each file contains:
 
@@ -51,21 +37,12 @@ Each file contains:
 
 ### Usage
 
-Import the namespaced types directly from their type files:
+Import the types directly from the generated types file:
 
 ```typescript
-import { Disease } from "@ot/constants/src/types/disease";
-import { Drug } from "@ot/constants/src/types/drug";
-import { Target } from "@ot/constants/src/types/target";
-import { Variant } from "@ot/constants/src/types/variant";
+import { Disease } from "@ot/constants/src/types/";
 
-// Use types with namespace prefix
-type KnownDrugsData = Disease.KnownDrugsQuery;
-type DrugWarnings = Drug.DrugWarningsQuery;
-type TargetInfo = Target.TargetInfoQuery;
-```
 
-> **Note:** Due to non-unique GraphQL query names across the codebase, each entity's types are kept in separate files to avoid naming conflicts. Import from the specific type file you need.
 
 ### Manual Updates
 

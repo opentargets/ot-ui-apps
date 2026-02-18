@@ -7,14 +7,14 @@ import Header from "./Header";
 import NotFoundPage from "../NotFoundPage";
 
 import EVIDENCE_PAGE_QUERY from "./EvidencePageQuery.gql";
-import { Platform } from "@ot/constants";
+
 
 import Profile from "./Profile";
 
 function EvidencePage() {
   const location = useLocation();
   const { ensgId, efoId } = useParams<{ ensgId: string; efoId: string }>();
-  const { loading, data } = useQuery<Platform.EvidencePageQueryQuery, Platform.EvidencePageQueryQueryVariables>(EVIDENCE_PAGE_QUERY, {
+  const { loading, data } = useQuery(EVIDENCE_PAGE_QUERY, {
     variables: { ensgId: ensgId!, efoId: efoId! },
   });
 
