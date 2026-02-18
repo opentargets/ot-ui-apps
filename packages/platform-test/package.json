@@ -21,8 +21,8 @@
     "dev-test:smoke": "playwright test --grep @smoke",
     "test:platform:e2e": "start-server-and-test \"(cd ../../apps/platform && yarn run serve)\" http://localhost:4173 \"playwright test\"",
     "test:platform:e2e:smoke": "start-server-and-test \"(cd ../../apps/platform && yarn run serve)\" http://localhost:4173 \"playwright test --grep @smoke\"",
-    "docs:test_interactors": "typedoc",
-    "docs:test_interactors:serve": "yarn docs:test_interactors && npx serve docs/widgets-api"
+    "docs:widgets": "typedoc",
+    "docs:widgets:serve": "yarn docs:widgets && npx serve docs/widgets-api"
   },
   "keywords": [],
   "author": "",
