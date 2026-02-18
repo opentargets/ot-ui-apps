@@ -83,6 +83,9 @@ function IndicationsTable({
             '&:hover': {
               bgcolor: _isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
               borderColor: _isSelected ? "primary.main" : "grey.300",
+              "& .arrow-icon": {
+                visibility: "visible",
+              },
             }
           }}
         >
@@ -125,6 +128,7 @@ function IndicationsTable({
                 {clinicalReportIds.length} records
               </Typography>
               <Box
+                className="arrow-icon"
                 sx={{
                   fontSize: "11px",
                   color: "grey.600", // !! ARBITRARY COLOR !!
@@ -176,7 +180,7 @@ function IndicationsTable({
           ":hover": {bgcolor: "transparent"}
         },
         "& > div > :nth-of-type(2)": theme => ({
-          paddingTop: "1rem",
+          paddingTop: "0.5rem",
           marginLeft: "-1.5rem",  // to reach left edge
           marginRight: "-0.5rem",  // to not overshoot right border
           width: `calc(100% + ${theme.spacing(4)})`,
