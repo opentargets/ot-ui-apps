@@ -112,7 +112,10 @@ function OtTable({
   const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
 
   const tableData = useMemo(() => (loading ? loadingRows : rows), [loading, rows]);
-  const tableColumns = useMemo(() => (loading ? loadingCells : mappedColumns), [loading]);
+  const tableColumns = useMemo(
+    () => (loading ? loadingCells : mappedColumns),
+    [loading, loadingCells, mappedColumns]
+  );
 
   function getCellData(cell: Record<string, unknown>): ReactNode {
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;

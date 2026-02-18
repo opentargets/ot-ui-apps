@@ -6,6 +6,7 @@ import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
+import { sum } from "d3";
 
 const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -15,120 +16,120 @@ const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED 
     },
 });
 
-const columns = [
-  {
-    id: "trial",
-    label: "",
-    renderCell: (record) => {
-      const {
-        source,
-        trialStartDate,
-        type,
-        trialOverallStatus,
-        trialOfficialTitle,
-      } = record;
-
-      const displayTitle = (
-        <Typography
-          variant={"body1"}
-          noWrap
-          sx={{ 
-            minWidth: 0,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          {trialOfficialTitle || `[${sentenceCase(type)}]`}
-        </Typography>
-      );
-
-      return (
-        <Box sx={{ mb: 0.5, overflow: "hidden" }}>
-          <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
-            <ClinicalRecordDrawer record={record}>
-              {displayTitle}
-            </ClinicalRecordDrawer>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {source && (
-                <Box sx={{ display: "flex", minWidth: "100px", alignItems: "baseline", gap: 0.5 }}>
-                  <Typography variant= "caption" sx={{ fontSize: 13 }}>
-                    {source}
-                  </Typography>
-                </Box>
-              )}
-              {trialOverallStatus && (
-                <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-                  <Typography variant="caption">
-                    Status:
-                  </Typography>
-                  <Typography variant= "caption" sx={{ fontSize: 13 }}>
-                    {trialOverallStatus?.toLowerCase()}
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-            {trialStartDate && (
-              <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-                <Typography variant="caption">
-                  Start:
-                </Typography>
-                <Typography
-                  variant= "caption"
-                  sx={{
-                    fontSize: 13,
-                    fontVariant: "common-ligatures tabular-nums",
-                    letterSpacing: "-0.05em",
-                  }}
-                >
-                  {trialStartDate.slice(0, 4)}
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        </Box>
-      );
-    },
-    sortable: true,
-    comparator: (a, b) => {
-      return new Date(a.trialStartDate).getTime() - new Date(b.trialStartDate).getTime();
-    },
-  }
-];
-
 function RecordsCards({
   records,
-  maxClinicalStage
+  maxClinicalStage,
   // query,
   // variables,
   // loading,
 }) {
   const [selectedStage, setSelectedStage] = useState(null);
-
   useEffect(() => {
     setSelectedStage(maxClinicalStage);
   }, [maxClinicalStage]);
+
+  const columns = [
+    {
+      id: "trial",
+      label: (
+        <StageFilter
+          records={records}
+          setSelectedStage={setSelectedStage}
+          selectedStage={selectedStage}
+          maxStage={maxClinicalStage}
+        />
+      ),
+      renderCell: (record) => {
+        const {
+          source,
+          trialStartDate,
+          type,
+          trialOverallStatus,
+          trialOfficialTitle,
+        } = record;
+
+        const displayTitle = (
+          <Typography
+            variant={"body1"}
+            noWrap
+            sx={{ 
+              minWidth: 0,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {trialOfficialTitle || `[${sentenceCase(type)}]`}
+          </Typography>
+        );
+
+        return (
+          <Box sx={{ mb: 0.5, overflow: "hidden" }}>
+            <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
+              <ClinicalRecordDrawer record={record}>
+                {displayTitle}
+              </ClinicalRecordDrawer>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                {source && (
+                  <Box sx={{ display: "flex", minWidth: "100px", alignItems: "baseline", gap: 0.5 }}>
+                    <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                      {source}
+                    </Typography>
+                  </Box>
+                )}
+                {trialOverallStatus && (
+                  <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+                    <Typography variant="caption">
+                      Status:
+                    </Typography>
+                    <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                      {trialOverallStatus?.toLowerCase()}
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+              {trialStartDate && (
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+                  <Typography variant="caption">
+                    Start:
+                  </Typography>
+                  <Typography
+                    variant= "caption"
+                    sx={{
+                      fontSize: 13,
+                      fontVariant: "common-ligatures tabular-nums",
+                      letterSpacing: "-0.05em",
+                    }}
+                  >
+                    {trialStartDate.slice(0, 4)}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Box>
+        );
+      },
+      sortable: false,
+    }
+  ];
 
   if (!selectedStage) return null;
 
   return (
     <>
-      <StageFilter
-        records={records}
-        setSelectedStage={setSelectedStage}
-        selectedStage={selectedStage}
-        maxStage={maxClinicalStage}
-      />
       <Box
         sx={{
+          position: "relative",
           mr: 6,
-          mt: 0.75,
-          "& thead": { display: 'none' },
+          "& th": {
+            position: "relative !important",
+            padding: "0 !important",
+            height: "140px",
+          },
           "& tr": {
             padding: "0.15rem 0 !important",
-            // borderBottom: "none !important",
             ":hover": {bgcolor: "transparent"},
           },
           "& td": {
@@ -141,19 +142,21 @@ function RecordsCards({
         <OtTable
           // showGlobalFilter
           columns={columns}
-          rows={records[selectedStage]}
-          // dataDownloader
+          rows={records[selectedStage]?.toSorted((a, b) => {
+            return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
+          }) || []}
+          dataDownloader
           // dataDownloaderFileStem="clinical-records"`
           // fixed
-          noWrapHeader={false}
+          // noWrapHeader={false}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           // loading={loading}
           showGlobalFilter={false}
           // hover={false}
           showColumnVisibilityControl={false}
           showRowsPerPageControl={false}
-          sortBy="trial"
-          order="desc"
+          // sortBy="trial"
+          // order="desc"
         />
       </Box>
     </>

@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { clinicalStageCategories } from "@ot/constants";
+import { sum } from "d3";
 
 const usedCircleWidth = 30;
 const emptyCircleWidth = 17;
@@ -12,17 +13,36 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
 
   if (!maxStage) return null;
 
+  const nRecords = sum(Object.values(records), row => row.length);
+
   return (
     <Box
       sx={{
-        position: "relative",
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        left: "6rem",
+        right: "3rem",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "end",
-        mt: 4,
-        mr: 10,
+        mb: "3rem",
       }}
-    >
+    >    
+      
+      {/* title */}
+        <Typography
+          variant="caption"
+          sx={{
+            position: "absolute",
+            top: 67,
+            left: -80,
+            fontWeight: 600,
+          }}
+        >
+          {nRecords} {nRecords > 1 ? "records" : "record"}
+        </Typography>
+
       {/* single absolute line behind all circles – stops at Phase IV */}
       <Box
         sx={{
