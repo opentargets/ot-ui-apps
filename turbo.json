@@ -38,10 +38,10 @@
       "dependsOn": ["^build"],
       "outputs": ["bundle-platform/**"]
     },
-    "docs:test_interactors": {
+    "docs:widgets": {
       "outputs": ["docs/widgets-api/**"]
     },
-    "docs:test_interactors:serve": {
+    "docs:widgets:serve": {
       "cache": false,
       "persistent": true
     }

@@ -69,17 +69,17 @@ When adding new widget classes:
 
 1. Add comprehensive JSDoc comments to the class and its methods
 2. Follow the existing naming conventions
-3. Run `yarn docs:test_interactors` to regenerate documentation
+3. Run `yarn docs:widgets` to regenerate documentation
 4. Ensure all public methods have JSDoc descriptions
 
 ## Regenerating Documentation
 
 ```bash
 # Generate documentation
-yarn docs:test_interactors
+yarn docs:widgets
 
 # Generate and serve documentation locally
-yarn docs:test_interactors:serve
+yarn docs:widgets:serve
 ```
 
 ## JSDoc Tags
