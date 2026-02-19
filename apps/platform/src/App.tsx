@@ -19,6 +19,7 @@ import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import MCPDemoPage from "./pages/MCPDemo";
+import ChatDemoPage from "./pages/ChatDemo";
 
 const config = getConfig();
 
@@ -52,6 +53,7 @@ function App(): ReactElement {
               }
             />
             <Route path="/mcp-demo" element={<MCPDemoPage />} />
+            <Route path="/chat-demo" element={<ChatDemoPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>

@@ -5,6 +5,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createUIResource } from "@mcp-ui/server";
 import { z } from "zod";
+import Anthropic from "@anthropic-ai/sdk";
 
 const PORT = 3001;
 
@@ -135,6 +136,97 @@ app.use(
 app.get("/health", (_req, res) =>
   res.json({ status: "ok", server: "ot-l2g-demo", sessions: transports.size })
 );
+
+// ----- /chat endpoint -----
+
+const STUDY_LOCUS_RE = /\b([0-9a-f]{32})\b/i;
+
+const SYSTEM_PROMPT =
+  "You are an Open Targets research assistant. You can display interactive data widgets for credible sets. " +
+  "When a user provides a study locus ID (a 32-character hex string), call the get_l2g_widget tool. " +
+  "Otherwise answer questions about drug discovery and Open Targets.";
+
+const L2G_TOOL_DEFINITION = {
+  name: "get_l2g_widget",
+  description:
+    "Get the interactive Locus-to-Gene (L2G) heatmap widget for a credible set. " +
+    "Returns a rich interactive visualisation showing gene prioritisation scores and SHAP feature-group contributions.",
+  input_schema: {
+    type: "object" as const,
+    properties: {
+      studyLocusId: {
+        type: "string",
+        description: "The study locus ID of the credible set",
+      },
+    },
+    required: ["studyLocusId"],
+  },
+};
+
+type ChatMessage = { role: "user" | "assistant"; content: string };
+type Widget = { toolName: string; toolInput: Record<string, unknown>; html: string };
+
+app.post("/chat", async (req, res) => {
+  const messages: ChatMessage[] = req.body?.messages ?? [];
+
+  if (process.env.ANTHROPIC_API_KEY) {
+    // Real mode — use Anthropic SDK
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    try {
+      const response = await client.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        system: SYSTEM_PROMPT,
+        tools: [L2G_TOOL_DEFINITION],
+        messages: messages.map(m => ({ role: m.role, content: m.content })),
+      });
+
+      const widgets: Widget[] = [];
+      let text = "";
+
+      for (const block of response.content) {
+        if (block.type === "text") {
+          text += block.text;
+        } else if (block.type === "tool_use" && block.name === "get_l2g_widget") {
+          const input = block.input as { studyLocusId: string };
+          widgets.push({
+            toolName: block.name,
+            toolInput: input,
+            html: widgetShell(),
+          });
+        }
+      }
+
+      res.json({ text, widgets });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Unknown error";
+      res.status(500).json({ error: message });
+    }
+    return;
+  }
+
+  // Mock mode — regex detect study locus ID
+  const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
+  const match = STUDY_LOCUS_RE.exec(lastUserMsg);
+
+  if (match) {
+    const studyLocusId = match[1];
+    res.json({
+      text: `Here's the interactive L2G widget for \`${studyLocusId}\`:`,
+      widgets: [{ toolName: "get_l2g_widget", toolInput: { studyLocusId }, html: widgetShell() }],
+    });
+  } else {
+    res.json({
+      text:
+        "Hi! I'm the Open Targets research assistant.\n\n" +
+        "I can render interactive **Locus-to-Gene (L2G)** heatmap widgets directly in this chat.\n\n" +
+        "Paste a 32-character credible set study locus ID and I'll display the widget inline.\n\n" +
+        "Example ID: `184646618bb06f7679ceaa7f5ef747f7`",
+      widgets: [],
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log("\n🔬 Open Targets L2G MCP Server");
