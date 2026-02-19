@@ -1,11 +1,6 @@
 import { useQuery } from "@apollo/client";
-
-import localData from "./clinical_indication_CHEMBL102.json"  // !! IMPORT LOCAL DATA FOR NOW !!
-// import localData from "./clinical_indication_CHEMBL2105708.json"  // !! IMPORT LOCAL DATA FOR NOW !!
 import { Grid, Box } from "@mui/material";
 import { SectionItem, PaginationActionsComplete } from "ui";
-
-
 import { useState } from "react";
 import Description from "./Description";
 import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
@@ -21,7 +16,7 @@ function Body({ id: chemblId, label: name, entity }) {
   const [records, setRecords] = useState([]);
   const [maxClinicalStage, setMaxClinicalStage] = useState(null);
 
-  const rows = localData;  // !! CHECNGE TO ROWS FROM REQUEST WHEN HAVE API !!
+  const rows = request.data?.drug.indications.rows;
 
   return (
     <SectionItem

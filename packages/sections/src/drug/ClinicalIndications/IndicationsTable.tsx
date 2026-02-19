@@ -22,7 +22,7 @@ const onLinkClick = (e: any) => {
 
 function stageAndRecordCountComparator(a, b) {
   if (a.maxClinicalStage === b.maxClinicalStage) {
-    return a.clinicalReportIds?.length - b.clinicalReportIds?.length;
+    return a.clinicalReports?.length - b.clinicalReports?.length;
   }
   return clinicalStageCategories[a.maxClinicalStage]?.index -
     clinicalStageCategories[b.maxClinicalStage]?.index;
@@ -70,80 +70,91 @@ function IndicationsTable({
     {
       id: "indicationCard",
       label: "",
-      renderCell: ({ diseaseId, maxClinicalStage, clinicalReportIds, _isSelected }: any) => (
-        <Box 
-          sx={{ 
-            p: "0.6rem 0.5rem 0.6rem 1rem",
-            borderWidth: "0 0 0 4px",
-            borderStyle: "solid",
-            borderRadius: 1,
-            borderColor: _isSelected ? "primary.main" : "background.paper",
-            bgcolor: _isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
-            cursor: 'pointer',
-            '&:hover': {
-              bgcolor: _isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
-              borderColor: _isSelected ? "primary.main" : "grey.300",
-              "& .arrow-icon": {
-                visibility: "visible",
-              },
-            }
-          }}
-        >
-          {/* Top: Indication link as title */}
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: "14px",
-              fontWeight: 'bold',
-              mb: 0,
-              color: 'primary.main'
+      renderCell: (row) => {
+        const {
+          disease,
+          maxClinicalStage,
+          clinicalReports,
+          _isSelected
+        } = row
+        return (
+          <Box 
+            sx={{ 
+              p: "0.5rem 0.5rem 0.5rem 1rem",
+              borderWidth: "0 0 0 4px",
+              borderStyle: "solid",
+              borderRadius: 1,
+              borderColor: _isSelected ? "primary.main" : "background.paper",
+              bgcolor: _isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
+              cursor: 'pointer',
+              '&:hover': {
+                bgcolor: _isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
+                borderColor: _isSelected ? "primary.main" : "grey.300",
+                "& .arrow-icon": {
+                  visibility: "visible",
+                },
+              }
             }}
           >
-            <Link asyncTooltip to={`/disease/${diseaseId}`} onClick={onLinkClick}>
-              {diseaseId}
-            </Link>
-          </Typography>
+            {/* Top: Indication link as title */}
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: "14px",
+                fontWeight: 600,
+                // fontWeight: 'bold',
+                mb: 0,
+                color: 'primary.main'
+              }}
+            >
+              <Link asyncTooltip to={`/disease/${disease.id}`} onClick={onLinkClick}>
+                {disease.name}
+              </Link>
+            </Typography>
 
-          {/* Bottom section with max phase and record count */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            {/* Bottom left: Max clinical stage */}
-            <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-              <Typography variant="caption">
-                Max stage:
-              </Typography>
-              <Typography variant="caption" sx={{ fontSize: 13 }}>
-                {clinicalStageCategories[maxClinicalStage].label}
-              </Typography>
-            </Box>
+            {/* Bottom section with max phase and record count */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              {/* Bottom left: Max clinical stage */}
+              <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+                <Typography variant="caption">
+                  Max stage:
+                </Typography>
+                <Typography variant="caption" sx={{ fontSize: 13 }}>
+                  {clinicalStageCategories[maxClinicalStage].label}
+                </Typography>
+              </Box>
 
-            {/* Bottom right: Number of records */}
-            <Box sx={{ display: "flex", gap: 0.6, alignItems: "baseline" }}>
-              <Typography
-                variant="caption"
-                sx={{
-                  fontSize: 12,
-                  color: 'text.secondary'
-                }}
-              >
-                {clinicalReportIds.length} records
-              </Typography>
-              <Box
-                className="arrow-icon"
-                sx={{
-                  fontSize: "11px",
-                  color: "grey.600", // !! ARBITRARY COLOR !!
-                  visibility: _isSelected ? "visible" : "hidden",
-                }}
-              >
-                <FontAwesomeIcon icon={faArrowRight} />
+              {/* Bottom right: Number of records */}
+              <Box sx={{ display: "flex", gap: 0.6, alignItems: "baseline" }}>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontSize: 12,
+                    color: 'text.secondary'
+                  }}
+                >
+                  {clinicalReports?.length ?? "XX"} records
+                </Typography>
+                <Box
+                  className="arrow-icon"
+                  sx={{
+                    fontSize: "11px",
+                    color: "grey.600", // !! ARBITRARY COLOR !!
+                    visibility: _isSelected ? "visible" : "hidden",
+                  }}
+                >
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      ),
+        );
+      },
       sortable: true,
       comparator: stageAndRecordCountComparator,
-      filterValue: row => clinicalStageCategories[row.maxClinicalStage]?.label,
+      filterValue: row => {
+        return `${row.disease.name} ${clinicalStageCategories[row.maxClinicalStage]?.label}`
+      }
     },
   ];
 
@@ -195,39 +206,22 @@ function IndicationsTable({
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
         showColumnVisibilityControl={false}
-        getSelectedRows={rowsInfo => {
-          if (!(rowsInfo?.length > 0)) return;
+        // getSelectedRows={rowsInfo => {
+        //   if (!(rowsInfo?.length > 0)) return;
 
-          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
-          if (!selectedOriginalRows.length) return;
+        //   const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+        //   if (!selectedOriginalRows.length) return;
 
-          const nextRow =
-            selectedOriginalRows.find(r => r.id !== selectedRowId) ??
-            selectedOriginalRows[0];
+        //   const nextRow =
+        //     selectedOriginalRows.find(r => r.id !== selectedRowId) ??
+        //     selectedOriginalRows[0];
 
-          if (!nextRow?.id) return;
+        //   if (!nextRow?.id) return;
 
-          if (nextRow.id !== selectedRowId) {  // avoids render loop from calling setRecords unnecessarily
-            setSelectedRowId(nextRow.id);
-            setMaxClinicalStage(nextRow.maxClinicalStage);
-            selectRecords({ setRecords, row: nextRow });
-          }
-        }}
-        // onRowClick={row => selectRecords({ setSelectedDisease, setRecords, row })}
-        // rowIsSelectable
-        // fixed
-        // noWrapHeader={false}
-        // onPagination={(page: number, pageSize: number) => {
-        //   const selectedRow = rows[page * pageSize];
-        //   if (selectedRow) {
-        //     setSelectedDisease(selectedRow.diseaseName);
-        //     const recordsData = selectedRow.clinicalReportIds
-        //       .map((reportId: any) => {
-        //         const record = clinicalRecordsData.find((r: any) => r.id === reportId);
-        //         return record ? { ...record } : null;
-        //       })
-        //       .filter((r: any) => r !== null);
-        //     setRecords(recordsData);
+        //   if (nextRow.id !== selectedRowId) {  // avoids render loop from calling setRecords unnecessarily
+        //     setSelectedRowId(nextRow.id);
+        //     setMaxClinicalStage(nextRow.maxClinicalStage);
+        //     selectRecords({ setRecords, row: nextRow });
         //   }
         // }}
         loading={loading}

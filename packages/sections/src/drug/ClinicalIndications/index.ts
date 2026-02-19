@@ -4,7 +4,7 @@ export const definition = {
   id: "clinicalIndications",
   name: "Indications",
   shortName: "I",
-  hasData: (data: any) => true,  // !! UPDATE ONCE HAVE API !!
+  hasData: (data) => data?.indications?.count > 0,
 };
 
 // Components
