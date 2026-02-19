@@ -18,6 +18,7 @@ import CredibleSetPage from "./pages/CredibleSetPage";
 import APIPage from "./pages/APIPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import MCPDemoPage from "./pages/MCPDemo";
 
 const config = getConfig();
 
@@ -50,6 +51,7 @@ function App(): ReactElement {
                 </PrivateRoute>
               }
             />
+            <Route path="/mcp-demo" element={<MCPDemoPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>

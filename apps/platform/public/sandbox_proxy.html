@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>MCP-UI Sandbox Proxy</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      iframe {
+        flex-grow: 1;
+        background-color: transparent;
+        border: none;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // Transparent relay proxy for @mcp-ui/client v6+
+      //
+      // The proxy:
+      //  1. Signals readiness to the host (sandbox-proxy-ready)
+      //  2. On sandbox-resource-ready: renders the widget HTML in an inner iframe
+      //  3. Relays ALL other AppBridge JSON-RPC messages between host and inner iframe
+      //
+      // This lets the widget's App class (from @modelcontextprotocol/ext-apps) do
+      // its own ui/initialize handshake directly with the host via the relay.
+
+      var inner = null;
+
+      function renderWidget(html) {
+        if (!inner) {
+          inner = document.createElement('iframe');
+          inner.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:none;';
+          document.body.appendChild(inner);
+        }
+        // Use srcdoc instead of document.write() so the inner frame gets a
+        // properly-initialised document context (own origin, clean head element).
+        // This is required for Emotion CSS-in-JS to inject <style> tags correctly.
+        inner.srcdoc = html;
+      }
+
+      window.addEventListener('message', function (event) {
+        var msg = event.data;
+        if (!msg || typeof msg !== 'object') return;
+
+        if (event.source === window.parent) {
+          // Message from host → either render widget or relay to inner iframe
+          if (msg.method === 'ui/notifications/sandbox-resource-ready') {
+            var html = msg.params && msg.params.html;
+            if (typeof html === 'string') {
+              renderWidget(html);
+            }
+          } else {
+            // Relay to inner iframe (AppBridge messages: ui/initialize result, tool-input, etc.)
+            if (inner && inner.contentWindow) {
+              inner.contentWindow.postMessage(msg, '*');
+            }
+          }
+        } else if (inner && event.source === inner.contentWindow) {
+          // Message from widget → relay to host (ui/initialize, initialized, size-changed, etc.)
+          window.parent.postMessage(msg, '*');
+        }
+      });
+
+      // Signal to host that the proxy is ready
+      window.parent.postMessage(
+        { jsonrpc: '2.0', method: 'ui/notifications/sandbox-proxy-ready', params: {} },
+        '*'
+      );
+    </script>
+  </body>
+</html>
