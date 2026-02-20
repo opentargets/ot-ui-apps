@@ -7,13 +7,6 @@ import {
   ProfileHeader as BaseProfileHeader,
 } from "ui";
 import { Fragment } from "react";
-import { Box } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faExclamationCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
 import { phaseMap } from "@ot/constants";
 
 import Smiles from "./Smiles";
@@ -33,14 +26,11 @@ function ProfileHeader({ chemblId }) {
     synonyms,
     tradeNames,
     drugType,
-    maximumClinicalTrialPhase,
-    isApproved,
-    hasBeenWithdrawn,
-    blackBoxWarning,
+    maximumClinicalStage,
   } = data?.drug || {};
 
-  const clinicalPhase = maximumClinicalTrialPhase
-    ? phaseMap(maximumClinicalTrialPhase)
+  const clinicalPhase = maximumClinicalStage
+    ? phaseMap(maximumClinicalStage)
     : "Preclinical";
 
   return (
@@ -52,23 +42,6 @@ function ProfileHeader({ chemblId }) {
         </Field>
         <Field loading={loading} title="Max phase">
           {clinicalPhase}
-        </Field>
-        <Field loading={loading} title="Status">
-          {isApproved ? (
-            <Box component="span" mr={2}>
-              <FontAwesomeIcon icon={faCheckCircle} /> Approved
-            </Box>
-          ) : null}
-          {hasBeenWithdrawn ? (
-            <Box component="span" mr={2}>
-              <FontAwesomeIcon icon={faTimesCircle} /> Withdrawn
-            </Box>
-          ) : null}
-          {blackBoxWarning ? (
-            <Box component="span" mr={2}>
-              <FontAwesomeIcon icon={faExclamationCircle} /> Black box warning
-            </Box>
-          ) : null}
         </Field>
         <Field loading={loading} title="Parent molecule">
           {parentMolecule ? (

@@ -1,7 +1,7 @@
 import { CardContent, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrescriptionBottleAlt, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faPrescriptionBottleAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { LongText, Chip, Link, LongList } from "ui";
 
@@ -11,10 +11,6 @@ const useStyles = makeStyles({
   },
   subtitle: {
     fontWeight: 500,
-  },
-  warningIcon: {
-    position: "relative",
-    top: "5px",
   },
 });
 
@@ -29,20 +25,14 @@ function DrugDetail({ data }) {
         <FontAwesomeIcon icon={faPrescriptionBottleAlt} /> Drug
       </Typography>
       <LongText lineLimit={4}>{data.description}</LongText>
-      {data.hasBeenWithdrawn ? (
-        <Typography variant="subtitle2" color="secondary">
-          <FontAwesomeIcon icon={faTriangleExclamation} className={classes.warningIcon} /> Withdrawn
-          Drug
-        </Typography>
-      ) : null}
       <Typography className={classes.subtitle} variant="subtitle1">
         Drug Type
       </Typography>
       <Typography variant="body2">{data.drugType}</Typography>
       <Typography className={classes.subtitle} variant="subtitle1">
-        Maximum Clinical Trial Phase
+        Maximum Clinical Stage
       </Typography>
-      <Typography variant="body2">{data.maximumClinicalTrialPhase}</Typography>
+      <Typography variant="body2">{data.maximumClinicalStage}</Typography>
       {data.indications && data.indications.rows.length > 0 && (
         <>
           <Typography className={classes.subtitle} variant="subtitle1">

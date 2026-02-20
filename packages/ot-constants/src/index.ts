@@ -232,6 +232,18 @@ const clinicalPhases: { [key: string]: string } = {
   IND: "IND",
   PRECLINICAL: "Preclinical",
   UNKNOWN: "Unknown",
+  // Lowercase display-name keys (from PTS maximumClinicalStage)
+  approved: "Approved",
+  "phase IV": "Phase IV",
+  "phase III": "Phase III",
+  "phase II/III": "Phase II/III",
+  "phase II": "Phase II",
+  "phase I/II": "Phase I/II",
+  "phase I": "Phase I",
+  "early phase I": "Phase I (Early)",
+  "pre-approval": "Pre-approval",
+  preclinical: "Preclinical",
+  unknown: "Unknown",
 };
 
 export const phaseMap = (clinicalPhase: number | string): string => {

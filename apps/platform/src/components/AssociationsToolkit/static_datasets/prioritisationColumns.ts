@@ -1,7 +1,7 @@
 import { Column, TargetPrioritisationAggregation } from "../types";
 
-const maxClinicalTrialPhase: Column = {
-  id: "maxClinicalTrialPhase",
+const maxClinicalStage: Column = {
+  id: "maxClinicalStage",
   label: "Target in clinic",
   aggregation: TargetPrioritisationAggregation.PRECEDENCE,
   sectionId: "knownDrugs",
@@ -164,7 +164,7 @@ const tissueDistribution: Column = {
 };
 
 const cols: Column[] = [
-  maxClinicalTrialPhase,
+  maxClinicalStage,
   isInMembrane,
   isSecreted,
   hasLigand,

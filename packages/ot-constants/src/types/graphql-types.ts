@@ -343,17 +343,11 @@ export interface Drug {
   id: string;
   /** Drug trade names */
   tradeNames: string[];
-  /** Alias for maximumClinicalTrialPhase == 4 */
-  isApproved?: boolean;
-  /** Has drug been withdrawn from the market */
-  hasBeenWithdrawn: boolean;
-  /** Maximum phase observed in clinical trial records and post-marketing package inserts */
-  maximumClinicalTrialPhase?: number;
+  /** Maximum clinical stage observed in clinical trial records and post-marketing package inserts */
+  maximumClinicalStage: string;
   crossReferences?: DrugReferences[];
   /** Molecule synonyms */
   synonyms: string[];
-  /** Alert on life-threteaning drug side effects provided by FDA */
-  blackBoxWarning: boolean;
   /** Molecule preferred name */
   name: string;
   /** ChEMBL ID of parent molecule */
