@@ -1,22 +1,21 @@
-import { useState, useMemo } from "react";
-import { Link, OtTable, useApolloClient } from "ui";
+import { useState, useEffect, useMemo } from "react";
+import { Link, OtTable, useApolloClient, usePlatformApi } from "ui";
 import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
-import clinicalRecordsData from "./clinical_report_CHEMBL192.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-// import clinicalRecordsData from "./clinical_record_CHEMBL2105708.json";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
-const getRecords = (client, query, chemblId) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
+
+const getRecords = (client, query, clinicalReportsIds) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
     query,
     variables: {
-      chemblId,  // ... AND USE THE PARAMETERS HERE
+      clinicalReportsIds,
     },
   });
 
-const onLinkClick = (e: any) => {
+const onLinkClick = (e) => {
   e.stopPropagation();
 };
 
@@ -28,44 +27,43 @@ function stageAndRecordCountComparator(a, b) {
     clinicalStageCategories[b.maxClinicalStage]?.index;
 }
 
-function selectRecords({ setRecords, row }) {
-  // !! ONCE HAVE API, USE getRecords AND CLINICAL_RECORDS_QUERY HERE TO FETCH FROM API
-  const recordsData = row.clinicalReportIds
-    .map((reportId: any) => {
-      const record = clinicalRecordsData.find((r: any) => r.id === reportId);
-      return record ? { ...record } : null;
-    })
-    .filter((r: any) => r !== null);
-  const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
-  setRecords(groupedRecordsData);
-}
-
 function IndicationsTable({
   rows,
   setRecords,
   setMaxClinicalStage,
-  query,
-  variables,
   loading,
 }) {
-
   const client = useApolloClient();
-  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [selectedRow, setSelectedRow] = useState({});
 
   // always use copied, sorted rows from this point - avoids issues with selecting initial row
-
   const sortedRows = useMemo(() => {
     return structuredClone(rows).sort(stageAndRecordCountComparator).reverse();
-  }, [rows]);  // Only depend on rows, not selectedRowIndex
+  }, [rows]);
 
   const displayRows = useMemo(() => {
     return sortedRows.map((row: any) => ({
       ...row,
-      _isSelected: selectedRowId != null && row.id === selectedRowId,
+      _isSelected: selectedRow != null && row.id === selectedRow.id,
     }));
-  }, [sortedRows, selectedRowId]);
+  }, [sortedRows, selectedRow]);
 
-  // defined columns inside component so can see selectedRowIndex
+  // load records when change row - and on initial load
+  useEffect(() => {
+    if (!selectedRow) return;
+    const fetchRecords = async () => {
+      const recordsData = (await getRecords(
+        client,
+        CLINICAL_RECORDS_QUERY,
+        selectedRow.clinicalReports.map(report => report.id)
+      )).data.clinicalReports;  // !! ASSUME SUCCESS FOR NOW BUT SHOULD HANDLE ERROR !!
+      
+      const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
+      setRecords(groupedRecordsData);
+    };
+    fetchRecords();
+  }, [selectedRow]);
+
   const columns = [
     {
       id: "indicationCard",
@@ -199,31 +197,28 @@ function IndicationsTable({
       }}
     >
       <OtTable
-        // key={selectedRowIndex}
         showGlobalFilter
         columns={columns}
         rows={displayRows}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
         showColumnVisibilityControl={false}
-        // getSelectedRows={rowsInfo => {
-        //   if (!(rowsInfo?.length > 0)) return;
+        getSelectedRows={rowsInfo => {
+          if (!(rowsInfo?.length > 0)) return;
 
-        //   const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
-        //   if (!selectedOriginalRows.length) return;
+          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+          if (!selectedOriginalRows.length) return;
+          const nextRow =
+            selectedOriginalRows.find(r => r.id !== selectedRow.id) ??
+            selectedOriginalRows[0];
 
-        //   const nextRow =
-        //     selectedOriginalRows.find(r => r.id !== selectedRowId) ??
-        //     selectedOriginalRows[0];
+          if (!nextRow?.id) return;
 
-        //   if (!nextRow?.id) return;
-
-        //   if (nextRow.id !== selectedRowId) {  // avoids render loop from calling setRecords unnecessarily
-        //     setSelectedRowId(nextRow.id);
-        //     setMaxClinicalStage(nextRow.maxClinicalStage);
-        //     selectRecords({ setRecords, row: nextRow });
-        //   }
-        // }}
+          if (nextRow.id !== selectedRow.id) {  // avoids render loop from calling setRecords unnecessarily
+            setSelectedRow(nextRow);
+            setMaxClinicalStage(nextRow.maxClinicalStage);
+          }
+        }}
         loading={loading}
         sortBy="indicationCard"
         order="desc"

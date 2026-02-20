@@ -361,7 +361,7 @@ export const clinicalStageCategories = {
   PHASE_2_3: { index: 7, label: "Phase II/III" },
   PHASE_3: { index: 8, label: "Phase III" },
   PREAPPROVAL: { index: 9, label: "Preapproval" },
-  APPROVED: { index: 10, label: "Approved" },
+  APPROVAL: { index: 10, label: "Approval" },
   PHASE_4: { index: 11, label: "Phase IV" },
   WITHDRAWN: { index: 12, label: "Withdrawn" },
 };

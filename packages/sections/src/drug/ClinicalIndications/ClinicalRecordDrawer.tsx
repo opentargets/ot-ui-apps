@@ -95,16 +95,16 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
   const dedupedDiseases = [
     ...new Map(
       (diseases || [])
-        .filter(d => d.diseaseId)
-        .map(d => [d.diseaseId, d])
+        .filter(d => d.disease.id)
+        .map(d => [d.disease.id, d])
     ).values(),
   ];
 
   const dedupedDrugs = [
     ...new Map(
       (drugs || [])
-        .filter(d => d.drugId)
-        .map(d => [d.drugId, d])
+        .filter(d => d.drug.id)
+        .map(d => [d.drug.id, d])
     ).values(),
   ];
 
@@ -187,11 +187,11 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
                 <FieldRow label="Diseases">
                   <OtLongText variant="body2" lineLimit={3} displayText="... more">
                     <Box component="span" sx={{ fontSize: 14 }}>
-                      {dedupedDiseases.map((disease: any, index: number) => (
-                        <span key={disease.diseaseId}>
+                      {dedupedDiseases.map((d: any, index: number) => (
+                        <span key={d.disease.id}>
                           {index > 0 ? ", " : ""}
-                          <Link to={`/disease/${disease.diseaseId}`}>
-                            {disease.diseaseFromSource || disease.diseaseId}
+                          <Link to={`/disease/${d.disease.id}`}>
+                            {d.diseaseFromSource}
                           </Link>
                         </span>
                       ))}
@@ -205,11 +205,11 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
                 <FieldRow label="Drugs">
                   <OtLongText variant="body2" lineLimit={3} displayText="... more">
                     <Box component="span" sx={{ fontSize: 14 }}>
-                      {dedupedDrugs.map((drug: any, index: number) => (
-                        <span key={drug.drugId}>
+                      {dedupedDrugs.map((d: any, index: number) => (
+                        <span key={d.drug.id}>
                           {index > 0 ? ", " : ""}
-                          <Link to={`/drug/${drug.drugId}`}>
-                            {drug.drugFromSource || drug.drugId}
+                          <Link to={`/drug/${d.drug.id}`}>
+                            {d.drugFromSource}
                           </Link>
                         </span>
                       ))}

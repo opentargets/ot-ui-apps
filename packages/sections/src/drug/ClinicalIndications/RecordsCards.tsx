@@ -117,6 +117,11 @@ function RecordsCards({
 
   if (!selectedStage) return null;
 
+  const rows = records[selectedStage]?.toSorted((a, b) => {
+    return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
+  });
+  if (!rows) return null;
+
   return (
     <>
       <Box
@@ -142,9 +147,7 @@ function RecordsCards({
         <OtTable
           // showGlobalFilter
           columns={columns}
-          rows={records[selectedStage]?.toSorted((a, b) => {
-            return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
-          }) || []}
+          rows={rows}
           dataDownloader
           // dataDownloaderFileStem="clinical-records"`
           // fixed

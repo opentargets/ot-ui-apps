@@ -1,5 +1,43 @@
-query ClinicalRecordsQuery($chemblId: String!) {
-  drug(chemblId: $chemblId) {
-    id  # !! UPDATE ONCE HAVE API !!
+query ClinicalRecordsQuery($clinicalReportsIds: [String!]!) {
+  clinicalReports(clinicalReportsIds: $clinicalReportsIds) {
+    clinicalStage
+    countries
+    diseases {
+      diseaseFromSource
+      disease {
+        id
+        name
+      }
+    }
+    drugs {
+      drugFromSource
+      drug {
+        id
+        name
+      }
+    }
+    hasExpertReview
+    id
+    phaseFromSource
+    sideEffects {
+      diseaseFromSource
+      disease {
+        name
+      }
+    }
+    source
+    trialDescription
+    trialLiterature
+    trialNumberOfArms
+    trialOfficialTitle
+    trialOverallStatus
+    trialPhase
+    trialPrimaryPurpose
+    trialStartDate
+    trialStudyType
+    trialWhyStopped
+    type
+    url
+    year
   }
 }
