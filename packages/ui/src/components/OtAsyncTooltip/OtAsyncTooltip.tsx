@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import {
+  formatGeneLocToString,
   getEntityDescription,
   getEntityIcon,
   getEntityQuery,
@@ -19,6 +20,7 @@ import {
 import { naLabel } from "@ot/constants";
 
 import StudyPublication from "../StudyPublication";
+import { IGeneomicLocation } from "./utils/types";
 
 const DELAY_REQUEST = 1000;
 
@@ -87,6 +89,8 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
     };
   }, []);
 
+
+
   const tooltipContent = getTooltipContent();
 
   return (
@@ -127,7 +131,7 @@ type TooltipData = {
   publicationFirstAuthor?: string;
   publicationDate?: string;
   publicationJournal?: string;
-  genomicLocation?: { chromosome?: string; start?: number };
+  genomicLocation?: IGeneomicLocation;
 };
 
 function AsyncTooltipDataView({
@@ -138,7 +142,13 @@ function AsyncTooltipDataView({
   data: TooltipData;
 }): ReactElement {
   const showSubText = !!(data?.mostSevereConsequence?.label || data?.publicationFirstAuthor);
-  const showChromosome = entity === "target" && data?.genomicLocation?.chromosome;
+
+  const formattedGeneLoc = useMemo(() => {
+    if (entity === "target" && data?.genomicLocation?.chromosome) {
+      return formatGeneLocToString(data.genomicLocation);
+    }
+    return null;
+  }, [entity, data?.genomicLocation]);
 
   function getSubtext() {
     let finalSubText;
@@ -199,11 +209,11 @@ function AsyncTooltipDataView({
           </Box>
         </Box>
       </Box>
-          {showChromosome && data.genomicLocation?.chromosome && (
+          {formattedGeneLoc && (
             <>
               <Divider />
               <Box sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}>
-                {`Chromosome: ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
+                {`${formattedGeneLoc}`}
               </Box>
             </>
           )}
