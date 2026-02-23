@@ -55,11 +55,20 @@ function XInfo({ start, end, canvasWidth }) {
       .ticks(8)
       .tickSizeOuter(0);
 
-    select(axisRef.current)
-      .call(axis)
-      .selectAll("text")
-      .style("font-size", "11px")
-      .style("font-family", "'Inter', sans-serif");
+    const axisSelection = select(axisRef.current)
+  .call(axis);
+
+  axisSelection.selectAll("text")
+    .style("font-size", "11px")
+    .style("font-family", "'Inter', sans-serif");
+  
+  axisSelection.select(".domain")
+    .style("stroke", "#000")
+    .style("opacity", 0.5);
+  
+  axisSelection.selectAll(".tick line")
+    .style("stroke", "#000")
+    .style("opacity", 0.5);
   }, [start, end, canvasWidth]);
 
   return (
@@ -75,7 +84,8 @@ const infoStyle = {
   height: "100%",
   display: "flex",
   justifyContent: "end",
-  alignItems: "center" 
+  alignItems: "center" ,
+  textAlign: "right",
 };
 
 function XYInfo({ data }) {
@@ -160,22 +170,22 @@ function BodyContentInner() {
   const variantTrackHeight = 30;
   const geneTrackHeight = 30;
   const e2gTrackHeight = 30;
-  const colocTrackHeight = 80;
+  const colocTrackHeight = 60;
   const xExtremes = [];
 
-  // fixed-circle size variants
+  // variants
   {
     const variantWidth = 10;
     tracks.push({
       id: `variants`,
       height: variantTrackHeight,
-      paddingTop: 16,
+      paddingTop: 24,
       yMin: 0,
       yMax: 100,
       YInfo: () => (
         <Box sx={infoStyle}> 
           <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-            Variants
+            Variants <span style={{ fontWeight: 300 }}>({data.locus.count})</span>
           </Typography>
         </Box>
       ),
@@ -263,7 +273,7 @@ function BodyContentInner() {
       YInfo: () => (
         <Box sx={infoStyle}> 
           <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-            Genes and L2G scores
+            Genes <span style={{ fontWeight: 300 }}>({data.l2GPredictions.count})</span>
           </Typography>
         </Box>
       ),
@@ -349,9 +359,9 @@ function BodyContentInner() {
         yMin: 0,
         yMax: maxTotal,
         YInfo: () => (
-          <Box sx={infoStyle}> 
+          <Box sx={infoStyle}>
             <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-              {geneLookup[geneId]?.symbol ?? "???"} enhancers
+              {geneLookup[geneId]?.symbol ?? "???"} enhancers <span style={{ fontWeight: 300 }}>({enhancersByGene[geneId].length})</span>
             </Typography>
           </Box>
         ),
@@ -441,7 +451,6 @@ function BodyContentInner() {
     function getCircleWidth(summedClpp) {
       return Math.max(maxCircleWidth * Math.sqrt(summedClpp / maxSummedClpp), minCircleWidth);
     }
-
     tracks.push({
       id: "qtlColoc",
       height: colocTrackHeight,
@@ -450,9 +459,14 @@ function BodyContentInner() {
       yMax: 1,
       YInfo: () => (
         <Box sx={infoStyle}> 
-          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-            MolQTL Colocalisation
-          </Typography>
+          <Box>
+            <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+              MolQTL Colocalisation <span style={{ fontWeight: 300 }}>({data.molqtlcolocalisation.count})</span>
+            </Typography>
+            <Typography component="div" variant="caption" sx={{ fontWeight: 300 }}>
+              Unique positions: {Object.keys(colocsByPosition).length}
+            </Typography>
+          </Box>
         </Box>
       ),
       Track: ({ isInner }) => {
@@ -569,9 +583,14 @@ function BodyContentInner() {
       yMax: 1,
       YInfo: () => (
         <Box sx={infoStyle}> 
-          <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-            GWAS Colocalisation
-          </Typography>
+          <Box>
+            <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+              GWAS Colocalisation <span style={{ fontWeight: 300 }}>({data.colocalisation.count})</span>
+            </Typography>
+            <Typography component="div" variant="caption" sx={{ fontWeight: 300 }}>
+              Unique positions: {Object.keys(colocsByPosition).length}
+            </Typography>
+          </Box>
         </Box>
       ),
       Track: ({ isInner }) => {
@@ -655,10 +674,12 @@ function BodyContentInner() {
         tracks={tracks}
         InnerXInfo={XInfo}
         innerTracks={tracks}
-        // InnerXYInfo={XYInfo}
+        InnerXYInfo={XYInfo}
         yInfoGap={8}
-        yInfoWidth={140}
+        yInfoWidth={180}
         zoomLines
+        panZoomTopGap={0}
+        paddingBottom={24}
       />
       {/* <Intro /> */}
     </Box>
@@ -668,15 +689,15 @@ function BodyContentInner() {
 export default BodyContentInner;
 
 // TO DO:
-// - NOW: get x-limits from all data - not just variants + padding
-// - GenTrack component:
-//   - alllow specifying top and bottom padding for the canvas so nothing cut off top/bottom track
-//      - e.g. get this with coloc now oat bottom if direction -1
 // - genes:
 //   - handle overlapping better - either y offsets or opacity so can see overlap
-// - draw vertical line through lead variant?
+//      - give labels (partic e.g. gene: L2G score) a background so clear when over lap
+//   - highlight which gene has highest L2G score, even just make highest bold?
+// - draw vertical dotted line through lead variant?
+//   - in genereal, maybe need easy but systematic approach to underlay and overlay arbitrary content over entire canvas
+// - why is the 2nd (all non-first?) e2g hLines thicker?! - all e2g traks are the same height and we use
+//   same hLine props!
 // - increase length of geneScheme
-// - getting error for many ssets, e.g d75d13864ef5532c8f5bbe7c8334c99e
 // - show more gene details? e.g.
 //    - introns and exons
 //    - strand? - is this what is normally displayed by arrow-end?
@@ -688,10 +709,6 @@ export default BodyContentInner;
 //   - smooth the enhancer distributions? - e.g. bezier and may also need to look at Pixi options like resolutin so
 //     actually displayed smoothly
 //   - what if a very narrow spike? - is it visible?
-// - should show intros and exons on genes? - do we have them?
-
-// - give labels (partic e.g. gene: L2G score) a background so clear when over lap
-// - l2g scores: make highest bold
 // - coloc:
 //    - currently all at same position and assigned trans or cis, but better to have separate cis and trans
 //      lollipops when this situation arises? 
@@ -709,3 +726,10 @@ export default BodyContentInner;
 // - there can probably be genes in the displayed range with below threshold L2G score?
 //    - we should show thes in grey?
 //    - how know what they are?
+// - generally, improve quality of text and sprites!
+// QUESTIONS:
+// - misleading since digram incomplete, e.g.
+//  - genes on the range shown not shown if low L2G?
+//    - if have colocs spread over wide range particularly likely to be an issue
+//    - and some of the enhancers could be for genes with sub-threshold L2G score
+//  - emhancers are only those that overlap the lead variant

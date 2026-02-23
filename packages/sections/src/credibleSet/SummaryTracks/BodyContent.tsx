@@ -37,12 +37,35 @@ function BodyContent({ data }) {
 
   console.log(data);
 
-  // !!!COMPUTE X LIMITS BASED ON VARIANTS FOR NOW - WILL NEED TO CHANGE WHEN PLOT MORE !!!
+  // !! COMPUTING MIN AND MAX INDEPENDENTLY HERE IS INEFFICIENT WHEN LOTS OF DATA SINCE COULD
+  // AFTER E.G. GROUPED COLOCS BY POSOTOTION OR SUMMED ENHANCERS
+  // - ALSO: SHOULD WE BE IDENTIFYING AND IGNORING OUTLIERS?
+  const xExtremes = []
   const variantChromosome = data.locus.rows[0].variant.chromosome;
-  let [xMin, xMax] = extent(data.locus.rows.map(({ variant }) => variant.position));
-  xMin = Math.max(xMin - 500, 0);
-  xMax = Math.min(xMax + 500, chromosomeInfo.find(({ chromosome }) => chromosome === variantChromosome).length);
-
+  xExtremes.push(  // variants
+    extent(data.locus.rows.map(({ variant }) => variant.position))
+  );
+  xExtremes.push(  // genes (L2G)
+    data.l2GPredictions.rows.map(({ target: { genomicLocation }}) => {
+      return [genomicLocation.start, genomicLocation.end];
+    })
+  );
+  xExtremes.push(  // enhancers (E2G)
+    data.variant.intervals.rows.map(({ start, end }) => [start, end])
+  );
+  xExtremes.push(  // molQTL coloc
+    data.molqtlcolocalisation.rows.map(row => row.otherStudyLocus.variant.position)
+  );
+  xExtremes.push(  // GWAS coloc
+    data.colocalisation.rows.map(row => row.otherStudyLocus.variant.position)
+  );
+  let [xMin, xMax] = extent(xExtremes.flat(Infinity));
+  const range = xMax - xMin;
+  xMin = Math.max(xMin - range * 0.015, 0);
+  xMax = Math.min(
+    xMax + range * 0.015,
+    chromosomeInfo.find(({ chromosome }) => chromosome === variantChromosome).length
+  );
 
   return (
     <GenTrackProvider initialState={{ data, xMin, xMax }} >

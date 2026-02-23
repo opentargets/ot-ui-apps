@@ -85,6 +85,7 @@ Top-level gen track component. This contains the x-info and tracks (each of whic
 | `innerTooltipProps` | `object`    |                | Additional inner tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                 |
 | `yInfoWidth`        | `number`    | `160`          | Space on left reserved for y-info of tracks.                                                                        |
 | `yInfoGap`          | `number`    | `16`           | Horizontal space between yInfo components and tracks.                                                               |
+| `paddingBottom` | `number` | `16` | Padding inside the canvas below the bottom track - use the `paddingTop` of individual tracks for padding above tracks. |
 | `panZoomTopGap`     | `number`    | `16 `          | Vertical space above pan-zoom panel.                                                                                |
 | `panZoomBottomGap`  | `number`    | `16 `          | Vertical space below pan-zoom panel.                                                                                |
 | `zoomLines`         | `boolean`   | `false `       | Indicate zoom window on top-level canvas.                                                                           |
@@ -105,7 +106,7 @@ The `tracks` prop of a `GenTrack` should be passed an array of objects, where ea
 | `Track`      | `component` |         | Passed an `isInner` prop. Should return a Pixi display object such as a container, sprite or graphics object. This is wrapped in a container that is vertically translated to the appropriate part of the canvas, stretched to the width of the canvas, given height equal to `height` and given the appropriate x and y scales. |                                                    |
 | `onTick` | `function` |  | Called every tick. Passed the Pixi container that wraps the tracks content. |
 | `height`     | `number`    | `50`    |
-| `paddingTop` | `number`    | `0`     | Gap above track.                                                                                                                                                                                                             | Height of `YInfo` container and `Track` container. |
+| `paddingTop` | `number`    | `0`     | Padding above track.                                                                                                                                                                                                             | Height of `YInfo` container and `Track` container. |
 
 Inside either the `Track` itself or one of its ancestors, it is standard use `useGenTrackState` to access the data and x-limits.
 
@@ -162,15 +163,23 @@ function MyTooltip() {
 }
 ```
 
-#### Features To Add
+#### IImprovements/Features To Add
 
 - Crosshairs option on hover. Ideally ink vertical crosshairs so they show on both canvases.
 
-- Allow 'x-tracks' for overlays over multiple tracks. E.g. to highlight a region or to show lines linking enhancers in one track to genes in another.
+- Allow 'underlay' and 'overlay' components to draw arbitraty content over the entire canvas. E.g.
+  - draw linking enhancers in one track to genes in another
+  - draw vertical line through lead over all tracks
 
 - Tooltip position currently at mouse position. Allow passing e.g. a `position` prop:  a functoin with access to data, otherData, globalXY as well as scales to get from data->canvas coodinates.
 
 - Highlight datum that tooltip is hovering on? Possibly tough since store this in a context where as should store manually for Pixi to see?
+
+- Improves appearance of pan-zoom:
+  - in pan-zoo bar: white/transparent backround in visible window, light gray in regions either side where not in window
+  - mirrored on canvas so light grey over regiosn either side of window
+  - no blue, only dark grey for controls and window boundaries
+  - replace handle rectangles with triangles poining outward
 
 #### Bugs/Issues
 

@@ -96,6 +96,7 @@ function GenTrack({
   innerTooltipProps = {},
   yInfoWidth = 160,
   yInfoGap = 16,
+  paddingBottom = 16,
   panZoomTopGap = 16,
   panZoomBottomGap = 16,
   initialZoom = [null, null],
@@ -125,7 +126,7 @@ function GenTrack({
         : yTrackStarts.at(-1) + tracks.at(index - 1).height + (track.paddingTop ?? 0)
       );
     }
-    canvasHeight = yTrackStarts.at(-1) + tracks.at(-1).height;
+    canvasHeight = yTrackStarts.at(-1) + tracks.at(-1).height + paddingBottom;
   }
 
   // widths
@@ -252,7 +253,7 @@ function GenTrack({
                 ref={zoomLinesRef}
                 sx={{
                   position: "absolute",
-                  top: tracks[0].paddingTop,
+                  top: 0,
                   bottom: 0,
                   left: 0,
                   right: 0,
