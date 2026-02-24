@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
-import { IGeneomicLocation } from "./types/geneLoc";
+import type { IGeneomicLocation } from "./types/geneLoc";
 
 const config = getConfig();
 
@@ -329,29 +329,24 @@ export const getStudyItemMetaData = ({
   return metaData;
 };
 
-export const getGenomicLocation = (
-  genomicLocation:
-    | IGeneomicLocation
-    | null
-    | undefined
-) => {
-  if(!genomicLocation) return "";
-  try{
+export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | undefined) => {
+  if (!genomicLocation) return "";
+  try {
     const strandInt = parseInt(genomicLocation.strand?.toString() || "1", 10);
     const strand = Math.sign(strandInt) === 1 ? "+" : "-";
-    const chromosomeString =  `Chr${genomicLocation.chromosome}: ${genomicLocation.start}-${genomicLocation.end},${strand}`;
+    const chromosomeString = `Chr${genomicLocation.chromosome}: ${genomicLocation.start}-${genomicLocation.end},${strand}`;
     return ["GRCh38", chromosomeString];
-  }catch(e){
+  } catch (e) {
     console.error("Error formatting gene location", e);
     return "";
   }
 };
 export * from "./alphaFold";
 export * from "./dataTypes";
-export * from "./types/geneLoc";
 export * from "./particlesBackground";
 export * from "./partnerPreviewUtils";
 export * from "./searchSuggestions";
+export * from "./types/geneLoc";
 export * from "./types/graphql-types";
 export * from "./types/response";
 export * from "./variant";
