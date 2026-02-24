@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, OtTable } from "ui";
+import { Link, SectionItem, OtTable, Tooltip } from "ui";
 import { naLabel } from "@ot/constants";
 import { definition } from ".";
 
@@ -38,12 +38,14 @@ const columns = [
     renderCell: ({ biosample }: { biosample: Biosample }) => {
       if (!biosample) return naLabel;
       return (
+        <Tooltip title={"Biosample source"}>
         <Link
           external
           to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
         >
           {biosample.biosampleName || biosample.biosampleId}
         </Link>
+        </Tooltip>
       );
     },
     filterValue: ({ biosample }: { biosample: Biosample }) =>
