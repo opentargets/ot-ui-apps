@@ -14,7 +14,6 @@ import {
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 import { getStudyItemMetaData } from "@ot/utils";
-import { IGeneomicLocation } from "./types";
 
 export function getQueryVariables(entity: string, id: string): Record<string, string> {
   switch (entity) {
@@ -110,15 +109,4 @@ export const getCredibleSetsDescription = ({ variantId, studyId }): string => {
   if (studyId) metaData += ` • Study ID: ${studyId}`;
 
   return metaData;
-};
-
-export const formatGeneLocToString = (geneLoc: IGeneomicLocation): string => {
-  try{
-    const strandInt = parseInt(geneLoc.strand?.toString() || "1", 10);
-    const strand = Math.sign(strandInt) === 1 ? "+" : "-";
-    return `Chromosome: ${geneLoc.chromosome}:${geneLoc.start?.toLocaleString()}-${geneLoc.end?.toLocaleString()},${strand}`;
-  }catch(e){
-    console.error("Error formatting gene location", e);
-    return "";
-  }
 };

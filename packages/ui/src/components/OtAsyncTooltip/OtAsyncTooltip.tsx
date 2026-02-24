@@ -11,16 +11,15 @@ import {
 } from "@mui/material";
 import { useLazyQuery } from "@apollo/client";
 import {
-  formatGeneLocToString,
   getEntityDescription,
   getEntityIcon,
   getEntityQuery,
   getQueryVariables,
 } from "./utils/asyncTooltipUtil";
-import { naLabel } from "@ot/constants";
+import { GenomicLocationPresentationType, IGeneomicLocation, naLabel } from "@ot/constants";
 
 import StudyPublication from "../StudyPublication";
-import { IGeneomicLocation } from "./utils/types";
+import { OtGenomicLocation } from "../..";
 
 const DELAY_REQUEST = 1000;
 
@@ -143,12 +142,7 @@ function AsyncTooltipDataView({
 }): ReactElement {
   const showSubText = !!(data?.mostSevereConsequence?.label || data?.publicationFirstAuthor);
 
-  const formattedGeneLoc = useMemo(() => {
-    if (entity === "target" && data?.genomicLocation?.chromosome) {
-      return formatGeneLocToString(data.genomicLocation);
-    }
-    return null;
-  }, [entity, data?.genomicLocation]);
+  const hasGeneLoc = entity === "target" && data?.genomicLocation?.chromosome;
 
   function getSubtext() {
     let finalSubText;
@@ -209,13 +203,11 @@ function AsyncTooltipDataView({
           </Box>
         </Box>
       </Box>
-          {formattedGeneLoc && (
-            <>
+          {hasGeneLoc && (
+            <Box sx={{ mt: 1, px:1, typography: "body2" }} component="span">
               <Divider />
-              <Box sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}>
-                {`${formattedGeneLoc}`}
-              </Box>
-            </>
+              <OtGenomicLocation type={GenomicLocationPresentationType.PLAIN} geneLoc={data?.genomicLocation!} />
+            </Box>
           )}
       {showSubText && (
         <>
