@@ -29,6 +29,7 @@ function stageAndRecordCountComparator(a, b) {
 function IndicationsTable({
   rows,
   setRecords,
+  setLoadingRecords,
   setMaxClinicalStage,
   loading,
 }) {
@@ -51,13 +52,15 @@ function IndicationsTable({
   useEffect(() => {
     if (!selectedRow.clinicalReports) return;
     const fetchRecords = async () => {
+      setLoadingRecords(true);
       const recordsData = (await getRecords(
         client,
         CLINICAL_RECORDS_QUERY,
         selectedRow.clinicalReports.map(report => report.id)
-      )).data.clinicalReports;  // !! ASSUME SUCCESS FOR NOW BUT SHOULD HANDLE ERROR !!
+      )).data.clinicalReports;
       const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
       setRecords(groupedRecordsData);
+      setLoadingRecords(false);
     };
     fetchRecords();
   }, [selectedRow]);

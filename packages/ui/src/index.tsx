@@ -89,6 +89,7 @@ export { default as usePermissions } from "./hooks/usePermissions";
 /* HOOKS */
 export { default as usePlatformApi } from "./hooks/usePlatformApi";
 export { default as useStateParams } from "./hooks/useStateParams";
+export { default as useDelayedFlag} from "./hooks/useDelayedFlag";
 /* SHARED PAGES  */
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";

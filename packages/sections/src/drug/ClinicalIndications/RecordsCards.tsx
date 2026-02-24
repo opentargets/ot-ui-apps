@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { OtTable } from "ui";
-import { Box, Typography } from "@mui/material";
+import { OtTable, useDelayedFlag } from "ui";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import { defaultRowsPerPageOptions } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
@@ -8,21 +8,21 @@ import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
 
 function RecordsCards({
   records,
+  loading,
   maxClinicalStage,
-  // query,
-  // variables,
-  // loading,
 }) {
   const [selectedStage, setSelectedStage] = useState(null);
   useEffect(() => {
     setSelectedStage(maxClinicalStage);
   }, [maxClinicalStage]);
 
+  const showLoading = useDelayedFlag(loading);
+
   const columns = [
     {
       id: "trial",
       label: (
-        <StageFilter
+        !loading && <StageFilter
           records={records}
           setSelectedStage={setSelectedStage}
           selectedStage={selectedStage}
@@ -106,6 +106,23 @@ function RecordsCards({
   ];
 
   if (!selectedStage) return null;
+
+  if (showLoading) {
+    return (
+      <Box
+        my={10}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+      >
+        <CircularProgress size={60} />
+        <Typography mt={6}>
+          Loading clinical reports
+        </Typography>
+      </Box>
+    );
+  }
 
   const rows = records[selectedStage]?.toSorted((a, b) => {
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();

@@ -15,6 +15,7 @@ function Body({ id: chemblId, label: name, entity }) {
   // records to be showing in 2nd table
   const [records, setRecords] = useState([]);
   const [maxClinicalStage, setMaxClinicalStage] = useState(null);
+  const [loadingRecords, setLoadingRecords] = useState(false); 
 
   const rows = request.data?.drug.indications.rows;
 
@@ -39,6 +40,7 @@ function Body({ id: chemblId, label: name, entity }) {
                   <IndicationsTable
                     rows={rows}
                     setRecords={setRecords}
+                    setLoadingRecords={setLoadingRecords}
                     setMaxClinicalStage={setMaxClinicalStage}
                     query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
                     variables={variables}
@@ -50,7 +52,11 @@ function Body({ id: chemblId, label: name, entity }) {
               {/* RHS table */}
               <Grid item xs={12} md={8}>
                 {records && (
-                  <RecordsCards records={records} maxClinicalStage={maxClinicalStage} />
+                  <RecordsCards
+                    records={records}
+                    loading={loadingRecords}
+                    maxClinicalStage={maxClinicalStage}
+                  />
                 )}
               </Grid>
             </Grid>

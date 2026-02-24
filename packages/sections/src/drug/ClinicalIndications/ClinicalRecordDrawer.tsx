@@ -7,6 +7,7 @@ import {
   Paper,
   ButtonBase,
   Chip,
+  CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -82,6 +83,7 @@ function dedupOnId(rows, propertyName) {
 function RecordDetails({ recordId }) {
   const client = useApolloClient();
   const [details, setDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // load details when recordId changes
   useEffect(() => {
@@ -91,10 +93,28 @@ function RecordDetails({ recordId }) {
         client,
         RECORD_DETAIL_QUERY,
         recordId,
-      )).data.clinicalReport);  // !! ASSUME SUCCESS FOR NOW BUT SHOULD HANDLE ERROR !!
+      )).data.clinicalReport);
+      setLoading(false);
     };
     fetchDetails();
   }, [recordId]);
+
+  if (loading) {
+    return (
+      <Box
+        my={8}
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+      >
+        <CircularProgress size={60} />
+        <Typography mt={6}>
+          Loading clinical report details
+        </Typography>
+      </Box>
+    );
+  }
 
   if (!details) return null;
 
