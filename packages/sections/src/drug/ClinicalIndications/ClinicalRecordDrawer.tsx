@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -12,7 +12,8 @@ import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "@ot/constants";
-import { Link, PublicationsList, OtLongText } from "ui";
+import { Link, PublicationsList, OtLongText, useApolloClient } from "ui";
+import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 
 const useDrawerStyles = makeStyles(theme => ({
   drawerLink: {
@@ -41,7 +42,15 @@ const useDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-function FieldLabel({ children }: { children: ReactNode }) {
+const getDetails = (client, query, clinicalReportId) =>
+  client.query({
+    query,
+    variables: {
+      clinicalReportId,
+    },
+});
+
+function FieldLabel({ children }: { children }) {
   return (
     <Typography variant="caption" sx={{ fontWeight: 400, minWidth: 65, mr: 1 }}>
       {children}
@@ -49,7 +58,7 @@ function FieldLabel({ children }: { children: ReactNode }) {
   );
 }
 
-function FieldRow({ label, children }: { label: string; children: ReactNode }) {
+function FieldRow({ label, children }: { label, children }) {
   if (!children) return null;
   return (
     <Box sx={{ display: "flex", alignItems: "baseline", my: 1 }}>
@@ -59,10 +68,35 @@ function FieldRow({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function ClinicalRecordDrawer({ record, children }: { record: any; children: ReactNode }) {
-  const [open, setOpen] = useState(false);
+function dedupOnId(rows, propertyName) {
+ return [
+    ...new Map(
+      (rows || [])
+        .filter(d => d[propertyName].id)
+        .map(d => [d[propertyName].id, d])
+    ).values(),
+  ];
+}
 
-  const classes = useDrawerStyles();
+// fetches and displays record details except for literature
+function RecordDetails({ recordId }) {
+  const client = useApolloClient();
+  const [details, setDetails] = useState(null);
+
+  // load details when recordId changes
+  useEffect(() => {
+    if (!recordId) return;
+    const fetchDetails = async () => {
+      setDetails((await getDetails(
+        client,
+        RECORD_DETAIL_QUERY,
+        recordId,
+      )).data.clinicalReport);  // !! ASSUME SUCCESS FOR NOW BUT SHOULD HANDLE ERROR !!
+    };
+    fetchDetails();
+  }, [recordId]);
+
+  if (!details) return null;
 
   const {
     trialOfficialTitle,
@@ -73,9 +107,108 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
     trialDescription,
     diseases,
     drugs,
-    trialLiterature,
     hasExpertReview,
-  } = record;
+  } = details;
+
+  const dedupedDiseases = dedupOnId(diseases, "disease");
+  const dedupedDrugs = dedupOnId(drugs, "drug");
+
+  return (
+    <>
+      {/* Title */}
+      {trialOfficialTitle && (
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
+          {trialOfficialTitle}
+        </Typography>
+      )}
+
+      {/* Source */}
+      <Box sx={{ position: "relative" }}>
+        <FieldRow label="Source">
+          <Typography variant="body2">{source || naLabel}</Typography>
+        </FieldRow>
+        <Chip
+          sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
+          label={`${hasExpertReview ? "" : "no"} expert review`}
+          variant="outlined"
+          size="small"
+        />
+      </Box>
+
+      {/* Status */}
+      <FieldRow label="Status">
+        <Typography variant="body2">
+          {trialOverallStatus?.toLowerCase() || naLabel}
+        </Typography>
+      </FieldRow>
+
+      {/* Start */}
+      <FieldRow label="Start">
+        <Typography variant="body2">{trialStartDate || naLabel}</Typography>
+      </FieldRow>
+
+      {/* URL */}
+      <FieldRow label="URL">
+        {url ? (
+          <Typography variant="body2" sx={{ fontSize: 14 }}>
+            <Link external to={url}>
+              {url}
+            </Link>
+          </Typography>
+        ) : (
+          <Typography variant="body2">{naLabel}</Typography>
+        )}
+      </FieldRow>
+
+      {/* Diseases */}
+      {dedupedDiseases.length > 0 && (
+        <FieldRow label="Diseases">
+          <OtLongText variant="body2" lineLimit={3} displayText="... more">
+            <Box component="span" sx={{ fontSize: 14 }}>
+              {dedupedDiseases.map((d: any, index: number) => (
+                <span key={d.disease.id}>
+                  {index > 0 ? ", " : ""}
+                  <Link to={`/disease/${d.disease.id}`}>
+                    {d.diseaseFromSource}
+                  </Link>
+                </span>
+              ))}
+            </Box>
+          </OtLongText>
+        </FieldRow>
+      )}
+
+      {/* Drugs */}
+      {dedupedDrugs.length > 0 && (
+        <FieldRow label="Drugs">
+          <OtLongText variant="body2" lineLimit={3} displayText="... more">
+            <Box component="span" sx={{ fontSize: 14 }}>
+              {dedupedDrugs.map((d: any, index: number) => (
+                <span key={d.drug.id}>
+                  {index > 0 ? ", " : ""}
+                  <Link to={`/drug/${d.drug.id}`}>
+                    {d.drugFromSource}
+                  </Link>
+                </span>
+              ))}
+            </Box>
+          </OtLongText>
+        </FieldRow>
+      )}
+
+      {/* Description */}
+      <Box sx={{ mt: 2.5, mb: 3.5 }}>
+        <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
+          {trialDescription || naLabel}
+        </Typography>
+      </Box>
+    </>
+  );
+}
+
+function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
+  const [open, setOpen] = useState(false);
+  const classes = useDrawerStyles();
 
   const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -91,22 +224,6 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
   const closeDrawer = () => {
     setOpen(false);
   };
-
-  const dedupedDiseases = [
-    ...new Map(
-      (diseases || [])
-        .filter(d => d.disease.id)
-        .map(d => [d.disease.id, d])
-    ).values(),
-  ];
-
-  const dedupedDrugs = [
-    ...new Map(
-      (drugs || [])
-        .filter(d => d.drug.id)
-        .map(d => [d.drug.id, d])
-    ).values(),
-  ];
 
   return (
     <>
@@ -137,101 +254,16 @@ function ClinicalRecordDrawer({ record, children }: { record: any; children: Rea
         <Box width={700} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
-              {/* Title */}
-              {trialOfficialTitle && (
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
-                  {trialOfficialTitle}
-                </Typography>
-              )}
-
-              {/* Source */}
-              <Box sx={{ position: "relative" }}>
-                <FieldRow label="Source">
-                  <Typography variant="body2">{source || naLabel}</Typography>
-                </FieldRow>
-                <Chip
-                  sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
-                  label={`${hasExpertReview ? "" : "no"} expert review`}
-                  variant="outlined"
-                  size="small"
-                />
-              </Box>
-
-              {/* Status */}
-              <FieldRow label="Status">
-                <Typography variant="body2">
-                  {trialOverallStatus?.toLowerCase() || naLabel}
-                </Typography>
-              </FieldRow>
-
-              {/* Start */}
-              <FieldRow label="Start">
-                <Typography variant="body2">{trialStartDate || naLabel}</Typography>
-              </FieldRow>
-
-              {/* URL */}
-              <FieldRow label="URL">
-                {url ? (
-                  <Typography variant="body2" sx={{ fontSize: 14 }}>
-                    <Link external to={url}>
-                      {url}
-                    </Link>
-                  </Typography>
-                ) : (
-                  <Typography variant="body2">{naLabel}</Typography>
-                )}
-              </FieldRow>
-
-              {/* Diseases */}
-              {dedupedDiseases.length > 0 && (
-                <FieldRow label="Diseases">
-                  <OtLongText variant="body2" lineLimit={3} displayText="... more">
-                    <Box component="span" sx={{ fontSize: 14 }}>
-                      {dedupedDiseases.map((d: any, index: number) => (
-                        <span key={d.disease.id}>
-                          {index > 0 ? ", " : ""}
-                          <Link to={`/disease/${d.disease.id}`}>
-                            {d.diseaseFromSource}
-                          </Link>
-                        </span>
-                      ))}
-                    </Box>
-                  </OtLongText>
-                </FieldRow>
-              )}
-
-              {/* Drugs */}
-              {dedupedDrugs.length > 0 && (
-                <FieldRow label="Drugs">
-                  <OtLongText variant="body2" lineLimit={3} displayText="... more">
-                    <Box component="span" sx={{ fontSize: 14 }}>
-                      {dedupedDrugs.map((d: any, index: number) => (
-                        <span key={d.drug.id}>
-                          {index > 0 ? ", " : ""}
-                          <Link to={`/drug/${d.drug.id}`}>
-                            {d.drugFromSource}
-                          </Link>
-                        </span>
-                      ))}
-                    </Box>
-                  </OtLongText>
-                </FieldRow>
-              )}
-
-              {/* Description */}
-              <Box sx={{ mt: 2.5, mb: 3.5 }}>
-                <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
-                  {trialDescription || naLabel}
-                </Typography>
-              </Box>
-
+              {/* All details except literature */}
+              <RecordDetails recordId={recordId} />
+              
               {/* Literature */}
-              {trialLiterature && trialLiterature.length > 0 && (
+              {literatureIds && literatureIds.length > 0 && (
                 <Box>
                   <Typography variant="subtitle2">Literature</Typography>
                   <Box sx={{ mt: -5 }}>
                     <PublicationsList
-                      entriesIds={trialLiterature}
+                      entriesIds={literatureIds}
                       hideSearch
                       name={undefined}
                       symbol={undefined}

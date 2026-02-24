@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link, OtTable, useApolloClient, usePlatformApi } from "ui";
+import { Link, OtTable, useApolloClient } from "ui";
 import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
-
 
 const getRecords = (client, query, clinicalReportsIds) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
   client.query({
@@ -50,14 +49,13 @@ function IndicationsTable({
 
   // load records when change row - and on initial load
   useEffect(() => {
-    if (!selectedRow) return;
+    if (!selectedRow.clinicalReports) return;
     const fetchRecords = async () => {
       const recordsData = (await getRecords(
         client,
         CLINICAL_RECORDS_QUERY,
         selectedRow.clinicalReports.map(report => report.id)
       )).data.clinicalReports;  // !! ASSUME SUCCESS FOR NOW BUT SHOULD HANDLE ERROR !!
-      
       const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
       setRecords(groupedRecordsData);
     };

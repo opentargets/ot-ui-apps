@@ -2,19 +2,9 @@ import { useState, useEffect } from "react";
 import { OtTable } from "ui";
 import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions } from "@ot/constants";
-import RECORD_DETAIL_QUERY from "./ClinicalRecordsQuery.gql";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
-import { sum } from "d3";
-
-const getRecordDetail = (client, query, /* variables here */) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
-  client.query({
-    query,
-    variables: {
-       // ... AND USE THE PARAMETERS HERE
-    },
-});
 
 function RecordsCards({
   records,
@@ -66,7 +56,7 @@ function RecordsCards({
         return (
           <Box sx={{ mb: 0.5, overflow: "hidden" }}>
             <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
-              <ClinicalRecordDrawer record={record}>
+              <ClinicalRecordDrawer recordId={record.id} literatureIds={record.trialLiterature}>
                 {displayTitle}
               </ClinicalRecordDrawer>
             </Box>

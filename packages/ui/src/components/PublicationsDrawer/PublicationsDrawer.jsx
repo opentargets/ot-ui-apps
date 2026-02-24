@@ -211,10 +211,6 @@ function PublicationsDrawer({
 
   const entriesIds = entries.map(entry => entry.name);
 
-  if (entries.length === 0) {
-    return naLabel;
-  }
-
   const toggleDrawer = event => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
@@ -225,6 +221,10 @@ function PublicationsDrawer({
   const closeDrawer = () => {
     setOpen(false);
   };
+
+  if (entries.length === 0) {
+    return naLabel;
+  }
 
   return (
     <>
