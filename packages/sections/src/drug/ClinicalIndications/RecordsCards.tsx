@@ -13,8 +13,9 @@ function RecordsCards({
 }) {
   const [selectedStage, setSelectedStage] = useState(null);
   useEffect(() => {
+    if (!maxClinicalStage) return;
     setSelectedStage(maxClinicalStage);
-  }, [maxClinicalStage]);
+  }, [maxClinicalStage, records]);
 
   const showLoading = useDelayedFlag(loading);
 

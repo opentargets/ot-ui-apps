@@ -41,13 +41,6 @@ function IndicationsTable({
     return structuredClone(rows).sort(stageAndRecordCountComparator).reverse();
   }, [rows]);
 
-  const displayRows = useMemo(() => {
-    return sortedRows.map((row: any) => ({
-      ...row,
-      _isSelected: selectedRow != null && row.id === selectedRow.id,
-    }));
-  }, [sortedRows, selectedRow]);
-
   // load records when change row - and on initial load
   useEffect(() => {
     if (!selectedRow.clinicalReports) return;
@@ -74,8 +67,8 @@ function IndicationsTable({
           disease,
           maxClinicalStage,
           clinicalReports,
-          _isSelected
-        } = row
+        } = row;
+        const isSelected = selectedRow?.id && row.id === selectedRow.id;       
         return (
           <Box 
             sx={{ 
@@ -83,12 +76,12 @@ function IndicationsTable({
               borderWidth: "0 0 0 4px",
               borderStyle: "solid",
               borderRadius: 1,
-              borderColor: _isSelected ? "primary.main" : "background.paper",
-              bgcolor: _isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
+              borderColor: isSelected ? "primary.main" : "background.paper",
+              bgcolor: isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
               cursor: 'pointer',
               '&:hover': {
-                bgcolor: _isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
-                borderColor: _isSelected ? "primary.main" : "grey.300",
+                bgcolor: isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
+                borderColor: isSelected ? "primary.main" : "grey.300",
                 "& .arrow-icon": {
                   visibility: "visible",
                 },
@@ -139,7 +132,7 @@ function IndicationsTable({
                   sx={{
                     fontSize: "11px",
                     color: "grey.600", // !! ARBITRARY COLOR !!
-                    visibility: _isSelected ? "visible" : "hidden",
+                    visibility: isSelected ? "visible" : "hidden",
                   }}
                 >
                   <FontAwesomeIcon icon={faArrowRight} />
@@ -200,7 +193,7 @@ function IndicationsTable({
       <OtTable
         showGlobalFilter
         columns={columns}
-        rows={displayRows}
+        rows={sortedRows}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
         showColumnVisibilityControl={false}
