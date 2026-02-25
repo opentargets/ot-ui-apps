@@ -25,7 +25,7 @@ type Message = {
 
 const WELCOME_MESSAGE: Message = {
   role: "assistant",
-  text: "Hi! I'm the Open Targets research assistant. I can show you interactive data widgets directly in this chat.\n\nTry asking: **Show me the L2G widget for 184646618bb06f7679ceaa7f5ef747f7**",
+  text: "Hi! I'm the Open Targets research assistant. I have access to the full Open Targets Platform — I can search targets, diseases, drugs, and variants, run GraphQL queries, and show interactive data widgets inline.\n\nTry asking:\n- **What diseases is BRCA1 associated with?**\n- **Search for drugs targeting PCSK9**\n- **Show me the L2G widget for 184646618bb06f7679ceaa7f5ef747f7**",
 };
 
 function WidgetCard({

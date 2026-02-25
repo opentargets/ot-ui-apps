@@ -3,11 +3,14 @@ import cors from "cors";
 import { randomUUID } from "node:crypto";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { createUIResource } from "@mcp-ui/server";
 import { z } from "zod";
 import Anthropic from "@anthropic-ai/sdk";
 
 const PORT = 3001;
+const OTP_MCP_URL = "https://mcp.platform.opentargets.org/mcp";
 
 /**
  * HTML shell returned by the tool.
@@ -53,14 +56,11 @@ function createServer(): McpServer {
       "SHAP feature-group contributions.",
     { studyLocusId: z.string().describe("The study locus ID of the credible set") },
     async ({ studyLocusId }) => {
-      // Return an HTML shell that loads the widget bundle.
-      // The widget connects via AppBridge and receives studyLocusId via tool-input.
       const uiResource = createUIResource({
         uri: `ui://ot-mcp/l2g/${studyLocusId}`,
         content: { type: "rawHtml", htmlString: widgetShell() },
         encoding: "text",
       });
-
       return { content: [uiResource] };
     }
   );
@@ -137,22 +137,62 @@ app.get("/health", (_req, res) =>
   res.json({ status: "ok", server: "ot-l2g-demo", sessions: transports.size })
 );
 
+// ----- OTP MCP client (lazy-initialized with retry cooldown) -----
+
+let otpClient: Client | null = null;
+let otpAnthropicTools: Anthropic.Tool[] = [];
+let otpLastAttempt = 0;
+const OTP_RETRY_COOLDOWN_MS = 30_000;
+
+async function initOtpClient(): Promise<void> {
+  const client = new Client({ name: "ot-l2g-chat", version: "0.1.0" });
+  const transport = new StreamableHTTPClientTransport(new URL(OTP_MCP_URL));
+  await client.connect(transport);
+  const { tools } = await client.listTools();
+  otpAnthropicTools = tools.map(t => ({
+    name: t.name,
+    description: t.description ?? t.name,
+    input_schema: t.inputSchema as Anthropic.Tool["input_schema"],
+  }));
+  otpClient = client;
+  console.log(`[OTP MCP] Connected — ${tools.length} tools: ${tools.map(t => t.name).join(", ")}`);
+}
+
+async function getOtpClient(): Promise<Client | null> {
+  if (otpClient) return otpClient;
+  const now = Date.now();
+  if (now - otpLastAttempt < OTP_RETRY_COOLDOWN_MS) return null;
+  otpLastAttempt = now;
+  try {
+    await initOtpClient();
+    return otpClient;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[OTP MCP] Connection failed (will retry in 30s): ${msg}`);
+    return null;
+  }
+}
+
 // ----- /chat endpoint -----
 
 const STUDY_LOCUS_RE = /\b([0-9a-f]{32})\b/i;
 
 const SYSTEM_PROMPT =
-  "You are an Open Targets research assistant. You can display interactive data widgets for credible sets. " +
-  "When a user provides a study locus ID (a 32-character hex string), call the get_l2g_widget tool. " +
-  "Otherwise answer questions about drug discovery and Open Targets.";
+  "You are an Open Targets research assistant with access to the full Open Targets Platform. " +
+  "You can search for targets, diseases, drugs, variants, and studies, and execute GraphQL queries " +
+  "to fetch live data from the platform. " +
+  "You can also display interactive L2G heatmap widgets for credible sets — when a user provides a " +
+  "study locus ID (a 32-character hex string), call get_l2g_widget to render the widget inline. " +
+  "For all other Open Targets data questions, use the search or query tools to fetch live data. " +
+  "Be concise and scientific in your answers.";
 
-const L2G_TOOL_DEFINITION = {
+const L2G_TOOL_DEFINITION: Anthropic.Tool = {
   name: "get_l2g_widget",
   description:
     "Get the interactive Locus-to-Gene (L2G) heatmap widget for a credible set. " +
     "Returns a rich interactive visualisation showing gene prioritisation scores and SHAP feature-group contributions.",
   input_schema: {
-    type: "object" as const,
+    type: "object",
     properties: {
       studyLocusId: {
         type: "string",
@@ -169,62 +209,114 @@ type Widget = { toolName: string; toolInput: Record<string, unknown>; html: stri
 app.post("/chat", async (req, res) => {
   const messages: ChatMessage[] = req.body?.messages ?? [];
 
-  if (process.env.ANTHROPIC_API_KEY) {
-    // Real mode — use Anthropic SDK
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-    try {
-      const response = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        tools: [L2G_TOOL_DEFINITION],
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
+  if (!process.env.ANTHROPIC_API_KEY) {
+    // Mock mode — regex detect study locus ID
+    const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
+    const match = STUDY_LOCUS_RE.exec(lastUserMsg);
+    if (match) {
+      const studyLocusId = match[1];
+      res.json({
+        text: `Here's the interactive L2G widget for \`${studyLocusId}\`:`,
+        widgets: [{ toolName: "get_l2g_widget", toolInput: { studyLocusId }, html: widgetShell() }],
       });
-
-      const widgets: Widget[] = [];
-      let text = "";
-
-      for (const block of response.content) {
-        if (block.type === "text") {
-          text += block.text;
-        } else if (block.type === "tool_use" && block.name === "get_l2g_widget") {
-          const input = block.input as { studyLocusId: string };
-          widgets.push({
-            toolName: block.name,
-            toolInput: input,
-            html: widgetShell(),
-          });
-        }
-      }
-
-      res.json({ text, widgets });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Unknown error";
-      res.status(500).json({ error: message });
+    } else {
+      res.json({
+        text:
+          "Hi! I'm the Open Targets research assistant.\n\n" +
+          "I can render interactive **Locus-to-Gene (L2G)** heatmap widgets directly in this chat.\n\n" +
+          "Paste a 32-character credible set study locus ID and I'll display the widget inline.\n\n" +
+          "Example ID: `184646618bb06f7679ceaa7f5ef747f7`",
+        widgets: [],
+      });
     }
     return;
   }
 
-  // Mock mode — regex detect study locus ID
-  const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
-  const match = STUDY_LOCUS_RE.exec(lastUserMsg);
+  const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const otp = await getOtpClient();
+  const allTools: Anthropic.Tool[] = [L2G_TOOL_DEFINITION, ...otpAnthropicTools];
 
-  if (match) {
-    const studyLocusId = match[1];
-    res.json({
-      text: `Here's the interactive L2G widget for \`${studyLocusId}\`:`,
-      widgets: [{ toolName: "get_l2g_widget", toolInput: { studyLocusId }, html: widgetShell() }],
-    });
-  } else {
-    res.json({
-      text:
-        "Hi! I'm the Open Targets research assistant.\n\n" +
-        "I can render interactive **Locus-to-Gene (L2G)** heatmap widgets directly in this chat.\n\n" +
-        "Paste a 32-character credible set study locus ID and I'll display the widget inline.\n\n" +
-        "Example ID: `184646618bb06f7679ceaa7f5ef747f7`",
-      widgets: [],
-    });
+  const conversationMessages: Anthropic.MessageParam[] = messages.map(m => ({
+    role: m.role,
+    content: m.content,
+  }));
+
+  const widgets: Widget[] = [];
+  let text = "";
+
+  try {
+    // Agentic loop — keep calling Claude until it stops requesting tools
+    while (true) {
+      const response = await claude.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        tools: allTools,
+        messages: conversationMessages,
+      });
+
+      for (const block of response.content) {
+        if (block.type === "text") text += block.text;
+      }
+
+      if (response.stop_reason !== "tool_use") break;
+
+      // Add assistant turn to conversation history
+      conversationMessages.push({ role: "assistant", content: response.content });
+
+      // Execute each tool call and collect results
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+
+      for (const block of response.content) {
+        if (block.type !== "tool_use") continue;
+
+        if (block.name === "get_l2g_widget") {
+          const input = block.input as { studyLocusId: string };
+          widgets.push({ toolName: block.name, toolInput: input, html: widgetShell() });
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: block.id,
+            content: "L2G widget rendered successfully in the chat interface.",
+          });
+        } else if (otp) {
+          try {
+            const result = await otp.callTool({
+              name: block.name,
+              arguments: block.input as Record<string, unknown>,
+            });
+            const content = result.content
+              .map(c => (c.type === "text" ? c.text : JSON.stringify(c)))
+              .join("\n");
+            toolResults.push({ type: "tool_result", tool_use_id: block.id, content });
+          } catch (toolErr) {
+            // Reset client so next request reconnects
+            otpClient = null;
+            otpAnthropicTools = [];
+            const msg = toolErr instanceof Error ? toolErr.message : "Tool call failed";
+            toolResults.push({
+              type: "tool_result",
+              tool_use_id: block.id,
+              content: `Error calling ${block.name}: ${msg}`,
+              is_error: true,
+            });
+          }
+        } else {
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: block.id,
+            content: "Open Targets Platform MCP is currently unavailable.",
+            is_error: true,
+          });
+        }
+      }
+
+      conversationMessages.push({ role: "user", content: toolResults });
+    }
+
+    res.json({ text, widgets });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    res.status(500).json({ error: message });
   }
 });
 
