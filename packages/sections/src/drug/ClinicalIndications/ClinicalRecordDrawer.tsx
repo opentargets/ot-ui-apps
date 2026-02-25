@@ -13,7 +13,7 @@ import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { naLabel } from "@ot/constants";
-import { Link, PublicationsList, OtLongText, useApolloClient } from "ui";
+import { Link, PublicationsList, OtLongText, useApolloClient, useDelayedFlag } from "ui";
 import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 
 const useDrawerStyles = makeStyles(theme => ({
@@ -73,7 +73,7 @@ function dedupOnId(rows, propertyName) {
  return [
     ...new Map(
       (rows || [])
-        .filter(d => d[propertyName].id)
+        .filter(d => d[propertyName]?.id)
         .map(d => [d[propertyName].id, d])
     ).values(),
   ];
@@ -84,22 +84,22 @@ function RecordDetails({ recordId }) {
   const client = useApolloClient();
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const showLoading = useDelayedFlag(loading, 250);
 
   // load details when recordId changes
   useEffect(() => {
     if (!recordId) return;
     const fetchDetails = async () => {
-      setDetails((await getDetails(
-        client,
-        RECORD_DETAIL_QUERY,
-        recordId,
-      )).data.clinicalReport);
+      setLoading(true);
+      setDetails(null);
+      const res = await getDetails(client, RECORD_DETAIL_QUERY, recordId);
+      setDetails(res.data.clinicalReport);
       setLoading(false);
     };
     fetchDetails();
-  }, [recordId]);
+  }, [client, recordId]);
 
-  if (loading) {
+  if (showLoading) {
     return (
       <Box
         my={8}

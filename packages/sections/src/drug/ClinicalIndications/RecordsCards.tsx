@@ -105,7 +105,7 @@ function RecordsCards({
     }
   ];
 
-  if (!selectedStage) return null;
+  if (!selectedStage || (loading && !showLoading)) return null;
 
   if (showLoading) {
     return (

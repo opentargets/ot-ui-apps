@@ -216,6 +216,8 @@ function IndicationsTable({
           if (!nextRow?.id) return;
 
           if (nextRow.id !== selectedRow.id) {  // avoids render loop from calling setRecords unnecessarily
+            setLoadingRecords(true);
+            setRecords([]);
             setSelectedRow(nextRow);
             setMaxClinicalStage(nextRow.maxClinicalStage);
           }
