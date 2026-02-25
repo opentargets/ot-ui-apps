@@ -229,7 +229,7 @@ function MCPDemoPage(): ReactElement {
                 fontSize: 12,
               }}
             >
-              cd demos/mcp-l2g-server &amp;&amp; yarn install &amp;&amp; yarn dev
+              cd apps/mcp-widgets-server &amp;&amp; yarn install &amp;&amp; yarn dev
             </Box>
           </Alert>
         )}

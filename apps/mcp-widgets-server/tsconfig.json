@@ -10,5 +10,5 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": ["src", "widget-src", "vite.widget.config.ts"]
+  "include": ["src", "widget-src", "vite"]
 }

@@ -2,15 +2,13 @@
  * L2G heatmap widget — uses the real HeatmapTable component from packages/ui.
  *
  * MUI theme, CssBaseline, and Emotion CacheProvider are provided by the parent
- * Root component in main.tsx (created at IIFE module scope).
+ * Root component in createWidgetEntry.tsx (created at IIFE module scope).
  *
  * Platform-specific dependencies (Link → React Router, DataDownloader, ObsPlot)
  * are replaced by lightweight stubs at build time via the stubUiBarrel Vite plugin.
  */
 import React, { useState, useEffect } from "react";
 import HeatmapTable from "@ot/ui/components/HeatmapTable/HeatmapTable";
-
-// ---- GraphQL query ---------------------------------------------------------------
 
 const OT_API = "https://api.platform.opentargets.org/api/v4/graphql";
 
@@ -47,8 +45,6 @@ async function fetchL2G(studyLocusId: string): Promise<L2GRow[]> {
   return json?.data?.credibleSet?.l2GPredictions?.rows ?? [];
 }
 
-// ---- Component -------------------------------------------------------------------
-
 type Props = { studyLocusId: string };
 
 export default function L2GWidget({ studyLocusId }: Props) {
@@ -60,24 +56,8 @@ export default function L2GWidget({ studyLocusId }: Props) {
     setError(null);
     fetchL2G(studyLocusId)
       .then(setRows)
-      .catch((err) => setError(String(err)));
+      .catch(err => setError(String(err)));
   }, [studyLocusId]);
-
-  // Diagnostic: confirm that DOM class names match injected Emotion style keys.
-  useEffect(() => {
-    const tags = document.head.querySelectorAll("[data-emotion]");
-    console.log(`[L2G] Emotion <style> tags: ${tags.length}`);
-    // Print first 3 tag contents to see which class names the rules target
-    Array.from(tags).slice(0, 3).forEach((t, i) => {
-      console.log(`  [${i}] key=${t.getAttribute("data-emotion")} content:`, t.textContent?.slice(0, 120));
-    });
-    // Print class prefixes found on DOM elements — tells us which cache generated them
-    const classSet = new Set<string>();
-    document.querySelectorAll("[class]").forEach(el => {
-      el.classList.forEach(c => classSet.add(c.replace(/-[^-]+$/, "-*")));
-    });
-    console.log("[L2G] DOM class prefixes:", [...classSet].slice(0, 15).join(", "));
-  });
 
   const baseStyle: React.CSSProperties = {
     padding: 24,
