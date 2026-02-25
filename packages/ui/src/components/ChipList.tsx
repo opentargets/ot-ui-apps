@@ -57,11 +57,12 @@ function ChipList({ items, small }: ChipListProps): ReactElement[] | string {
 
   if (!items || items.length === 0) return naLabel;
 
-  return items.map(item => {
+  return items.map((item, index) => {
     const component: ElementType = item.url ? "a" : Box;
     return (
       <ChipContainer key={v1()} item={item}>
         <Chip
+          data-testid={`chip-item-${index}`}
           component={component}
           href={item.url}
           className={classNames(classes.chip, item.customClass)}

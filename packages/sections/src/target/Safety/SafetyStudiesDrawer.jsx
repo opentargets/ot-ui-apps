@@ -50,7 +50,7 @@ function SafetyStudiesDrawer({ studies }) {
 
   return (
     <>
-      <ButtonBase onClick={toggleOpen} className={classes.drawerLink}>
+      <ButtonBase data-testid="safety-studies-drawer" onClick={toggleOpen} className={classes.drawerLink}>
         <Typography variant="body2">{studies.length} studies</Typography>
       </ButtonBase>
 

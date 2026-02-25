@@ -140,7 +140,7 @@ function StructureViewer({ row }) {
   }
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative" }} data-testid="alphafold-viewer">
       {structureData
         ? (
           <>
