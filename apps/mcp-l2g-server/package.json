@@ -7,7 +7,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
     "build:widget": "vite build --config vite.widget.config.ts",
-    "build": "npm run build:widget"
+    "build:widget:ms": "vite build --config vite.widget.ms.config.ts",
+    "build": "npm run build:widget && npm run build:widget:ms"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.77.0",

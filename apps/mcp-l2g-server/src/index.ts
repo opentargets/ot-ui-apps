@@ -46,6 +46,29 @@ function widgetShell(): string {
 </html>`;
 }
 
+function molecularStructureShell(): string {
+  return `<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Molecular Structure Widget</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { min-height: 100%; height: auto; }
+      #root { min-height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="http://localhost:${PORT}/widgets/molecular-structure.js"></script>
+  </body>
+</html>`;
+}
+
 function createServer(): McpServer {
   const server = new McpServer({ name: "ot-l2g-demo", version: "0.1.0" });
 
@@ -59,6 +82,22 @@ function createServer(): McpServer {
       const uiResource = createUIResource({
         uri: `ui://ot-mcp/l2g/${studyLocusId}`,
         content: { type: "rawHtml", htmlString: widgetShell() },
+        encoding: "text",
+      });
+      return { content: [uiResource] };
+    }
+  );
+
+  server.tool(
+    "get_molecular_structure_widget",
+    "Get an interactive 3D molecular structure widget for a variant. " +
+      "Shows the AlphaFold predicted protein structure with the variant residue highlighted, " +
+      "coloured by pLDDT confidence score.",
+    { variantId: z.string().describe("The variant ID (e.g. 19_44908822_C_T)") },
+    async ({ variantId }) => {
+      const uiResource = createUIResource({
+        uri: `ui://ot-mcp/molecular-structure/${variantId}`,
+        content: { type: "rawHtml", htmlString: molecularStructureShell() },
         encoding: "text",
       });
       return { content: [uiResource] };
@@ -186,6 +225,24 @@ const SYSTEM_PROMPT =
   "For all other Open Targets data questions, use the search or query tools to fetch live data. " +
   "Be concise and scientific in your answers.";
 
+const MOLECULAR_STRUCTURE_TOOL_DEFINITION: Anthropic.Tool = {
+  name: "get_molecular_structure_widget",
+  description:
+    "Get an interactive 3D molecular structure widget for a variant. " +
+    "Shows the AlphaFold predicted protein structure with the variant residue highlighted, " +
+    "coloured by pLDDT confidence score.",
+  input_schema: {
+    type: "object",
+    properties: {
+      variantId: {
+        type: "string",
+        description: "The variant ID (e.g. 19_44908822_C_T)",
+      },
+    },
+    required: ["variantId"],
+  },
+};
+
 const L2G_TOOL_DEFINITION: Anthropic.Tool = {
   name: "get_l2g_widget",
   description:
@@ -234,7 +291,11 @@ app.post("/chat", async (req, res) => {
 
   const claude = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const otp = await getOtpClient();
-  const allTools: Anthropic.Tool[] = [L2G_TOOL_DEFINITION, ...otpAnthropicTools];
+  const allTools: Anthropic.Tool[] = [
+    L2G_TOOL_DEFINITION,
+    MOLECULAR_STRUCTURE_TOOL_DEFINITION,
+    ...otpAnthropicTools,
+  ];
 
   const conversationMessages: Anthropic.MessageParam[] = messages.map(m => ({
     role: m.role,
@@ -277,6 +338,14 @@ app.post("/chat", async (req, res) => {
             type: "tool_result",
             tool_use_id: block.id,
             content: "L2G widget rendered successfully in the chat interface.",
+          });
+        } else if (block.name === "get_molecular_structure_widget") {
+          const input = block.input as { variantId: string };
+          widgets.push({ toolName: block.name, toolInput: input, html: molecularStructureShell() });
+          toolResults.push({
+            type: "tool_result",
+            tool_use_id: block.id,
+            content: "Molecular structure widget rendered successfully in the chat interface.",
           });
         } else if (otp) {
           try {
