@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
+import { Vector2 } from "3dmol";
 // Direct imports — bypass the ui barrel to avoid stub conflicts
 import Viewer from "@ot/ui/components/Viewer/Viewer";
 import {
@@ -50,10 +51,66 @@ function bfactorToColor(atom: { b: number }) {
   return "#FF7D45"; // low
 }
 
-const DRAW_CARTOON = [{ selection: {}, style: { cartoon: { colorfunc: bfactorToColor } } }];
+const VARIANT_COLOR = "lime";
+
+const LABEL_STYLE = {
+  alignment: "center",
+  screenOffset: new Vector2(28, -28),
+  backgroundColor: "#fff",
+  backgroundOpacity: 0.9,
+  borderColor: "#999",
+  borderThickness: 1.5,
+  font: "'Inter', sans-serif",
+  fontColor: "#000",
+  fontSize: 12.6,
+  inFront: true,
+};
+
+// ---- Viewer callbacks ----
+
+function firstDrawHandler(state: State) {
+  state.viewer.zoomTo({ resi: [...state.variantResidues] }, 0);
+  state.viewer.zoom(0.2);
+}
+
+function drawHandler(state: State) {
+  const { viewer } = state;
+  // Only create surfaces and label once (first draw)
+  if (!viewer._variantSurfaceId) {
+    viewer._variantSurfaceId = viewer.addSurface(
+      "VDW",
+      { color: VARIANT_COLOR, opacity: 1 },
+      { resi: [...state.variantResidues] },
+      undefined,
+      undefined,
+      () => {}
+    );
+    if (state.variantSummary) {
+      viewer.addLabel(
+        ` ${state.variantSummary} `,
+        LABEL_STYLE,
+        { resi: [...state.variantResidues][0] }
+      );
+    }
+  }
+}
+
+// ---- Appearance configs ----
+
+const DRAW_CARTOON = [
+  { selection: {}, style: { cartoon: { colorfunc: bfactorToColor } } },
+  // Clicksphere on variant residues so they are visually selectable
+  {
+    selection: (state: State) => ({ resi: [...state.variantResidues] }),
+    style: { clicksphere: { radius: 1.5 } },
+    addStyle: true,
+  },
+];
+
 const DRAW_TRANSPARENT = [
   { selection: {}, style: { cartoon: { colorfunc: bfactorToColor, opacity: 0.4 } } },
 ];
+
 const HOVER_APPEARANCE = [
   {
     selection: (_state: unknown, resi: number) => ({ resi }),
@@ -67,6 +124,7 @@ const HOVER_APPEARANCE = [
 const INITIAL_STATE = {
   message: "Loading structure…",
   variantResidues: new Set<number>(),
+  variantSummary: "",
   representBy: "cartoon" as "cartoon" | "transparent",
 };
 
@@ -74,6 +132,7 @@ type State = typeof INITIAL_STATE;
 type Action =
   | { type: "setMessage"; value: string | null }
   | { type: "setVariantResidues"; value: Set<number> }
+  | { type: "setVariantSummary"; value: string }
   | { type: "setRepresentBy"; value: "cartoon" | "transparent" };
 
 function reducer(state: State, action: Action): State {
@@ -82,6 +141,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, message: action.value ?? "" };
     case "setVariantResidues":
       return { ...state, variantResidues: action.value };
+    case "setVariantSummary":
+      return { ...state, variantSummary: action.value };
     case "setRepresentBy":
       return { ...state, representBy: action.value };
     default:
@@ -109,7 +170,7 @@ function ViewerContent({
   const viewerState = useViewerState() as State;
   const viewerDispatch = useViewerDispatch();
 
-  // Mark variant residues once structure + row are ready
+  // Mark variant residues + summary once structure + row are ready
   useEffect(() => {
     if (!structureData || !row) return;
     viewerDispatch({
@@ -117,6 +178,10 @@ function ViewerContent({
       value: new Set(
         row.referenceAminoAcid.split("").map((_, i) => i + row.aminoAcidPosition)
       ),
+    });
+    viewerDispatch({
+      type: "setVariantSummary",
+      value: `${row.referenceAminoAcid}${row.aminoAcidPosition}${row.alternateAminoAcid}`,
     });
     viewerDispatch({ type: "setMessage", value: null });
   }, [structureData, row]);
@@ -132,6 +197,8 @@ function ViewerContent({
           data={[{ structureData }]}
           drawAppearance={drawAppearance}
           hoverAppearance={HOVER_APPEARANCE}
+          onFirstDraw={firstDrawHandler}
+          onDraw={drawHandler}
           usage={{
             Rotate: "Drag",
             Move: "Ctrl + Drag",

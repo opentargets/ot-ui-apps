@@ -17,17 +17,25 @@ import { resolve } from "path";
 function stubUiBarrel(): Plugin {
   const uiIndexPath = resolve(__dirname, "../../packages/ui/src/index.tsx");
   const stubPath = resolve(__dirname, "widget-src/stubs/ui-index.tsx");
+  // The "ui" workspace package is a symlink — resolvedId may come through
+  // node_modules rather than the real path, so intercept it in resolveId too.
+  const nodeModulesUiIndex = resolve(
+    __dirname,
+    "../../node_modules/ui/src/index.tsx"
+  );
 
   return {
     name: "stub-ui-barrel",
+    resolveId(id: string) {
+      if (id === "ui") return stubPath;
+    },
     load(id: string) {
-      // Intercept the ui barrel (reached via "../../index", "ui" package name, etc.)
-      if (id === uiIndexPath) {
-        return `export { Link, DataDownloader, ObsPlot, ObsChart, Tooltip, OtAsyncTooltip } from ${JSON.stringify(stubPath)};`;
+      // Intercept the ui barrel (reached via alias or symlinked node_modules path)
+      if (id === uiIndexPath || id === nodeModulesUiIndex) {
+        return `export * from ${JSON.stringify(stubPath)};`;
       }
 
       // Stub .gql files — prevents GraphQL document imports from crashing the build
-      // (e.g. L2GScoreIndicator imports Locus2GeneQuery.gql via @apollo/client)
       if (id.endsWith(".gql")) {
         return "const doc = { definitions: [], loc: { source: { body: '' } } }; export default doc;";
       }

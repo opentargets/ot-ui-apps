@@ -40,15 +40,11 @@ export function DataDownloader() {
   return null;
 }
 
-/** ObsPlot: disabled in the widget (waterfall popovers show empty) */
-export function ObsPlot() {
-  return null;
-}
-
-/** ObsChart: not used by HeatmapTable but re-exported from the ui barrel */
-export function ObsChart() {
-  return null;
-}
+// Real ObsPlot / ObsChart / ObsTooltip — needed for waterfall charts in cell
+// popovers and detail modals. Imported directly (bypass barrel).
+export { default as ObsPlot } from "@ot/ui/components/ObsPlot/ObsPlot";
+export { default as ObsChart } from "@ot/ui/components/ObsPlot/ObsChart";
+export { default as ObsTooltip } from "@ot/ui/components/ObsPlot/ObsTooltip";
 
 /** Tooltip: renders children only (no help icon / tooltip popup) */
 export function Tooltip({ children }: { children?: ReactNode; [key: string]: unknown }) {
