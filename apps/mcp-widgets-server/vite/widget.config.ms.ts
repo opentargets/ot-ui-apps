@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import type { Plugin } from "vite";
-import { createWidgetBuildConfig, ROOT } from "./widget.config.base";
+import { createWidgetBuildConfig, createPlatformStubsPlugin, ROOT } from "./widget.config.base";
 
 /**
  * The molecular-structure widget needs two stub plugins:
@@ -35,47 +35,11 @@ function uiBarrelStub(): Plugin {
   };
 }
 
-const OT_CONFIG_STUB = `
-export function getConfig() {
-  return {
-    urlApi: "https://api.platform.opentargets.org/api/v4/graphql",
-    urlAiApi: "",
-    gitVersion: "",
-    profile: {
-      primaryColor: "#3489ca",
-      secondaryColor: "#ff6350",
-      isPartnerPreview: false,
-      partnerPreviewDatasets: [],
-      partnerDataTypes: [],
-    },
-    googleTagManagerID: null,
-    geneticsPortalUrl: "https://genetics.opentargets.org",
-  };
-}
-export const theme = {};
-export const getEnvironmentConfig = () => ({});
-`;
-
-function otConfigStub(): Plugin {
-  const otConfigDir = resolve(ROOT, "../../packages/ot-config/src");
-
-  return {
-    name: "stub-ot-config-ms",
-    resolveId(id: string) {
-      if (id === "@ot/config" || id.startsWith("@ot/config/")) return "\0ot-config-stub";
-    },
-    load(id: string) {
-      if (id === "\0ot-config-stub") return OT_CONFIG_STUB;
-      if (id.startsWith(otConfigDir)) return OT_CONFIG_STUB;
-    },
-  };
-}
-
 export default createWidgetBuildConfig({
   entry: resolve(ROOT, "widget-src/molecular-structure/main.tsx"),
   outputName: "MolecularStructureWidget",
   outputFile: "molecular-structure.js",
   // 3dmol must be deduplicated to prevent multiple instances of the same class.
   extraDedupe: ["3dmol"],
-  plugins: [uiBarrelStub(), otConfigStub()],
+  plugins: [uiBarrelStub(), createPlatformStubsPlugin()],
 });

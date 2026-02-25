@@ -16,7 +16,14 @@ import { App } from "@modelcontextprotocol/ext-apps";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import { MemoryRouter } from "react-router-dom";
 import { theme } from "./theme";
+
+const apolloClient = new ApolloClient({
+  uri: "https://api.platform.opentargets.org/api/v4/graphql",
+  cache: new InMemoryCache(),
+});
 
 export interface WidgetEntryConfig<TArgs extends Record<string, unknown>> {
   /** MCP app name reported to the host, e.g. "ot-l2g-widget" */
@@ -92,7 +99,13 @@ export function mountWidget<TArgs extends Record<string, unknown>>(
     }
 
     const Widget = config.component;
-    return <Widget {...args} />;
+    return (
+      <ApolloProvider client={apolloClient}>
+        <MemoryRouter>
+          <Widget {...args} />
+        </MemoryRouter>
+      </ApolloProvider>
+    );
   }
 
   const rootEl = document.getElementById("root");

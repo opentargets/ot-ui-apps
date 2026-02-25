@@ -1,6 +1,6 @@
 import { resolve } from "path";
 import type { Plugin } from "vite";
-import { createWidgetBuildConfig, ROOT } from "./widget.config.base";
+import { createWidgetBuildConfig, createPlatformStubsPlugin, ROOT } from "./widget.config.base";
 
 /**
  * Stubs the "ui" workspace barrel so the L2G bundle does not pull in
@@ -37,5 +37,5 @@ export default createWidgetBuildConfig({
   outputFile: "l2g.js",
   // Built first in the chain — wipes dist/widgets/ before a fresh build.
   emptyOutDir: true,
-  plugins: [uiBarrelStub()],
+  plugins: [uiBarrelStub(), createPlatformStubsPlugin()],
 });

@@ -9,7 +9,9 @@
     "build:widget:l2g": "vite build --config vite/widget.config.l2g.ts",
     "build:widget:ve": "vite build --config vite/widget.config.ve.ts",
     "build:widget:ms": "vite build --config vite/widget.config.ms.ts",
-    "build:widgets": "yarn build:widget:l2g && yarn build:widget:ve && yarn build:widget:ms",
+    "build:widget:gwas": "vite build --config vite/widget.config.gwas.ts",
+    "build:widget:shared-trait-studies": "vite build --config vite/widget.config.shared-trait-studies.ts",
+    "build:widgets": "yarn build:widget:l2g && yarn build:widget:ve && yarn build:widget:ms && yarn build:widget:gwas && yarn build:widget:shared-trait-studies",
     "build": "yarn build:widgets"
   },
   "dependencies": {
@@ -22,6 +24,7 @@
     "zod": "^3.22.0"
   },
   "devDependencies": {
+    "@apollo/client": "3.10.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.0.0",
@@ -29,8 +32,10 @@
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^4.0.0",
     "d3": "*",
+    "graphql": "^15.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-router-dom": "6.28.0",
     "tsx": "^4.7.0",
     "typescript": "^5.2.2",
     "vite": "^6.0.0"
