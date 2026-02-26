@@ -5,20 +5,27 @@ import { sum } from "d3";
 const usedCircleWidth = 30;
 const emptyCircleWidth = 17;
 const lineWidth = 1;
-const labelSize = 13;
 
 function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
   const entries = Object.entries(clinicalStageCategories);
   const totalStages = entries.length;
+  const phase4SlotIndex = clinicalStageCategories.PHASE_4.index;
 
   if (!maxStage) return null;
 
   const nRecords = sum(Object.values(records), row => row.length);
 
   // fade everything after this
-  const lastStageToColorIndex = clinicalStageCategories[
-    records.WITHDRAWN ? "WITHDRAWN" : records.PHASE_4 ? "PHASE_4" : maxStage
-  ].index;
+  const lastStageToColor = 
+    records.WITHDRAWN ? "WITHDRAWN" : records.PHASE_4 ? "PHASE_4" : maxStage;
+  const lastStageToColorIndex = clinicalStageCategories[lastStageToColor].index;
+
+  const firstSlotCenterPct = (0.5 / totalStages) * 100;
+  const phase4SlotCenterPct = ((phase4SlotIndex + 0.5) / totalStages) * 100;
+  const lineLeftPct = firstSlotCenterPct;
+  const lineWidthPct = Math.max(phase4SlotCenterPct - firstSlotCenterPct, 0);
+
+  const pct = Math.min((lastStageToColorIndex / phase4SlotIndex) * 100, 100);
 
   return (
     <Box
@@ -28,8 +35,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         bottom: 0,
         left: "6rem",
         right: "3rem",
-        display: "flex",
-        justifyContent: "space-between",
+        display: "grid",
+        gridTemplateColumns: `repeat(${totalStages}, 1fr)`,
         alignItems: "end",
         mb: "3rem",
       }}
@@ -53,11 +60,10 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         sx={{
           position: "absolute",
           bottom: `${usedCircleWidth / 2 - lineWidth / 2}px`,
-          left: 0,
-          width: `calc(${((totalStages - 2) / (totalStages - 1)) * 100}% - ${(usedCircleWidth - emptyCircleWidth) / 2}px)`,
+          left: `${lineLeftPct}%`,
+          width: `${lineWidthPct}%`,
           height: `${lineWidth}px`,
           background: theme => {
-            const pct = Math.min((lastStageToColorIndex / (totalStages - 2)) * 100, 100);
             return `linear-gradient(
               to right,
               ${theme.palette.primary.main} 0%,
@@ -83,19 +89,18 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              flex: "0 0 auto",
               zIndex: 1,
             }}
           >
-            <Box sx={{ height: "50px", position: "relative", width: `${circleWidth}px` }}>
+            <Box sx={{ height: "50px", position: "relative", width: "100%" }}>
               <Typography
                 variant="caption"
                 component="span"
                 sx={{
                   position: "absolute",
                   bottom: 0,
-                  left: `${(circleWidth + labelSize) / 2}px`,
-                  transform: "rotate(-45deg)",
+                  left: "50%",
+                  transform: `translateX(6px) rotate(-45deg)`,
                   transformOrigin: "bottom left",
                   whiteSpace: "nowrap",
                   fontWeight: stage === selectedStage ? 700 : 400,
