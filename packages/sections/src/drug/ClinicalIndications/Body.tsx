@@ -27,39 +27,53 @@ function Body({ id: chemblId, label: name, entity }) {
       renderDescription={() => <Description name={name} />}
       renderBody={() => {
         return (
-          <Box sx={{ 
+          <Box sx={{
+            display: "flex",
+            alignItems: "stretch",
+            flexWrap: { xs: "wrap", md: "nowrap" },
+            columnGap: { md: 3, lg: 6 },
+            rowGap: 1,
             height: '100%',
             "& .MuiCardContent-root": { 
               padding: "0 !important" 
             } 
           }}>
-            <Grid container columnSpacing={6} sx={{ height: '100%' }}>
-              {/* LHS table */}
-              <Grid item xs={12} md={4} sx={{ height: '100%' }}>
-                {rows?.length > 0 && (  
-                  <IndicationsTable
-                    rows={rows}
-                    setRecords={setRecords}
-                    setLoadingRecords={setLoadingRecords}
-                    setMaxClinicalStage={setMaxClinicalStage}
-                    query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
-                    variables={variables}
-                    loading={request.loading}
-                  />
-                )}
-              </Grid>
+          {/* <Grid container columnSpacing={6} sx={{ height: '100%' }}> */}
+            {/* LHS table */}
+            <Box
+              sx={{
+                // height: '100%',
+                flex: "0 0 auto",
+                width: {
+                  sm: "100% ",
+                  md: "clamp(250px, 30%, 300px)",
+                },
+                alignSelf: { md: "stretch" },
+                // height: { md: "100%" },
+              }}>
+              {rows?.length > 0 && (  
+                <IndicationsTable
+                  rows={rows}
+                  setRecords={setRecords}
+                  setLoadingRecords={setLoadingRecords}
+                  setMaxClinicalStage={setMaxClinicalStage}
+                  query={CLINICAL_INDICATIONS_QUERY.loc.source.body}
+                  variables={variables}
+                  loading={request.loading}
+                />
+              )}
+            </Box>
 
-              {/* RHS table */}
-              <Grid item xs={12} md={8}>
-                {records && (
-                  <RecordsCards
-                    records={records}
-                    loading={loadingRecords}
-                    maxClinicalStage={maxClinicalStage}
-                  />
-                )}
-              </Grid>
-            </Grid>
+            {/* RHS table */}
+            <Box sx={{ flex: "1 1 auto", minWidth: 0, }}>
+              {records && (
+                <RecordsCards
+                  records={records}
+                  loading={loadingRecords}
+                  maxClinicalStage={maxClinicalStage}
+                />
+              )}
+            </Box>
           </Box>
         );
       }}

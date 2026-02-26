@@ -139,7 +139,7 @@ function RecordsCards({
       <Box
         sx={{
           position: "relative",
-          mr: 6,
+          mr: { md: 0, lg: 4, xl: 6 },
           "& th": {
             position: "relative !important",
             padding: "0 !important",
