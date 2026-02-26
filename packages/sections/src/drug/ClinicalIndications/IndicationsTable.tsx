@@ -125,7 +125,7 @@ function IndicationsTable({
                     color: 'text.secondary'
                   }}
                 >
-                  {clinicalReports?.length ?? "XX"} records
+                  {clinicalReports.length} {clinicalReports.length > 1 ? "reports" : "report"}
                 </Typography>
                 <Box
                   className="arrow-icon"

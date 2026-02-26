@@ -15,6 +15,11 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
 
   const nRecords = sum(Object.values(records), row => row.length);
 
+  // fade everything after this
+  const lastStageToColorIndex = clinicalStageCategories[
+    records.WITHDRAWN ? "WITHDRAWN" : records.PHASE_4 ? "PHASE_4" : maxStage
+  ].index;
+
   return (
     <Box
       sx={{
@@ -40,7 +45,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
             fontWeight: 600,
           }}
         >
-          {nRecords} {nRecords > 1 ? "records" : "record"}
+          {nRecords} {nRecords > 1 ? "reports" : "report"}
         </Typography>
 
       {/* single absolute line behind all circles – stops at Phase IV */}
@@ -52,7 +57,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
           width: `calc(${((totalStages - 2) / (totalStages - 1)) * 100}% - ${(usedCircleWidth - emptyCircleWidth) / 2}px)`,
           height: `${lineWidth}px`,
           background: theme => {
-            const pct = Math.min((clinicalStageCategories[maxStage].index / (totalStages - 2)) * 100, 100);
+            const pct = Math.min((lastStageToColorIndex / (totalStages - 2)) * 100, 100);
             return `linear-gradient(
               to right,
               ${theme.palette.primary.main} 0%,
@@ -69,7 +74,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
       {entries.map(([stage, { index, label }]) => {
         const hasRecords = records[stage]?.length > 0;
         const isWithdrawnIndex = index === entries.length -1;
-        const circleWidth = hasRecords || isWithdrawnIndex ? usedCircleWidth : emptyCircleWidth;
+        const circleWidth = hasRecords ? usedCircleWidth : emptyCircleWidth;
 
         return (
           <Box
@@ -94,7 +99,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                   transformOrigin: "bottom left",
                   whiteSpace: "nowrap",
                   fontWeight: stage === selectedStage ? 700 : 400,
-                  opacity: index > clinicalStageCategories[maxStage].index ? 0.42 : 1,
+                  opacity: index > lastStageToColorIndex ? 0.42 : 1,
                 }}
               >
                 {label}
@@ -110,14 +115,14 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                 ),
                 borderStyle: "solid",
                 borderWidth: `${stage === selectedStage ? 2 : 1}px`,
-                borderColor: `${index > clinicalStageCategories[maxStage].index ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
+                borderColor: `${index > lastStageToColorIndex ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 width: `${circleWidth}px`,
                 height: `${circleWidth}px`,
                 cursor: hasRecords && stage !== selectedStage ? "pointer" : "auto",  
-                my: hasRecords || isWithdrawnIndex ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
+                my: hasRecords ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
                 color: stage === selectedStage ? "#fff" : "primary.main",
                 // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
                 bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#ecf7ff" : "background.paper",
@@ -133,7 +138,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                 <Typography
                   variant="caption"
                   sx={{
-                    fontWeight: hasRecords ? 700 : 400, opacity: index > clinicalStageCategories[maxStage].index ? 0.3 : 1,
+                    fontWeight: hasRecords ? 700 : 400, opacity: index > lastStageToColorIndex ? 0.3 : 1,
                     fontSize: 11.5,
                   }}
                 >

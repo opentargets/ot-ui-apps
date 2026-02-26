@@ -14,7 +14,11 @@ function RecordsCards({
   const [selectedStage, setSelectedStage] = useState(null);
   useEffect(() => {
     if (!maxClinicalStage) return;
-    setSelectedStage(maxClinicalStage);
+    let initStage = maxClinicalStage;
+    if (maxClinicalStage === "APPROVAL" && !records.APPROVAL) {
+      initStage = records.PHASE_4 ? "PHASE_4" : "WITHDRAWN";
+    }
+    setSelectedStage(initStage);
   }, [maxClinicalStage, records]);
 
   const showLoading = useDelayedFlag(loading);
