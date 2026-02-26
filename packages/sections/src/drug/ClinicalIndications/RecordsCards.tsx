@@ -150,7 +150,7 @@ function RecordsCards({
             ":hover": {bgcolor: "transparent"},
           },
           "& td": {
-            padding: "0.15rem 0 !important",
+            padding: "0.35rem 0 0.05rem !important",
             maxWidth: 0,  // forces td to respect overflow
             ":hover": {bgcolor: "transparent"}
           },

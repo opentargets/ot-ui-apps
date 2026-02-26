@@ -94,9 +94,13 @@ function IndicationsTable({
               sx={{
                 fontSize: "14px",
                 fontWeight: 600,
-                // fontWeight: 'bold',
                 mb: 0,
-                color: 'primary.main'
+                color: 'primary.main',
+                minWidth: 0,
+                pr: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
               }}
             >
               <Link asyncTooltip to={`/disease/${disease.id}`} onClick={onLinkClick}>
