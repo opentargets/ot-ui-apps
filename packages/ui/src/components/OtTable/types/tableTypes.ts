@@ -27,6 +27,7 @@ export type OtTableProps = {
   defaultSortObj: DefaultSortProp;
   dataDownloader: boolean;
   dataDownloaderColumns?: Array<Record<string, unknown>>;
+  dataDownloaderRows?: Array<Record<string, unknown>>;
   dataDownloaderFileStem: string;
   query: DocumentNode;
   variables: Record<string, unknown>;

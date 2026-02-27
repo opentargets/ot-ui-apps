@@ -143,6 +143,7 @@ function RecordsCards({
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
   });
   if (!rows) return null;
+  const allRows = Object.values(records).flat();
 
   return (
     <>
@@ -173,6 +174,7 @@ function RecordsCards({
           dataDownloader
           dataDownloaderFileStem="clinical-records"
           dataDownloaderColumns={dataDownloaderColoumns}
+          dataDownloaderRows={allRows}
           // fixed
           // noWrapHeader={false}
           rowsPerPageOptions={defaultRowsPerPageOptions}

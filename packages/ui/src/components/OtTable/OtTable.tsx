@@ -90,6 +90,7 @@ function OtTable({
   sortBy,
   dataDownloader,
   dataDownloaderColumns,
+  dataDownloaderRows,
   dataDownloaderFileStem,
   query,
   variables,
@@ -192,7 +193,7 @@ function OtTable({
           {dataDownloader && (
             <DataDownloader
               columns={dataDownloaderColumns || columns}
-              rows={rows}
+              rows={dataDownloaderRows ?? rows}
               fileStem={dataDownloaderFileStem}
               query={query}
               variables={variables}
