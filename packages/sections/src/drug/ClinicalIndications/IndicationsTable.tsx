@@ -4,6 +4,7 @@ import { Box, Typography } from "@mui/material";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
 const getRecords = (client, query, clinicalReportsIds) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
@@ -27,6 +28,7 @@ function stageAndRecordCountComparator(a, b) {
 }
 
 function IndicationsTable({
+  chemblId,
   rows,
   setRecords,
   setLoadingRecords,
@@ -217,6 +219,8 @@ function IndicationsTable({
         showGlobalFilter
         columns={columns}
         rows={sortedRows}
+        query={CLINICAL_INDICATIONS_QUERY.loc?.source?.body}
+        variables={{ chemblId }}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
         dataDownloaderColumns={dataDownloaderColoumns}

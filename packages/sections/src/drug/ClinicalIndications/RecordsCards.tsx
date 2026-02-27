@@ -5,6 +5,7 @@ import { defaultRowsPerPageOptions } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
+import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
 function RecordsCards({
   records,
@@ -12,6 +13,7 @@ function RecordsCards({
   maxClinicalStage,
 }) {
   const [selectedStage, setSelectedStage] = useState(null);
+  
   useEffect(() => {
     if (!maxClinicalStage) return;
     let initStage = maxClinicalStage;
@@ -171,6 +173,8 @@ function RecordsCards({
           // showGlobalFilter
           columns={columns}
           rows={rows}
+          query={CLINICAL_RECORDS_QUERY.loc?.source?.body}
+          variables={{ clinicalReportsIds: allRows.map(({ id }) => id) }}
           dataDownloader
           dataDownloaderFileStem="clinical-records"
           dataDownloaderColumns={dataDownloaderColoumns}

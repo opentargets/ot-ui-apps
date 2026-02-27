@@ -53,6 +53,7 @@ function Body({ id: chemblId, label: name, entity }) {
               }}>
               {rows?.length > 0 && (  
                 <IndicationsTable
+                  chemblId={chemblId}
                   rows={rows}
                   setRecords={setRecords}
                   setLoadingRecords={setLoadingRecords}
