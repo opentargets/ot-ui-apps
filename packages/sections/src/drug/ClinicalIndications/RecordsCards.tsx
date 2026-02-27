@@ -110,6 +110,16 @@ function RecordsCards({
     }
   ];
 
+  const dataDownloaderColoumns = [
+    { id: "id" },
+    { id: "title" },
+    { id: "clinicalStage" },
+    { id: "source" },
+    { id: "trialOverallStatus" },
+    { id: "trialStartDate" },
+    { id: "trialLiterature" },
+  ];
+
   if (!selectedStage || (loading && !showLoading)) return null;
 
   if (showLoading) {
@@ -161,7 +171,8 @@ function RecordsCards({
           columns={columns}
           rows={rows}
           dataDownloader
-          // dataDownloaderFileStem="clinical-records"`
+          dataDownloaderFileStem="clinical-records"
+          dataDownloaderColumns={dataDownloaderColoumns}
           // fixed
           // noWrapHeader={false}
           rowsPerPageOptions={defaultRowsPerPageOptions}

@@ -154,6 +154,24 @@ function IndicationsTable({
     },
   ];
 
+  const dataDownloaderColoumns = [
+    {
+      id: "diseaseName",
+      exportValue: row => row.disease?.name,
+    },
+    {
+      id: "diseaseId",
+      exportValue: row => row.disease?.id,
+    },
+    {
+      id: "maxClinicalStage", 
+    },
+    {
+      id: "reportCount",
+      exportValue: row => row.clinicalReports?.length,
+    },
+  ];
+
   return (
     <Box
       sx={{
@@ -201,6 +219,7 @@ function IndicationsTable({
         rows={sortedRows}
         dataDownloader
         dataDownloaderFileStem="clinical-indications"
+        dataDownloaderColumns={dataDownloaderColoumns}
         showColumnVisibilityControl={false}
         getSelectedRows={rowsInfo => {
           if (!(rowsInfo?.length > 0)) return;

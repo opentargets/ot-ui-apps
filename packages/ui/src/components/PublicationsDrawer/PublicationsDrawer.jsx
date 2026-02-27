@@ -88,7 +88,8 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
+    // filter out empty ids - these will fetch irrelevant publications
+    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds.filter(id => id?.trim()));
     const requestOptions = {
       method: "POST",
       headers: {
