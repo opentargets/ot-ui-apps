@@ -40,7 +40,7 @@ function RecordsCards({
           trialStartDate,
           type,
           trialOverallStatus,
-          trialOfficialTitle,
+          title,
         } = record;
 
         const displayTitle = (
@@ -54,7 +54,7 @@ function RecordsCards({
               textOverflow: "ellipsis",
             }}
           >
-            {trialOfficialTitle || `[${sentenceCase(type)}]`}
+            {title || `[${sentenceCase(type)}]`}
           </Typography>
         );
 

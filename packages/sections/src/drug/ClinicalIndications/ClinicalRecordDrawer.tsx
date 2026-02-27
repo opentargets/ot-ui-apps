@@ -119,7 +119,8 @@ function RecordDetails({ recordId }) {
   if (!details) return null;
 
   const {
-    trialOfficialTitle,
+    title,
+    type,
     source,
     trialOverallStatus,
     trialStartDate,
@@ -136,11 +137,9 @@ function RecordDetails({ recordId }) {
   return (
     <>
       {/* Title */}
-      {trialOfficialTitle && (
-        <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
-          {trialOfficialTitle}
-        </Typography>
-      )}
+      <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
+        {title || `[${sentenceCase(type)}]`}
+      </Typography>
 
       {/* Source */}
       <Box sx={{ position: "relative" }}>

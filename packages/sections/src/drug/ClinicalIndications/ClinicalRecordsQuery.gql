@@ -4,10 +4,10 @@ query ClinicalRecordsQuery($clinicalReportsIds: [String!]!) {
     id
     source
     trialLiterature
-    trialOfficialTitle
+    title
     trialOverallStatus
     trialStartDate
-    type  # !! CAN BE OMITTED ONCE ALWAYS HAVE TITLE
+    type
     year
   }
 }
