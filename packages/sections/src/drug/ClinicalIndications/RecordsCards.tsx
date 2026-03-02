@@ -18,7 +18,7 @@ function RecordsCards({
     if (!maxClinicalStage) return;
     let initStage = maxClinicalStage;
     if (maxClinicalStage === "APPROVAL" && !records.APPROVAL) {
-      initStage = records.PHASE_4 ? "PHASE_4" : "WITHDRAWN";
+      initStage = records.PHASE_4 ? "PHASE_4" : "WITHDRAWAL";
     }
     setSelectedStage(initStage);
   }, [maxClinicalStage, records]);
@@ -179,16 +179,12 @@ function RecordsCards({
           dataDownloaderFileStem="clinical-records"
           dataDownloaderColumns={dataDownloaderColoumns}
           dataDownloaderRows={allRows}
-          // fixed
-          // noWrapHeader={false}
           rowsPerPageOptions={defaultRowsPerPageOptions}
-          // loading={loading}
           showGlobalFilter={false}
-          // hover={false}
           showColumnVisibilityControl={false}
           showRowsPerPageControl={false}
-          // sortBy="trial"
-          // order="desc"
+          // showPaginationAlways={false}
+          wrapControls={{ mr: { md: 0, lg: -4, xl: -6 }}}  // undo mr on wrapper to keep buttons in top-right
         />
       </Box>
     </>

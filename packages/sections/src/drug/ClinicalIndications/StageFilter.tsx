@@ -17,7 +17,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
 
   // fade everything after this
   const lastStageToColor = 
-    records.WITHDRAWN ? "WITHDRAWN" : records.PHASE_4 ? "PHASE_4" : maxStage;
+    records.WITHDRAWAL ? "WITHDRAWAL" : records.PHASE_4 ? "PHASE_4" : maxStage;
   const lastStageToColorIndex = clinicalStageCategories[lastStageToColor].index;
 
   const firstSlotCenterPct = (0.5 / totalStages) * 100;
@@ -48,8 +48,10 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
           sx={{
             position: "absolute",
             top: 67,
-            left: -80,
+            left: -95,
             fontWeight: 600,
+            width: "85px",
+            textAlign: "right",
           }}
         >
           {nRecords} {nRecords > 1 ? "reports" : "report"}

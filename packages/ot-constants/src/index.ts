@@ -363,7 +363,7 @@ export const clinicalStageCategories = {
   PREAPPROVAL: { index: 9, label: "Preapproval" },
   APPROVAL: { index: 10, label: "Approval" },
   PHASE_4: { index: 11, label: "Phase IV" },
-  WITHDRAWN: { index: 12, label: "Withdrawal" },
+  WITHDRAWAL: { index: 12, label: "Withdrawal" },
 };
 
 export * from "./alphaFold";

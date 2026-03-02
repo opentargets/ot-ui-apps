@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, OtTable, useApolloClient } from "ui";
 import { Box, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
@@ -36,6 +38,8 @@ function IndicationsTable({
   loading,
 }) {
   const client = useApolloClient();
+  const theme = useTheme();
+  const mdDown = useMediaQuery(theme.breakpoints.down("md"));
   const [selectedRow, setSelectedRow] = useState({});
 
   // always use copied, sorted rows from this point - avoids issues with selecting initial row
@@ -141,7 +145,7 @@ function IndicationsTable({
                     visibility: isSelected ? "visible" : "hidden",
                   }}
                 >
-                  <FontAwesomeIcon icon={faArrowRight} />
+                  <FontAwesomeIcon icon={mdDown ? faArrowDown : faArrowRight} />
                 </Box>
               </Box>
             </Box>
@@ -177,7 +181,7 @@ function IndicationsTable({
   return (
     <Box
       sx={{
-        px: 1,  
+        px: { sm: 0, md: 1 },
         py: 0,  
         position: 'relative',
         height: "100%",
@@ -192,10 +196,6 @@ function IndicationsTable({
           opacity: 0.8,  
         },
         "& thead": { display: 'none' },
-        "& table": {
-          borderCollapse: "collapse",
-          borderSpacing: 0,
-        },
         "& tr": {
           padding: "0.15rem 0 !important",
           borderBottom: "none !important",
@@ -209,14 +209,15 @@ function IndicationsTable({
         },
         "& > div > :nth-of-type(2)": theme => ({
           paddingTop: "0.5rem",
-          marginLeft: "-1.5rem",  // to reach left edge
-          marginRight: "-0.5rem",  // to not overshoot right border
-          width: `calc(100% + ${theme.spacing(4)})`,
+          marginLeft: { sm: 0, md: "-1.5rem" },  // to reach left edge
+          marginRight: { sm: 0, md: "-0.5rem" },  // to not overshoot right border
+          width: { sm: "100%", md: `calc(100% + ${theme.spacing(4)})` },
         }),
       }}
     >
       <OtTable
         showGlobalFilter
+        globalFilterPlaceholderText="Search..."
         columns={columns}
         rows={sortedRows}
         query={CLINICAL_INDICATIONS_QUERY.loc?.source?.body}
@@ -247,6 +248,8 @@ function IndicationsTable({
         sortBy="indicationCard"
         order="desc"
         showRowsPerPageControl={false}
+        showPaginationAlways={false}
+        wrapControls={{ rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } }}
       />
     </Box>
   );

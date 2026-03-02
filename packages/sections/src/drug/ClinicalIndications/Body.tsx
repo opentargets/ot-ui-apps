@@ -32,7 +32,7 @@ function Body({ id: chemblId, label: name, entity }) {
             alignItems: "stretch",
             flexWrap: { xs: "wrap", md: "nowrap" },
             columnGap: { md: 3, lg: 6 },
-            rowGap: 1,
+            rowGap: 3,
             height: '100%',
             "& .MuiCardContent-root": { 
               padding: "0 !important" 
@@ -45,7 +45,7 @@ function Body({ id: chemblId, label: name, entity }) {
                 // height: '100%',
                 flex: "0 0 auto",
                 width: {
-                  sm: "100% ",
+                  xs: "100% ",
                   md: "clamp(250px, 30%, 300px)",
                 },
                 alignSelf: { md: "stretch" },

@@ -83,6 +83,7 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 function OtTable({
   showGlobalFilter = true,
+  globalFilterPlaceholderText,
   columns = [],
   rows = [],
   verticalHeaders = false,
@@ -95,13 +96,15 @@ function OtTable({
   query,
   variables,
   showColumnVisibilityControl = true,
-  showRowsPerPageControl = true, 
+  showRowsPerPageControl = true,
+  showPaginationAlways = true,
   loading,
   enableMultipleRowSelection = false,
   getSelectedRows,
   getFilteredRows, // !! ADD NEW PROPS TO PROPS TYPES
   getEnteredRow,
   getExitedRow,
+  wrapControls,
 }: OtTableProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -180,27 +183,76 @@ function OtTable({
   return (
     <div>
       {/* Global Search */}
-      <Grid
-        container
-        sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
-      >
-        <Grid item sm={12} md={4}>
-          {showGlobalFilter && <OtTableSearch setGlobalSearchTerm={setGlobalFilter} />}
-        </Grid>
+      {wrapControls ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            flexDirection: "row-reverse",
+            justifyContent: "space-between",
+            ...(typeof wrapControls === "object" ? wrapControls : {}),  // ?? BETTER WAY ??
+          }}
+        >  
+          <Box sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+            {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+            {dataDownloader && (
+              <DataDownloader
+                columns={dataDownloaderColumns || columns}
+                rows={dataDownloaderRows ?? rows}
+                fileStem={dataDownloaderFileStem}
+                query={query}
+                variables={variables}
+              />
+            )}
+          </Box>
 
-        <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
-          {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
-          {dataDownloader && (
-            <DataDownloader
-              columns={dataDownloaderColumns || columns}
-              rows={dataDownloaderRows ?? rows}
-              fileStem={dataDownloaderFileStem}
-              query={query}
-              variables={variables}
-            />
-          )}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "left",
+              width: { xs: "100%", sm: "fit-content", md: "100%" }
+            }}
+          >
+            <Box sx={{ width: "100%", maxWidth: "210px" }}>
+              {showGlobalFilter &&
+                <OtTableSearch
+                  setGlobalSearchTerm={setGlobalFilter}
+                  placeholderText={globalFilterPlaceholderText}
+                />
+              }
+            </Box>
+          </Box>
+
+        </Box>
+      ) : (
+        <Grid
+          container
+          sx={{ display: "flex", justifyContent: "space-between", gap: { xs: 2, md: 0 } }}
+        >
+          <Grid item sm={12} md={4}>
+              {showGlobalFilter &&
+                <OtTableSearch
+                  setGlobalSearchTerm={setGlobalFilter}
+                  placeholderText={globalFilterPlaceholderText}
+                />
+              }
+          </Grid>
+
+          <Grid item sm={12} md={8} sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
+            {showColumnVisibilityControl && <OtTableColumnVisibility table={table} />}
+            {dataDownloader && (
+              <DataDownloader
+                columns={dataDownloaderColumns || columns}
+                rows={dataDownloaderRows ?? rows}
+                fileStem={dataDownloaderFileStem}
+                query={query}
+                variables={variables}
+              />
+            )}
+          </Grid>
         </Grid>
-      </Grid>
+      )}
+
       {/* Table component container */}
       <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
         {/* Table component */}
@@ -324,60 +376,62 @@ function OtTable({
           </div>
         )}
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: theme => theme.spacing(3),
-            marginLeft: theme => theme.spacing(3),
-          }}
-        >
-          <div>
-            <span>
-              {getCurrentPagePosition(
-                table.getState().pagination.pageIndex,
-                table.getState().pagination.pageSize,
-                table.getGroupedRowModel().rows.length
-              )}
-            </span>
-          </div>
+        {(showPaginationAlways || table.getPageCount() > 1) && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: theme => theme.spacing(3),
+              marginLeft: theme => theme.spacing(3),
+            }}
+          >
+            <div>
+              <span>
+                {getCurrentPagePosition(
+                  table.getState().pagination.pageIndex,
+                  table.getState().pagination.pageSize,
+                  table.getGroupedRowModel().rows.length
+                )}
+              </span>
+            </div>
 
-          <div className="paginationAction">
-            <IconButton
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-              aria-label="First Page"
-              data-testid="pagination-first-button"
-            >
-              <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
-            </IconButton>
-            <IconButton
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              aria-label="Previous Page"
-              data-testid="pagination-previous-button"
-            >
-              <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
-            </IconButton>
+            <div className="paginationAction">
+              <IconButton
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+                aria-label="First Page"
+                data-testid="pagination-first-button"
+              >
+                <FontAwesomeIcon size="2xs" icon={faBackwardStep} />
+              </IconButton>
+              <IconButton
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+                aria-label="Previous Page"
+                data-testid="pagination-previous-button"
+              >
+                <FontAwesomeIcon size="2xs" icon={faAngleLeft} />
+              </IconButton>
 
-            <IconButton
-              onClick={() => table.nextPage()}
-              data-testid="pagination-next-button"
-              disabled={!table.getCanNextPage()}
-              aria-label="Next Page"
-            >
-              <FontAwesomeIcon size="2xs" icon={faAngleRight} />
-            </IconButton>
-            <IconButton
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-              data-testid="pagination-last-button"
-              aria-label="last page"
-            >
-              <FontAwesomeIcon size="2xs" icon={faForwardStep} />
-            </IconButton>
-          </div>
-        </Box>
+              <IconButton
+                onClick={() => table.nextPage()}
+                data-testid="pagination-next-button"
+                disabled={!table.getCanNextPage()}
+                aria-label="Next Page"
+              >
+                <FontAwesomeIcon size="2xs" icon={faAngleRight} />
+              </IconButton>
+              <IconButton
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+                data-testid="pagination-last-button"
+                aria-label="last page"
+              >
+                <FontAwesomeIcon size="2xs" icon={faForwardStep} />
+              </IconButton>
+            </div>
+          </Box>
+        )}
       </Box>
     </div>
   );
