@@ -28,16 +28,15 @@ query RecordDetailQuery($clinicalReportId: String!) {
     source
     trialDescription
     trialLiterature
-    trialNumberOfArms
     title
     trialOverallStatus
     trialPhase
     trialPrimaryPurpose
     trialStartDate
-    trialStudyType
     trialWhyStopped
+    trialStopReasonCategories
     type
+    trialStudyType
     url
-    year
   }
 }

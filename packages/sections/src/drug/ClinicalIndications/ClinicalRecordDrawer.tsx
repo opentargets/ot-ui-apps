@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -12,9 +12,17 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { naLabel } from "@ot/constants";
-import { Link, PublicationsList, OtLongText, useApolloClient, useDelayedFlag } from "ui";
+import { naLabel, clinicalStageCategories } from "@ot/constants";
+import {
+  Link,
+  PublicationsList,
+  OtLongText,
+  Tooltip,
+  useApolloClient,
+  useDelayedFlag
+} from "ui";
 import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
+import { sentenceCase } from "@ot/utils";
 
 const useDrawerStyles = makeStyles(theme => ({
   drawerLink: {
@@ -51,19 +59,24 @@ const getDetails = (client, query, clinicalReportId) =>
     },
 });
 
-function FieldLabel({ children }: { children }) {
+function FieldLabel({ minWidth = 65, children }) {
   return (
-    <Typography variant="caption" sx={{ fontWeight: 400, minWidth: 65, mr: 1 }}>
+    <Typography variant="caption" sx={{ fontWeight: 400, minWidth, mr: 0.5 }}>
       {children}
     </Typography>
   );
 }
 
-function FieldRow({ label, children }: { label, children }) {
+function FieldRow({ label, labelMinWidth = 70, children }: { label, children }) {
   if (!children) return null;
   return (
-    <Box sx={{ display: "flex", alignItems: "baseline", my: 1 }}>
-      <FieldLabel>{label}</FieldLabel>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "baseline",
+        my: 1,
+      }}>
+      <FieldLabel minWidth={labelMinWidth}>{label}</FieldLabel>
       <Box sx={{ flex: 1 }}>{children}</Box>
     </Box>
   );
@@ -78,6 +91,35 @@ function dedupOnId(rows, propertyName) {
     ).values(),
   ];
 }
+
+function formatType(s) {
+  return sentenceCase(s.replace(/_+/g, " "));
+}
+
+function formatTrialStudyType(s) {
+  return s.replace(/_+/g, " ").toLowerCase();
+}
+
+const tooltipStyle = {
+  tooltipIcon: {
+    verticalAlign: "baseline",
+    top: -8,
+    lineHeight: 1,
+    fontSize: "0.75em",
+    position: "relative",
+  },
+};
+
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: "offset",
+        options: { offset: [0, -4] }, // smaller gap (try 2–6)
+      },
+    ],
+  },
+};
 
 // fetches and displays record details except for literature
 function RecordDetails({ recordId }) {
@@ -121,8 +163,16 @@ function RecordDetails({ recordId }) {
   const {
     title,
     type,
+    trialStudyType,
+    trialPrimaryPurpose,
     source,
+    countries,
+    clinicalStage,
+    trialPhase,
+    phaseFromSource,
     trialOverallStatus,
+    trialWhyStopped,
+    trialStopReasonCategories,
     trialStartDate,
     url,
     trialDescription,
@@ -144,27 +194,122 @@ function RecordDetails({ recordId }) {
       {/* Source */}
       <Box sx={{ position: "relative" }}>
         <FieldRow label="Source">
-          <Typography variant="body2">{source || naLabel}</Typography>
+          <Typography variant="body2">{source}</Typography>
         </FieldRow>
-        <Chip
-          sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
-          label={`${hasExpertReview ? "" : "no"} expert review`}
-          variant="outlined"
-          size="small"
-        />
+        {hasExpertReview && (
+          <Chip
+            sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
+            label="Expert review"
+            variant="outlined"
+            size="small"
+          />
+        )}
       </Box>
 
-      {/* Status */}
-      <FieldRow label="Status">
-        <Typography variant="body2">
-          {trialOverallStatus?.toLowerCase() || naLabel}
-        </Typography>
-      </FieldRow>
+      {/* Countries */}
+      {countries?.length > 0 && (
+        <FieldRow label="Status">
+          <Typography variant="body2">
+            {countries.join(", ")}
+          </Typography>
+        </FieldRow>
+      )}
+      
+      {/* Type */}
+      {(type || trialStudyType) && (
+        <FieldRow label="Type">
+          <Typography variant="body2">
+            {type && formatType(type)}
+            {type && trialStudyType && " - "}
+            {trialStudyType && formatType(trialStudyType)}
+          </Typography>
+        </FieldRow>
+      )}
+      
+      {/* Purpose */}
+      {trialPrimaryPurpose && (
+        <FieldRow label="Purpose">
+          <Typography variant="body2">
+            {formatType(trialPrimaryPurpose)}
+          </Typography>
+        </FieldRow>
+      )}
 
       {/* Start */}
-      <FieldRow label="Start">
-        <Typography variant="body2">{trialStartDate || naLabel}</Typography>
+      {trialStartDate && (
+        <FieldRow label="Start">
+          <Typography variant="body2">{trialStartDate}</Typography>
+        </FieldRow>
+      )}
+
+      {/* Stage/phase */}
+      <FieldRow label="Stage">
+        {(trialPhase || phaseFromSource) ? (
+          <Tooltip
+            showHelpIcon
+            style={tooltipStyle}
+            slotProps={tooltipSlotProps}
+            title={
+              <>
+                {phaseFromSource && (
+                  <FieldRow label="Phase from source:" labelMinWidth={0}>
+                    <Typography variant="caption">{phaseFromSource}</Typography>
+                  </FieldRow>
+                )}
+                {trialPhase && (
+                  <FieldRow label="Trial phase:" labelMinWidth={0}>
+                    <Typography variant="caption">{trialPhase}</Typography>
+                  </FieldRow>
+                )}
+              </>
+            }
+          >
+            <Typography component="span" variant="body2">
+              {clinicalStageCategories[clinicalStage].label}
+            </Typography>
+          </Tooltip>
+        ) : (
+          <Typography variant="body2">{clinicalStageCategories[clinicalStage].label}</Typography>
+        )}
       </FieldRow>
+
+      {/* Status and why stopped */}
+      {trialOverallStatus && (
+        <FieldRow label="Status">
+          {(trialWhyStopped || trialStopReasonCategories.length > 0) ? (
+            <Tooltip
+              showHelpIcon
+              style={tooltipStyle}
+              slotProps={tooltipSlotProps}
+              title={
+                <>
+                  {trialWhyStopped && (
+                    <FieldRow label="Why Stopped:" labelMinWidth={0}>
+                      <Typography variant="caption">{trialWhyStopped}</Typography>
+                    </FieldRow>
+                  )}
+                  {trialStopReasonCategories.length > 0 && (
+                    <FieldRow
+                      label={`${trialStopReasonCategories.length > 1 ? "Reasons" : "Reason"}:`}
+                      labelMinWidth={0}
+                    >
+                      <Typography variant="caption">{trialStopReasonCategories.join(", ")}</Typography>
+                    </FieldRow>
+                  )}
+                </>
+              }
+            >
+              <Typography component="span" variant="body2">
+                {formatType(trialOverallStatus)}
+              </Typography>
+            </Tooltip>
+          ) : (
+            <Typography variant="body2">
+              {formatType(trialOverallStatus)}
+            </Typography>
+          )}
+        </FieldRow>
+      )}
 
       {/* URL */}
       <FieldRow label="URL">
@@ -263,7 +408,7 @@ function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
       >
         <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography className={classes.drawerTitleCaption}>Record</Typography>
+            <Typography className={classes.drawerTitleCaption}>Report</Typography>
             <IconButton onClick={closeDrawer}>
               <FontAwesomeIcon icon={faXmark} />
             </IconButton>
@@ -272,7 +417,7 @@ function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
 
         <Box width={700} maxWidth="100%" className={classes.drawerBody}>
           {open && (
-            <Box my={3} mx={3} p={3} pb={6} bgcolor="white">
+            <Box mt={2} mb={3} mx={3} p={3} pb={6} bgcolor="white">
               {/* All details except literature */}
               <RecordDetails recordId={recordId} />
               
