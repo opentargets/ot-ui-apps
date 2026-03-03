@@ -38,6 +38,7 @@ export type OtTableProps = {
   loading: boolean;
   enableMultipleRowSelection: boolean;
   getSelectedRows: (r: Row<any>[]) => void;
+  getFilteredRows: any,
   wrapControls: any,
 };
 

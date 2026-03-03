@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import {
   Box,
   IconButton,
@@ -12,7 +12,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { naLabel, clinicalStageCategories } from "@ot/constants";
+import { clinicalStageCategories } from "@ot/constants";
 import {
   Link,
   PublicationsList,
@@ -94,10 +94,6 @@ function dedupOnId(rows, propertyName) {
 
 function formatType(s) {
   return sentenceCase(s.replace(/_+/g, " "));
-}
-
-function formatTrialStudyType(s) {
-  return s.replace(/_+/g, " ").toLowerCase();
 }
 
 const tooltipStyle = {
@@ -269,7 +265,9 @@ function RecordDetails({ recordId }) {
             </Typography>
           </Tooltip>
         ) : (
-          <Typography variant="body2">{clinicalStageCategories[clinicalStage].label}</Typography>
+          <Typography variant="body2">
+            {clinicalStageCategories[clinicalStage].label}
+          </Typography>
         )}
       </FieldRow>
 
@@ -285,7 +283,9 @@ function RecordDetails({ recordId }) {
                 <>
                   {trialWhyStopped && (
                     <FieldRow label="Why Stopped:" labelMinWidth={0}>
-                      <Typography variant="caption">{trialWhyStopped}</Typography>
+                      <Typography variant="caption" sx={{ whiteSpace: "pre-wrap", tabSize: 4}}>
+                        {trialWhyStopped}
+                      </Typography>
                     </FieldRow>
                   )}
                   {trialStopReasonCategories.length > 0 && (
@@ -312,29 +312,29 @@ function RecordDetails({ recordId }) {
       )}
 
       {/* URL */}
-      <FieldRow label="URL">
-        {url ? (
+      {url && (
+        <FieldRow label="URL">
           <Typography variant="body2" sx={{ fontSize: 14 }}>
             <Link external to={url}>
               {url}
             </Link>
           </Typography>
-        ) : (
-          <Typography variant="body2">{naLabel}</Typography>
-        )}
-      </FieldRow>
+        </FieldRow>
+      )}
 
       {/* Diseases */}
       {dedupedDiseases.length > 0 && (
         <FieldRow label="Diseases">
           <OtLongText variant="body2" lineLimit={3} displayText="... more">
             <Box component="span" sx={{ fontSize: 14 }}>
-              {dedupedDiseases.map((d: any, index: number) => (
-                <span key={d.disease.id}>
+              {dedupedDiseases.map((d, index) => (
+                <span key={index}>
                   {index > 0 ? ", " : ""}
-                  <Link to={`/disease/${d.disease.id}`}>
-                    {d.diseaseFromSource}
-                  </Link>
+                  {d.disease?.id ? (
+                    <Link asyncTooltip to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>
+                  ) : (
+                    d.diseaseFromSource
+                  )}
                 </span>
               ))}
             </Box>
@@ -347,12 +347,14 @@ function RecordDetails({ recordId }) {
         <FieldRow label="Drugs">
           <OtLongText variant="body2" lineLimit={3} displayText="... more">
             <Box component="span" sx={{ fontSize: 14 }}>
-              {dedupedDrugs.map((d: any, index: number) => (
-                <span key={d.drug.id}>
+              {dedupedDrugs.map((d, index) => (
+                <span key={index}>
                   {index > 0 ? ", " : ""}
-                  <Link to={`/drug/${d.drug.id}`}>
-                    {d.drugFromSource}
-                  </Link>
+                  {d.drug?.id ? (
+                    <Link asyncTooltip to={`/drug/${d.drug.id}`}>{d.drug.name}</Link>
+                  ) : (
+                    d.drugFromSource
+                  )}
                 </span>
               ))}
             </Box>
@@ -361,11 +363,11 @@ function RecordDetails({ recordId }) {
       )}
 
       {/* Description */}
-      <Box sx={{ mt: 2.5, mb: 3.5 }}>
-        <Typography variant="body2" sx={{ whiteSpace: "normal" }}>
-          {trialDescription || naLabel}
+      {trialDescription &&
+        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", tabSize: 4, mt: 2.5, mb: 3.5 }}>
+          {trialDescription}
         </Typography>
-      </Box>
+      }
     </>
   );
 }
@@ -431,6 +433,8 @@ function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
                       hideSearch
                       name={undefined}
                       symbol={undefined}
+                      showRowsPerPageControl={false}
+                      // showPaginationAlways={false}
                     />
                   </Box>
                 </Box>

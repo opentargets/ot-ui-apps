@@ -101,7 +101,7 @@ function OtTable({
   loading,
   enableMultipleRowSelection = false,
   getSelectedRows,
-  getFilteredRows, // !! ADD NEW PROPS TO PROPS TYPES
+  getFilteredRows,
   getEnteredRow,
   getExitedRow,
   wrapControls,

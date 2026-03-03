@@ -83,7 +83,14 @@ const listComponentStyles = makeStyles(theme => ({
   },
 }));
 
-export function PublicationsList({ entriesIds, hideSearch = false, name, symbol }) {
+export function PublicationsList({
+  entriesIds,
+  hideSearch = false,
+  name,
+  symbol,
+  showRowsPerPageControl,
+  showPaginationAlways,
+}) {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -195,6 +202,8 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
       rows={parsedPublications}
       showGlobalFilter={!hideSearch}
       showColumnVisibilityControl={false}
+      showRowsPerPageControl={showRowsPerPageControl}
+      showPaginationAlways={showPaginationAlways}
     />
   );
 }
