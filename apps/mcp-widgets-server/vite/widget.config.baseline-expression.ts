@@ -4,8 +4,9 @@ import { createWidgetBuildConfig, createPlatformStubsPlugin, ROOT } from "./widg
 
 function uiBarrelStub(): Plugin {
   const stubPath = resolve(ROOT, "widget-src/shared/stubs/ui-index.tsx");
+
   return {
-    name: "stub-ui-barrel-ve",
+    name: "stub-ui-barrel-baseline-expression",
     resolveId(id: string) {
       if (id === "ui") return stubPath;
     },
@@ -13,8 +14,8 @@ function uiBarrelStub(): Plugin {
 }
 
 export default createWidgetBuildConfig({
-  entry: resolve(ROOT, "widget-src/variant-effect/main.tsx"),
-  outputName: "VariantEffectWidget",
-  outputFile: "variant-effect.js",
+  entry: resolve(ROOT, "widget-src/baseline-expression/main.tsx"),
+  outputName: "BaselineExpressionWidget",
+  outputFile: "baseline-expression.js",
   plugins: [uiBarrelStub(), createPlatformStubsPlugin()],
 });

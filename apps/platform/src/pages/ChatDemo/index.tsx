@@ -44,6 +44,12 @@ const WELCOME_MESSAGE: Message = {
   text: "Hi! I'm the Open Targets research assistant. I have access to the full Open Targets Platform — I can search targets, diseases, drugs, and variants, run GraphQL queries, and show interactive data widgets inline.\n\nTry asking:\n- **What diseases is BRCA1 associated with?**\n- **Search for drugs targeting PCSK9**\n- **Show me the L2G widget for 184646618bb06f7679ceaa7f5ef747f7**",
 };
 
+function getAutoColumns(count: number): number {
+  if (count <= 3) return count;
+  if (count <= 6) return 3;
+  return 4;
+}
+
 function toolLabel(widget: Widget) {
   const args = Object.entries(widget.toolInput)
     .map(([k, v]) => `${k}: "${v}"`)
@@ -178,7 +184,7 @@ function MessageBubble({
 }): ReactElement {
   const isUser = message.role === "user";
   const widgetCount = message.widgets?.length ?? 0;
-  const [isGridView, setIsGridView] = useState(widgetCount > 1);
+  const [columns, setColumns] = useState(() => getAutoColumns(widgetCount));
 
   const renderText = (text: string) => {
     return text.split("\n").map((line, i) => {
@@ -238,22 +244,38 @@ function MessageBubble({
       {!isUser && widgetCount > 0 && (
         <Box sx={{ maxWidth: WIDGET_MAX_WIDTH, mx: "auto", px: 2, width: "100%", mt: 1.5 }}>
           {widgetCount > 1 && (
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-              <IconButton
-                size="small"
-                onClick={() => setIsGridView(v => !v)}
-                title={isGridView ? "Switch to list view" : "Switch to grid view"}
-                sx={{ p: 0.5, fontSize: 14, color: "text.secondary" }}
-              >
-                {isGridView ? "☰" : "⊞"}
-              </IconButton>
+            <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 0.5, mb: 1 }}>
+              {[1, 2, 3, 4].filter(c => c <= Math.min(widgetCount, 4)).map(c => (
+                <Box
+                  key={c}
+                  component="button"
+                  onClick={() => setColumns(c)}
+                  sx={{
+                    width: 26,
+                    height: 26,
+                    border: "1px solid",
+                    borderColor: columns === c ? "primary.main" : "#cbd5e0",
+                    borderRadius: 1,
+                    background: columns === c ? "primary.main" : "transparent",
+                    color: columns === c ? "#fff" : "text.secondary",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    "&:hover": { borderColor: "primary.main" },
+                  }}
+                >
+                  {c}
+                </Box>
+              ))}
             </Box>
           )}
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns:
-                isGridView && widgetCount > 1 ? "repeat(2, minmax(0, 1fr))" : "1fr",
+              gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
               gap: 1.5,
             }}
           >

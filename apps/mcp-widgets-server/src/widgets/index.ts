@@ -5,12 +5,14 @@ export { variantEffectWidget } from "./variant-effect.js";
 export { molecularStructureWidget } from "./molecular-structure.js";
 export { gwasCredibleSetsWidget } from "./gwas-credible-sets.js";
 export { sharedTraitStudiesWidget } from "./shared-trait-studies.js";
+export { baselineExpressionWidget } from "./baseline-expression.js";
 
 import { l2gWidget } from "./l2g.js";
 import { variantEffectWidget } from "./variant-effect.js";
 import { molecularStructureWidget } from "./molecular-structure.js";
 import { gwasCredibleSetsWidget } from "./gwas-credible-sets.js";
 import { sharedTraitStudiesWidget } from "./shared-trait-studies.js";
+import { baselineExpressionWidget } from "./baseline-expression.js";
 
 /** All registered widget tools — MCP server, chat handler, and /status all read from this. */
-export const WIDGET_REGISTRY = [l2gWidget, variantEffectWidget, molecularStructureWidget, gwasCredibleSetsWidget, sharedTraitStudiesWidget];
+export const WIDGET_REGISTRY = [l2gWidget, variantEffectWidget, molecularStructureWidget, gwasCredibleSetsWidget, sharedTraitStudiesWidget, baselineExpressionWidget];

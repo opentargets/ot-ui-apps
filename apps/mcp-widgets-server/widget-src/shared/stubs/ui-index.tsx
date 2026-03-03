@@ -224,6 +224,26 @@ export function usePlatformApi() {
   return null;
 }
 
+/** useApolloClient: standard Apollo client from the widget's ApolloProvider */
+export { useApolloClient } from "@apollo/client";
+
+/** DownloadSvgPlot: renders the plot content, omits download controls */
+export function DownloadSvgPlot({
+  children,
+  center,
+}: {
+  children?: React.ReactNode;
+  center?: React.ReactNode;
+  [key: string]: unknown;
+}) {
+  return (
+    <>
+      {center}
+      {children}
+    </>
+  );
+}
+
 /** PublicationsDrawer: renders a simple link to the first publication entry */
 export function PublicationsDrawer({
   entries,

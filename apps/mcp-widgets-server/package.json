@@ -11,7 +11,8 @@
     "build:widget:ms": "vite build --config vite/widget.config.ms.ts",
     "build:widget:gwas": "vite build --config vite/widget.config.gwas.ts",
     "build:widget:shared-trait-studies": "vite build --config vite/widget.config.shared-trait-studies.ts",
-    "build:widgets": "yarn build:widget:l2g && yarn build:widget:ve && yarn build:widget:ms && yarn build:widget:gwas && yarn build:widget:shared-trait-studies",
+    "build:widget:baseline-expression": "vite build --config vite/widget.config.baseline-expression.ts",
+    "build:widgets": "yarn build:widget:l2g && yarn build:widget:ve && yarn build:widget:ms && yarn build:widget:gwas && yarn build:widget:shared-trait-studies && yarn build:widget:baseline-expression",
     "build": "yarn build:widgets"
   },
   "dependencies": {
