@@ -21,7 +21,9 @@ import { MemoryRouter } from "react-router-dom";
 import { theme } from "./theme";
 
 const apolloClient = new ApolloClient({
-  uri: "https://api.platform.opentargets.org/api/v4/graphql",
+  uri:
+    (window as { __OT_API_URL__?: string }).__OT_API_URL__ ??
+    "https://api.platform.opentargets.org/api/v4/graphql",
   cache: new InMemoryCache(),
 });
 

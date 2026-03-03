@@ -2,7 +2,8 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import type Anthropic from "@anthropic-ai/sdk";
 
-const OTP_MCP_URL = "https://mcp.platform.opentargets.org/mcp";
+const OTP_MCP_URL =
+  process.env.OTP_MCP_URL ?? "https://mcp.platform.opentargets.org/mcp";
 const OTP_RETRY_COOLDOWN_MS = 30_000;
 
 let otpClient: Client | null = null;

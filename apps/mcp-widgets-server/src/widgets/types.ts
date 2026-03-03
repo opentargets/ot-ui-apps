@@ -24,11 +24,17 @@ export type WidgetDef = {
   successMessage: string;
 };
 
+const PUBLIC_API_URL = "https://api.platform.opentargets.org/api/v4/graphql";
+
 /**
  * Generates the HTML shell that loads the IIFE widget bundle inside the iframe.
  * All widgets share the same boilerplate — only the title and bundle URL differ.
+ *
+ * The GraphQL API URL is read from OT_API_URL at server startup and injected as
+ * window.__OT_API_URL__ so the widget bundle can use it without a rebuild.
  */
 export function makeWidgetShell(port: number, def: WidgetDef): string {
+  const apiUrl = process.env.OT_API_URL ?? PUBLIC_API_URL;
   return `<!doctype html>
 <html>
   <head>
@@ -45,6 +51,7 @@ export function makeWidgetShell(port: number, def: WidgetDef): string {
       html, body { min-height: 100%; height: auto; }
       #root { min-height: 100%; }
     </style>
+    <script>window.__OT_API_URL__ = "${apiUrl}";</script>
   </head>
   <body>
     <div id="root"></div>

@@ -18,6 +18,7 @@
     "dev:platform": "turbo run dev --filter=platform",
     "build:platform": "turbo run build --filter=platform",
     "dev:mcp-widgets-server": "turbo run dev --filter=mcp-widgets-server",
+    "dev:mcp-widgets-server:ppp": "turbo run dev-ppp --filter=mcp-widgets-server",
     "build:mcp-widgets-server": "turbo run build --filter=mcp-widgets-server",
     "dev:platform:ppp": "turbo run dev-ppp --filter=platform",
     "build:platform:ppp": "turbo run build-ppp --filter=platform",
