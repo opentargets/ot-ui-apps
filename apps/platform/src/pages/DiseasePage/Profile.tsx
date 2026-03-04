@@ -13,6 +13,7 @@ import ProfileHeader from "./ProfileHeader";
 
 const diseaseProfileWidgets = new Map<string, Widget>([
   [Disease.Ontology.definition.id, Disease.Ontology],
+  [Disease.Drugs.definition.id, Disease.Drugs],
   [Disease.KnownDrugs.definition.id, Disease.KnownDrugs],
   [Disease.Phenotypes.definition.id, Disease.Phenotypes],
   [Disease.OTProjects.definition.id, Disease.OTProjects],
