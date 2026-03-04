@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   IconButton,
@@ -13,18 +13,15 @@ import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clinicalStageCategories } from "@ot/constants";
-import {
-  Link,
-  PublicationsList,
-  OtLongText,
-  Tooltip,
-  useApolloClient,
-  useDelayedFlag
-} from "ui";
-import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
+import { useApolloClient } from "@apollo/client";
+import Link from "../Link";
+import { PublicationsList } from "../PublicationsDrawer";
+import OtLongText from "../OtLongText";
+import Tooltip from "../Tooltip";
+import useDelayedFlag from "../../hooks/useDelayedFlag";
 import { sentenceCase } from "@ot/utils";
 
-const useDrawerStyles = makeStyles(theme => ({
+const useDrawerStyles = makeStyles((theme: any) => ({
   drawerLink: {
     color: `${theme.palette.primary.main} !important`,
   },
@@ -51,15 +48,15 @@ const useDrawerStyles = makeStyles(theme => ({
   },
 }));
 
-const getDetails = (client, query, clinicalReportId) =>
+const getDetails = (client: any, query: any, clinicalReportId: any) =>
   client.query({
     query,
     variables: {
       clinicalReportId,
     },
-});
+  });
 
-function FieldLabel({ minWidth = 65, children }) {
+function FieldLabel({ minWidth = 65, children }: any) {
   return (
     <Typography variant="caption" sx={{ fontWeight: 400, minWidth, mr: 0.5 }}>
       {children}
@@ -67,7 +64,7 @@ function FieldLabel({ minWidth = 65, children }) {
   );
 }
 
-function FieldRow({ label, labelMinWidth = 70, children }: { label, children }) {
+function FieldRow({ label, labelMinWidth = 70, children }: any) {
   if (!children) return null;
   return (
     <Box
@@ -75,28 +72,29 @@ function FieldRow({ label, labelMinWidth = 70, children }: { label, children }) 
         display: "flex",
         alignItems: "baseline",
         my: 1,
-      }}>
+      }}
+    >
       <FieldLabel minWidth={labelMinWidth}>{label}</FieldLabel>
       <Box sx={{ flex: 1 }}>{children}</Box>
     </Box>
   );
 }
 
-function dedupOnId(rows, propertyName) {
- return [
+function dedupOnId(rows: any, propertyName: any) {
+  return [
     ...new Map(
       (rows || [])
-        .filter(d => d[propertyName]?.id)
-        .map(d => [d[propertyName].id, d])
+        .filter((d: any) => d[propertyName]?.id)
+        .map((d: any) => [d[propertyName].id, d])
     ).values(),
   ];
 }
 
-function formatType(s) {
+function formatType(s: any) {
   return sentenceCase(s.replace(/_+/g, " "));
 }
 
-const tooltipStyle = {
+const tooltipStyle: any = {
   tooltipIcon: {
     verticalAlign: "baseline",
     top: -8,
@@ -106,36 +104,34 @@ const tooltipStyle = {
   },
 };
 
-const tooltipSlotProps = {
+const tooltipSlotProps: any = {
   popper: {
     modifiers: [
       {
         name: "offset",
-        options: { offset: [0, -4] }, // smaller gap (try 2–6)
+        options: { offset: [0, -4] },
       },
     ],
   },
 };
 
-// fetches and displays record details except for literature
-function RecordDetails({ recordId }) {
+function RecordDetails({ recordId, recordDetailQuery }: any) {
   const client = useApolloClient();
-  const [details, setDetails] = useState(null);
+  const [details, setDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const showLoading = useDelayedFlag(loading, 250);
 
-  // load details when recordId changes
   useEffect(() => {
     if (!recordId) return;
     const fetchDetails = async () => {
       setLoading(true);
       setDetails(null);
-      const res = await getDetails(client, RECORD_DETAIL_QUERY, recordId);
+      const res = await getDetails(client, recordDetailQuery, recordId);
       setDetails(res.data.clinicalReport);
       setLoading(false);
     };
     fetchDetails();
-  }, [client, recordId]);
+  }, [client, recordId, recordDetailQuery]);
 
   if (showLoading) {
     return (
@@ -147,9 +143,7 @@ function RecordDetails({ recordId }) {
         flexDirection="column"
       >
         <CircularProgress size={60} />
-        <Typography mt={6}>
-          Loading clinical report details
-        </Typography>
+        <Typography mt={6}>Loading clinical report details</Typography>
       </Box>
     );
   }
@@ -177,17 +171,15 @@ function RecordDetails({ recordId }) {
     hasExpertReview,
   } = details;
 
-  const dedupedDiseases = dedupOnId(diseases, "disease");
-  const dedupedDrugs = dedupOnId(drugs, "drug");
+  const dedupedDiseases: any = dedupOnId(diseases, "disease");
+  const dedupedDrugs: any = dedupOnId(drugs, "drug");
 
   return (
     <>
-      {/* Title */}
       <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
         {title || `[${sentenceCase(type)}]`}
       </Typography>
 
-      {/* Source */}
       <Box sx={{ position: "relative" }}>
         <FieldRow label="Source">
           <Typography variant="body2">{source}</Typography>
@@ -202,16 +194,12 @@ function RecordDetails({ recordId }) {
         )}
       </Box>
 
-      {/* Countries */}
       {countries?.length > 0 && (
         <FieldRow label="Status">
-          <Typography variant="body2">
-            {countries.join(", ")}
-          </Typography>
+          <Typography variant="body2">{countries.join(", ")}</Typography>
         </FieldRow>
       )}
-      
-      {/* Type */}
+
       {(type || trialStudyType) && (
         <FieldRow label="Type">
           <Typography variant="body2">
@@ -221,26 +209,21 @@ function RecordDetails({ recordId }) {
           </Typography>
         </FieldRow>
       )}
-      
-      {/* Purpose */}
+
       {trialPrimaryPurpose && (
         <FieldRow label="Purpose">
-          <Typography variant="body2">
-            {formatType(trialPrimaryPurpose)}
-          </Typography>
+          <Typography variant="body2">{formatType(trialPrimaryPurpose)}</Typography>
         </FieldRow>
       )}
 
-      {/* Start */}
       {trialStartDate && (
         <FieldRow label="Start">
           <Typography variant="body2">{trialStartDate}</Typography>
         </FieldRow>
       )}
 
-      {/* Stage/phase */}
       <FieldRow label="Stage">
-        {(trialPhase || phaseFromSource) ? (
+        {trialPhase || phaseFromSource ? (
           <Tooltip
             showHelpIcon
             style={tooltipStyle}
@@ -261,20 +244,19 @@ function RecordDetails({ recordId }) {
             }
           >
             <Typography component="span" variant="body2">
-              {clinicalStageCategories[clinicalStage].label}
+              {(clinicalStageCategories as any)[clinicalStage].label}
             </Typography>
           </Tooltip>
         ) : (
           <Typography variant="body2">
-            {clinicalStageCategories[clinicalStage].label}
+            {(clinicalStageCategories as any)[clinicalStage].label}
           </Typography>
         )}
       </FieldRow>
 
-      {/* Status and why stopped */}
       {trialOverallStatus && (
         <FieldRow label="Status">
-          {(trialWhyStopped || trialStopReasonCategories.length > 0) ? (
+          {trialWhyStopped || trialStopReasonCategories.length > 0 ? (
             <Tooltip
               showHelpIcon
               style={tooltipStyle}
@@ -283,7 +265,10 @@ function RecordDetails({ recordId }) {
                 <>
                   {trialWhyStopped && (
                     <FieldRow label="Why Stopped:" labelMinWidth={0}>
-                      <Typography variant="caption" sx={{ whiteSpace: "pre-wrap", tabSize: 4}}>
+                      <Typography
+                        variant="caption"
+                        sx={{ whiteSpace: "pre-wrap", tabSize: 4 }}
+                      >
                         {trialWhyStopped}
                       </Typography>
                     </FieldRow>
@@ -293,7 +278,9 @@ function RecordDetails({ recordId }) {
                       label={`${trialStopReasonCategories.length > 1 ? "Reasons" : "Reason"}:`}
                       labelMinWidth={0}
                     >
-                      <Typography variant="caption">{trialStopReasonCategories.join(", ")}</Typography>
+                      <Typography variant="caption">
+                        {trialStopReasonCategories.join(", ")}
+                      </Typography>
                     </FieldRow>
                   )}
                 </>
@@ -304,14 +291,11 @@ function RecordDetails({ recordId }) {
               </Typography>
             </Tooltip>
           ) : (
-            <Typography variant="body2">
-              {formatType(trialOverallStatus)}
-            </Typography>
+            <Typography variant="body2">{formatType(trialOverallStatus)}</Typography>
           )}
         </FieldRow>
       )}
 
-      {/* URL */}
       {url && (
         <FieldRow label="URL">
           <Typography variant="body2" sx={{ fontSize: 14 }}>
@@ -322,16 +306,17 @@ function RecordDetails({ recordId }) {
         </FieldRow>
       )}
 
-      {/* Diseases */}
       {dedupedDiseases.length > 0 && (
         <FieldRow label="Diseases">
           <OtLongText variant="body2" lineLimit={3} displayText="... more">
             <Box component="span" sx={{ fontSize: 14 }}>
-              {dedupedDiseases.map((d, index) => (
+              {dedupedDiseases.map((d: any, index: any) => (
                 <span key={index}>
                   {index > 0 ? ", " : ""}
                   {d.disease?.id ? (
-                    <Link asyncTooltip to={`/disease/${d.disease.id}`}>{d.disease.name}</Link>
+                    <Link asyncTooltip to={`/disease/${d.disease.id}`}>
+                      {d.disease.name}
+                    </Link>
                   ) : (
                     d.diseaseFromSource
                   )}
@@ -342,16 +327,17 @@ function RecordDetails({ recordId }) {
         </FieldRow>
       )}
 
-      {/* Drugs */}
       {dedupedDrugs.length > 0 && (
         <FieldRow label="Drugs">
           <OtLongText variant="body2" lineLimit={3} displayText="... more">
             <Box component="span" sx={{ fontSize: 14 }}>
-              {dedupedDrugs.map((d, index) => (
+              {dedupedDrugs.map((d: any, index: any) => (
                 <span key={index}>
                   {index > 0 ? ", " : ""}
                   {d.drug?.id ? (
-                    <Link asyncTooltip to={`/drug/${d.drug.id}`}>{d.drug.name}</Link>
+                    <Link asyncTooltip to={`/drug/${d.drug.id}`}>
+                      {d.drug.name}
+                    </Link>
                   ) : (
                     d.drugFromSource
                   )}
@@ -362,26 +348,24 @@ function RecordDetails({ recordId }) {
         </FieldRow>
       )}
 
-      {/* Description */}
-      {trialDescription &&
-        <Typography variant="body2" sx={{ whiteSpace: "pre-wrap", tabSize: 4, mt: 2.5, mb: 3.5 }}>
+      {trialDescription && (
+        <Typography
+          variant="body2"
+          sx={{ whiteSpace: "pre-wrap", tabSize: 4, mt: 2.5, mb: 3.5 }}
+        >
           {trialDescription}
         </Typography>
-      }
+      )}
     </>
   );
 }
 
-function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
+function ClinicalRecordDrawer({ recordId, literatureIds, recordDetailQuery, children }: any) {
   const [open, setOpen] = useState(false);
   const classes = useDrawerStyles();
 
-  const toggleDrawer = (event: React.KeyboardEvent | React.MouseEvent) => {
-    if (
-      event.type === "keydown" &&
-      ((event as React.KeyboardEvent).key === "Tab" ||
-        (event as React.KeyboardEvent).key === "Shift")
-    ) {
+  const toggleDrawer = (event: any) => {
+    if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
     }
     setOpen(true);
@@ -420,10 +404,8 @@ function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
         <Box width={700} maxWidth="100%" className={classes.drawerBody}>
           {open && (
             <Box mt={2} mb={3} mx={3} p={3} pb={6} bgcolor="white">
-              {/* All details except literature */}
-              <RecordDetails recordId={recordId} />
-              
-              {/* Literature */}
+              <RecordDetails recordId={recordId} recordDetailQuery={recordDetailQuery} />
+
               {literatureIds && literatureIds.length > 0 && (
                 <Box>
                   <Typography variant="subtitle2">Literature</Typography>
@@ -434,7 +416,7 @@ function ClinicalRecordDrawer({ recordId, literatureIds, children }) {
                       name={undefined}
                       symbol={undefined}
                       showRowsPerPageControl={false}
-                      // showPaginationAlways={false}
+                      showPaginationAlways={false}
                     />
                   </Box>
                 </Box>

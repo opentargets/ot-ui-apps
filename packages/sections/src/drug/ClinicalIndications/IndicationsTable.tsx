@@ -1,74 +1,45 @@
-import { useState, useEffect, useMemo } from "react";
-import { Link, OtTable, useApolloClient } from "ui";
+import { useMemo } from "react";
+import { Link, OtTable } from "ui";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { defaultRowsPerPageOptions, clinicalStageCategories } from "@ot/constants";
+import { clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
-import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 
-const getRecords = (client, query, clinicalReportsIds) =>   // WILL NEED TO PUT ACTUAL PARAMETERS HERE !!
-  client.query({
-    query,
-    variables: {
-      clinicalReportsIds,
-    },
-  });
-
-const onLinkClick = (e) => {
+const onLinkClick = (e: any) => {
   e.stopPropagation();
 };
 
-function stageAndRecordCountComparator(a, b) {
+function stageAndRecordCountComparator(a: any, b: any) {
   if (a.maxClinicalStage === b.maxClinicalStage) {
     return a.clinicalReports?.length - b.clinicalReports?.length;
   }
-  return clinicalStageCategories[a.maxClinicalStage]?.index -
-    clinicalStageCategories[b.maxClinicalStage]?.index;
+  return (clinicalStageCategories as any)[a.maxClinicalStage]?.index -
+    (clinicalStageCategories as any)[b.maxClinicalStage]?.index;
 }
 
 function IndicationsTable({
   chemblId,
   rows,
-  setRecords,
-  setLoadingRecords,
-  setMaxClinicalStage,
+  selectedRow,
+  selectRow,
   loading,
-}) {
-  const client = useApolloClient();
+}: any) {
   const theme = useTheme();
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
-  const [selectedRow, setSelectedRow] = useState({});
 
   // always use copied, sorted rows from this point - avoids issues with selecting initial row
   const sortedRows = useMemo(() => {
     return structuredClone(rows).sort(stageAndRecordCountComparator).reverse();
   }, [rows]);
 
-  // load records when change row - and on initial load
-  useEffect(() => {
-    if (!selectedRow.clinicalReports) return;
-    const fetchRecords = async () => {
-      setLoadingRecords(true);
-      const recordsData = (await getRecords(
-        client,
-        CLINICAL_RECORDS_QUERY,
-        selectedRow.clinicalReports.map(report => report.id)
-      )).data.clinicalReports;
-      const groupedRecordsData = Object.groupBy(recordsData, row => row.clinicalStage);
-      setRecords(groupedRecordsData);
-      setLoadingRecords(false);
-    };
-    fetchRecords();
-  }, [selectedRow]);
-
   const columns = [
     {
       id: "indicationCard",
       label: "",
-      renderCell: (row) => {
+      renderCell: (row: any) => {
         const {
           disease,
           maxClinicalStage,
@@ -109,9 +80,11 @@ function IndicationsTable({
                 whiteSpace: "nowrap",
               }}
             >
-              <Link asyncTooltip to={`/disease/${disease.id}`} onClick={onLinkClick}>
-                {disease.name}
-              </Link>
+              <span onClick={onLinkClick}>
+                <Link asyncTooltip to={`/disease/${disease.id}`}>
+                  {disease.name}
+                </Link>
+              </span>
             </Typography>
 
             {/* Bottom section with max phase and record count */}
@@ -122,7 +95,7 @@ function IndicationsTable({
                   Max stage:
                 </Typography>
                 <Typography variant="caption" sx={{ fontSize: 13 }}>
-                  {clinicalStageCategories[maxClinicalStage].label}
+                  {(clinicalStageCategories as any)[maxClinicalStage].label}
                 </Typography>
               </Box>
 
@@ -154,8 +127,8 @@ function IndicationsTable({
       },
       sortable: true,
       comparator: stageAndRecordCountComparator,
-      filterValue: row => {
-        return `${row.disease.name} ${clinicalStageCategories[row.maxClinicalStage]?.label}`
+      filterValue: (row: any) => {
+        return `${row.disease.name} ${(clinicalStageCategories as any)[row.maxClinicalStage]?.label}`
       }
     },
   ];
@@ -163,18 +136,18 @@ function IndicationsTable({
   const dataDownloaderColoumns = [
     {
       id: "diseaseName",
-      exportValue: row => row.disease?.name,
+      exportValue: (row: any) => row.disease?.name,
     },
     {
       id: "diseaseId",
-      exportValue: row => row.disease?.id,
+      exportValue: (row: any) => row.disease?.id,
     },
     {
       id: "maxClinicalStage", 
     },
     {
       id: "reportCount",
-      exportValue: row => row.clinicalReports?.length,
+      exportValue: (row: any) => row.clinicalReports?.length,
     },
   ];
 
@@ -216,40 +189,39 @@ function IndicationsTable({
       }}
     >
       <OtTable
-        showGlobalFilter
-        globalFilterPlaceholderText="Search..."
-        columns={columns}
-        rows={sortedRows}
-        query={CLINICAL_INDICATIONS_QUERY.loc?.source?.body}
-        variables={{ chemblId }}
-        dataDownloader
-        dataDownloaderFileStem="clinical-indications"
-        dataDownloaderColumns={dataDownloaderColoumns}
-        showColumnVisibilityControl={false}
-        getSelectedRows={rowsInfo => {
-          if (!(rowsInfo?.length > 0)) return;
+        {...({
+          showGlobalFilter: true,
+          globalFilterPlaceholderText: "Search...",
+          columns,
+          rows: sortedRows,
+          query: CLINICAL_INDICATIONS_QUERY.loc?.source?.body,
+          variables: { chemblId },
+          dataDownloader: true,
+          dataDownloaderFileStem: "clinical-indications",
+          dataDownloaderColumns: dataDownloaderColoumns,
+          showColumnVisibilityControl: false,
+          getSelectedRows: (rowsInfo: any[]) => {
+            if (!(rowsInfo?.length > 0)) return;
 
-          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
-          if (!selectedOriginalRows.length) return;
-          const nextRow =
-            selectedOriginalRows.find(r => r.id !== selectedRow.id) ??
-            selectedOriginalRows[0];
+            const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+            if (!selectedOriginalRows.length) return;
+            const nextRow =
+              selectedOriginalRows.find(r => r.id !== selectedRow?.id) ??
+              selectedOriginalRows[0];
 
-          if (!nextRow?.id) return;
+            if (!nextRow?.id) return;
 
-          if (nextRow.id !== selectedRow.id) {  // avoids render loop from calling setRecords unnecessarily
-            setLoadingRecords(true);
-            setRecords([]);
-            setSelectedRow(nextRow);
-            setMaxClinicalStage(nextRow.maxClinicalStage);
-          }
-        }}
-        loading={loading}
-        sortBy="indicationCard"
-        order="desc"
-        showRowsPerPageControl={false}
-        showPaginationAlways={false}
-        wrapControls={{ rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } }}
+            if (nextRow.id !== selectedRow?.id) {
+              selectRow(nextRow);
+            }
+          },
+          loading,
+          sortBy: "indicationCard",
+          order: "desc",
+          showRowsPerPageControl: false,
+          showPaginationAlways: false,
+          wrapControls: { rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } },
+        } as any)}
       />
     </Box>
   );

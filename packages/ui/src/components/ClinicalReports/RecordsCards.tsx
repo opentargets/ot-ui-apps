@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
-import { OtTable, useDelayedFlag } from "ui";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { defaultRowsPerPageOptions } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
+import useDelayedFlag from "../../hooks/useDelayedFlag";
+import OtTable from "../OtTable/OtTable";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
+import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 
 function RecordsCards({
   records,
   loading,
   maxClinicalStage,
-}) {
+}: any) {
+  const AnyOtTable = OtTable as any;
   const [selectedStage, setSelectedStage] = useState(null);
-  
+
   useEffect(() => {
     if (!maxClinicalStage) return;
     let initStage = maxClinicalStage;
@@ -28,28 +31,23 @@ function RecordsCards({
   const columns = [
     {
       id: "trial",
-      label: (
-        !loading && <StageFilter
-          records={records}
-          setSelectedStage={setSelectedStage}
-          selectedStage={selectedStage}
-          maxStage={maxClinicalStage}
-        />
-      ),
-      renderCell: (record) => {
-        const {
-          source,
-          trialStartDate,
-          type,
-          trialOverallStatus,
-          title,
-        } = record;
+      label:
+        !loading && (
+          <StageFilter
+            records={records}
+            setSelectedStage={setSelectedStage}
+            selectedStage={selectedStage}
+            maxStage={maxClinicalStage}
+          />
+        ),
+      renderCell: (record: any) => {
+        const { source, trialStartDate, type, trialOverallStatus, title } = record;
 
         const displayTitle = (
           <Typography
             variant={"body1"}
             noWrap
-            sx={{ 
+            sx={{
               minWidth: 0,
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -62,26 +60,49 @@ function RecordsCards({
 
         return (
           <Box sx={{ mb: 0.5, overflow: "hidden" }}>
-            <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", verticalAlign: "top" }}>
-              <ClinicalRecordDrawer recordId={record.id} literatureIds={record.trialLiterature}>
+            <Box
+              sx={{
+                display: "inline-block",
+                maxWidth: "100%",
+                overflow: "hidden",
+                verticalAlign: "top",
+              }}
+            >
+              <ClinicalRecordDrawer
+                recordId={record.id}
+                literatureIds={record.trialLiterature}
+                recordDetailQuery={RECORD_DETAIL_QUERY}
+              >
                 {displayTitle}
               </ClinicalRecordDrawer>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+              }}
+            >
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {source && (
-                  <Box sx={{ display: "flex", minWidth: "100px", alignItems: "baseline", gap: 0.5 }}>
-                    <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      minWidth: "100px",
+                      alignItems: "baseline",
+                      gap: 0.5,
+                    }}
+                  >
+                    <Typography variant="caption" sx={{ fontSize: 13 }}>
                       {source}
                     </Typography>
                   </Box>
                 )}
                 {trialOverallStatus && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-                    <Typography variant="caption">
-                      Status:
-                    </Typography>
-                    <Typography variant= "caption" sx={{ fontSize: 13 }}>
+                    <Typography variant="caption">Status:</Typography>
+                    <Typography variant="caption" sx={{ fontSize: 13 }}>
                       {trialOverallStatus?.toLowerCase()}
                     </Typography>
                   </Box>
@@ -89,11 +110,9 @@ function RecordsCards({
               </Box>
               {trialStartDate && (
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-                  <Typography variant="caption">
-                    Start:
-                  </Typography>
+                  <Typography variant="caption">Start:</Typography>
                   <Typography
-                    variant= "caption"
+                    variant="caption"
                     sx={{
                       fontSize: 13,
                       fontVariant: "common-ligatures tabular-nums",
@@ -109,7 +128,7 @@ function RecordsCards({
         );
       },
       sortable: false,
-    }
+    },
   ];
 
   const dataDownloaderColoumns = [
@@ -134,18 +153,16 @@ function RecordsCards({
         flexDirection="column"
       >
         <CircularProgress size={60} />
-        <Typography mt={6}>
-          Loading clinical reports
-        </Typography>
+        <Typography mt={6}>Loading clinical reports</Typography>
       </Box>
     );
   }
 
-  const rows = records[selectedStage]?.toSorted((a, b) => {
+  const rows = records[selectedStage]?.toSorted((a: any, b: any) => {
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
   });
   if (!rows) return null;
-  const allRows = Object.values(records).flat();
+  const allRows = ([] as any[]).concat(...Object.keys(records).map(k => (records as any)[k]));
 
   return (
     <>
@@ -160,17 +177,16 @@ function RecordsCards({
           },
           "& tr": {
             padding: "0.15rem 0 !important",
-            ":hover": {bgcolor: "transparent"},
+            ":hover": { bgcolor: "transparent" },
           },
           "& td": {
             padding: "0.35rem 0 0.05rem !important",
-            maxWidth: 0,  // forces td to respect overflow
-            ":hover": {bgcolor: "transparent"}
+            maxWidth: 0,
+            ":hover": { bgcolor: "transparent" },
           },
         }}
       >
-        <OtTable
-          // showGlobalFilter
+        <AnyOtTable
           columns={columns}
           rows={rows}
           query={CLINICAL_RECORDS_QUERY.loc?.source?.body}
@@ -183,8 +199,7 @@ function RecordsCards({
           showGlobalFilter={false}
           showColumnVisibilityControl={false}
           showRowsPerPageControl={false}
-          // showPaginationAlways={false}
-          wrapControls={{ mr: { md: 0, lg: -4, xl: -6 }}}  // undo mr on wrapper to keep buttons in top-right
+          wrapControls={{ mr: { md: 0, lg: -4, xl: -6 } }}
         />
       </Box>
     </>

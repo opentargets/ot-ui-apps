@@ -6,19 +6,19 @@ const usedCircleWidth = 30;
 const emptyCircleWidth = 17;
 const lineWidth = 1;
 
-function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
-  const entries = Object.entries(clinicalStageCategories);
+function StageFilter({ records, selectedStage, setSelectedStage, maxStage }: any) {
+  const entries = Object.keys(clinicalStageCategories).map(k => [k, (clinicalStageCategories as any)[k]] as any);
   const totalStages = entries.length;
-  const phase4SlotIndex = clinicalStageCategories.PHASE_4.index;
+  const phase4SlotIndex = (clinicalStageCategories as any).PHASE_4.index;
 
   if (!maxStage) return null;
 
-  const nRecords = sum(Object.values(records), row => row.length);
+  const nRecords = sum(Object.keys(records).map(k => (records as any)[k]), (row: any) => row.length);
 
   // fade everything after this
-  const lastStageToColor = 
+  const lastStageToColor =
     records.WITHDRAWAL ? "WITHDRAWAL" : records.PHASE_4 ? "PHASE_4" : maxStage;
-  const lastStageToColorIndex = clinicalStageCategories[lastStageToColor].index;
+  const lastStageToColorIndex = (clinicalStageCategories as any)[lastStageToColor].index;
 
   const firstSlotCenterPct = (0.5 / totalStages) * 100;
   const phase4SlotCenterPct = ((phase4SlotIndex + 0.5) / totalStages) * 100;
@@ -40,22 +40,21 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         alignItems: "end",
         mb: "3rem",
       }}
-    >    
-      
+    >
       {/* title */}
-        <Typography
-          variant="caption"
-          sx={{
-            position: "absolute",
-            top: 67,
-            left: -95,
-            fontWeight: 600,
-            width: "85px",
-            textAlign: "right",
-          }}
-        >
-          {nRecords} {nRecords > 1 ? "reports" : "report"}
-        </Typography>
+      <Typography
+        variant="caption"
+        sx={{
+          position: "absolute",
+          top: 67,
+          left: -95,
+          fontWeight: 600,
+          width: "85px",
+          textAlign: "right",
+        }}
+      >
+        {nRecords} {nRecords > 1 ? "reports" : "report"}
+      </Typography>
 
       {/* single absolute line behind all circles – stops at Phase IV */}
       <Box
@@ -79,9 +78,9 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
       />
 
       {/* evenly spaced stage columns */}
-      {entries.map(([stage, { index, label }]) => {
+      {entries.map(([stage, { index, label }]: any) => {
         const hasRecords = records[stage]?.length > 0;
-        const isWithdrawnIndex = index === entries.length -1;
+        const isWithdrawnIndex = index === entries.length - 1;
         const circleWidth = hasRecords ? usedCircleWidth : emptyCircleWidth;
 
         return (
@@ -116,27 +115,22 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
               component={hasRecords ? "button" : "div"}
               sx={{
                 borderRadius: isWithdrawnIndex ? 0 : `${circleWidth / 2}px`,
-                boxShadow: theme => (hasRecords && stage !== selectedStage
-                  ? theme.boxShadow.md
-                  : "none"
-                ),
+                boxShadow: (theme: any) =>
+                  hasRecords && stage !== selectedStage ? theme.boxShadow.md : "none",
                 borderStyle: "solid",
                 borderWidth: `${stage === selectedStage ? 2 : 1}px`,
-                borderColor: `${index > lastStageToColorIndex ? "rgba(136,136,136,0.3)" : "primary.main"  }`,
+                borderColor: `${index > lastStageToColorIndex ? "rgba(136,136,136,0.3)" : "primary.main"}`,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 width: `${circleWidth}px`,
                 height: `${circleWidth}px`,
-                cursor: hasRecords && stage !== selectedStage ? "pointer" : "auto",  
+                cursor: hasRecords && stage !== selectedStage ? "pointer" : "auto",
                 my: hasRecords ? 0 : `${(usedCircleWidth - emptyCircleWidth) / 2}px`,
                 color: stage === selectedStage ? "#fff" : "primary.main",
-                // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
                 bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#ecf7ff" : "background.paper",
                 "&:hover": {
-                  // !! USING ARBITRARY LIGHT BLUE BELOW - DO WE HAVE APPROPRIATE THEME (OR AT LEAST MUI) COLOR
                   bgcolor: stage === selectedStage ? "primary.main" : hasRecords ? "#e1eff9" : "background.paper",
-
                 },
               }}
               onClick={hasRecords ? () => setSelectedStage(stage) : undefined}
@@ -145,7 +139,8 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
                 <Typography
                   variant="caption"
                   sx={{
-                    fontWeight: hasRecords ? 700 : 400, opacity: index > lastStageToColorIndex ? 0.3 : 1,
+                    fontWeight: hasRecords ? 700 : 400,
+                    opacity: index > lastStageToColorIndex ? 0.3 : 1,
                     fontSize: 11.5,
                   }}
                 >
@@ -157,7 +152,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }) {
         );
       })}
     </Box>
-  )
+  );
 }
 
 export default StageFilter;
