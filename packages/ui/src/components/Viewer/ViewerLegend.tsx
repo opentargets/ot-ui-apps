@@ -1,17 +1,22 @@
 import { Box, Typography } from "@mui/material";
-import {
-  CompactAlphaFoldLegend,
-  CompactAlphaFoldPathogenicityLegend,
-  CompactAlphaFoldDomainLegend,
-  CompactAlphaFoldHydrophobicityLegend,
-  useViewerState
-} from "ui";
-import { domainColors, hydrophobicityColorInterpolator } from "./helpers";
+import { useViewerState } from "ui";
+import CompactAlphaFoldDomainLegend from "./CompactAlphaFoldDomainLegend";
+import CompactAlphaFoldHydrophobicityLegend from "./CompactAlphaFoldHydrophobicityLegend";
+import CompactAlphaFoldLegend from "./CompactAlphaFoldLegend";
+import CompactAlphaFoldPathogenicityLegend from "./CompactAlphaFoldPathogenicityLegend";
+import { domainColors, hydrophobicityColorInterpolator } from "ui/src/components/Viewer/helpers";
 
-function Legend() {
+function ViewerLegend() {
+
+  // these value are used if there is no viewer state (i.e. not in side a viewerProvider)
+  let colorBy = "confidence";
+  let pathogenicityScores;
+  let domains;
 
   const viewerState = useViewerState();
-  const  { colorBy, pathogenicityScores, domains } = viewerState;
+  if (viewerState) {
+    ({ colorBy, pathogenicityScores, domains } = viewerState);
+  } 
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
@@ -33,7 +38,7 @@ function Legend() {
       >
         <Box>
           {colorBy === "confidence" ? (
-              <CompactAlphaFoldLegend showTitle={false} />
+              <CompactAlphaFoldLegend showTitle={!viewerState} />
             ) : colorBy === "pathogenicity" && pathogenicityScores ? (
               <CompactAlphaFoldPathogenicityLegend showTitle={false} />
             ) : colorBy === "domain" && domains ? (
@@ -48,4 +53,4 @@ function Legend() {
   );
 }
 
-export default Legend;
+export default ViewerLegend;

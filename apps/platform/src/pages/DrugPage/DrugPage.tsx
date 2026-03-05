@@ -10,12 +10,13 @@ import DRUG_PAGE_QUERY from "./DrugPage.gql";
 import Profile from "./Profile";
 import { ReactNode } from "react";
 
+
 function DrugPage(): ReactNode {
   const location = useLocation();
   const { chemblId } = useParams();
 
   const { loading, data } = useQuery(DRUG_PAGE_QUERY, {
-    variables: { chemblId },
+    variables: { chemblId: chemblId! },
   });
 
   if (data && !data.drug) {
@@ -49,7 +50,7 @@ function DrugPage(): ReactNode {
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Profile chemblId={chemblId} name={name} />} />
+          <Route path="/" element={<Profile chemblId={chemblId!} name={name!} />} />
         </Routes>
       </>
     </BasePage>
