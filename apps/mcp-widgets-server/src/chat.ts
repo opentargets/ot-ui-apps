@@ -25,6 +25,23 @@ const SYSTEM_PROMPT =
 type ChatMessage = { role: "user" | "assistant"; content: string };
 type Widget = { toolName: string; toolInput: Record<string, unknown>; html: string };
 
+type DebugToolCall = {
+  name: string;
+  input: Record<string, unknown>;
+  result: string;
+  isError: boolean;
+};
+type DebugStep = {
+  toolCalls: DebugToolCall[];
+  usage: { input_tokens: number; output_tokens: number };
+};
+export type DebugInfo = {
+  steps: DebugStep[];
+  totalUsage: { input_tokens: number; output_tokens: number };
+  iterations: number;
+  model: string;
+};
+
 const widgetByName = new Map(WIDGET_REGISTRY.map(w => [w.toolName, w]));
 
 export function registerChatRoute(app: Express, port: number): void {
@@ -71,6 +88,8 @@ export function registerChatRoute(app: Express, port: number): void {
 
     const widgets: Widget[] = [];
     let text = "";
+    const debugSteps: DebugStep[] = [];
+    const totalUsage = { input_tokens: 0, output_tokens: 0 };
 
     try {
       // Agentic loop — keep calling Claude until it stops requesting tools.
@@ -83,6 +102,9 @@ export function registerChatRoute(app: Express, port: number): void {
           messages: conversationMessages,
         });
 
+        totalUsage.input_tokens += response.usage.input_tokens;
+        totalUsage.output_tokens += response.usage.output_tokens;
+
         for (const block of response.content) {
           if (block.type === "text") text += block.text;
         }
@@ -93,6 +115,7 @@ export function registerChatRoute(app: Express, port: number): void {
         conversationMessages.push({ role: "assistant", content: response.content });
 
         const toolResults: Anthropic.ToolResultBlockParam[] = [];
+        const stepToolCalls: DebugToolCall[] = [];
 
         for (const block of response.content) {
           if (block.type !== "tool_use") continue;
@@ -102,11 +125,8 @@ export function registerChatRoute(app: Express, port: number): void {
             // Widget tool — render the HTML shell and report success to Claude.
             const input = block.input as Record<string, string>;
             widgets.push({ toolName: block.name, toolInput: input, html: makeWidgetShell(port, widgetDef) });
-            toolResults.push({
-              type: "tool_result",
-              tool_use_id: block.id,
-              content: widgetDef.successMessage,
-            });
+            toolResults.push({ type: "tool_result", tool_use_id: block.id, content: widgetDef.successMessage });
+            stepToolCalls.push({ name: block.name, input: block.input as Record<string, unknown>, result: widgetDef.successMessage, isError: false });
           } else if (otp) {
             // OTP platform tool — proxy the call to the upstream MCP server.
             try {
@@ -118,31 +138,32 @@ export function registerChatRoute(app: Express, port: number): void {
                 .map(c => (c.type === "text" ? c.text : JSON.stringify(c)))
                 .join("\n");
               toolResults.push({ type: "tool_result", tool_use_id: block.id, content });
+              stepToolCalls.push({ name: block.name, input: block.input as Record<string, unknown>, result: content.slice(0, 600), isError: false });
             } catch (toolErr) {
               // Reset so the next request will attempt to reconnect.
               resetOtpClient();
               const msg = toolErr instanceof Error ? toolErr.message : "Tool call failed";
-              toolResults.push({
-                type: "tool_result",
-                tool_use_id: block.id,
-                content: `Error calling ${block.name}: ${msg}`,
-                is_error: true,
-              });
+              const errContent = `Error calling ${block.name}: ${msg}`;
+              toolResults.push({ type: "tool_result", tool_use_id: block.id, content: errContent, is_error: true });
+              stepToolCalls.push({ name: block.name, input: block.input as Record<string, unknown>, result: errContent, isError: true });
             }
           } else {
-            toolResults.push({
-              type: "tool_result",
-              tool_use_id: block.id,
-              content: "Open Targets Platform MCP is currently unavailable.",
-              is_error: true,
-            });
+            const errContent = "Open Targets Platform MCP is currently unavailable.";
+            toolResults.push({ type: "tool_result", tool_use_id: block.id, content: errContent, is_error: true });
+            stepToolCalls.push({ name: block.name, input: block.input as Record<string, unknown>, result: errContent, isError: true });
           }
         }
+
+        debugSteps.push({
+          toolCalls: stepToolCalls,
+          usage: { input_tokens: response.usage.input_tokens, output_tokens: response.usage.output_tokens },
+        });
 
         conversationMessages.push({ role: "user", content: toolResults });
       }
 
-      res.json({ text, widgets });
+      const debug: DebugInfo = { steps: debugSteps, totalUsage, iterations: debugSteps.length, model: MODEL_ID };
+      res.json({ text, widgets, debug });
     } catch (err) {
       const message = err instanceof Error ? err.message : "Unknown error";
       res.status(500).json({ error: message });

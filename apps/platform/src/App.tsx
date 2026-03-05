@@ -20,6 +20,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import MCPDemoPage from "./pages/MCPDemo";
 import ChatDemoPage from "./pages/ChatDemo";
+import ChatWorkspacePage from "./pages/ChatWorkspace";
 
 const config = getConfig();
 
@@ -54,6 +55,7 @@ function App(): ReactElement {
             />
             <Route path="/mcp-demo" element={<MCPDemoPage />} />
             <Route path="/chat-demo" element={<ChatDemoPage />} />
+            <Route path="/chat-workspace" element={<ChatWorkspacePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
