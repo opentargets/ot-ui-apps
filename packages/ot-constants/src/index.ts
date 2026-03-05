@@ -363,7 +363,6 @@ export * from "./dataTypes";
 export * from "./particlesBackground";
 export * from "./partnerPreviewUtils";
 export * from "./searchSuggestions";
+export * from "./types";
 export * from "./types/geneLoc";
-export * from "./types/graphql-types";
-export * from "./types/response";
 export * from "./variant";
