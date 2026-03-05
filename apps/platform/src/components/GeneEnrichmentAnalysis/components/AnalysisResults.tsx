@@ -7,6 +7,8 @@ import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
 import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
+import ResultsGoJSTree from "./ResultsGoJSTree";
+import ResultsEnrichmentMap from "./ResultsEnrichmentMap";
 
 type ViewMode = "table" | "tree" | "plotly";
 
@@ -75,7 +77,8 @@ function AnalysisResults({ results, onReset, activeRunId }: AnalysisResultsProps
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
         {/* {viewMode === "sunburst" && <ResultsSunburst results={results} />} */}
-        {viewMode === "plotly" && <ResultsPlotlySunburst key={activeRunId} results={results} />}
+        {/* {viewMode === "plotly" && <ResultsPlotlySunburst key={activeRunId} results={results} />} */}
+        {viewMode === "plotly" && <ResultsEnrichmentMap results={results} />}
       </Box>
     </Box>
   );
