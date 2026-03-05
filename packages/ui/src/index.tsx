@@ -71,6 +71,7 @@ export { default as ScientificNotation } from "./components/ScientificNotation";
 export { default as ScrollToTop } from "./components/ScrollToTop";
 export * from "./components/Section";
 export { default as StudyPublication } from "./components/StudyPublication";
+export { default as OtGenomicLocation } from "./components/GenomicLocation";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
 export { default as SummaryRenderer } from "./components/Summary/SummaryRenderer";
