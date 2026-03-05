@@ -3,9 +3,10 @@ import { getConfig } from "@ot/config";
 
 const isPPP = getConfig().profile.isPartnerPreview;
 
-const targetSections = new Map([
+const targetSections = new Map<any, any>([
   ["tractability", Target.Tractability.getBodyComponent()],
   ["knownDrugs", Target.KnownDrugs.getBodyComponent()],
+  ["drugs", Target.Drugs.getBodyComponent()],
   ["safety", Target.Safety.getBodyComponent()],
   ["expressions", Target[isPPP ? "BaselineExpression" : "Expression"].getBodyComponent()],
   ["depMapEssentiality", Target.DepMap.getBodyComponent()],

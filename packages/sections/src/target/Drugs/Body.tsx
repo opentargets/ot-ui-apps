@@ -11,8 +11,8 @@ import DRUGS_QUERY from "./DrugsQuery.gql";
 import { definition } from ".";
 import DrugsTable from "./DrugsTable";
 
-function Body({ id: efoId, label: name, entity }) {
-  const variables = { efoId };
+function Body({ id: ensemblId, label: name, entity }) {
+  const variables = { ensemblId };
   const request = useQuery(DRUGS_QUERY, { variables });
 
   const getClinicalReportsIds = useCallback(
@@ -33,7 +33,7 @@ function Body({ id: efoId, label: name, entity }) {
     getMaxClinicalStage,
   });
 
-  const rows = request.data?.disease?.drugAndClinicalCandidates?.rows;
+  const rows = request.data?.target?.drugAndClinicalCandidates?.rows;
 
   return (
     <SectionItem
@@ -47,7 +47,7 @@ function Body({ id: efoId, label: name, entity }) {
             master={
               rows?.length > 0 && (
                 <DrugsTable
-                  efoId={efoId}
+                  ensemblId={ensemblId}
                   rows={rows}
                   selectedRow={selectedRow}
                   selectRow={selectRow}

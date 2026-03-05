@@ -8,17 +8,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import DRUGS_QUERY from "./DrugsQuery.gql";
 
-const onLinkClick = (e: any) => {
+const onLinkClick = (e) => {
   e.stopPropagation();
 };
 
-function stageAndRecordCountComparator(a: any, b: any) {
+function stageAndRecordCountComparator(a, b) {
   if (a.maxClinicalStage === b.maxClinicalStage) {
     return a.clinicalReports?.length - b.clinicalReports?.length;
   }
   return (
-    (clinicalStageCategories as any)[a.maxClinicalStage]?.index -
-    (clinicalStageCategories as any)[b.maxClinicalStage]?.index
+    (clinicalStageCategories)[a.maxClinicalStage]?.index -
+    (clinicalStageCategories)[b.maxClinicalStage]?.index
   );
 }
 
@@ -28,7 +28,7 @@ function DrugsTable({
   selectedRow,
   selectRow,
   loading,
-}: any) {
+}) {
   const theme = useTheme();
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -40,7 +40,7 @@ function DrugsTable({
     {
       id: "drugCard",
       label: "",
-      renderCell: (row: any) => {
+      renderCell: (row) => {
         const { drug, maxClinicalStage, clinicalReports } = row;
         const isSelected = selectedRow?.id && row.id === selectedRow.id;
 
@@ -94,7 +94,7 @@ function DrugsTable({
               <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
                 <Typography variant="caption">Max stage:</Typography>
                 <Typography variant="caption" sx={{ fontSize: 13 }}>
-                  {(clinicalStageCategories as any)[maxClinicalStage].label}
+                  {(clinicalStageCategories)[maxClinicalStage].label}
                 </Typography>
               </Box>
 
@@ -125,7 +125,7 @@ function DrugsTable({
       },
       sortable: true,
       comparator: stageAndRecordCountComparator,
-      filterValue: (row: any) => {
+      filterValue: (row) => {
         return `${row.drug?.name ?? ""} ${(clinicalStageCategories)[row.maxClinicalStage]?.label}`;
       },
     },
@@ -134,18 +134,18 @@ function DrugsTable({
   const dataDownloaderColoumns = [
     {
       id: "drugName",
-      exportValue: (row: any) => row.drug?.name,
+      exportValue: (row) => row.drug?.name,
     },
     {
       id: "drugId",
-      exportValue: (row: any) => row.drug?.id,
+      exportValue: (row) => row.drug?.id,
     },
     {
       id: "maxClinicalStage",
     },
     {
       id: "reportCount",
-      exportValue: (row: any) => row.clinicalReports?.length,
+      exportValue: (row) => row.clinicalReports?.length,
     },
   ];
 
@@ -178,7 +178,7 @@ function DrugsTable({
           borderBottom: "none !important",
           ":hover": { bgcolor: "transparent" },
         },
-        "& > div > :nth-of-type(2)": (t: any) => ({
+        "& > div > :nth-of-type(2)": (t) => ({
           paddingTop: "0.5rem",
           marginLeft: { sm: 0, md: "-1.5rem" },
           marginRight: { sm: 0, md: "-0.5rem" },
@@ -198,7 +198,7 @@ function DrugsTable({
           dataDownloaderFileStem: "drugs-and-clinical-candidates",
           dataDownloaderColumns: dataDownloaderColoumns,
           showColumnVisibilityControl: false,
-          getSelectedRows: (rowsInfo: any[]) => {
+          getSelectedRows: (rowsInfo) => {
             if (!(rowsInfo?.length > 0)) return;
 
             const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
@@ -218,7 +218,7 @@ function DrugsTable({
           showRowsPerPageControl: false,
           showPaginationAlways: false,
           wrapControls: { rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } },
-        } as any)}
+        })}
       />
     </Box>
   );
