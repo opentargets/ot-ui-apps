@@ -10,11 +10,6 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ drugWarnings }) => {
-        if (!drugWarnings?.length) return null;
-        const types = [...new Set(drugWarnings.map(w => w.warningType))];
-        return types.join(" \u2022 ");
-      }}
     />
   );
 }
