@@ -10,17 +10,6 @@ function Summary() {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={({ hasBeenWithdrawn, blackBoxWarning }) => {
-        if (hasBeenWithdrawn && blackBoxWarning) {
-          return "Withdrawn • Black Box";
-        }
-
-        if (hasBeenWithdrawn) return "Withdrawn";
-
-        if (blackBoxWarning) return "Black Box";
-
-        return null;
-      }}
     />
   );
 }
