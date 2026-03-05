@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
+import type { IGeneomicLocation } from "./types/geneLoc";
 
 const config = getConfig();
 
@@ -328,26 +329,17 @@ export const getStudyItemMetaData = ({
   return metaData;
 };
 
-export const getGenomicLocation = (
-  genomicLocation:
-    | {
-        chromosome?: string;
-        start?: number;
-        end?: number;
-        strand?: number;
-      }
-    | null
-    | undefined
-) => {
-  /****
-   * TODO: add GRCh38 to this function
-   * check all the locations we are using this
-   * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
-   * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
-   ****/
-  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
-    Math.sign(genomicLocation?.strand ?? 1) === 1 ? "+" : "-"
-  }`;
+export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | undefined) => {
+  if (!genomicLocation) return "";
+  try {
+    const strandInt = parseInt(genomicLocation.strand?.toString() || "1", 10);
+    const strand = Math.sign(strandInt) === 1 ? "+" : "-";
+    const chromosomeString = `Chr${genomicLocation.chromosome}: ${genomicLocation.start}-${genomicLocation.end},${strand}`;
+    return ["GRCh38", chromosomeString];
+  } catch (e) {
+    console.error("Error formatting gene location", e);
+    return "";
+  }
 };
 
 export const clinicalStageCategories = {
@@ -371,6 +363,7 @@ export * from "./dataTypes";
 export * from "./particlesBackground";
 export * from "./partnerPreviewUtils";
 export * from "./searchSuggestions";
+export * from "./types/geneLoc";
 export * from "./types/graphql-types";
 export * from "./types/response";
 export * from "./variant";

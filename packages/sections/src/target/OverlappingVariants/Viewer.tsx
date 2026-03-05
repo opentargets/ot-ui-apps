@@ -2,7 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { createViewer } from "3dmol";
 import { useStateValue, useActions } from "./Context";
 import { useState, useEffect, useRef } from "react";
-import { CompactAlphaFoldLegend } from "ui";
+import { ViewerLegend } from "ui";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -150,7 +150,7 @@ export default function Viewer() {
         height={viewerHeight}
         mb={1}
       />
-      <CompactAlphaFoldLegend />
+      <ViewerLegend />
       {atomInfo && (
         <Box
           position="absolute"
