@@ -1,4 +1,5 @@
 fragment DrugWarningsSummaryFragment on Drug {
-  hasBeenWithdrawn
-  blackBoxWarning
+   drugWarnings {
+    warningType
+  }
 }
