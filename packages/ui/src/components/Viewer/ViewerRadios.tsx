@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useViewerState } from "ui";
 
-function Radios({ titleLabel, options, defaultValue, stateProperty, onChange }) {
+function ViewerRadios({ titleLabel, options, defaultValue, stateProperty, onChange }) {
 
   const viewerState = useViewerState();
 
@@ -65,4 +65,4 @@ function Radios({ titleLabel, options, defaultValue, stateProperty, onChange }) 
 
 }
 
-export default Radios;
+export default ViewerRadios;
