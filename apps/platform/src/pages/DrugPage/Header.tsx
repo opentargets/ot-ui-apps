@@ -1,7 +1,7 @@
 import { faPrescriptionBottleAlt } from "@fortawesome/free-solid-svg-icons";
 import { Header as HeaderBase, ExternalLink } from "ui";
 
-function DrugHeader({ loading, chemblId, name, crossReferences }) {
+function DrugHeader({ loading, chemblId, name, crossReferences } : { loading: boolean; chemblId: string; name: string; crossReferences?: { source: string; ids: string[]; url?: string }[] }) {
   const chemblUrl = `https://www.ebi.ac.uk/chembl/compound_report_card/${chemblId}/`;
 
   const drugBank = crossReferences ? crossReferences.find(cr => cr.source === "drugbank") : null;
@@ -11,6 +11,9 @@ function DrugHeader({ loading, chemblId, name, crossReferences }) {
     ? crossReferences.find(cr => cr.source === "DrugCentral")
     : null;
   const wikipedia = crossReferences ? crossReferences.find(cr => cr.source === "Wikipedia") : null;
+  const probesDrugs = crossReferences
+    ? crossReferences.find(cr => cr.source === "probes&drugs")
+    : null;
 
   return (
     <HeaderBase
@@ -56,6 +59,13 @@ function DrugHeader({ loading, chemblId, name, crossReferences }) {
                   title="Wikipedia"
                   id={wikipedia.ids[0]}
                   url={`https://en.wikipedia.org/wiki/${wikipedia.ids[0]}`}
+                />
+              )}
+              {probesDrugs && (
+                <ExternalLink
+                  title="Probes & Drugs"
+                  id={probesDrugs.ids[0]}
+                  url={`https://www.probes-drugs.org/compound/${probesDrugs.ids[0]}`}
                 />
               )}
             </>
