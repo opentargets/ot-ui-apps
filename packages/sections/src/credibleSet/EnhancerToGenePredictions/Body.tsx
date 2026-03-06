@@ -172,7 +172,7 @@ function Body({ id, entity }: BodyProps) {
           showGlobalFilter
           columns={columns}
           loading={request.loading}
-          rows={request.data?.credibleSet?.variant?.intervals?.rows || []}
+          rows={request.data?.credibleSet?.variant?.enhancerToGenes?.rows || []}
           query={ENHANCER_TO_GENE_PREDICTIONS_QUERY.loc?.source?.body}
           variables={variables}
           tableDataLoading={request.loading}
