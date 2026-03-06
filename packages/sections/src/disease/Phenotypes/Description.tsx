@@ -1,6 +1,6 @@
 import { Link } from "ui";
 
-function Description({ name }) {
+function Description({ name } : { name: string }) {
   return (
     <>
       Clinical signs and symptoms observed in <strong>{name}</strong>. Source:{" "}
