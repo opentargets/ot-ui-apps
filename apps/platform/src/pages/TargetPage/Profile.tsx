@@ -16,7 +16,6 @@ import { getConfig } from "@ot/config";
 const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
 
 const targetProfileWidgets = new Map<string, any>([
-  [Target.KnownDrugs.definition.id, Target.KnownDrugs],
   [Target.Drugs.definition.id, Target.Drugs],
   [Target.Tractability.definition.id, Target.Tractability],
   [Target.Safety.definition.id, Target.Safety],

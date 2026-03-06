@@ -12,9 +12,9 @@ const dataTypes = [
     isPrivate: isPrivateDataType("somatic_mutation"),
   },
   {
-    id: "known_drug",
-    label: "Drugs",
-    isPrivate: isPrivateDataType("known_drug"),
+    id: "clinical",
+    label: "Clinical Precedence",
+    isPrivate: isPrivateDataType("clinical"),
   },
   {
     id: "affected_pathway",

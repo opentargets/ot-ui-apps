@@ -8,7 +8,6 @@ export * as BaselineExpression from "./BaselineExpression";
 export * as GeneOntology from "./GeneOntology";
 export * as GeneticConstraint from "./GeneticConstraint";
 export * as Drugs from "./Drugs";
-export * as KnownDrugs from "./KnownDrugs";
 export * as MolecularInteractions from "./MolecularInteractions";
 export * as MolecularStructure from "./MolecularStructure";
 export * as MousePhenotypes from "./MousePhenotypes";
