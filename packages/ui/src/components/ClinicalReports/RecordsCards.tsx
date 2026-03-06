@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
+import { Link } from "ui";
 import { defaultRowsPerPageOptions } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
@@ -8,13 +9,14 @@ import useDelayedFlag from "../../hooks/useDelayedFlag";
 import OtTable from "../OtTable/OtTable";
 import CLINICAL_RECORDS_QUERY from "./ClinicalRecordsQuery.gql";
 import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
+import { sum } from "d3";
 
 function RecordsCards({
   records,
   loading,
   maxClinicalStage,
-}: any) {
-  const AnyOtTable = OtTable as any;
+  selectedEntity,
+}) {
   const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
@@ -28,6 +30,8 @@ function RecordsCards({
 
   const showLoading = useDelayedFlag(loading);
 
+  const nRecords = sum(Object.keys(records).map(k => (records as any)[k]), (row: any) => row.length);
+
   const columns = [
     {
       id: "trial",
@@ -40,7 +44,7 @@ function RecordsCards({
             maxStage={maxClinicalStage}
           />
         ),
-      renderCell: (record: any) => {
+      renderCell: (record) => {
         const { source, trialStartDate, type, trialOverallStatus, title } = record;
 
         const displayTitle = (
@@ -164,6 +168,8 @@ function RecordsCards({
   if (!rows) return null;
   const allRows = ([] as any[]).concat(...Object.keys(records).map(k => (records as any)[k]));
 
+  console.log(selectedEntity)
+
   return (
     <>
       <Box
@@ -186,7 +192,30 @@ function RecordsCards({
           },
         }}
       >
-        <AnyOtTable
+      
+        <Typography
+          variant="subtitle2"
+          sx={{
+            position: "absolute",
+            top: 5,
+            left: 0,
+            width: "calc(100% - 240px)",
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitBoxOrient: "vertical",
+            WebkitLineClamp: 2,
+            textOverflow: "ellipsis",
+          }}
+        >
+          {nRecords} {nRecords > 1 ? "reports" : "report"} for{" "}
+          <Link
+            asyncTooltip
+            to={`/${selectedEntity.entityType}/${selectedEntity.id}`}
+          >
+            {selectedEntity.name}
+          </Link>
+        </Typography>
+        <OtTable
           columns={columns}
           rows={rows}
           query={CLINICAL_RECORDS_QUERY.loc?.source?.body}

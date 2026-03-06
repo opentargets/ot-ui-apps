@@ -13,8 +13,6 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }: any
 
   if (!maxStage) return null;
 
-  const nRecords = sum(Object.keys(records).map(k => (records as any)[k]), (row: any) => row.length);
-
   // fade everything after this
   const lastStageToColor =
     records.WITHDRAWAL ? "WITHDRAWAL" : records.PHASE_4 ? "PHASE_4" : maxStage;
@@ -33,7 +31,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }: any
         position: "absolute",
         top: 0,
         bottom: 0,
-        left: "6rem",
+        left: "2rem",
         right: "3rem",
         display: "grid",
         gridTemplateColumns: `repeat(${totalStages}, 1fr)`,
@@ -41,20 +39,7 @@ function StageFilter({ records, selectedStage, setSelectedStage, maxStage }: any
         mb: "3rem",
       }}
     >
-      {/* title */}
-      <Typography
-        variant="caption"
-        sx={{
-          position: "absolute",
-          top: 67,
-          left: -95,
-          fontWeight: 600,
-          width: "85px",
-          textAlign: "right",
-        }}
-      >
-        {nRecords} {nRecords > 1 ? "reports" : "report"}
-      </Typography>
+
 
       {/* single absolute line behind all circles – stops at Phase IV */}
       <Box

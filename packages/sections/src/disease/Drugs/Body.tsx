@@ -16,21 +16,33 @@ function Body({ id: efoId, label: name, entity }) {
   const request = useQuery(DRUGS_QUERY, { variables });
 
   const getClinicalReportsIds = useCallback(
-    (row) => row?.clinicalReports?.map((report) => report.id),
+    row => row?.clinicalReports?.map(report => report.id),
     []
   );
 
-  const getMaxClinicalStage = useCallback((row) => row?.maxClinicalStage, []);
+  const getMaxClinicalStage = useCallback(row => row?.maxClinicalStage, []);
+
+  const getSelectedEntity = useCallback(
+    row => {
+      const id = row?.drug?.id;
+      const selectedName = row?.drug?.name;
+      if (!id || !selectedName) return null;
+      return { entityType: "drug", id, name: selectedName };
+    },
+    []
+  );
 
   const {
     selectedRow,
     selectRow,
+    selectedEntity,
     recordsByStage,
     maxClinicalStage,
     loadingRecords,
   } = useClinicalReportsMasterDetail({
     getClinicalReportsIds,
     getMaxClinicalStage,
+    getSelectedEntity,
   });
 
   const rows = request.data?.disease?.drugAndClinicalCandidates?.rows;
@@ -61,6 +73,7 @@ function Body({ id: efoId, label: name, entity }) {
                   records={recordsByStage}
                   loading={loadingRecords}
                   maxClinicalStage={maxClinicalStage}
+                  selectedEntity={selectedEntity}
                 />
               )
             }

@@ -20,7 +20,7 @@ function ClinicalReportsMasterDetailFrame({ master, detail }: any) {
           flex: "0 0 auto",
           width: {
             xs: "100% ",
-            md: "clamp(250px, 30%, 300px)",
+            md: "clamp(270px, 30%, 300px)",
           },
           alignSelf: { md: "stretch" },
         }}

@@ -22,15 +22,27 @@ function Body({ id: chemblId, label: name, entity }) {
 
   const getMaxClinicalStage = useCallback((row: any) => row?.maxClinicalStage, []);
 
+  const getSelectedEntity = useCallback(
+    (row: any) => {
+      const id = row?.disease?.id;
+      const selectedName = row?.disease?.name;
+      if (!id || !selectedName) return null;
+      return { entityType: "disease", id, name: selectedName };
+    },
+    []
+  );
+
   const {
     selectedRow,
     selectRow,
+    selectedEntity,
     recordsByStage,
     maxClinicalStage,
     loadingRecords,
   } = useClinicalReportsMasterDetail({
     getClinicalReportsIds,
     getMaxClinicalStage,
+    getSelectedEntity,
   });
 
   const rows = request.data?.drug.indications.rows;
@@ -61,6 +73,7 @@ function Body({ id: chemblId, label: name, entity }) {
                   records={recordsByStage}
                   loading={loadingRecords}
                   maxClinicalStage={maxClinicalStage}
+                  selectedEntity={selectedEntity}
                 />
               )
             }

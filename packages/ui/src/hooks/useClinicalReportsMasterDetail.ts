@@ -5,16 +5,21 @@ import CLINICAL_RECORDS_QUERY from "../components/ClinicalReports/ClinicalRecord
 type GetClinicalReportsIds<Row> = (row: Row) => string[] | undefined | null;
 type GetMaxClinicalStage<Row> = (row: Row) => string | null | undefined;
 type GetRowId<Row> = (row: Row) => string | number | null | undefined;
+type GetSelectedEntity<Row> = (
+  row: Row
+) => { entityType: string; id: string; name: string } | null | undefined;
 
 type UseClinicalReportsMasterDetailOptions<Row> = {
   getClinicalReportsIds: GetClinicalReportsIds<Row>;
   getMaxClinicalStage: GetMaxClinicalStage<Row>;
   getRowId?: GetRowId<Row>;
+  getSelectedEntity?: GetSelectedEntity<Row>;
 };
 
 type UseClinicalReportsMasterDetailResult<Row> = {
   selectedRow: Row | null;
   selectRow: (row: Row | null) => void;
+  selectedEntity: { entityType: string; id: string; name: string } | null;
   recordsByStage: Record<string, any[]> | null;
   maxClinicalStage: string | null;
   loadingRecords: boolean;
@@ -34,6 +39,7 @@ function useClinicalReportsMasterDetail<Row = any>({
   getClinicalReportsIds,
   getMaxClinicalStage,
   getRowId,
+  getSelectedEntity,
 }: UseClinicalReportsMasterDetailOptions<Row>): UseClinicalReportsMasterDetailResult<Row> {
   const client = useApolloClient();
 
@@ -60,6 +66,11 @@ function useClinicalReportsMasterDetail<Row = any>({
     if (!selectedRow) return null;
     return getMaxClinicalStage(selectedRow) ?? null;
   }, [selectedRow, getMaxClinicalStage]);
+
+  const selectedEntity = useMemo(() => {
+    if (!selectedRow) return null;
+    return getSelectedEntity?.(selectedRow) ?? null;
+  }, [selectedRow, getSelectedEntity]);
 
   useEffect(() => {
     if (!selectedRow) return;
@@ -96,6 +107,7 @@ function useClinicalReportsMasterDetail<Row = any>({
   return {
     selectedRow,
     selectRow,
+    selectedEntity,
     recordsByStage,
     maxClinicalStage,
     loadingRecords,
