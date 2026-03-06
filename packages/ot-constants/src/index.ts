@@ -391,6 +391,23 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
     return "";
   }
 };
+
+export const clinicalStageCategories = {
+  UNKNOWN: { index: 0, label: "Unknown" },
+  PRECLINICAL: { index: 1, label: "Preclinical" },
+  IND: { index: 2, label: "IND" },
+  EARLY_PHASE_1: { index: 3, label: "Early phase I" },
+  PHASE_1: { index: 4, label: "Phase I" },
+  PHASE_1_2: { index: 5, label: "Phase I/II" },
+  PHASE_2: { index: 6, label: "Phase II" },
+  PHASE_2_3: { index: 7, label: "Phase II/III" },
+  PHASE_3: { index: 8, label: "Phase III" },
+  PREAPPROVAL: { index: 9, label: "Preapproval" },
+  APPROVAL: { index: 10, label: "Approval" },
+  PHASE_4: { index: 11, label: "Phase IV" },
+  WITHDRAWAL: { index: 12, label: "Withdrawal" },
+};
+
 export * from "./alphaFold";
 export * from "./dataTypes";
 export * from "./particlesBackground";

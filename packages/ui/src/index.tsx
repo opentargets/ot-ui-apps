@@ -79,14 +79,18 @@ export { default as ViewerDropdown } from "./components/Viewer/ViewerDropdown";
 export { default as ViewerRadios } from "./components/Viewer/ViewerRadios";
 export { default as ViewerTrack } from "./components/Viewer/ViewerTrack";
 export { default as ViewerLegend } from "./components/Viewer/ViewerLegend";
+export { default as RecordsCards } from "./components/ClinicalReports/RecordsCards";
+export { default as ClinicalReportsMasterDetailFrame } from "./components/ClinicalReports/ClinicalReportsMasterDetailFrame";
 export { default as useBatchDownloader } from "./hooks/useBatchDownloader";
 export { default as useBatchQuery } from "./hooks/useBatchQuery";
 export { default as useCursorBatchDownloader } from "./hooks/useCursorBatchDownloader";
 export { default as useDebounce } from "./hooks/useDebounce";
 export { default as usePermissions } from "./hooks/usePermissions";
+export { default as useClinicalReportsMasterDetail } from "./hooks/useClinicalReportsMasterDetail";
 /* HOOKS */
 export { default as usePlatformApi } from "./hooks/usePlatformApi";
 export { default as useStateParams } from "./hooks/useStateParams";
+export { default as useDelayedFlag} from "./hooks/useDelayedFlag";
 /* SHARED PAGES  */
 export { default as EmptyPage } from "./pages/EmptyPage";
 export { default as NotFoundPage } from "./pages/NotFoundPage";

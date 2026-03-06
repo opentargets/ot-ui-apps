@@ -14,6 +14,7 @@ const DRUG = "drug";
 
 const drugProfileWidgets = new Map<string, Widget>([
   [Drug.MechanismsOfAction.definition.id, Drug.MechanismsOfAction],
+  [Drug.ClinicalIndications.definition.id, Drug.ClinicalIndications],
   [Drug.DrugWarnings.definition.id, Drug.DrugWarnings],
   [Drug.Pharmacogenomics.definition.id, Drug.Pharmacogenomics],
   [Drug.AdverseEvents.definition.id, Drug.AdverseEvents],
