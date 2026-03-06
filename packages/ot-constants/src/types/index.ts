@@ -51,6 +51,7 @@ export type AdverseEvents = {
   count: Scalars['Long']['output'];
   /** LLR critical value to define significance */
   criticalValue: Scalars['Float']['output'];
+  id: Scalars['String']['output'];
   /** Significant adverse event entries */
   rows: Array<AdverseEvent>;
 };
@@ -73,6 +74,10 @@ export type AssociatedDisease = {
   datatypeScores: Array<ScoredComponent>;
   /** Associated disease entity */
   disease: Disease;
+  /** A measure of how novel the target–disease association is, calculated based on the accumulation of direct evidence over time */
+  noveltyDirect?: Maybe<Scalars['Float']['output']>;
+  /** A measure of how novel the target–disease association is, calculated based on the accumulation of indirect evidence over time */
+  noveltyIndirect?: Maybe<Scalars['Float']['output']>;
   /** Overall association score aggregated across all evidence types. A higher score indicates a stronger association between the target and the disease. Scores are normalized to a range of 0-1. */
   score: Scalars['Float']['output'];
 };
@@ -95,6 +100,10 @@ export type AssociatedTarget = {
   datasourceScores: Array<ScoredComponent>;
   /** Association scores computed for every datatype (e.g., Genetic associations, Somatic, Literature) */
   datatypeScores: Array<ScoredComponent>;
+  /** A measure of how novel the target–disease association is, calculated based on the accumulation of direct evidence over time */
+  noveltyDirect?: Maybe<Scalars['Float']['output']>;
+  /** A measure of how novel the target–disease association is, calculated based on the accumulation of indirect evidence over time */
+  noveltyIndirect?: Maybe<Scalars['Float']['output']>;
   /** Overall association score aggregated across all evidence types. A higher score indicates a stronger association between the target and the disease. Scores are normalized to a range of 0-1. */
   score: Scalars['Float']['output'];
   /** Associated target entity */
@@ -201,6 +210,7 @@ export type ChemicalProbe = {
   __typename?: 'ChemicalProbe';
   /** Whether the chemical probe serves as a control */
   control?: Maybe<Scalars['String']['output']>;
+  drugFromSourceId?: Maybe<Scalars['String']['output']>;
   /** Drug ID associated with the chemical probe */
   drugId?: Maybe<Scalars['String']['output']>;
   /** Unique identifier for the chemical probe */
@@ -234,6 +244,72 @@ export type ChemicalProbeUrl = {
   url?: Maybe<Scalars['String']['output']>;
 };
 
+export type ClinRepDrugListItem = {
+  __typename?: 'ClinRepDrugListItem';
+  drug?: Maybe<Drug>;
+  drugFromSource: Scalars['String']['output'];
+};
+
+export type ClinicalDiseaseListItem = {
+  __typename?: 'ClinicalDiseaseListItem';
+  disease?: Maybe<Disease>;
+  diseaseFromSource: Scalars['String']['output'];
+};
+
+export type ClinicalIndicationFromDisease = {
+  __typename?: 'ClinicalIndicationFromDisease';
+  clinicalReports: Array<ClinicalReport>;
+  drug?: Maybe<Drug>;
+  id: Scalars['String']['output'];
+  maxClinicalStage: Scalars['String']['output'];
+};
+
+export type ClinicalIndicationFromDrug = {
+  __typename?: 'ClinicalIndicationFromDrug';
+  clinicalReports: Array<ClinicalReport>;
+  disease?: Maybe<Disease>;
+  id: Scalars['String']['output'];
+  maxClinicalStage: Scalars['String']['output'];
+};
+
+export type ClinicalReport = {
+  __typename?: 'ClinicalReport';
+  clinicalStage: Scalars['String']['output'];
+  countries: Array<Scalars['String']['output']>;
+  diseases: Array<ClinicalDiseaseListItem>;
+  drugs: Array<ClinRepDrugListItem>;
+  hasExpertReview: Scalars['Boolean']['output'];
+  id: Scalars['String']['output'];
+  phaseFromSource?: Maybe<Scalars['String']['output']>;
+  qualityControls: Array<Scalars['String']['output']>;
+  sideEffects: Array<ClinicalDiseaseListItem>;
+  source: Scalars['String']['output'];
+  title?: Maybe<Scalars['String']['output']>;
+  trialDescription?: Maybe<Scalars['String']['output']>;
+  trialLiterature: Array<Scalars['String']['output']>;
+  trialNumberOfArms?: Maybe<Scalars['Int']['output']>;
+  trialOfficialTitle?: Maybe<Scalars['String']['output']>;
+  trialOverallStatus?: Maybe<Scalars['String']['output']>;
+  trialPhase?: Maybe<Scalars['String']['output']>;
+  trialPrimaryPurpose?: Maybe<Scalars['String']['output']>;
+  trialStartDate?: Maybe<Scalars['String']['output']>;
+  trialStopReasonCategories: Array<Scalars['String']['output']>;
+  trialStudyType?: Maybe<Scalars['String']['output']>;
+  trialWhyStopped?: Maybe<Scalars['String']['output']>;
+  type?: Maybe<Scalars['String']['output']>;
+  url?: Maybe<Scalars['String']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
+};
+
+export type ClinicalTargetFromTarget = {
+  __typename?: 'ClinicalTargetFromTarget';
+  clinicalReports: Array<ClinicalReport>;
+  diseases: Array<ClinicalDiseaseListItem>;
+  drug?: Maybe<Drug>;
+  id: Scalars['String']['output'];
+  maxClinicalStage: Scalars['String']['output'];
+};
+
 /** GWAS-GWAS and GWAS-molQTL credible set colocalisation results. Dataset includes colocalising pairs as well as the method and statistics used to estimate the colocalisation. */
 export type Colocalisation = {
   __typename?: 'Colocalisation';
@@ -249,14 +325,13 @@ export type Colocalisation = {
   h3?: Maybe<Scalars['Float']['output']>;
   /** Posterior probability that both traits are associated and share a causal variant (H4). Used in coloc method. */
   h4?: Maybe<Scalars['Float']['output']>;
-  leftStudyLocusId: Scalars['String']['output'];
   /** Number of variants intersecting between two overlapping study-loci */
   numberColocalisingVariants: Scalars['Long']['output'];
   /** The other credible set (study-locus) in the colocalisation pair */
   otherStudyLocus?: Maybe<CredibleSet>;
-  rightStudyLocusId: Scalars['String']['output'];
   /** Type of the right-side study (e.g., gwas, eqtl, pqtl) */
   rightStudyType: Scalars['String']['output'];
+  studyLocusId: Scalars['String']['output'];
 };
 
 /** GWAS-GWAS and GWAS-molQTL credible set colocalisation results. Dataset includes colocalising pairs as well as the method and statistics used to estimate the colocalisation. */
@@ -264,6 +339,7 @@ export type Colocalisations = {
   __typename?: 'Colocalisations';
   /** Total number of colocalisation results matching the query filters */
   count: Scalars['Long']['output'];
+  id: Scalars['String']['output'];
   /** List of colocalisation results between study-loci pairs */
   rows: Array<Colocalisation>;
 };
@@ -287,7 +363,7 @@ export type Constraint = {
   score?: Maybe<Scalars['Float']['output']>;
   /** Upper bin classification going from more constrained to less constrained */
   upperBin?: Maybe<Scalars['Long']['output']>;
-  /** Upper bin6 classification going from more constrained to less constrained */
+  /** Interpretable classification of constraint based on 6 bins. [GnomAD labels: 0: `very high`, 1: `high`, 2: `medium`, 3: `low`, 4: `very low`, 5: `very low`] */
   upperBin6?: Maybe<Scalars['Long']['output']>;
   /** Upper rank classification for every coding gene assessed by GnomAD going from more constrained to less constrained */
   upperRank?: Maybe<Scalars['Long']['output']>;
@@ -299,7 +375,7 @@ export type CredibleSet = {
   /** Beta coefficient of the lead variant */
   beta?: Maybe<Scalars['Float']['output']>;
   /** Chromosome which the credible set is located */
-  chromosome?: Maybe<Scalars['String']['output']>;
+  chromosome: Scalars['String']['output'];
   /** GWAS-GWAS and GWAS-molQTL credible set colocalisation results. Dataset includes colocalising pairs as well as the method and statistics used to estimate the colocalisation. */
   colocalisation: Colocalisations;
   /** Description of how this credible set was derived in terms of data and fine-mapping method */
@@ -325,11 +401,11 @@ export type CredibleSet = {
   /** Start position of the region that was fine-mapped for this credible set */
   locusStart?: Maybe<Scalars['Int']['output']>;
   /** Exponent value of the lead variant P-value */
-  pValueExponent?: Maybe<Scalars['Int']['output']>;
+  pValueExponent: Scalars['Int']['output'];
   /** Mantissa value of the lead variant P-value */
-  pValueMantissa?: Maybe<Scalars['Float']['output']>;
+  pValueMantissa: Scalars['Float']['output'];
   /** Position of the lead variant for the credible set (GRCh38) */
-  position?: Maybe<Scalars['Int']['output']>;
+  position: Scalars['Int']['output'];
   /** Mean R-squared linkage disequilibrium for variants in the credible set */
   purityMeanR2?: Maybe<Scalars['Float']['output']>;
   /** Minimum R-squared linkage disequilibrium for variants in the credible set */
@@ -347,7 +423,7 @@ export type CredibleSet = {
   /** GWAS or molQTL study in which the credible set was identified */
   study?: Maybe<Study>;
   /** Identifier of the GWAS or molQTL study in which the credible set was identified */
-  studyId?: Maybe<Scalars['String']['output']>;
+  studyId: Scalars['String']['output'];
   /** Identifier of the credible set (StudyLocus) */
   studyLocusId: Scalars['String']['output'];
   /** Descriptor for whether the credible set is derived from GWAS or molecular QTL. */
@@ -385,6 +461,7 @@ export type CredibleSets = {
   __typename?: 'CredibleSets';
   /** Total number of credible sets matching the query filters */
   count: Scalars['Long']['output'];
+  id: Scalars['String']['output'];
   /** List of credible set entries with their associated statistics and fine-mapping information */
   rows: Array<CredibleSet>;
 };
@@ -466,7 +543,7 @@ export type Disease = {
   /** Direct child disease nodes in the ontology */
   children: Array<Disease>;
   /** Cross-references to external disease ontologies */
-  dbXRefs?: Maybe<Array<Scalars['String']['output']>>;
+  dbXRefs: Array<Scalars['String']['output']>;
   /** Descendant disease nodes in the EFO ontology below this term */
   descendants: Array<Scalars['String']['output']>;
   /** Short description of the disease or phenotype */
@@ -475,6 +552,8 @@ export type Disease = {
   directLocationIds?: Maybe<Array<Scalars['String']['output']>>;
   /** Diseases mapped to direct anatomical locations */
   directLocations: Array<Disease>;
+  /** Clinical indications for this disease as reported by clinical trial records. */
+  drugAndClinicalCandidates: ClinicalIndicationsFromDiseaseImp;
   /** Target–disease evidence items supporting associations for this disease */
   evidences: Evidences;
   /** Open Targets disease identifier [bioregistry:efo] */
@@ -483,22 +562,19 @@ export type Disease = {
   indirectLocationIds?: Maybe<Array<Scalars['String']['output']>>;
   /** Diseases mapped via indirect (propagated) anatomical locations */
   indirectLocations: Array<Disease>;
-  /** Whether this disease node is a top-level therapeutic area */
   isTherapeuticArea: Scalars['Boolean']['output'];
-  /** Investigational or approved drugs indicated for this disease with curated mechanisms of action */
-  knownDrugs?: Maybe<KnownDrugs>;
   /** Publications that mention this disease, alone or alongside other entities */
   literatureOcurrences: Publications;
   /** Preferred disease or phenotype label */
   name: Scalars['String']['output'];
   /** Obsoleted ontology terms replaced by this term */
-  obsoleteTerms?: Maybe<Array<Scalars['String']['output']>>;
+  obsoleteTerms: Array<Scalars['String']['output']>;
   /** Open Targets (OTAR) projects linked to this disease. Data only available in Partner Platform Preview (PPP) */
   otarProjects: Array<OtarProject>;
   /** Immediate parent disease nodes in the ontology */
   parents: Array<Disease>;
   /** Human Phenotype Ontology (HPO) annotations linked to this disease as clinical signs or symptoms */
-  phenotypes?: Maybe<DiseaseHpOs>;
+  phenotypes: DiseaseHpOs;
   /** All ancestor diseases in the ontology from this term up to the top-level therapeutic area */
   resolvedAncestors: Array<Disease>;
   /** Semantically similar diseases based on a PubMed word embedding model */
@@ -528,14 +604,6 @@ export type DiseaseEvidencesArgs = {
   datasourceIds?: InputMaybe<Array<Scalars['String']['input']>>;
   enableIndirect?: InputMaybe<Scalars['Boolean']['input']>;
   ensemblIds: Array<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-/** Core annotation for diseases or phenotypes. A disease or phenotype in the Platform is understood as any disease, phenotype, biological process or measurement that might have any type of causality relationship with a human target. The EMBL-EBI Experimental Factor Ontology (EFO) (slim version) is used as scaffold for the disease or phenotype entity. */
-export type DiseaseKnownDrugsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  freeTextQuery?: InputMaybe<Scalars['String']['input']>;
   size?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -625,6 +693,7 @@ export type DiseaseHpOs = {
   __typename?: 'DiseaseHPOs';
   /** Total number of phenotype annotations */
   count: Scalars['Long']['output'];
+  id: Scalars['String']['output'];
   /** List of phenotype annotations for the disease */
   rows: Array<DiseaseHpo>;
 };
@@ -642,11 +711,7 @@ export type DiseaseSynonyms = {
 export type Drug = {
   __typename?: 'Drug';
   /** Significant adverse events estimated from pharmacovigilance reports deposited in FAERS */
-  adverseEvents?: Maybe<AdverseEvents>;
-  /** Indications for which there is a phase IV clinical trial */
-  approvedIndications?: Maybe<Array<Scalars['String']['output']>>;
-  /** Flag indicating whether the drug has safety warnings */
-  blackBoxWarning: Scalars['Boolean']['output'];
+  adverseEvents: AdverseEvents;
   /** List of molecules corresponding to derivative compounds */
   childMolecules: Array<Drug>;
   /** Cross-reference information for this molecule from external databases */
@@ -657,24 +722,14 @@ export type Drug = {
   drugType: Scalars['String']['output'];
   /** Warnings present on drug as identified by ChEMBL. */
   drugWarnings: Array<DrugWarning>;
-  /** Flag indicating whether the drug was removed from market */
-  hasBeenWithdrawn: Scalars['Boolean']['output'];
   /** Drug or clinical candidate molecule identifier */
   id: Scalars['String']['output'];
-  /** Investigational and approved indications curated from clinical trial records and post-marketing package inserts */
-  indications?: Maybe<Indications>;
-  /** Flag indicating whether the drug has received regulatory approval */
-  isApproved?: Maybe<Scalars['Boolean']['output']>;
-  /** Curated Clinical trial records and and post-marketing package inserts with a known mechanism of action */
-  knownDrugs?: Maybe<KnownDrugs>;
-  /** List of molecule potential indications */
-  linkedDiseases?: Maybe<LinkedDiseases>;
-  /** List of molecule targets based on molecule mechanism of action */
-  linkedTargets?: Maybe<LinkedTargets>;
+  /** Clinical indications for this drug as reported by clinical trial records. */
+  indications: ClinicalIndicationsFromDrugImp;
   /** Return the list of publications that mention the main entity, alone or in combination with other entities */
   literatureOcurrences: Publications;
-  /** Highest clinical trial phase reached by the drug or clinical candidate molecule */
-  maximumClinicalTrialPhase?: Maybe<Scalars['Float']['output']>;
+  /** Highest clinical stage reached by the drug or clinical candidate molecule */
+  maximumClinicalStage: Scalars['String']['output'];
   /** Mechanisms of action to produce intended pharmacological effects. Curated from scientific literature and post-marketing package inserts */
   mechanismsOfAction?: Maybe<MechanismsOfAction>;
   /** Generic name of the drug molecule */
@@ -689,22 +744,12 @@ export type Drug = {
   synonyms: Array<Scalars['String']['output']>;
   /** List of brand names for the drug */
   tradeNames: Array<Scalars['String']['output']>;
-  /** Year when the drug received regulatory approval */
-  yearOfFirstApproval?: Maybe<Scalars['Int']['output']>;
 };
 
 
 /** Core annotation for drug or clinical candidate molecules. A drug in the platform is understood as any bioactive molecule with drug-like properties included in the EMBL-EBI ChEMBL database. All ChEMBL molecules fullfilling any of the next criteria are included in the database: a) Molecules with a known indication. b) Molecules with a known mechanism of action c) ChEMBL molecules included in the DrugBank database d) Molecules that are acknowledged as chemical probes */
 export type DrugAdverseEventsArgs = {
   page?: InputMaybe<Pagination>;
-};
-
-
-/** Core annotation for drug or clinical candidate molecules. A drug in the platform is understood as any bioactive molecule with drug-like properties included in the EMBL-EBI ChEMBL database. All ChEMBL molecules fullfilling any of the next criteria are included in the database: a) Molecules with a known indication. b) Molecules with a known mechanism of action c) ChEMBL molecules included in the DrugBank database d) Molecules that are acknowledged as chemical probes */
-export type DrugKnownDrugsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  freeTextQuery?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -716,12 +761,6 @@ export type DrugLiteratureOcurrencesArgs = {
   endYear?: InputMaybe<Scalars['Int']['input']>;
   startMonth?: InputMaybe<Scalars['Int']['input']>;
   startYear?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-/** Core annotation for drug or clinical candidate molecules. A drug in the platform is understood as any bioactive molecule with drug-like properties included in the EMBL-EBI ChEMBL database. All ChEMBL molecules fullfilling any of the next criteria are included in the database: a) Molecules with a known indication. b) Molecules with a known mechanism of action c) ChEMBL molecules included in the DrugBank database d) Molecules that are acknowledged as chemical probes */
-export type DrugPharmacogenomicsArgs = {
-  page?: InputMaybe<Pagination>;
 };
 
 
@@ -791,6 +830,51 @@ export type DrugWithIdentifiers = {
   drugId?: Maybe<Scalars['String']['output']>;
 };
 
+/** Regulatory enhancer/promoter regions to gene (target) predictions for a specific tissue/cell type based on the integration of experimental sources */
+export type EnhancerToGene = {
+  __typename?: 'EnhancerToGene';
+  /** Cell type or tissue where the regulatory region to gene prediction was identified */
+  biosample?: Maybe<Biosample>;
+  /** Identifier of the biosample defined by the datasource provider */
+  biosampleFromSourceId?: Maybe<Scalars['String']['output']>;
+  /** Name of the biosample where the interval was identified */
+  biosampleName: Scalars['String']['output'];
+  /** Chromosome containing the regulatory region */
+  chromosome: Scalars['String']['output'];
+  /** Identifier of the data source providing the regulatory region to gene prediction */
+  datasourceId: Scalars['String']['output'];
+  /** Distance from the regulatory region to the transcription start site */
+  distanceToTss: Scalars['Int']['output'];
+  /** Genomic end position of the regulatory region */
+  end: Scalars['Int']['output'];
+  /** Type of regulatory region (e.g., enhancer, promoter) */
+  intervalType: Scalars['String']['output'];
+  meta_total: Scalars['Long']['output'];
+  /** PubMed identifier for the study providing the evidence [bioregistry:pubmed] */
+  pmid: Scalars['String']['output'];
+  /** Quality control flags for this interval. */
+  qualityControls?: Maybe<Array<Scalars['String']['output']>>;
+  /** Scores from individual resources used in prediction */
+  resourceScore: Array<ResourceScore>;
+  /** Combined score for the enhancer/promoter region to gene prediction */
+  score: Scalars['Float']['output'];
+  /** Genomic start position of the regulatory region */
+  start: Scalars['Int']['output'];
+  /** Identifier of the study providing the experimental data */
+  studyId: Scalars['String']['output'];
+  /** Predicted gene (target) */
+  target: Target;
+};
+
+/** Collection of regulatory enhancer/promoter regions to gene (target) predictions for a specific tissue/cell type based on the integration of experimental sources */
+export type EnhancerToGenes = {
+  __typename?: 'EnhancerToGenes';
+  /** Total number of enhancer/promoter region to gene predictions */
+  count: Scalars['Long']['output'];
+  /** List of enhancer/promoter region to gene predictions */
+  rows: Array<EnhancerToGene>;
+};
+
 /** Union of core Platform entities returned by search or mappings (Target, Drug, Disease, Variant, Study) */
 export type EntityUnionType = Disease | Drug | Study | Target | Variant;
 
@@ -833,12 +917,12 @@ export type Evidence = {
   cellLineBackground?: Maybe<Scalars['String']['output']>;
   /** The studied cell type. Preferably the cell line ontology label */
   cellType?: Maybe<Scalars['String']['output']>;
-  /** Phase of the clinical trial */
-  clinicalPhase?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the clinical report */
+  clinicalReportId?: Maybe<Scalars['String']['output']>;
   /** Standard terms to define clinical significance */
   clinicalSignificances?: Maybe<Array<Scalars['String']['output']>>;
-  /** Current stage of a clinical study */
-  clinicalStatus?: Maybe<Scalars['String']['output']>;
+  /** Clinical stage of the drug-disease pair */
+  clinicalStage?: Maybe<Scalars['String']['output']>;
   /** Description of the studied cohort */
   cohortDescription?: Maybe<Scalars['String']['output']>;
   /** Identifier of the studied cohort */
@@ -883,6 +967,7 @@ export type Evidence = {
   drugFromSource?: Maybe<Scalars['String']['output']>;
   /** Observed patterns of drug response */
   drugResponse?: Maybe<Disease>;
+  evidenceDate?: Maybe<Scalars['String']['output']>;
   /** Description of the interaction between the two genes */
   geneInteractionType?: Maybe<Scalars['String']['output']>;
   /** False discovery rate of the genetic interaction test */
@@ -903,6 +988,7 @@ export type Evidence = {
   log2FoldChangePercentileRank?: Maybe<Scalars['Long']['output']>;
   /** Log2 fold expression change in contrast experiment */
   log2FoldChangeValue?: Maybe<Scalars['Float']['output']>;
+  metaTotal: Scalars['Int']['output'];
   /** Samples with a given mutation tested */
   mutatedSamples?: Maybe<Array<EvidenceVariation>>;
   /** Size of effect captured as odds ratio */
@@ -933,10 +1019,12 @@ export type Evidence = {
   projectId?: Maybe<Scalars['String']['output']>;
   /** List of PubMed Central identifiers of full text publication [bioregistry:pmc] */
   pubMedCentralIds?: Maybe<Array<Scalars['String']['output']>>;
+  publicationDate?: Maybe<Scalars['String']['output']>;
   /** Last name and initials of the first author of the publication that references the evidence */
   publicationFirstAuthor?: Maybe<Scalars['String']['output']>;
   /** Year of the publication */
   publicationYear?: Maybe<Scalars['Long']['output']>;
+  qualityControls: Array<Scalars['String']['output']>;
   /** Pathway, gene set or reaction identifier in Reactome */
   reactionId?: Maybe<Scalars['String']['output']>;
   /** Name of the reaction, patway or gene set in Reactome */
@@ -969,10 +1057,6 @@ export type Evidence = {
   studySampleSize?: Maybe<Scalars['Long']['output']>;
   /** Start date of study in a YYYY-MM-DD format */
   studyStartDate?: Maybe<Scalars['String']['output']>;
-  /** Reason why a study has been stopped */
-  studyStopReason?: Maybe<Scalars['String']['output']>;
-  /** Predicted reason(s) why the study has been stopped based on studyStopReason */
-  studyStopReasonCategories?: Maybe<Array<Scalars['String']['output']>>;
   /** Target for which the disease is associated in this evidence */
   target: Target;
   /** Target name/synonym or non HGNC symbol in resource of origin */
@@ -987,6 +1071,10 @@ export type Evidence = {
   targetRole?: Maybe<Scalars['String']['output']>;
   /** Text mining sentences extracted from literature */
   textMiningSentences?: Maybe<Array<EvidenceTextMiningSentence>>;
+  /** Categorised reason(s) why the trial was stopped */
+  trialStopReasonCategories?: Maybe<Array<Scalars['String']['output']>>;
+  /** Reason why the trial was stopped, as reported */
+  trialWhyStopped?: Maybe<Scalars['String']['output']>;
   /** Reference to linked external resource (e.g. clinical trials, studies, package inserts, reports, etc.) */
   urls?: Maybe<Array<LabelledUri>>;
   /** Variant supporting the relationship between the target and the disease */
@@ -1046,7 +1134,7 @@ export type EvidenceVariation = {
 export type Evidences = {
   __typename?: 'Evidences';
   /** Total number of evidence items available for the query */
-  count: Scalars['Long']['output'];
+  count: Scalars['Int']['output'];
   /** Opaque pagination cursor to request the next page of results */
   cursor?: Maybe<Scalars['String']['output']>;
   /** List of evidence items supporting the target–disease association */
@@ -1183,43 +1271,11 @@ export type IdAndSource = {
   source: Scalars['String']['output'];
 };
 
-/** Reference information for drug indications */
-export type IndicationReference = {
-  __typename?: 'IndicationReference';
-  /** List of reference identifiers (e.g., PubMed IDs) */
-  ids?: Maybe<Array<Scalars['String']['output']>>;
-  /** Source of the reference */
-  source: Scalars['String']['output'];
-};
-
-/** Indication information linking a drug or clinical candidate molecule to a disease */
-export type IndicationRow = {
-  __typename?: 'IndicationRow';
-  /** Potential indication disease entity */
-  disease: Disease;
-  /** Maximum clinical trial phase for this drug-disease indication */
-  maxPhaseForIndication: Scalars['Float']['output'];
-  /** Reference information supporting the indication */
-  references?: Maybe<Array<IndicationReference>>;
-};
-
-/** Collection of indications for a drug or clinical candidate molecule */
-export type Indications = {
-  __typename?: 'Indications';
-  /** List of approved indication identifiers */
-  approvedIndications?: Maybe<Array<Scalars['String']['output']>>;
-  /** Total number of potential indications */
-  count: Scalars['Long']['output'];
-  /** List of potential indication entries */
-  rows: Array<IndicationRow>;
-};
-
 /** Integration of molecular interactions reporting experimental or functional interactions between molecules represented as Platform targets. This dataset contains pair-wise interactions deposited in several databases capturing: physical interactions (e.g. IntAct), directional interactions (e.g. Signor), pathway relationships (e.g. Reactome) or functional interactions (e.g. STRINGdb). */
 export type Interaction = {
   __typename?: 'Interaction';
   /** Number of evidence entries supporting this interaction */
   count: Scalars['Long']['output'];
-  /** List of evidences for this interaction */
   evidences: Array<InteractionEvidence>;
   /** Identifier for target A in source */
   intA: Scalars['String']['output'];
@@ -1296,11 +1352,23 @@ export type InteractionResources = {
   sourceDatabase: Scalars['String']['output'];
 };
 
+/** Source database for molecular interaction evidence */
+export enum InteractionSourceEnum {
+  /** IntAct molecular interaction database */
+  Intact = 'intact',
+  /** Reactome pathway database */
+  Reactome = 'reactome',
+  /** SIGNOR, the SIGnaling Network Open Resource database */
+  Signor = 'signor',
+  /** STRING, protein-protein interactions database */
+  String = 'string'
+}
+
 /** Taxonomic annotation of the interaction participants */
 export type InteractionSpecies = {
   __typename?: 'InteractionSpecies';
   /** Short mnemonic name of the species */
-  mnemonic?: Maybe<Scalars['String']['output']>;
+  mnemonic: Scalars['String']['output'];
   /** Scientific name of the species */
   scientificName?: Maybe<Scalars['String']['output']>;
   /** NCBI taxon ID of the species */
@@ -1312,133 +1380,18 @@ export type Interactions = {
   __typename?: 'Interactions';
   /** Total number of interaction entries available for the query */
   count: Scalars['Long']['output'];
+  id: Scalars['String']['output'];
   /** List of molecular interaction entries */
   rows: Array<Interaction>;
 };
 
-/** Regulatory enhancer/promoter regions to gene (target) predictions for a specific tissue/cell type based on the integration of experimental sources */
-export type Interval = {
-  __typename?: 'Interval';
-  /** Cell type or tissue where the regulatory region to gene prediction was identified */
-  biosample?: Maybe<Biosample>;
-  /** Name of the biosample where the interval was identified */
-  biosampleName: Scalars['String']['output'];
-  /** Chromosome containing the regulatory region */
-  chromosome: Scalars['String']['output'];
-  /** Identifier of the data source providing the regulatory region to gene prediction */
-  datasourceId: Scalars['String']['output'];
-  /** Distance from the regulatory region to the transcription start site */
-  distanceToTss: Scalars['Int']['output'];
-  /** Genomic end position of the regulatory region */
-  end: Scalars['Int']['output'];
-  /** Type of regulatory region (e.g., enhancer, promoter) */
-  intervalType: Scalars['String']['output'];
-  /** PubMed identifier for the study providing the evidence [bioregistry:pubmed] */
-  pmid: Scalars['String']['output'];
-  /** Scores from individual resources used in prediction */
-  resourceScore: Array<ResourceScore>;
-  /** Combined score for the enhancer/promoter region to gene prediction */
-  score: Scalars['Float']['output'];
-  /** Genomic start position of the regulatory region */
-  start: Scalars['Int']['output'];
-  /** Identifier of the study providing the experimental data */
-  studyId: Scalars['String']['output'];
-  /** Predicted gene (target) */
-  target: Target;
-};
-
-/** Collection of regulatory enhancer/promoter regions to gene (target) predictions for a specific tissue/cell type based on the integration of experimental sources */
-export type Intervals = {
-  __typename?: 'Intervals';
-  /** Total number of enhancer/promoter region to gene predictions */
-  count: Scalars['Long']['output'];
-  /** List of enhancer/promoter region to gene predictions */
-  rows: Array<Interval>;
-};
-
 /** A key-value pair */
-export type KeyValue = {
-  __typename?: 'KeyValue';
+export type KeyValuePair = {
+  __typename?: 'KeyValuePair';
   /** Key or attribute name */
   key: Scalars['String']['output'];
   /** String representation of the value */
   value: Scalars['String']['output'];
-};
-
-/** An array of key-value pairs */
-export type KeyValueArray = {
-  __typename?: 'KeyValueArray';
-  /** List of key-value entries */
-  items: Array<KeyValue>;
-};
-
-/** For any approved or clinical candidate drug, includes information on the target gene product and indication. It is derived from the ChEMBL target/disease evidence. */
-export type KnownDrug = {
-  __typename?: 'KnownDrug';
-  /** Approved full name of the gene or gene product modulated by the drug */
-  approvedName: Scalars['String']['output'];
-  /** Approved gene symbol of the target modulated by the drug */
-  approvedSymbol: Scalars['String']['output'];
-  /** Clinicaltrials.gov identifiers on entry trials */
-  ctIds: Array<Scalars['String']['output']>;
-  /** Curated disease indication entity */
-  disease?: Maybe<Disease>;
-  /** Open Targets disease identifier */
-  diseaseId: Scalars['String']['output'];
-  /** Curated drug entity */
-  drug?: Maybe<Drug>;
-  /** Open Targets molecule identifier */
-  drugId: Scalars['String']['output'];
-  /** Classification of the modality of the drug (e.g. Small molecule) */
-  drugType: Scalars['String']['output'];
-  /** Disease label for the condition being treated */
-  label: Scalars['String']['output'];
-  /** Drug pharmacological action */
-  mechanismOfAction: Scalars['String']['output'];
-  /** Clinical development stage of the drug */
-  phase: Scalars['Float']['output'];
-  /** Commonly used name for the drug */
-  prefName: Scalars['String']['output'];
-  /** Source urls for FDA or package inserts */
-  references: Array<KnownDrugReference>;
-  /** Clinical trial status for the drug/indication pair */
-  status?: Maybe<Scalars['String']['output']>;
-  /** Drug target entity based on curated mechanism of action */
-  target?: Maybe<Target>;
-  /** Classification category of the drug's biological target (e.g. Enzyme) */
-  targetClass: Array<Scalars['String']['output']>;
-  /** Open Targets target identifier */
-  targetId: Scalars['String']['output'];
-  /** List of web addresses that support the drug/indication pair */
-  urls: Array<Url>;
-};
-
-/** Reference information for known drug indications */
-export type KnownDrugReference = {
-  __typename?: 'KnownDrugReference';
-  /** List of reference identifiers */
-  ids: Array<Scalars['String']['output']>;
-  /** Source of the reference (e.g., PubMed, FDA, package inserts) */
-  source: Scalars['String']['output'];
-  /** List of URLs linking to the reference */
-  urls: Array<Scalars['String']['output']>;
-};
-
-/** Set of clinical precedence for drugs with investigational or approved indications targeting gene products according to their curated mechanism of action */
-export type KnownDrugs = {
-  __typename?: 'KnownDrugs';
-  /** Total number of entries */
-  count: Scalars['Long']['output'];
-  /** Opaque pagination cursor to request the next page of results */
-  cursor?: Maybe<Scalars['String']['output']>;
-  /** Clinical precedence entries with known mechanism of action */
-  rows: Array<KnownDrug>;
-  /** Total unique diseases or phenotypes */
-  uniqueDiseases: Scalars['Long']['output'];
-  /** Total unique drug or clinical candidate molecules */
-  uniqueDrugs: Scalars['Long']['output'];
-  /** Total unique known mechanism of action targets */
-  uniqueTargets: Scalars['Long']['output'];
 };
 
 /** Feature used in Locus2gene model predictions */
@@ -1509,7 +1462,7 @@ export type LabelledUri = {
 export type LdPopulationStructure = {
   __typename?: 'LdPopulationStructure';
   /** Population identifier */
-  ldPopulation?: Maybe<Scalars['String']['output']>;
+  ldPopulation: Scalars['String']['output'];
   /** Fraction of the total sample represented by the population */
   relativeSampleSize?: Maybe<Scalars['Float']['output']>;
 };
@@ -1518,27 +1471,9 @@ export type LdPopulationStructure = {
 export type LdSet = {
   __typename?: 'LdSet';
   /** The R-squared value for the tag variants with the credible set lead variant */
-  r2Overall?: Maybe<Scalars['Float']['output']>;
+  r2Overall: Scalars['Float']['output'];
   /** The variant ID for tag variants in LD with the credible set lead variant */
-  tagVariantId?: Maybe<Scalars['String']['output']>;
-};
-
-/** Diseases linked via indications */
-export type LinkedDiseases = {
-  __typename?: 'LinkedDiseases';
-  /** Total number of linked diseases */
-  count: Scalars['Int']['output'];
-  /** List of linked disease entities */
-  rows: Array<Disease>;
-};
-
-/** Targets linked via curated mechanisms of action */
-export type LinkedTargets = {
-  __typename?: 'LinkedTargets';
-  /** Total number of linked targets */
-  count: Scalars['Int']['output'];
-  /** List of linked target entities */
-  rows: Array<Target>;
+  tagVariantId: Scalars['String']['output'];
 };
 
 /** Subcellular location information with source */
@@ -1569,9 +1504,9 @@ export type Locus = {
   /** Beta coefficient of this variant in the credible set */
   beta?: Maybe<Scalars['Float']['output']>;
   /** Boolean for if the variant is part of the 95% credible set */
-  is95CredibleSet?: Maybe<Scalars['Boolean']['output']>;
+  is95CredibleSet: Scalars['Boolean']['output'];
   /** Boolean for if the variant is part of the 99% credible set */
-  is99CredibleSet?: Maybe<Scalars['Boolean']['output']>;
+  is99CredibleSet: Scalars['Boolean']['output'];
   /** Log (natural) Bayes factor for the variant from fine-mapping */
   logBF?: Maybe<Scalars['Float']['output']>;
   /** Exponent of the P-value for this variant in the credible set */
@@ -1579,7 +1514,7 @@ export type Locus = {
   /** Mantissa of the P-value for this variant in the credible set */
   pValueMantissa?: Maybe<Scalars['Float']['output']>;
   /** Posterior inclusion probability for the variant within this credible set */
-  posteriorProbability?: Maybe<Scalars['Float']['output']>;
+  posteriorProbability: Scalars['Float']['output'];
   /** R-squared (LD) between this credible set variant and the lead variant */
   r2Overall?: Maybe<Scalars['Float']['output']>;
   /** Standard error of this variant in the credible set */
@@ -1709,7 +1644,7 @@ export type OtarProject = {
 export type Pagination = {
   /** Zero-based page index */
   index: Scalars['Int']['input'];
-  /** Number of items per page */
+  /** Number of items per page [Default: 25, Max: 3000] */
   size: Scalars['Int']['input'];
 };
 
@@ -1803,6 +1738,7 @@ export type ProteinCodingCoordinates = {
   __typename?: 'ProteinCodingCoordinates';
   /** Total number of phenotype-associated protein coding variants */
   count: Scalars['Long']['output'];
+  id: Scalars['String']['output'];
   /** List of phenotype-associated protein coding variants */
   rows: Array<ProteinCodingCoordinate>;
 };
@@ -1826,7 +1762,7 @@ export type Publication = {
   /** PubMed identifier [bioregistry:pubmed] */
   pmid: Scalars['String']['output'];
   /** Publication date */
-  publicationDate?: Maybe<Scalars['String']['output']>;
+  publicationDate: Scalars['String']['output'];
 };
 
 /** List of referenced publications with total counts, earliest year and pagination cursor */
@@ -1836,7 +1772,7 @@ export type Publications = {
   count: Scalars['Long']['output'];
   /** Opaque pagination cursor to request the next page of results */
   cursor?: Maybe<Scalars['String']['output']>;
-  /** Earliest publication year. */
+  /** Earliest publication year */
   earliestPubYear: Scalars['Int']['output'];
   /** Number of publications after applying filters */
   filteredCount: Scalars['Long']['output'];
@@ -1849,6 +1785,8 @@ export type Query = {
   __typename?: 'Query';
   /** List of available evidence datasources and their datatypes */
   associationDatasources: Array<EvidenceSource>;
+  clinicalReport?: Maybe<ClinicalReport>;
+  clinicalReports: Array<ClinicalReport>;
   /** Retrieve a 95% credible set (study-locus) by identifier */
   credibleSet?: Maybe<CredibleSet>;
   /** List credible sets filtered by study-locus IDs, study IDs, variant IDs, study types or regions */
@@ -1883,6 +1821,18 @@ export type Query = {
   targets: Array<Target>;
   /** Retrieve a variant by identifier in the format of CHROM_POS_REF_ALT for SNPs and short indels (e.g. 19_44908684_T_C) */
   variant?: Maybe<Variant>;
+};
+
+
+/** Root query type providing access to all entities and search functionality in the Open Targets Platform. Supports retrieval of targets, diseases, drugs, variants, studies, credible sets, and their associations. Includes full-text search, mapping, and filtering capabilities. */
+export type QueryClinicalReportArgs = {
+  clinicalReportId: Scalars['String']['input'];
+};
+
+
+/** Root query type providing access to all entities and search functionality in the Open Targets Platform. Supports retrieval of targets, diseases, drugs, variants, studies, credible sets, and their associations. Includes full-text search, mapping, and filtering capabilities. */
+export type QueryClinicalReportsArgs = {
+  clinicalReportsIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -2093,9 +2043,9 @@ export type SafetyStudy = {
 export type Sample = {
   __typename?: 'Sample';
   /** Sample ancestry name */
-  ancestry?: Maybe<Scalars['String']['output']>;
+  ancestry: Scalars['String']['output'];
   /** Sample size */
-  sampleSize?: Maybe<Scalars['Int']['output']>;
+  sampleSize: Scalars['Int']['output'];
 };
 
 /** Scored component used in association scoring */
@@ -2280,7 +2230,7 @@ export type Study = {
   /** The number of samples tested in GWAS analysis */
   nSamples?: Maybe<Scalars['Int']['output']>;
   /** Identifier of the source project collection that the study information is derived from */
-  projectId?: Maybe<Scalars['String']['output']>;
+  projectId: Scalars['String']['output'];
   /** Date of the publication that references study */
   publicationDate?: Maybe<Scalars['String']['output']>;
   /** Last name and initials of the author of the publication that references the study */
@@ -2304,7 +2254,7 @@ export type Study = {
   /** In molQTL studies, the gene under study for changes in expression, abundance, etc. */
   target?: Maybe<Target>;
   /** Molecular or phenotypic trait, derived from source, analysed in the study */
-  traitFromSource?: Maybe<Scalars['String']['output']>;
+  traitFromSource: Scalars['String']['output'];
   /** Phenotypic trait ids that map to the analysed trait reported by study */
   traitFromSourceMappedIds?: Maybe<Array<Scalars['String']['output']>>;
 };
@@ -2369,6 +2319,7 @@ export type Target = {
   dbXrefs: Array<IdAndSource>;
   /** Essentiality measurements extracted from DepMap, stratified by tissue or anatomical units. Gene essentiality is assessed based on dependencies exhibited when knocking out genes in cancer cellular models using CRISPR screenings from the Cancer Dependency Map (DepMap) Project. Gene effects below -1 can be considered dependencies. */
   depMapEssentiality?: Maybe<Array<DepMapEssentiality>>;
+  drugAndClinicalCandidates: ClinicalTargets;
   /** Target-disease evidence from all data sources supporting associations between this target and diseases or phenotypes. Evidence entries are reported and scored according to confidence in the association. */
   evidences: Evidences;
   /** Baseline RNA and protein expression data across tissues for this target. Expression data shows how targets are selectively expressed across different tissues and biosamples, combining values from multiple sources including Expression Atlas and Human Protein Atlas. */
@@ -2377,7 +2328,7 @@ export type Target = {
   functionDescriptions: Array<Scalars['String']['output']>;
   /** List of Gene Ontology (GO) annotations related to the target */
   geneOntology: Array<GeneOntology>;
-  /** Constraint scores for the target gene from GnomAD */
+  /** Constraint scores for the target gene from GnomAD based on loss-of-function intolerance. */
   geneticConstraint: Array<Constraint>;
   /** Genomic location information of the target gene */
   genomicLocation: GenomicLocation;
@@ -2391,8 +2342,6 @@ export type Target = {
   interactions?: Maybe<Interactions>;
   /** Flag indicating whether this target is essential based on CRISPR screening data from cancer cell line models. Essential genes are those that show dependency when knocked out in cellular models. */
   isEssential?: Maybe<Scalars['Boolean']['output']>;
-  /** Set of clinical precedence for drugs with investigational or approved indications targeting this gene product according to their curated mechanism of action */
-  knownDrugs?: Maybe<KnownDrugs>;
   /** Return the list of publications that mention the main entity, alone or in combination with other entities */
   literatureOcurrences: Publications;
   /** Mouse phenotype information linking this human target to observed phenotypes in mouse models. Provides data on phenotypes observed when the target gene is modified in mouse models. */
@@ -2408,7 +2357,7 @@ export type Target = {
   /** Pharmacogenomics data linking genetic variants affecting this target to drug responses. Data is integrated from sources including ClinPGx and describes how genetic variants influence individual drug responses when targeting this gene product. */
   pharmacogenomics: Array<Pharmacogenomics>;
   /** Target-specific properties used to prioritise targets for further investigation. Prioritisation factors cover several areas around clinical precedence, tractability, do-ability, and safety of the target. Values range from -1 (unfavourable/deprioritised) to 1 (favourable/prioritised). */
-  prioritisation?: Maybe<KeyValueArray>;
+  prioritisation?: Maybe<TargetPrioritisation>;
   /** Protein coding coordinates linking variants affecting this target to their amino acid-level consequences in protein products. Describes variant consequences at the protein level including amino acid changes and their positions for this target. */
   proteinCodingCoordinates: ProteinCodingCoordinates;
   /** Protein identifiers associated with the target */
@@ -2431,6 +2380,8 @@ export type Target = {
   tractability: Array<Tractability>;
   /** List of Ensembl transcript identifiers associated with the target */
   transcriptIds: Array<Scalars['String']['output']>;
+  /** List of transcripts associated with the target including protein and structure annotations */
+  transcripts: Array<Transcript>;
 };
 
 
@@ -2466,15 +2417,7 @@ export type TargetEvidencesArgs = {
 export type TargetInteractionsArgs = {
   page?: InputMaybe<Pagination>;
   scoreThreshold?: InputMaybe<Scalars['Float']['input']>;
-  sourceDatabase?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-/** Core annotation for drug targets (gene/proteins). Targets are defined based on EMBL-EBI Ensembl database and uses the Ensembl gene ID as the  primary identifier. An Ensembl gene ID is considered potential drug target if included in the canonical assembly or if present alternative assemblies but encoding for a reviewed protein product according to the UniProt database. */
-export type TargetKnownDrugsArgs = {
-  cursor?: InputMaybe<Scalars['String']['input']>;
-  freeTextQuery?: InputMaybe<Scalars['String']['input']>;
-  size?: InputMaybe<Scalars['Int']['input']>;
+  sourceDatabase?: InputMaybe<InteractionSourceEnum>;
 };
 
 
@@ -2486,12 +2429,6 @@ export type TargetLiteratureOcurrencesArgs = {
   endYear?: InputMaybe<Scalars['Int']['input']>;
   startMonth?: InputMaybe<Scalars['Int']['input']>;
   startYear?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-/** Core annotation for drug targets (gene/proteins). Targets are defined based on EMBL-EBI Ensembl database and uses the Ensembl gene ID as the  primary identifier. An Ensembl gene ID is considered potential drug target if included in the canonical assembly or if present alternative assemblies but encoding for a reviewed protein product according to the UniProt database. */
-export type TargetPharmacogenomicsArgs = {
-  page?: InputMaybe<Pagination>;
 };
 
 
@@ -2518,6 +2455,13 @@ export type TargetClass = {
   label: Scalars['String']['output'];
   /** Hierarchical level of the target class */
   level: Scalars['String']['output'];
+};
+
+/** Target-specific properties used to prioritise targets for further investigation. Prioritisation factors cover several areas around clinical precedence, tractability, do-ability, and safety of the target. Values range from -1 (unfavourable/deprioritised) to 1 (favourable/prioritised). */
+export type TargetPrioritisation = {
+  __typename?: 'TargetPrioritisation';
+  /** List of key-value pairs representing prioritisation factors */
+  items: Array<KeyValuePair>;
 };
 
 /** Target Enabling Package (TEP) information */
@@ -2557,6 +2501,27 @@ export type Tractability = {
   value: Scalars['Boolean']['output'];
 };
 
+/** Transcript annotation for a target gene */
+export type Transcript = {
+  __typename?: 'Transcript';
+  /** AlphaFold structure prediction identifier */
+  alphafoldId?: Maybe<Scalars['String']['output']>;
+  /** Biotype classification of the transcript */
+  biotype: Scalars['String']['output'];
+  /** Whether this is the Ensembl canonical transcript */
+  isEnsemblCanonical: Scalars['Boolean']['output'];
+  /** Whether the UniProt entry is reviewed (Swiss-Prot) */
+  isUniprotReviewed?: Maybe<Scalars['Boolean']['output']>;
+  /** Ensembl transcript identifier */
+  transcriptId: Scalars['String']['output'];
+  /** Ensembl translation identifier */
+  translationId?: Maybe<Scalars['String']['output']>;
+  /** UniProt accession mapped to the transcript */
+  uniprotId?: Maybe<Scalars['String']['output']>;
+  /** UniProt isoform identifier */
+  uniprotIsoformId?: Maybe<Scalars['String']['output']>;
+};
+
 /** Predicted consequences of the variant on transcript context */
 export type TranscriptConsequence = {
   __typename?: 'TranscriptConsequence';
@@ -2592,15 +2557,6 @@ export type TranscriptConsequence = {
   variantConsequences: Array<SequenceOntologyTerm>;
 };
 
-/** Source URL for clinical trials, FDA and package inserts */
-export type Url = {
-  __typename?: 'URL';
-  /** List of human readable names for the reference source */
-  name: Scalars['String']['output'];
-  /** List of web addresses that support the drug/indication pair */
-  url: Scalars['String']['output'];
-};
-
 /** Core variant information for all variants in the Platform. Variants are included if any phenotypic information is available for the variant, including GWAS or molQTL credible sets, ClinVar, Uniprot or ClinPGx. The dataset includes variant metadata as well as variant effects derived from Ensembl VEP. */
 export type Variant = {
   __typename?: 'Variant';
@@ -2614,14 +2570,14 @@ export type Variant = {
   credibleSets: CredibleSets;
   /** The list of cross-references for the variant in different databases */
   dbXrefs?: Maybe<Array<DbXref>>;
+  /** Regulatory enhancer/promoter regions to gene (target) predictions overlapping with this variant's location. These intervals link regulatory regions to target genes based on experimental data for specific tissues or cell types. */
+  enhancerToGenes: EnhancerToGenes;
   /** Target-disease evidence from all data sources where this variant supports the association. Evidence entries report associations between targets (genes or proteins) and diseases or phenotypes, scored according to confidence in the association. */
   evidences: Evidences;
   /** HGVS identifier of the variant */
   hgvsId?: Maybe<Scalars['String']['output']>;
   /** The unique identifier for the variant following schema CHR_POS_REF_ALT for SNPs and short indels (e.g. 1_154453788_C_T) */
   id: Scalars['String']['output'];
-  /** Regulatory enhancer/promoter regions to gene (target) predictions overlapping with this variant's location. These intervals link regulatory regions to target genes based on experimental data for specific tissues or cell types. */
-  intervals: Intervals;
   /** The sequence ontology term of the most severe consequence of the variant based on Ensembl VEP */
   mostSevereConsequence?: Maybe<SequenceOntologyTerm>;
   /** Pharmacogenomics data linking this genetic variant to drug responses. Data is integrated from sources including ClinPGx and describes how genetic variants influence individual drug responses. */
@@ -2651,22 +2607,16 @@ export type VariantCredibleSetsArgs = {
 
 
 /** Core variant information for all variants in the Platform. Variants are included if any phenotypic information is available for the variant, including GWAS or molQTL credible sets, ClinVar, Uniprot or ClinPGx. The dataset includes variant metadata as well as variant effects derived from Ensembl VEP. */
+export type VariantEnhancerToGenesArgs = {
+  page?: InputMaybe<Pagination>;
+};
+
+
+/** Core variant information for all variants in the Platform. Variants are included if any phenotypic information is available for the variant, including GWAS or molQTL credible sets, ClinVar, Uniprot or ClinPGx. The dataset includes variant metadata as well as variant effects derived from Ensembl VEP. */
 export type VariantEvidencesArgs = {
   cursor?: InputMaybe<Scalars['String']['input']>;
   datasourceIds?: InputMaybe<Array<Scalars['String']['input']>>;
   size?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-/** Core variant information for all variants in the Platform. Variants are included if any phenotypic information is available for the variant, including GWAS or molQTL credible sets, ClinVar, Uniprot or ClinPGx. The dataset includes variant metadata as well as variant effects derived from Ensembl VEP. */
-export type VariantIntervalsArgs = {
-  page?: InputMaybe<Pagination>;
-};
-
-
-/** Core variant information for all variants in the Platform. Variants are included if any phenotypic information is available for the variant, including GWAS or molQTL credible sets, ClinVar, Uniprot or ClinPGx. The dataset includes variant metadata as well as variant effects derived from Ensembl VEP. */
-export type VariantPharmacogenomicsArgs = {
-  page?: InputMaybe<Pagination>;
 };
 
 
@@ -2703,7 +2653,7 @@ export type VariantEffect = {
   assessment?: Maybe<Scalars['String']['output']>;
   /** Flag indicating the reliability of the assessment */
   assessmentFlag?: Maybe<Scalars['String']['output']>;
-  /** Method used to predict or measure the variant effect */
+  /** Method used to predict or measure the variant effect (e.g. VEP, SIFT, GERP, AlphaMissense, FoldX) */
   method?: Maybe<Scalars['String']['output']>;
   /** Normalised score for the variant effect */
   normalisedScore?: Maybe<Scalars['Float']['output']>;
@@ -2731,6 +2681,30 @@ export type Biomarkers = {
   geneExpression?: Maybe<Array<BiomarkerGeneExpression>>;
   /** List of genetic variation biomarkers */
   geneticVariation?: Maybe<Array<GeneticVariation>>;
+};
+
+export type ClinicalIndicationsFromDiseaseImp = {
+  __typename?: 'clinicalIndicationsFromDiseaseImp';
+  /** Total number of indications results matching the query filters */
+  count: Scalars['Long']['output'];
+  /** List of clinical indications results between drug-disease pairs */
+  rows: Array<ClinicalIndicationFromDisease>;
+};
+
+export type ClinicalIndicationsFromDrugImp = {
+  __typename?: 'clinicalIndicationsFromDrugImp';
+  /** Total number of indications results matching the query filters */
+  count: Scalars['Long']['output'];
+  /** List of clinical indications results between drug-disease pairs */
+  rows: Array<ClinicalIndicationFromDrug>;
+};
+
+export type ClinicalTargets = {
+  __typename?: 'clinicalTargets';
+  /** Total number of clinical targets results matching the query filters */
+  count: Scalars['Long']['output'];
+  /** List of clinical clinical targets results between drug-target pairs */
+  rows: Array<ClinicalTargetFromTarget>;
 };
 
 /** List of genetic variation biomarkers */
