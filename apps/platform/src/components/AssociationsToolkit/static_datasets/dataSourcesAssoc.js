@@ -1,5 +1,16 @@
 const dataSources = [
   {
+    id: "clinical_precedence",
+    sectionId: "clinical_precedence",
+    label: "Clinical Precedence",
+    aggregation: "Clinical precedence",
+    aggregationId: "clinical",
+    weight: 1,
+    isPrivate: false,
+    docsLink: "https://platform-docs.opentargets.org/evidence#clinical",
+    required: false,
+  },
+  {
     id: "gwas_credible_sets",
     sectionId: "gwasCredibleSets",
     label: "GWAS associations",
@@ -140,17 +151,6 @@ const dataSources = [
     weight: 1,
     isPrivate: false,
     docsLink: "https://platform-docs.opentargets.org/evidence#cancer-biomarkers",
-    required: false,
-  },
-  {
-    id: "chembl",
-    sectionId: "chembl",
-    label: "ChEMBL",
-    aggregation: "Known drug",
-    aggregationId: "known_drug",
-    weight: 1,
-    isPrivate: false,
-    docsLink: "https://platform-docs.opentargets.org/evidence#chembl",
     required: false,
   },
   {

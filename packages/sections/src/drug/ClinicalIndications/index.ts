@@ -1,10 +1,10 @@
 import { lazy } from "react";
 
 export const definition = {
-  id: "drugWarnings",
-  name: "Drug Warnings",
-  shortName: "DW",
-   hasData: ({ drugWarnings }: { drugWarnings?: { warningType: string }[] }) => (drugWarnings?.length ?? 0) > 0,
+  id: "clinicalIndications",
+  name: "Indications",
+  shortName: "I",
+  hasData: (data) => data?.indications?.count > 0,
 };
 
 // Components

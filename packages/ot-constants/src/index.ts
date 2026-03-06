@@ -220,12 +220,62 @@ const clinicalPhases: { [key: string]: string } = {
   "2": "Phase II",
   "3": "Phase III",
   "4": "Phase IV",
+  APPROVED: "Approved",
+  PHASE_4: "Phase IV",
+  WITHDRAWN: "Withdrawn",
+  PREAPPROVAL: "Pre-approval",
+  PHASE_3: "Phase III",
+  PHASE_2_3: "Phase II/III",
+  PHASE_2: "Phase II",
+  PHASE_1_2: "Phase I/II",
+  PHASE_1: "Phase I",
+  EARLY_PHASE_1: "Phase I (Early)",
+  IND: "IND",
+  PRECLINICAL: "Preclinical",
+  UNKNOWN: "Unknown",
+  // Lowercase display-name keys (from PTS maximumClinicalStage)
+  approved: "Approved",
+  "phase IV": "Phase IV",
+  "phase III": "Phase III",
+  "phase II/III": "Phase II/III",
+  "phase II": "Phase II",
+  "phase I/II": "Phase I/II",
+  "phase I": "Phase I",
+  "early phase I": "Phase I (Early)",
+  "pre-approval": "Pre-approval",
+  preclinical: "Preclinical",
+  unknown: "Unknown",
 };
 
 export const phaseMap = (clinicalPhase: number | string): string => {
   const clinicalPhaseId = String(clinicalPhase);
   return clinicalPhases[clinicalPhaseId] || "Unknown";
 };
+
+// Stop Reason Categories Mapping
+const stopReasonCategories: { [key: string]: string } = {
+  Another_Study: "Another study",
+  Business_Administrative: "Business or administrative",
+  Covid19: "COVID-19",
+  Endpoint_Met: "Met endpoint",
+  Ethical_Reason: "Ethical reason",
+  Insufficient_Data: "Insufficient data",
+  Insufficient_Enrollment: "Insufficient enrollment",
+  Interim_Analysis: "Interim analysis",
+  Invalid_Reason: "Invalid reason",
+  Logistics_Resources: "Logistics or resources",
+  Negative: "Negative",
+  No_Context: "No context",
+  Regulatory: "Regulatory",
+  Safety_Sideeffects: "Safety or side effects",
+  Study_Design: "Study design",
+  Study_Staff_Moved: "Study staff moved",
+  Success: "Success",
+  Uncategorised: "Uncategorised",
+};
+
+export const stopReasonMap = (category: string): string =>
+  stopReasonCategories[category] || category;
 
 // Source Mapping
 export const sourceMap: { [key: string]: string } = {
@@ -341,6 +391,23 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
     return "";
   }
 };
+
+export const clinicalStageCategories = {
+  UNKNOWN: { index: 0, label: "Unknown" },
+  PRECLINICAL: { index: 1, label: "Preclinical" },
+  IND: { index: 2, label: "IND" },
+  EARLY_PHASE_1: { index: 3, label: "Early phase I" },
+  PHASE_1: { index: 4, label: "Phase I" },
+  PHASE_1_2: { index: 5, label: "Phase I/II" },
+  PHASE_2: { index: 6, label: "Phase II" },
+  PHASE_2_3: { index: 7, label: "Phase II/III" },
+  PHASE_3: { index: 8, label: "Phase III" },
+  PREAPPROVAL: { index: 9, label: "Preapproval" },
+  APPROVAL: { index: 10, label: "Approval" },
+  PHASE_4: { index: 11, label: "Phase IV" },
+  WITHDRAWAL: { index: 12, label: "Withdrawal" },
+};
+
 export * from "./alphaFold";
 export * from "./dataTypes";
 export * from "./particlesBackground";

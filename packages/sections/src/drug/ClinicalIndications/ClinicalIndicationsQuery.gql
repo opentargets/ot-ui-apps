@@ -1,0 +1,18 @@
+query ClinicalIndicationsQuery($chemblId: String!) {
+  drug(chemblId: $chemblId) {
+    indications {
+      count
+      rows {
+        id
+        maxClinicalStage
+        disease {
+          id
+          name
+        }
+        clinicalReports {
+          id
+        }
+      }
+    }
+  }
+}
