@@ -3,8 +3,12 @@ import { EvidenceSection } from "../../../POM/objects/components/EvidenceSection
 import { AotfActions } from "../../../POM/objects/widgets/AOTF/aotfActions";
 import { AotfTable } from "../../../POM/objects/widgets/AOTF/aotfTable";
 
-test.describe("Disease Page - AOTF Evidence Widgets", () => {
+test.describe("Disease Page - AOTF Evidence Widgets", { tag: "@smoke" }, () => {
   test.beforeEach(async ({ page, baseURL, testConfig }) => {
+    //if no disease id, skip all tests
+    if (!testConfig.disease.primary) {
+      test.skip();
+    }
     await page.goto(`${baseURL}/disease/${testConfig.disease.primary}/associations`);
   });
 

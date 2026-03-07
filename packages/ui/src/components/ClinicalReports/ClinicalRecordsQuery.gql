@@ -1,0 +1,13 @@
+query ClinicalRecordsQuery($clinicalReportsIds: [String!]!) {
+  clinicalReports(clinicalReportsIds: $clinicalReportsIds) {
+    clinicalStage
+    id
+    source
+    trialLiterature
+    title
+    trialOverallStatus
+    trialStartDate
+    type
+    year
+  }
+}

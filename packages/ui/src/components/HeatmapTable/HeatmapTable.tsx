@@ -421,6 +421,7 @@ function HeatmapTable({
     { id: "pQTL" },
     { id: "sQTL" },
     { id: "Other" },
+    { id: "E2G" },
     { id: "shapBaseValue", label: "base" },
   ];
 

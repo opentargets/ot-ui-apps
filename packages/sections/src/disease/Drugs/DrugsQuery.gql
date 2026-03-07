@@ -1,0 +1,19 @@
+query drugsQuery($efoId: String!) {
+  disease(efoId: $efoId) {
+    name
+    drugAndClinicalCandidates {
+      count
+      rows {
+        id
+        maxClinicalStage
+        drug {
+          id
+          name
+        }
+        clinicalReports {
+          id
+        }
+      }
+    }
+  }
+}
