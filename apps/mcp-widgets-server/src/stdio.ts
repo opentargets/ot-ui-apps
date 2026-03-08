@@ -1,13 +1,15 @@
 /**
  * Stdio transport entry point — exposes all widget tools over stdin/stdout.
- * Useful for connecting Claude Desktop or other MCP clients directly.
+ * Used to connect Claude Desktop directly (claude_desktop_config.json).
  *
- * The widget bundles are still served by the running HTTP server (yarn dev),
- * so this entry point requires the HTTP server to be running in parallel.
+ * Widget bundles are read from dist/widgets/ and inlined into the HTML resource.
+ * Run "yarn build:widgets" once before starting this entry point.
+ *
+ * GraphQL data is fetched server-side when the tool is called and injected into
+ * the widget HTML via a fetch interceptor — the iframe makes no external requests.
  */
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createMcpServer } from "./mcp-server.js";
 
-const PORT = 3001;
 const transport = new StdioServerTransport();
-await createMcpServer(PORT).connect(transport);
+await createMcpServer(0).connect(transport);

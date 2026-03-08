@@ -20,10 +20,12 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { MemoryRouter } from "react-router-dom";
 import { theme } from "./theme";
 
+// __OT_API_URL__ is injected at build time by Vite's define (from OT_API_URL in .env).
+// window.__OT_API_URL__ can override it at runtime (set by the HTML shell script).
+declare const __OT_API_URL__: string;
+
 const apolloClient = new ApolloClient({
-  uri:
-    (window as { __OT_API_URL__?: string }).__OT_API_URL__ ??
-    "https://api.platform.opentargets.org/api/v4/graphql",
+  uri: (window as { __OT_API_URL__?: string }).__OT_API_URL__ ?? __OT_API_URL__,
   cache: new InMemoryCache(),
 });
 
@@ -61,26 +63,23 @@ export function mountWidget<TArgs extends Record<string, unknown>>(
 
       async function connect() {
         try {
+          // Set handler BEFORE connect() so we never miss an early ontoolinput
+          // event dispatched by the host during the handshake.
+          app.ontoolinput = ({ arguments: rawArgs }) => {
+            const extracted = config.extractArgs((rawArgs ?? {}) as Record<string, unknown>);
+            if (extracted) setArgs(extracted);
+          };
+
           await app.connect();
 
-          // Report content height whenever the document grows.
-          // scrollHeight captures the full content height even with body overflow.
-          // We intentionally omit width so the iframe keeps its default 100% width.
           const sendHeight = () => {
             const h = Math.max(document.documentElement.scrollHeight, 50);
-            app.sendSizeChanged({ height: h }).catch(() => {
-              /* ignore errors after unmount */
-            });
+            app.sendSizeChanged({ height: h }).catch(() => {});
           };
 
           observer = new ResizeObserver(sendHeight);
           observer.observe(document.documentElement);
           sendHeight();
-
-          app.ontoolinput = ({ arguments: rawArgs }) => {
-            const extracted = config.extractArgs((rawArgs ?? {}) as Record<string, unknown>);
-            if (extracted) setArgs(extracted);
-          };
         } catch (err) {
           console.error(`[${config.appName}] AppBridge connect failed:`, err);
         }

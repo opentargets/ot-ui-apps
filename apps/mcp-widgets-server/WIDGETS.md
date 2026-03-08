@@ -1,236 +1,183 @@
-# MCP Widgets Server — Developer Guide
+# MCP Widgets Server — Architecture & Widget Registry
 
-## Overview
+## Directory Structure
 
-Self-contained React widgets served as IIFE bundles and rendered inside sandboxed
-iframes by the MCP host. There are two kinds of widget:
+```
+apps/mcp-widgets-server/
+├── src/                        # Server-side Node.js code (runs in Claude Desktop / MCP host)
+│   ├── sections/
+│   │   └── registry.ts         # Single source of truth: all section widget definitions
+│   ├── widgets/
+│   │   ├── index.ts            # Widget registry builder + sectionPathToId utility
+│   │   ├── molecular-structure.ts  # Manual widget def (AlphaFold 3D viewer)
+│   │   └── types.ts            # WidgetDef type, makeWidgetShell, toAnthropicTool
+│   ├── mcp-server.ts           # MCP tool + resource registration, GraphQL prefetch
+│   ├── chat.ts                 # Chat workspace HTTP handler
+│   ├── index.ts                # Server entrypoint
+│   ├── otp-client.ts           # OT GraphQL client helpers
+│   └── stdio.ts                # stdio MCP transport
+│
+├── widget-src/                 # Browser-side React code (compiled to IIFE bundles)
+│   ├── molecular-structure/    # Custom 3D viewer React app (only custom widget entry)
+│   └── shared/
+│       ├── createWidgetEntry.tsx  # mountWidget() — React root bootstrapper for all widgets
+│       └── stubs/
+│           ├── ui-index.tsx    # Stub replacements for @ot/ui barrel (used by all section widgets)
+│           └── ui-ms-index.tsx # Stub/real mix for molecular-structure widget (includes real Viewer providers)
+│
+└── vite/                       # Build tooling
+    ├── widget.config.base.ts   # Shared Vite config factory + Vite plugins
+    ├── section-widget.plugin.ts # Auto-generates entry code + Vite config for section widgets
+    └── widget.config.ms.ts     # Custom Vite config for molecular-structure widget
+```
 
-- **Sections-based** — reuse the exact `Body` component from `packages/sections/`.
-  No custom data fetching or table re-implementation needed.
-- **Custom** — built from scratch with their own components and data fetching.
-  Used when the platform section doesn't exist or the desired output differs
-  significantly from the platform view.
+### `src/` vs `widget-src/` — the key distinction
+
+| | `src/` | `widget-src/` |
+|---|---|---|
+| **Runs in** | Node.js (server / MCP host) | Browser (iframe inside Claude Desktop) |
+| **Purpose** | Registers MCP tools, fetches GraphQL data server-side, serves widget HTML | React components compiled into self-contained IIFE bundles |
+| **Output** | Running MCP server process | `dist/widgets/*.js` IIFE bundle files |
+| **Build tool** | `tsx` (TypeScript execution) | Vite (browser bundle) |
+
+When Claude calls an MCP tool, `src/mcp-server.ts` runs the GraphQL prefetch and returns data
+via `_meta.prefetchedData`. The widget HTML shell (with the bundle inlined) renders in an iframe,
+and a `postMessage` interceptor delivers the prefetched data to Apollo without any live network
+requests from the widget.
 
 ---
 
-## Current Widgets
+## How to add a new section widget
 
-| Tool name | Type | Source | Input |
-|---|---|---|---|
-| `get_l2g_widget` | Custom | `widget-src/l2g/` | `studyId` |
-| `get_variant_effect_widget` | Sections-based | `variant/VariantEffect` | `variantId` |
-| `get_molecular_structure_widget` | Sections-based | `variant/MolecularStructure` | `variantId` |
-| `get_gwas_credible_sets_widget` | Sections-based | `study/GWASCredibleSets` | `studyId` |
-| `get_shared_trait_studies_widget` | Sections-based | `study/SharedTraitStudies` | `studyId` |
-| `get_baseline_expression_widget` | Sections-based | `target/BaselineExpression` | `ensgId` |
+1. Add an entry to `src/sections/registry.ts`
+2. Run `yarn build:widgets:<entity>` (or `yarn build:widgets:sections` for all)
+3. Restart Claude Desktop
+
+For sections where the GQL query variable does not match the input param name (or that need a
+two-step prefetch), use `primaryPrefetch` and/or `extraPrefetches` in the `SectionDef`.
 
 ---
 
-## Adding a Sections-Based Widget
+## Included section widgets (61 total)
 
-These widgets delegate entirely to the existing `Body.tsx` from `packages/sections/`.
+### Target (14 sections)
 
-### 1. Read the section `Body.tsx`
+| Tool name | Section | Input |
+|-----------|---------|-------|
+| `get_target_cancer_hallmarks_widget` | `target/CancerHallmarks` | `ensemblId` |
+| `get_target_chemical_probes_widget` | `target/ChemicalProbes` | `ensemblId` |
+| `get_target_comparative_genomics_widget` | `target/ComparativeGenomics` | `ensemblId` |
+| `get_target_depmap_widget` | `target/DepMap` | `ensemblId` |
+| `get_target_drugs_widget` | `target/Drugs` | `ensemblId` |
+| `get_target_expression_widget` | `target/Expression` | `ensemblId` |
+| `get_target_gene_ontology_widget` | `target/GeneOntology` | `ensemblId` |
+| `get_target_genetic_constraint_widget` | `target/GeneticConstraint` | `ensemblId` |
+| `get_target_mouse_phenotypes_widget` | `target/MousePhenotypes` | `ensemblId` |
+| `get_target_pathways_widget` | `target/Pathways` | `ensemblId` |
+| `get_target_pharmacogenomics_widget` | `target/Pharmacogenomics` | `ensemblId` |
+| `get_target_qtl_credible_sets_widget` | `target/QTLCredibleSets` | `ensemblId` |
+| `get_target_safety_widget` | `target/Safety` | `ensemblId` |
+| `get_target_tractability_widget` | `target/Tractability` | `ensemblId` |
 
-```
-packages/sections/src/<entity>/<SectionName>/Body.tsx
-```
+### Disease (4 sections)
 
-Note the props it expects. Most use `{ id, entity }`. Some need extra context
-(e.g. `SharedTraitStudies` needs `diseaseIds` alongside `studyId`).
+| Tool name | Section | Input |
+|-----------|---------|-------|
+| `get_disease_drugs_widget` | `disease/Drugs` | `efoId` |
+| `get_disease_ot_projects_widget` | `disease/OTProjects` | `efoId` |
+| `get_disease_ontology_widget` | `disease/Ontology` | `efoId` |
+| `get_disease_phenotypes_widget` | `disease/Phenotypes` | `efoId` |
 
-### 2. Create `widget-src/<name>/`
+### Drug (5 sections)
 
-**`<Name>Widget.tsx`** — wraps Body directly:
-```tsx
-import Body from "@ot/sections/<entity>/<SectionName>/Body";
+| Tool name | Section | Input | Notes |
+|-----------|---------|-------|-------|
+| `get_drug_adverse_events_widget` | `drug/AdverseEvents` | `chemblId` | |
+| `get_drug_indications_widget` | `drug/ClinicalIndications` | `chemblId` | Two-query: indications + `ClinicalRecordsQuery` (filtered on row click) |
+| `get_drug_warnings_widget` | `drug/DrugWarnings` | `chemblId` | |
+| `get_drug_mechanisms_of_action_widget` | `drug/MechanismsOfAction` | `chemblId` | |
+| `get_drug_pharmacogenomics_widget` | `drug/Pharmacogenomics` | `chemblId` | |
 
-export default function MyWidget({ id }: { id: string }) {
-  return <Body id={id} entity="<entity>" />;
-}
-```
+### Evidence (20 sections)
 
-If Body needs extra props not available from the MCP tool input, add a `useQuery`
-to fetch them first. See `SharedTraitStudiesWidget.tsx` (fetches `diseaseIds` from
-the study) or `BaselineExpressionWidget.tsx` (fetches `approvedSymbol` from the
-target) for the pattern.
+| Tool name | Section | Input |
+|-----------|---------|-------|
+| `get_evidence_crispr_widget` | `evidence/CRISPR` | `ensemblId` + `efoId` |
+| `get_evidence_crispr_screen_widget` | `evidence/CRISPRScreen` | `ensemblId` + `efoId` |
+| `get_evidence_cancer_biomarkers_widget` | `evidence/CancerBiomarkers` | `ensemblId` + `efoId` |
+| `get_evidence_cancer_gene_census_widget` | `evidence/CancerGeneCensus` | `ensemblId` + `efoId` |
+| `get_evidence_chembl_widget` | `evidence/Chembl` | `ensemblId` + `efoId` |
+| `get_evidence_clingen_widget` | `evidence/ClinGen` | `ensemblId` + `efoId` |
+| `get_evidence_eva_widget` | `evidence/EVA` | `ensemblId` + `efoId` |
+| `get_evidence_eva_somatic_widget` | `evidence/EVASomatic` | `ensemblId` + `efoId` |
+| `get_evidence_expression_atlas_widget` | `evidence/ExpressionAtlas` | `ensemblId` + `efoId` |
+| `get_evidence_gwas_credible_sets_widget` | `evidence/GWASCredibleSets` | `ensemblId` + `efoId` |
+| `get_evidence_gene2phenotype_widget` | `evidence/Gene2Phenotype` | `ensemblId` + `efoId` |
+| `get_evidence_gene_burden_widget` | `evidence/GeneBurden` | `ensemblId` + `efoId` |
+| `get_evidence_genomics_england_widget` | `evidence/GenomicsEngland` | `ensemblId` + `efoId` |
+| `get_evidence_impc_widget` | `evidence/Impc` | `ensemblId` + `efoId` |
+| `get_evidence_intogen_widget` | `evidence/IntOgen` | `ensemblId` + `efoId` |
+| `get_evidence_ot_crispr_widget` | `evidence/OTCRISPR` | `ensemblId` + `efoId` |
+| `get_evidence_ot_encore_widget` | `evidence/OTEncore` | `ensemblId` + `efoId` |
+| `get_evidence_ot_validation_widget` | `evidence/OTValidation` | `ensemblId` + `efoId` |
+| `get_evidence_orphanet_widget` | `evidence/Orphanet` | `ensemblId` + `efoId` |
+| `get_evidence_reactome_widget` | `evidence/Reactome` | `ensemblId` + `efoId` |
+| `get_evidence_uniprot_literature_widget` | `evidence/UniProtLiterature` | `ensemblId` + `efoId` |
+| `get_evidence_uniprot_variants_widget` | `evidence/UniProtVariants` | `ensemblId` + `efoId` |
 
-**`main.tsx`** — entry point:
-```tsx
-import { mountWidget } from "../shared/createWidgetEntry";
-import MyWidget from "./MyWidget";
+### Credible Set (5 sections)
 
-mountWidget({
-  appName: "ot-<name>-widget",
-  cacheKey: "ot-xx",           // unique short key per widget
-  extractArgs: args => {
-    const id = typeof args.id === "string" ? args.id : null;
-    if (!id) return null;
-    return { id };
-  },
-  component: MyWidget,
-});
-```
+| Tool name | Section | Input |
+|-----------|---------|-------|
+| `get_l2g_widget` | `credibleSet/Locus2Gene` | `studyLocusId` |
+| `get_credible_set_gwas_coloc_widget` | `credibleSet/GWASColoc` | `studyLocusId` |
+| `get_credible_set_mol_qtl_coloc_widget` | `credibleSet/MolQTLColoc` | `studyLocusId` |
+| `get_credible_set_variants_widget` | `credibleSet/Variants` | `studyLocusId` |
+| `get_credible_set_e2g_widget` | `credibleSet/EnhancerToGenePredictions` | `studyLocusId` |
 
-### 3. Create `vite/widget.config.<name>.ts`
+### Study (3 sections)
 
-```ts
-import { resolve } from "path";
-import type { Plugin } from "vite";
-import { createWidgetBuildConfig, createPlatformStubsPlugin, ROOT } from "./widget.config.base";
+| Tool name | Section | Input | Notes |
+|-----------|---------|-------|-------|
+| `get_gwas_credible_sets_widget` | `study/GWASCredibleSets` | `studyId` | |
+| `get_study_qtl_credible_sets_widget` | `study/QTLCredibleSets` | `studyId` | |
+| `get_shared_trait_studies_widget` | `study/SharedTraitStudies` | `studyId` | Two-query: fetches disease IDs first, then queries studies by `diseaseIds` |
 
-function uiBarrelStub(): Plugin {
-  const stubPath = resolve(ROOT, "widget-src/shared/stubs/ui-index.tsx");
-  return {
-    name: "stub-ui-barrel-<name>",
-    resolveId(id: string) {
-      if (id === "ui") return stubPath;
-    },
-  };
-}
+### Variant (8 sections)
 
-export default createWidgetBuildConfig({
-  entry: resolve(ROOT, "widget-src/<name>/main.tsx"),
-  outputName: "<Name>Widget",
-  outputFile: "<name>.js",
-  plugins: [uiBarrelStub(), createPlatformStubsPlugin()],
-});
-```
+| Tool name | Section | Input |
+|-----------|---------|-------|
+| `get_variant_effect_widget` | `variant/VariantEffect` | `variantId` |
+| `get_variant_eva_widget` | `variant/EVA` | `variantId` |
+| `get_variant_e2g_widget` | `variant/EnhancerToGenePredictions` | `variantId` |
+| `get_variant_gwas_credible_sets_widget` | `variant/GWASCredibleSets` | `variantId` |
+| `get_variant_pharmacogenomics_widget` | `variant/Pharmacogenomics` | `variantId` |
+| `get_variant_qtl_credible_sets_widget` | `variant/QTLCredibleSets` | `variantId` |
+| `get_variant_uniprot_widget` | `variant/UniProtVariants` | `variantId` |
+| `get_variant_vep_widget` | `variant/VariantEffectPredictor` | `variantId` |
 
-### 4. Create `src/widgets/<name>.ts`
+### Manual widgets (custom entry points)
 
-```ts
-import { WidgetDef } from "./types.js";
-
-export const myWidget: WidgetDef = {
-  toolName: "get_<name>_widget",
-  description: "...",
-  inputParam: { name: "id", description: "..." },
-  uriPrefix: "ui://ot-mcp/<name>",
-  bundleFile: "<name>.js",
-  title: "<Name> Widget",
-  successMessage: "... rendered successfully.",
-};
-```
-
-### 5. Register in `src/widgets/index.ts`
-
-Add the named export and include in `WIDGET_REGISTRY`.
-
-### 6. Add build script in `package.json`
-
-```json
-"build:widget:<name>": "vite build --config vite/widget.config.<name>.ts"
-```
-
-Append to `build:widgets` chain.
-
----
-
-## Adding a Custom Widget
-
-Custom widgets own their data fetching and rendering. Use this approach when:
-- The section doesn't exist in `packages/sections/`
-- The desired output differs from the platform (different chart, different columns)
-
-The process is the same steps as above, but `<Name>Widget.tsx` is written from
-scratch rather than importing from `@ot/sections`. You can still use real platform
-components directly via the `@ot/ui` alias (e.g. `OtTable`, `HeatmapTable`,
-`ObsPlot`), and you have full access to Apollo/React Router in the runtime.
+| Tool name | Section | Notes |
+|-----------|---------|-------|
+| `get_molecular_structure_widget` | `variant/MolecularStructure` | Custom 3D AlphaFold viewer; prefetches CIF file server-side |
 
 ---
 
-## Architecture
+## Excluded sections
 
-### Runtime (per widget)
-```
-createWidgetEntry.tsx
-  └── ApolloProvider       (@apollo/client → OT GraphQL API)
-      └── MemoryRouter     (react-router-dom, no URL navigation)
-          └── ThemeProvider (widget theme, mirrors platform)
-              └── <WidgetComponent>
-                  └── Body from @ot/sections/... (sections-based)
-                      or custom component (custom)
-```
+These sections exist in `packages/sections/src` but are not in the registry.
 
-### Build-time aliases (`vite/widget.config.base.ts`)
-
-| Import | Resolves to |
-|---|---|
-| `"ui"` | `widget-src/shared/stubs/ui-index.tsx` (via per-widget plugin) |
-| `@ot/ui` | `packages/ui/src` |
-| `@ot/sections` | `packages/sections/src` |
-| `@ot/constants` | `packages/ot-constants/src` |
-| `@ot/utils` | `packages/ot-utils/src` |
-
-### `createPlatformStubsPlugin()` — what it stubs and why
-
-| File | Reason |
-|---|---|
-| `packages/ot-config/src/theme.ts` | Calls `polished.lighten(undefined)` at module-load time when `window.configProfile` is absent in the widget sandbox |
-| `packages/ot-config/src/environment.ts` | `getConfig()` reads `window.configProfile.*`; stub returns valid colours + `partnerDataTypes: []` |
-| `packages/ui/src/components/DataDownloader.jsx` | Pulls in graphiql (CodeMirror + 29 KB CSS); download button not needed in widgets |
-| `packages/ui/src/providers/OTApolloProvider/OTApolloProvider.tsx` | `useBatchQuery` uses its custom `useApolloClient`; stub re-exports the standard `@apollo/client` hook so the widget's `ApolloProvider` satisfies it |
-
-### `widget-src/shared/stubs/ui-index.tsx` — barrel stubs
-
-Replaces the `"ui"` barrel for all section components. Key exports:
-
-| Export | Behaviour in widget |
-|---|---|
-| `Link` | `<a target="_blank">` → `https://platform.opentargets.org` |
-| `SectionItem` | Strips section chrome; proxies `request` loading/error state |
-| `OtTable` | Real component — direct path import from `@ot/ui` |
-| `useBatchQuery` | Real hook — direct path import from `@ot/ui` |
-| `useApolloClient` | Re-exported from `@apollo/client` |
-| `DataDownloader` | null |
-| `PublicationsDrawer` | Simple `<a>` to the first publication URL |
-| `DownloadSvgPlot` | Renders children only, omits download button |
-| `Tooltip`, `OtAsyncTooltip` | Render children only |
-| `ObsPlot`, `ObsChart`, `ObsTooltip` | Real components (direct path imports) |
-| `usePlatformApi` | Returns null (Summary fragments not used in widgets) |
-
-### `widget-src/shared/stubs/ui-ms-index.tsx` — barrel stubs for MolecularStructure
-
-Used instead of `ui-index.tsx` for the `molecular-structure` widget build. Extends the
-shared stubs with real viewer components that must be identical instances across all
-components in the tree (context sharing):
-
-| Export | Behaviour in widget |
-|---|---|
-| `ViewerProvider`, `ViewerInteractionProvider` | Real providers from `@ot/ui` |
-| `useViewerState`, `useViewerDispatch` | Real hooks from `@ot/ui/providers/ViewerProvider` |
-| `useViewerInteractionState`, `useViewerInteractionDispatch` | Real hooks from `@ot/ui/providers/ViewerInteractionProvider` |
-| `Viewer` | Real component — direct path import from `@ot/ui` |
-| `CompactAlphaFold*` | Real legend components — direct path imports from `@ot/ui` |
-| `SectionItem`, `DisplayVariantId`, `usePlatformApi` | Re-exported from `ui-index.tsx` |
-| `ViewerTrack` | null (sequence track not needed in widget) |
-| `ObsPlot`, `ObsChart` | null (not used by MolecularStructure section) |
-
-### Widget theme (`widget-src/shared/theme.ts`)
-
-Mirrors the platform MUI theme including the custom `boxShadow` extension that
-platform components access via `theme.boxShadow.default`.
-
-### `.gql` handling
-
-`gqlPlugin()` in `createWidgetBuildConfig` transforms `.gql` files into proper
-`DocumentNode` objects via `@apollo/client`'s `gql` tag. Custom widgets (l2g, ve,
-ms) keep their own empty-doc stub (higher plugin priority) since they don't use Apollo.
-
----
-
-## Commands
-
-```bash
-# Build a single widget
-yarn build:widget:gwas
-yarn build:widget:shared-trait-studies
-yarn build:widget:baseline-expression
-
-# Build all widgets
-yarn build:widgets
-
-# Run the MCP + widget dev server
-yarn dev
-```
+| Section | Entity | Reason excluded |
+|---------|--------|-----------------|
+| `target/BaselineExpression` | Target | Requires symbol lookup first (two-query with TargetSymbol); `target/Expression` covers expression data |
+| `target/Bibliography` | Target | Uses SimilarEntities API with cursor pagination; publication rendering complexity |
+| `target/MolecularInteractions` | Target | Four separate databases (IntAct, Reactome, SIGNOR, STRING), each with its own query |
+| `target/MolecularStructure` | Target | 3D viewer — covered by `get_molecular_structure_widget` (manual) |
+| `target/OverlappingVariants` | Target | Interactive genome browser with complex stateful viewer |
+| `target/SubcellularLocation` | Target | Custom SVG-based subcellular location visualisation with no standard table |
+| `disease/Bibliography` | Disease | SimilarEntities cursor pagination; publication rendering complexity |
+| `disease/GWASStudies` | Disease | Requires `diseaseIds: [String!]!` array input, not a single EFO ID |
+| `drug/Bibliography` | Drug | SimilarEntities cursor pagination |
+| `evidence/EuropePmc` | Evidence | SentenceMatch + Publication components with cursor pagination |
+| `variant/MolecularStructure` | Variant | Covered by `get_molecular_structure_widget` (manual) |

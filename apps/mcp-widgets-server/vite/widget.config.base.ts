@@ -1,13 +1,24 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import type { UserConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 /** Absolute path to the package root (apps/mcp-widgets-server). */
 export const ROOT = resolve(__dirname, "..");
 
 /** Monorepo root (two levels up from apps/mcp-widgets-server). */
 const MONO_ROOT = resolve(ROOT, "../..");
+
+const PUBLIC_API_URL = "https://api.platform.opentargets.org/api/v4/graphql";
+
+/**
+ * Load OT_API_URL from .env at build time (empty prefix = load all vars).
+ * Falls back to the public production endpoint.
+ */
+const { OT_API_URL = PUBLIC_API_URL } = loadEnv("production", ROOT, "");
 
 const BASE_DEDUPE = [
   "react",
@@ -54,6 +65,31 @@ export interface WidgetBuildOptions {
  *   so that useBatchQuery works under the standard ApolloProvider we provide in
  *   createWidgetEntry.tsx
  */
+/**
+ * Creates the ui barrel stub plugin for a widget build.
+ *
+ * Uses both `resolveId` (intercepts bare "ui" imports) and `load` (intercepts
+ * the real resolved package path via symlinks) so the stub is applied in all
+ * cases. Without the `load` hook the real SectionItem with full section chrome
+ * (title, description, download controls) leaks into the bundle.
+ */
+export function createUiBarrelStub(stubFile = "widget-src/shared/stubs/ui-index.tsx"): Plugin {
+  const stubPath = resolve(ROOT, stubFile);
+  const uiIndexPath = resolve(ROOT, "../../packages/ui/src/index.tsx");
+  const nodeModulesUiIndex = resolve(ROOT, "node_modules/ui/src/index.tsx");
+  return {
+    name: `stub-ui-barrel`,
+    resolveId(id: string) {
+      if (id === "ui") return stubPath;
+    },
+    load(id: string) {
+      if (id === uiIndexPath || id === nodeModulesUiIndex) {
+        return `export * from ${JSON.stringify(stubPath)};`;
+      }
+    },
+  };
+}
+
 export function createPlatformStubsPlugin(): Plugin {
   const dataDownloaderPath = resolve(
     MONO_ROOT,
@@ -62,6 +98,19 @@ export function createPlatformStubsPlugin(): Plugin {
   const otApolloProviderPath = resolve(
     MONO_ROOT,
     "packages/ui/src/providers/OTApolloProvider/OTApolloProvider.tsx"
+  );
+  // OtAsyncTooltip imports OtGenomicLocation from the ui barrel, but that
+  // component does not exist yet in the codebase. Stub the whole component
+  // so widgets that transitively import it (via OtTable etc.) don't break.
+  const otAsyncTooltipPath = resolve(
+    MONO_ROOT,
+    "packages/ui/src/components/OtAsyncTooltip/OtAsyncTooltip.tsx"
+  );
+  // ApiPlaygroundDrawer dynamically imports "graphiql" which is not available
+  // in the widget build environment. Stub it out as a no-op component.
+  const apiPlaygroundDrawerPath = resolve(
+    MONO_ROOT,
+    "packages/ui/src/components/ApiPlaygroundDrawer.tsx"
   );
   // @ot/config's theme.ts calls lighten/darken (polished) on getConfig() colors at
   // module-load time. In the widget sandbox window.configProfile is absent so
@@ -92,7 +141,7 @@ const PRIMARY = "${PRIMARY}";
 const SECONDARY = "${SECONDARY}";
 export function getConfig() {
   return {
-    urlApi: "https://api.platform.opentargets.org/api/v4/graphql",
+    urlApi: ${JSON.stringify(OT_API_URL)},
     urlAiApi: "",
     profile: { primaryColor: PRIMARY, secondaryColor: SECONDARY, isPartnerPreview: false, partnerDataTypes: [] },
     googleTagManagerID: null,
@@ -102,6 +151,15 @@ export function getConfig() {
 }
 export function getEnvironmentConfig() { return getConfig(); }
 `;
+      }
+      if (id === otAsyncTooltipPath) {
+        return `
+import React from "react";
+export default function OtAsyncTooltip({ children }) { return React.createElement(React.Fragment, null, children); }
+`;
+      }
+      if (id === apiPlaygroundDrawerPath) {
+        return "export default function ApiPlaygroundDrawer() { return null; }";
       }
       if (id === dataDownloaderPath) {
         return "export default function DataDownloader() { return null; }";
@@ -161,6 +219,9 @@ export function createWidgetBuildConfig(opts: WidgetBuildOptions): UserConfig {
     define: {
       // Replace Node.js global so the IIFE bundle works in the browser.
       "process.env.NODE_ENV": '"production"',
+      // Bake the GraphQL endpoint into the bundle so it's used even when the
+      // inline window.__OT_API_URL__ script is blocked by CSP.
+      __OT_API_URL__: JSON.stringify(OT_API_URL),
     },
     resolve: {
       // Deduplicate across the monorepo so each package has only one instance
@@ -173,6 +234,7 @@ export function createWidgetBuildConfig(opts: WidgetBuildOptions): UserConfig {
         "@ot/sections": resolve(MONO_ROOT, "packages/sections/src"),
         "@ot/constants": resolve(MONO_ROOT, "packages/ot-constants/src"),
         "@ot/utils": resolve(MONO_ROOT, "packages/ot-utils/src"),
+        "@widget-shared": resolve(ROOT, "widget-src/shared"),
       },
     },
   });

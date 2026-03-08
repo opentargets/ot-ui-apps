@@ -14,4 +14,36 @@ export const molecularStructureWidget: WidgetDef = {
   bundleFile: "molecular-structure.js",
   title: "Molecular Structure Widget",
   successMessage: "Molecular structure widget rendered successfully in the chat interface.",
+  prefetch: {
+    operationName: "MolecularStructureQuery",
+    query: `
+      query MolecularStructureQuery($variantId: String!) {
+        variant(variantId: $variantId) {
+          id
+          referenceAllele
+          alternateAllele
+          proteinCodingCoordinates {
+            count
+            rows {
+              uniprotAccessions
+              variant { id }
+              target { id approvedSymbol }
+              referenceAminoAcid
+              alternateAminoAcid
+              aminoAcidPosition
+            }
+          }
+        }
+      }
+    `,
+    extractExtraFetches: (data: unknown) => {
+      const rows = (data as any)?.variant?.proteinCodingCoordinates?.rows;
+      const uniprotId = rows?.[0]?.uniprotAccessions?.[0];
+      if (!uniprotId) return [];
+      return [{
+        url: `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v6.cif`,
+        contentType: "text/plain",
+      }];
+    },
+  },
 };

@@ -183,41 +183,27 @@ export function L2GScoreIndicator({
   return <span style={{ fontVariantNumeric: "tabular-nums" }}>{score.toFixed(3)}</span>;
 }
 
-/**
- * SectionItem: strip the section chrome — just call renderBody() directly.
- * Section chrome (title, description, download button, error/loading states)
- * is handled by the widget shell; here we only need the body content.
- */
-export function SectionItem({
-  renderBody,
-  request,
-}: {
-  renderBody?: () => React.ReactNode;
-  request?: { loading?: boolean; error?: unknown };
-  [key: string]: unknown;
-}) {
-  if (request?.loading) {
-    return (
-      <div style={{ padding: "24px", color: "#718096", fontFamily: "sans-serif" }}>
-        Loading…
-      </div>
-    );
-  }
-  if (request?.error) {
-    return (
-      <div style={{ padding: "24px", color: "#e53e3e", fontFamily: "sans-serif" }}>
-        Error loading data.
-      </div>
-    );
-  }
-  return <>{renderBody?.()}</>;
+/** SummaryItem: not used in widget context — no-op stub */
+export function SummaryItem() {
+  return null;
 }
+
+/** SectionItem: real component — shows full section chrome (title, description, body) */
+export { default as SectionItem } from "@ot/ui/components/Section/SectionItem";
+
+/** HeatmapTable: real component from @ot/ui (direct path, bypassing barrel) */
+export { default as HeatmapTable } from "@ot/ui/components/HeatmapTable/HeatmapTable";
 
 /** OtTable: real component from @ot/ui (direct path, bypassing barrel) */
 export { default as OtTable } from "@ot/ui/components/OtTable/OtTable";
 
 /** useBatchQuery: real hook from @ot/ui (direct path, bypassing barrel) */
 export { default as useBatchQuery } from "@ot/ui/hooks/useBatchQuery";
+
+/** Clinical Indications components — direct paths bypass the ui barrel */
+export { default as useClinicalReportsMasterDetail } from "@ot/ui/hooks/useClinicalReportsMasterDetail";
+export { default as RecordsCards } from "@ot/ui/components/ClinicalReports/RecordsCards";
+export { default as ClinicalReportsMasterDetailFrame } from "@ot/ui/components/ClinicalReports/ClinicalReportsMasterDetailFrame";
 
 /** usePlatformApi: returns null — fragments are not needed inside the widget */
 export function usePlatformApi() {
@@ -226,6 +212,46 @@ export function usePlatformApi() {
 
 /** useApolloClient: standard Apollo client from the widget's ApolloProvider */
 export { useApolloClient } from "@apollo/client";
+
+// ── Real components (direct paths, bypass barrel) ────────────────────────────
+export { default as ChipList } from "@ot/ui/components/ChipList";
+export { default as SectionLoader } from "@ot/ui/components/Section/SectionLoader";
+export { default as DirectionOfEffectIcon } from "@ot/ui/components/DirectionOfEffectIcon";
+export { default as DirectionOfEffectTooltip } from "@ot/ui/components/DirectionOfEffectTooltip";
+export { default as OtTableSSP } from "@ot/ui/components/OtTable/OtTableSSP";
+export { default as DataTable } from "@ot/ui/components/Table/DataTable";
+export { default as Table } from "@ot/ui/components/Table/Table";
+export { default as TableDrawer } from "@ot/ui/components/Table/TableDrawer";
+export { default as DirectionalityDrawer } from "@ot/ui/components/DirectionalityDrawer";
+export { default as EllsWrapper } from "@ot/ui/components/EllsWrapper";
+export { default as ErrorBoundary } from "@ot/ui/components/ErrorBoundary";
+/** FacetsSelect: no-op stub (only used in excluded sections) */
+export function FacetsSelect() {
+  return null;
+}
+export { default as useDebounce } from "@ot/ui/hooks/useDebounce";
+export { default as LabelChip } from "@ot/ui/components/LabelChip";
+export { default as Legend } from "@ot/ui/components/Legend";
+export { default as LongText } from "@ot/ui/components/LongText";
+export { default as MouseModelAllelicComposition } from "@ot/ui/components/MouseModelAllelicComposition";
+export { default as TooltipStyledLabel } from "@ot/ui/components/TooltipStyledLabel";
+export { PaginationActionsComplete } from "@ot/ui/components/Table/TablePaginationActions";
+export { getPage } from "@ot/ui/components/Table/utils";
+export { default as PublicationSummaryLabel } from "@ot/ui/components/PublicationsDrawer/PublicationSummaryLabel";
+export { default as PublicationWrapper } from "@ot/ui/components/PublicationsDrawer/PublicationWrapper";
+export { default as SummaryLoader } from "@ot/ui/components/PublicationsDrawer/SummaryLoader";
+export { default as useBatchDownloader } from "@ot/ui/hooks/useBatchDownloader";
+export { useConfigContext } from "@ot/ui/providers/ConfigurationProvider";
+
+// ── Viewer stubs (3D viewer sections are excluded; these prevent missing-export errors) ─
+export function ViewerProvider({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+export function ViewerInteractionProvider({ children }: { children: React.ReactNode }) { return <>{children}</>; }
+export function useViewerState() { return {}; }
+export function useViewerDispatch() { return () => {}; }
+export function useViewerInteractionState() { return {}; }
+export function useViewerInteractionDispatch() { return () => {}; }
+export function ViewerLegend() { return null; }
+export function DetailPopover({ children }: { children?: React.ReactNode }) { return <>{children}</>; }
 
 /** DownloadSvgPlot: renders the plot content, omits download controls */
 export function DownloadSvgPlot({
