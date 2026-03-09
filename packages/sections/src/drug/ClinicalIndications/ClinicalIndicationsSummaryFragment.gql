@@ -1,5 +1,0 @@
-fragment ClinicalIndicationsSummaryFragment on Drug {
-  indications {
-    count
-  }
-}

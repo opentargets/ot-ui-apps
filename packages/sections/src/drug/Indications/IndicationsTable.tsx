@@ -6,7 +6,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
+import INDICATIONS_QUERY from "./IndicationsQuery.gql";
 
 const onLinkClick = (e: any) => {
   e.stopPropagation();
@@ -194,7 +194,7 @@ function IndicationsTable({
           globalFilterPlaceholderText: "Search...",
           columns,
           rows: sortedRows,
-          query: CLINICAL_INDICATIONS_QUERY.loc?.source?.body,
+          query: INDICATIONS_QUERY.loc?.source?.body,
           variables: { chemblId },
           dataDownloader: true,
           dataDownloaderFileStem: "clinical-indications",

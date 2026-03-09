@@ -1,10 +1,10 @@
 import { SummaryItem, usePlatformApi } from "ui";
 
 import { definition } from ".";
-import DRUGS_AND_CLINICAL_CANDIDATES_SUMMARY_FRAGMENT from "./DrugsSummaryFragment.gql";
+import DRUGS_SUMMARY_FRAGMENT from "./DrugsSummaryFragment.gql";
 
 function Summary() {
-  const request = usePlatformApi(DRUGS_AND_CLINICAL_CANDIDATES_SUMMARY_FRAGMENT);
+  const request = usePlatformApi(DRUGS_SUMMARY_FRAGMENT);
   const AnySummaryItem = SummaryItem as any;
 
   return (
@@ -17,7 +17,7 @@ function Summary() {
 }
 
 Summary.fragments = {
-  DrugsSummaryFragment: DRUGS_AND_CLINICAL_CANDIDATES_SUMMARY_FRAGMENT,
+  DrugsSummaryFragment: DRUGS_SUMMARY_FRAGMENT,
 };
 
 export default Summary;
