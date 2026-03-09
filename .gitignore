@@ -1,5 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+apps/mcp-widgets-server/.env
+.claude/
 # dependencies
 node_modules
 .pnp
@@ -12,7 +14,7 @@ coverage
 .next/
 out/
 **/build
-
+**/dist
 **/dist-platform
 **/dist-genetics
 **/bundle-platform
@@ -48,4 +50,5 @@ yarn-error.log*
 playwright-report/
 test-results/
 ./packages/platform-test/playwright-report/index.html
+packages/platform-test/playwright-report/**/index.html
 packages/platform-test/playwright-report/index.html
