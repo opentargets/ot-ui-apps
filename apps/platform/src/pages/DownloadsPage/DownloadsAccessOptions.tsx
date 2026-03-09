@@ -191,8 +191,6 @@ function getFilteredData({
   containedInArray: Array<Record<"@id", string>>;
 }) {
   const entriesToShow: Record<string, singleBtnGroupObj> = {};
-console.log("containedInArray", containedInArray);
-console.log(DATA_MAP)
   containedInArray.map(e => {
     DATA_MAP[e["@id"]].map(i => {
       if (Object.prototype.hasOwnProperty.call(allDataObj, i)) entriesToShow[i] = allDataObj[i];
