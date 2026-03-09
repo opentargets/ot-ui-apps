@@ -14,7 +14,6 @@ coverage
 .next/
 out/
 **/build
-**/dist
 **/dist-platform
 **/dist-genetics
 **/bundle-platform

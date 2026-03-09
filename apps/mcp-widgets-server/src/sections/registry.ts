@@ -256,7 +256,7 @@ export const SECTION_REGISTRY: SectionDef[] = [
   },
   {
     entity: "drug",
-    sectionPath: "drug/ClinicalIndications",
+    sectionPath: "drug/Indications",
     toolName: "get_drug_indications_widget",
     description:
       "Shows drug clinical indications with investigational and approved indications from clinical trial records, including disease names, maximum clinical stage, and individual trial records in a detail panel.",
@@ -367,10 +367,10 @@ export const SECTION_REGISTRY: SectionDef[] = [
   },
   {
     entity: "evidence",
-    sectionPath: "evidence/Chembl",
-    toolName: "get_evidence_chembl_widget",
+    sectionPath: "evidence/ClinicalPrecedence",
+    toolName: "get_evidence_clinical_precedence_widget",
     description:
-      "Shows ChEMBL drug evidence linking a target gene to a disease — approved and " +
+      "Shows clinical precedence evidence linking a target gene to a disease — approved and " +
       "investigational drugs, clinical phases, and trial outcomes.",
     inputParams: EVIDENCE_INPUT,
     prefetchExtraVariables: { size: 10, cursor: null },
