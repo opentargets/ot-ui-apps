@@ -3,7 +3,7 @@ const dataSources = [
     id: "clinical_precedence",
     sectionId: "clinical_precedence",
     label: "Clinical Precedence",
-    aggregation: "Clinical precedence",
+    aggregation: "Clinical",
     aggregationId: "clinical",
     weight: 1,
     isPrivate: false,
