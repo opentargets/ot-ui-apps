@@ -1,10 +1,10 @@
-query ChemblQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: String) {
+query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: String) {
   disease(efoId: $efoId) {
     id
-    chembl: evidences(
+    clinical_precedence: evidences(
       ensemblIds: [$ensemblId]
       enableIndirect: true
-      datasourceIds: ["chembl"]
+      datasourceIds: ["clinical_precedence"]
       size: $size
       cursor: $cursor
     ) {
@@ -36,16 +36,11 @@ query ChemblQuery($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: St
         directionOnTarget
         directionOnTrait
         targetFromSourceId
-        clinicalPhase
-        clinicalStatus
+        clinicalStage
+        clinicalReportId
         studyStartDate
-        studyStopReason
-        studyStopReasonCategories
-        cohortPhenotypes
-        urls {
-          niceName
-          url
-        }
+        trialWhyStopped
+        trialStopReasonCategories
       }
     }
   }

@@ -2,12 +2,12 @@ import { lazy } from "react";
 import { isPrivateEvidenceSection } from "@ot/constants";
 import { EvidenceData } from "../types";
 
-const id = "chembl";
+const id = "clinical_precedence";
 export const definition = {
   id,
-  name: "ChEMBL",
-  shortName: "CE",
-  hasData: (data: EvidenceData) => (data.chembl?.count || 0) > 0,
+  name: "Clinical Precedence",
+  shortName: "CP",
+  hasData: (data: EvidenceData) => (data.clinical_precedence?.count || 0) > 0,
   isPrivate: isPrivateEvidenceSection(id),
 };
 
