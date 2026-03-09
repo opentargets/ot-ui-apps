@@ -18,7 +18,7 @@ import {
   createPlatformStubsPlugin,
 } from "./widget.config.base";
 import type { SectionDef } from "../src/sections/registry";
-import { sectionPathToId } from "../src/widgets/index";
+import { sectionPathToId } from "../src/widgets/index.js";
 
 /** Generates the IIFE entry code for a section widget. */
 function generateEntryCode(def: SectionDef): string {

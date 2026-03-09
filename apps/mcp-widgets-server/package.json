@@ -9,7 +9,7 @@
     "start": "tsx src/index.ts",
     "start:stdio": "tsx src/stdio.ts",
     "build:widget:ms": "vite build --config vite/widget.config.ms.ts",
-    "build:widgets": "yarn build:widget:ms",
+    "build:widgets": "yarn build:widget:ms && yarn build:widgets:target && yarn build:widgets:disease && yarn build:widgets:drug && yarn build:widgets:evidence && yarn build:widgets:credibleset && yarn build:widgets:variant && yarn build:widgets:study",
     "build:widgets:target": "tsx scripts/build-sections.ts target --no-clean",
     "build:widgets:disease": "tsx scripts/build-sections.ts disease --no-clean",
     "build:widgets:drug": "tsx scripts/build-sections.ts drug --no-clean",
