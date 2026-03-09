@@ -9,7 +9,7 @@ function Description({ name }: any) {
         ChEMBL
       </Link>
       {" "}and{" "}
-      <Link to="#" external>
+      <Link to="https://platform-docs.opentargets.org/disease-or-phenotype/drugs" external>
         Open Targets
       </Link>
       .
