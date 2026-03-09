@@ -64,7 +64,7 @@ function FieldLabel({ minWidth = 65, children }: any) {
   );
 }
 
-function FieldRow({ label, labelMinWidth = 70, children }: any) {
+function FieldRow({ label, children }: any) {
   if (!children) return null;
   return (
     <Box
@@ -74,7 +74,7 @@ function FieldRow({ label, labelMinWidth = 70, children }: any) {
         my: 1,
       }}
     >
-      <FieldLabel minWidth={labelMinWidth}>{label}</FieldLabel>
+      <FieldLabel minWidth={70}>{label}</FieldLabel>
       <Box sx={{ flex: 1 }}>{children}</Box>
     </Box>
   );
@@ -97,7 +97,7 @@ function formatType(s: any) {
 const tooltipStyle: any = {
   tooltipIcon: {
     verticalAlign: "baseline",
-    top: -8,
+    top: -6,
     lineHeight: 1,
     fontSize: "0.75em",
     position: "relative",
@@ -109,7 +109,7 @@ const tooltipSlotProps: any = {
     modifiers: [
       {
         name: "offset",
-        options: { offset: [0, -4] },
+        options: { offset: [0, -6] },
       },
     ],
   },
@@ -158,7 +158,6 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
     source,
     countries,
     clinicalStage,
-    trialPhase,
     phaseFromSource,
     trialOverallStatus,
     trialWhyStopped,
@@ -176,9 +175,13 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
 
   return (
     <>
-      <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
+      <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 0.75 }}>
         {title || `[${sentenceCase(type)}]`}
       </Typography>
+
+      <Link to={url}>
+        <Typography variant="caption" component="div" sx={{ mb: 2 }}>{url}</Typography>
+      </Link>
 
       <Box sx={{ position: "relative" }}>
         <FieldRow label="Source">
@@ -223,24 +226,15 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
       )}
 
       <FieldRow label="Stage">
-        {trialPhase || phaseFromSource ? (
+        {phaseFromSource ? (
           <Tooltip
             showHelpIcon
             style={tooltipStyle}
             slotProps={tooltipSlotProps}
             title={
-              <>
-                {phaseFromSource && (
-                  <FieldRow label="Phase from source:" labelMinWidth={0}>
-                    <Typography variant="caption">{phaseFromSource}</Typography>
-                  </FieldRow>
-                )}
-                {trialPhase && (
-                  <FieldRow label="Trial phase:" labelMinWidth={0}>
-                    <Typography variant="caption">{trialPhase}</Typography>
-                  </FieldRow>
-                )}
-              </>
+              <Typography variant="caption">
+                Phase from source: {phaseFromSource}
+              </Typography>
             }
           >
             <Typography component="span" variant="body2">
@@ -256,67 +250,56 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
 
       {trialOverallStatus && (
         <FieldRow label="Status">
-          {trialWhyStopped || trialStopReasonCategories.length > 0 ? (
-            <Tooltip
-              showHelpIcon
-              style={tooltipStyle}
-              slotProps={tooltipSlotProps}
-              title={
-                <>
-                  {trialWhyStopped && (
-                    <FieldRow label="Why Stopped:" labelMinWidth={0}>
-                      <Typography
-                        variant="caption"
-                        sx={{ whiteSpace: "pre-wrap", tabSize: 4 }}
-                      >
-                        {trialWhyStopped}
-                      </Typography>
-                    </FieldRow>
-                  )}
-                  {trialStopReasonCategories.length > 0 && (
-                    <FieldRow
-                      label={`${trialStopReasonCategories.length > 1 ? "Reasons" : "Reason"}:`}
-                      labelMinWidth={0}
-                    >
-                      <Typography variant="caption">
-                        {trialStopReasonCategories.join(", ")}
-                      </Typography>
-                    </FieldRow>
-                  )}
-                </>
-              }
-            >
-              <Typography component="span" variant="body2">
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "baseline", gap: 1.5}}>
+              <Typography variant="body2">
                 {formatType(trialOverallStatus)}
               </Typography>
-            </Tooltip>
-          ) : (
-            <Typography variant="body2">{formatType(trialOverallStatus)}</Typography>
-          )}
-        </FieldRow>
-      )}
-
-      {url && (
-        <FieldRow label="URL">
-          <Typography variant="body2" sx={{ fontSize: 14 }}>
-            <Link external to={url}>
-              {url}
-            </Link>
-          </Typography>
+              {trialStopReasonCategories?.length > 0 && (
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  {trialStopReasonCategories.map(category => (
+                    <Chip
+                      key={category}
+                      sx={{  }}
+                      label={category}
+                      variant="outlined"
+                      size="small"
+                    />
+                  ))}
+                </Box>
+              )}
+            </Box>
+            {trialWhyStopped && (
+              <OtLongText variant="body2" lineLimit={2}>
+                {trialWhyStopped}
+              </OtLongText>
+            )}
+          </Box>
         </FieldRow>
       )}
 
       {dedupedDiseases.length > 0 && (
         <FieldRow label="Diseases">
-          <OtLongText variant="body2" lineLimit={3} displayText="... more">
+          <OtLongText variant="body2" lineLimit={3}>
             <Box component="span" sx={{ fontSize: 14 }}>
               {dedupedDiseases.map((d: any, index: any) => (
                 <span key={index}>
                   {index > 0 ? ", " : ""}
                   {d.disease?.id ? (
-                    <Link asyncTooltip to={`/disease/${d.disease.id}`}>
-                      {d.disease.name}
-                    </Link>
+                    <Tooltip
+                      showHelpIcon
+                      style={tooltipStyle}
+                      slotProps={tooltipSlotProps}
+                      title={
+                        <Typography variant="caption" sx={{ whiteSpace: "pre-wrap", tabSize: 4 }}>
+                          Disease from source: {d.diseaseFromSource}
+                        </Typography>
+                      }
+                    >
+                      <Link asyncTooltip to={`/disease/${d.disease.id}`}>
+                        {d.disease.name}
+                      </Link>
+                    </Tooltip>
                   ) : (
                     d.diseaseFromSource
                   )}
@@ -329,15 +312,26 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
 
       {dedupedDrugs.length > 0 && (
         <FieldRow label="Drugs">
-          <OtLongText variant="body2" lineLimit={3} displayText="... more">
+          <OtLongText variant="body2" lineLimit={3}>
             <Box component="span" sx={{ fontSize: 14 }}>
-              {dedupedDrugs.map((d: any, index: any) => (
+              {dedupedDrugs.map((d, index) => (
                 <span key={index}>
                   {index > 0 ? ", " : ""}
                   {d.drug?.id ? (
-                    <Link asyncTooltip to={`/drug/${d.drug.id}`}>
-                      {d.drug.name}
-                    </Link>
+                    <Tooltip
+                      showHelpIcon
+                      style={tooltipStyle}
+                      slotProps={tooltipSlotProps}
+                      title={
+                        <Typography variant="caption" sx={{ whiteSpace: "pre-wrap", tabSize: 4 }}>
+                          Drug from source: {d.drugFromSource}
+                        </Typography>
+                      }
+                    >
+                      <Link asyncTooltip to={`/drug/${d.drug.id}`}>
+                        {d.drug.name}
+                      </Link>
+                    </Tooltip>
                   ) : (
                     d.drugFromSource
                   )}

@@ -6,7 +6,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
+import INDICATIONS_QUERY from "./IndicationsQuery.gql";
 
 const onLinkClick = (e: any) => {
   e.stopPropagation();
@@ -54,10 +54,10 @@ function IndicationsTable({
               borderStyle: "solid",
               borderRadius: 1,
               borderColor: isSelected ? "primary.main" : "background.paper",
-              bgcolor: isSelected ? '#e1eff9' : 'background.paper',  // !! ARBITRARY COLOR !!
+              bgcolor: isSelected ? '#e1eff9' : 'background.paper',
               cursor: 'pointer',
               '&:hover': {
-                bgcolor: isSelected ? '#e1eff9' : 'grey.100',  // !! ARBITRARY COLOR !!
+                bgcolor: isSelected ? '#e1eff9' : 'grey.100',
                 borderColor: isSelected ? "primary.main" : "grey.300",
                 "& .arrow-icon": {
                   visibility: "visible",
@@ -81,9 +81,8 @@ function IndicationsTable({
               }}
             >
               <span onClick={onLinkClick}>
-                {/* !! REMOVE NO NAME AND ?. IF POSSIBLE!!! */}
                 <Link asyncTooltip to={`/disease/${disease?.id}`}>
-                  {disease?.name ?? "NO NAME"}
+                  {disease.name}
                 </Link>
               </span>
             </Typography>
@@ -115,7 +114,7 @@ function IndicationsTable({
                   className="arrow-icon"
                   sx={{
                     fontSize: "11px",
-                    color: "grey.600", // !! ARBITRARY COLOR !!
+                    color: "grey.600",
                     visibility: isSelected ? "visible" : "hidden",
                   }}
                 >
@@ -195,7 +194,7 @@ function IndicationsTable({
           globalFilterPlaceholderText: "Search...",
           columns,
           rows: sortedRows,
-          query: CLINICAL_INDICATIONS_QUERY.loc?.source?.body,
+          query: INDICATIONS_QUERY.loc?.source?.body,
           variables: { chemblId },
           dataDownloader: true,
           dataDownloaderFileStem: "clinical-indications",

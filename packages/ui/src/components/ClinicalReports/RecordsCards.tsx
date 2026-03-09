@@ -168,8 +168,6 @@ function RecordsCards({
   if (!rows) return null;
   const allRows = ([] as any[]).concat(...Object.keys(records).map(k => (records as any)[k]));
 
-  console.log(selectedEntity)
-
   return (
     <>
       <Box
