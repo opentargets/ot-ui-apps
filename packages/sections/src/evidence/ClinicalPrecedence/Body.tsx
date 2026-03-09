@@ -237,7 +237,7 @@ function getColumns(classes) {
     },
     {
       id: "clinicalStage",
-      label: "Phase",
+      label: "Stage",
       sortable: true,
       renderCell: ({ clinicalStage }) => phaseMap(clinicalStage),
       filterValue: ({ clinicalStage }) => phaseMap(clinicalStage),
@@ -302,6 +302,7 @@ function Body({ id, label, entity }) {
         <OtTableSSP
           query={CLINICAL_PRECEDENCE_QUERY}
           columns={columns}
+          sortBy="clinicalStage"
           dataDownloader
           dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem={`clinical-precedence-evidence-${id}`}
