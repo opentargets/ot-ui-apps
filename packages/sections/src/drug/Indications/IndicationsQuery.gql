@@ -1,4 +1,4 @@
-query ClinicalIndicationsQuery($chemblId: String!) {
+query IndicationsQuery($chemblId: String!) {
   drug(chemblId: $chemblId) {
     indications {
       count
