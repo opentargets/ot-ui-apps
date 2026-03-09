@@ -8,7 +8,7 @@ query TargetAssociationsQuery(
   $rowsFilter: [String!]
   $facetFilters: [String!]
   $entitySearch: String!
-  $includeMeasurements: Boolean!
+  $includeMeasurements: Boolean
 ) {
   target(ensemblId: $id) {
     id
