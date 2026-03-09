@@ -213,16 +213,9 @@ export const decimalPlaces = 3;
 
 // Clinical Phases Mapping
 const clinicalPhases: { [key: string]: string } = {
-  "-1": "Unknown",
-  "0": "Phase 0",
-  "0.5": "Phase I (Early)",
-  "1": "Phase I",
-  "2": "Phase II",
-  "3": "Phase III",
-  "4": "Phase IV",
-  APPROVED: "Approved",
+  APPROVAL: "Approval",
   PHASE_4: "Phase IV",
-  WITHDRAWN: "Withdrawn",
+  WITHDRAWAL: "Withdrawal",
   PREAPPROVAL: "Pre-approval",
   PHASE_3: "Phase III",
   PHASE_2_3: "Phase II/III",
@@ -233,18 +226,6 @@ const clinicalPhases: { [key: string]: string } = {
   IND: "IND",
   PRECLINICAL: "Preclinical",
   UNKNOWN: "Unknown",
-  // Lowercase display-name keys (from PTS maximumClinicalStage)
-  approved: "Approved",
-  "phase IV": "Phase IV",
-  "phase III": "Phase III",
-  "phase II/III": "Phase II/III",
-  "phase II": "Phase II",
-  "phase I/II": "Phase I/II",
-  "phase I": "Phase I",
-  "early phase I": "Phase I (Early)",
-  "pre-approval": "Pre-approval",
-  preclinical: "Preclinical",
-  unknown: "Unknown",
 };
 
 export const phaseMap = (clinicalPhase: number | string): string => {

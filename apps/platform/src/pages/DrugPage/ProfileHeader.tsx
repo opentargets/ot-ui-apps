@@ -31,7 +31,7 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
 
 const clinicalPhase = maximumClinicalStage
     ? phaseMap(maximumClinicalStage)
-    : "Preclinical";
+    : "Unknown";
 
   return (
     <BaseProfileHeader>
