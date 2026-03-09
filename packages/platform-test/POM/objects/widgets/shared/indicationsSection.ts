@@ -12,7 +12,7 @@ export class IndicationsSection {
   constructor(private page: Page) {}
 
   getSection(): Locator {
-    return this.page.locator("[data-testid='section-clinicalindications']");
+    return this.page.locator("[data-testid='section-indications']");
   }
 
   async isSectionVisible(): Promise<boolean> {
@@ -32,7 +32,7 @@ export class IndicationsSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-clinicalindications']");
+          const sect = document.querySelector("[data-testid='section-indications']");
           if (!sect) return false;
           const skeletons = sect.querySelectorAll(".MuiSkeleton-root");
           return skeletons.length === 0;
@@ -167,7 +167,7 @@ export class IndicationsSection {
     await this.page
       .waitForFunction(
         () => {
-          const sect = document.querySelector("[data-testid='section-clinicalindications']");
+          const sect = document.querySelector("[data-testid='section-indications']");
           if (!sect) return false;
           const loadingIndicators = sect.querySelectorAll(".MuiCircularProgress-root");
           return loadingIndicators.length === 0;
