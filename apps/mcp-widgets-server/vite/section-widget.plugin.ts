@@ -55,7 +55,7 @@ mountWidget({
     return React.createElement(Body, {
       id: ${bodyId},
       label: ${bodyLabel},
-      entity: ${JSON.stringify(def.entity)}
+      entity: ${JSON.stringify(def.entity === "evidence" ? "disease" : def.entity)}
     });
   }
 });

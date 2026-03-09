@@ -163,7 +163,7 @@ async function makeWidgetShell(bundleFile: string, title: string): Promise<strin
       html, body { min-height: 100%; height: auto; }
       #root { min-height: 100%; }
     </style>
-    <script>window.__OT_API_URL__ = "${apiUrl}";</script>
+    <script>window.__OT_API_URL__ = "${apiUrl}"; window.configProfile = { isPartnerPreview: false, partnerTargetSectionIds: [], partnerDiseaseSectionIds: [], partnerDrugSectionIds: [], partnerEvidenceSectionIds: [], partnerDataTypes: [], partnerDataSources: [] };</script>
     ${dynamicInterceptor}
   </head>
   <body>

@@ -143,7 +143,7 @@ export function getConfig() {
   return {
     urlApi: ${JSON.stringify(OT_API_URL)},
     urlAiApi: "",
-    profile: { primaryColor: PRIMARY, secondaryColor: SECONDARY, isPartnerPreview: false, partnerDataTypes: [] },
+    profile: { primaryColor: PRIMARY, secondaryColor: SECONDARY, isPartnerPreview: false, partnerTargetSectionIds: [], partnerDiseaseSectionIds: [], partnerDrugSectionIds: [], partnerEvidenceSectionIds: [], partnerDataTypes: [], partnerDataSources: [] },
     googleTagManagerID: null,
     geneticsPortalUrl: "https://genetics.opentargets.org",
     gitVersion: "",
