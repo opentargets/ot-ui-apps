@@ -1,7 +1,7 @@
 import { lazy } from "react";
 
 export const definition = {
-  id: "drugsAndClinicalCandidates",
+  id: "drugs",
   name: "Drugs and Clinical Candidates",
   shortName: "DC",
   hasData: (data) => data?.drugAndClinicalCandidates?.count > 0,

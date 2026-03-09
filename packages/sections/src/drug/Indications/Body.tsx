@@ -7,13 +7,13 @@ import {
 } from "ui";
 import { useCallback } from "react";
 import Description from "./Description";
-import CLINICAL_INDICATIONS_QUERY from "./ClinicalIndicationsQuery.gql";
+import INDICATIONS_QUERY from "./IndicationsQuery.gql";
 import { definition } from ".";
 import IndicationsTable from "./IndicationsTable";
 
 function Body({ id: chemblId, label: name, entity }) {
   const variables = { chemblId };
-  const request = useQuery(CLINICAL_INDICATIONS_QUERY, { variables });
+  const request = useQuery(INDICATIONS_QUERY, { variables });
 
   const getClinicalReportsIds = useCallback(
     (row: any) => row?.clinicalReports?.map((report: any) => report.id),

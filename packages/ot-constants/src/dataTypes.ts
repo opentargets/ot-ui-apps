@@ -13,7 +13,7 @@ const dataTypes = [
   },
   {
     id: "clinical",
-    label: "Clinical Precedence",
+    label: "Clinical",
     isPrivate: isPrivateDataType("clinical"),
   },
   {
