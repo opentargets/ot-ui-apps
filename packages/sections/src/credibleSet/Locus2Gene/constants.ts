@@ -37,11 +37,12 @@ export const featureToGroup = {
   sQtlColocH4Maximum: "sQTL",
   sQtlColocClppMaximumNeighbourhood: "sQTL",
   sQtlColocH4MaximumNeighbourhood: "sQTL",
+    e2gMean: "E2G",
+  e2gMeanNeighbourhood: "E2G",
   geneCount500kb: "Other",
   proteinGeneCount500kb: "Other",
   credibleSetConfidence: "Other",
-  e2gMean: "E2G",
-  e2gMeanNeighbourhood: "E2G",
+
 };
 
 export const groupToFeature = Object.groupBy(

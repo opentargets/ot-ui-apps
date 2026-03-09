@@ -20,6 +20,7 @@ query EnhancerToGenePredictionsQuery($variantId: String!) {
           biosampleId
           biosampleName
         }
+        biosampleFromSourceId
         score
         resourceScore {
           name

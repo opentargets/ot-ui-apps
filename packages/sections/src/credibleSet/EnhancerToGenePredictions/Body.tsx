@@ -35,10 +35,10 @@ const columns = [
     id: "biosample",
     label: "Affected tissue/cell",
     enableHiding: false,
-    renderCell: ({ biosample }: { biosample: Biosample }) => {
+    renderCell: ({ biosample, biosampleFromSourceId }: { biosample: Biosample; biosampleFromSourceId?: string }) => {
       if (!biosample) return naLabel;
       return (
-        <Tooltip title={"Biosample source"}>
+        <Tooltip title={biosampleFromSourceId || ""}>
         <Link
           external
           to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
