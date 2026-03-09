@@ -30,7 +30,6 @@ query RecordDetailQuery($clinicalReportId: String!) {
     trialLiterature
     title
     trialOverallStatus
-    trialPhase
     trialPrimaryPurpose
     trialStartDate
     trialWhyStopped

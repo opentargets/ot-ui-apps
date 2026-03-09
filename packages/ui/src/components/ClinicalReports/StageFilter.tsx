@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material";
 import { clinicalStageCategories } from "@ot/constants";
-import { sum } from "d3";
 
 const usedCircleWidth = 30;
 const emptyCircleWidth = 17;
