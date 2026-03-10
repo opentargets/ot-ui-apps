@@ -38,6 +38,7 @@ query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cur
         targetFromSourceId
         clinicalStage
         clinicalReportId
+        trialLiterature # ???
         studyStartDate
         trialWhyStopped
         trialStopReasonCategories

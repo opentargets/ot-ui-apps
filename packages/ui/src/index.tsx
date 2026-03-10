@@ -80,6 +80,7 @@ export { default as ViewerRadios } from "./components/Viewer/ViewerRadios";
 export { default as ViewerTrack } from "./components/Viewer/ViewerTrack";
 export { default as ViewerLegend } from "./components/Viewer/ViewerLegend";
 export { default as RecordsCards } from "./components/ClinicalReports/RecordsCards";
+export { default as ClinicalRecordDrawer } from "./components/ClinicalReports/ClinicalRecordDrawer";
 export { default as ClinicalReportsMasterDetailFrame } from "./components/ClinicalReports/ClinicalReportsMasterDetailFrame";
 export { default as useBatchDownloader } from "./hooks/useBatchDownloader";
 export { default as useBatchQuery } from "./hooks/useBatchQuery";

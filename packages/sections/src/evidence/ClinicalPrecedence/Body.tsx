@@ -4,13 +4,14 @@ import {
   Link,
   SectionItem,
   Tooltip,
-  ChipList,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
   OtTableSSP,
+  ClinicalRecordDrawer,
 } from "ui";
-
-import { phaseMap, stopReasonMap, naLabel, dataTypesMap } from "@ot/constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { clinicalStageCategories, naLabel, dataTypesMap } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 
@@ -100,6 +101,27 @@ const exportColumns = [
 function getColumns(classes) {
   return [
     {
+      id: "clinicalReportId",
+      label: "Report",
+      sticky: true,
+      enableHiding: false,
+      renderCell: ({ clinicalReportId, trialLiterature }) => {
+        if (!clinicalReportId) return naLabel;
+        return (
+          <ClinicalRecordDrawer
+            recordId={clinicalReportId}
+            literatureIds={record.trialLiterature}
+            recordDetailQuery={RECORD_DETAIL_QUERY}
+          >
+            <Box display="flex" justifyContent="center" alignItems="center" gap={1}>
+              Details
+              <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
+            </Box>
+          </ClinicalRecordDrawer>
+        );
+      },
+    },
+    {
       id: "disease.name",
       label: "Disease/phenotype",
       enableHiding: false,
@@ -135,6 +157,7 @@ function getColumns(classes) {
     },
     {
       label: "Targets",
+      enableHiding: false,
       renderCell: ({ target, drug, targetFromSourceId }) => {
         const mechanismsOfAction = drug.mechanismsOfAction || {};
         const { rows = [] } = mechanismsOfAction;
@@ -170,7 +193,7 @@ function getColumns(classes) {
               }
               showHelpIcon
             >
-              <Link to={`/target/${target.id}`}>{symbol}</Link>
+              <Link asyncTooltip to={`/target/${target.id}`}>{symbol}</Link>
             </Tooltip>
             {otherTargets.size > 0
               ? ` and ${otherTargets.size} other target${otherTargets.size > 1 ? "s" : ""}`
@@ -185,42 +208,38 @@ function getColumns(classes) {
       enableHiding: false,
       renderCell: ({ drug }) => <Link to={`/drug/${drug.id}`}>{drug.name}</Link>,
     },
-    {
-      id: "drug.drugType",
-      label: "Modality",
-    },
-    {
-      label: "Mechanism of action (MoA)",
-      renderCell: ({ target, drug }) => {
-        const mechanismsOfAction = drug.mechanismsOfAction || {};
-        const { rows = [] } = mechanismsOfAction;
+    // {
+    //   label: "Mechanism of action (MoA)",
+    //   renderCell: ({ target, drug }) => {
+    //     const mechanismsOfAction = drug.mechanismsOfAction || {};
+    //     const { rows = [] } = mechanismsOfAction;
 
-        let anchorMa = null;
+    //     let anchorMa = null;
 
-        const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
-          if (anchorMa === null) {
-            let isAssociated = false;
-            for (let i = 0; i < targets.length; i++) {
-              if (targets[i].id === target.id) {
-                anchorMa = mechanismOfAction;
-                isAssociated = true;
-                break;
-              }
-            }
+    //     const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
+    //       if (anchorMa === null) {
+    //         let isAssociated = false;
+    //         for (let i = 0; i < targets.length; i++) {
+    //           if (targets[i].id === target.id) {
+    //             anchorMa = mechanismOfAction;
+    //             isAssociated = true;
+    //             break;
+    //           }
+    //         }
 
-            if (!isAssociated) {
-              acc.add(mechanismOfAction);
-            }
-          } else {
-            acc.add(mechanismOfAction);
-          }
+    //         if (!isAssociated) {
+    //           acc.add(mechanismOfAction);
+    //         }
+    //       } else {
+    //         acc.add(mechanismOfAction);
+    //       }
 
-          return acc;
-        }, new Set());
+    //       return acc;
+    //     }, new Set());
 
-        return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
-      },
-    },
+    //     return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
+    //   },
+    // },
     {
       id: "directionOfVariantEffect",
       label: (
@@ -239,47 +258,25 @@ function getColumns(classes) {
       id: "clinicalStage",
       label: "Stage",
       sortable: true,
-      renderCell: ({ clinicalStage }) => phaseMap(clinicalStage),
-      filterValue: ({ clinicalStage }) => phaseMap(clinicalStage),
-    },
-    {
-      id: "trialWhyStopped",
-      label: "Why Stopped",
-      renderCell: ({ trialWhyStopped, trialStopReasonCategories }) => {
-        if (trialWhyStopped)
-          return (
-            <Tooltip
-              showHelpIcon
-              title={
-                <div className={classes.tooltipContainer}>
-                  <div>
-                    <span>Trial stop reason: {trialWhyStopped}</span>
-                  </div>
-                  <div className={classes.chipContainer}>
-                    {trialStopReasonCategories ? (
-                      <ChipList
-                        items={trialStopReasonCategories.map(reason => ({
-                          label: stopReasonMap(reason),
-                          customClass: classes.chipStyle,
-                        }))}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              }
-            >
-              {trialWhyStopped}
-            </Tooltip>
-          );
-        return naLabel;
+      comparator: (a, b) => {
+        return clinicalStageCategories[b.clinicalStage?.index ?? -1] -
+          clinicalStageCategories[a.clinicalStage?.index ?? -1];
       },
+      renderCell: ({ clinicalStage }) => clinicalStageCategories[clinicalStage] ?? naLabel,
+      filterValue: ({ clinicalStage }) => clinicalStageCategories[clinicalStage],
     },
     {
       id: "studyStartDate",
       label: "Start Date",
       numeric: true,
-      renderCell: ({ studyStartDate }) =>
-        studyStartDate ? new Date(studyStartDate).getFullYear() : naLabel,
+      comparator: (a, b) => {
+        return (new Date(a.studyStartDate).getTime() || -1) -
+          (new Date(b.studyStartDate).getTime() || -1);
+      }
+      sortable: true;
+      renderCell: ({ studyStartDate }) => {
+        return new Date(studyStartDate).getFullYear() || naLabel;
+      }
     },
   ];
 }
@@ -308,7 +305,7 @@ function Body({ id, label, entity }) {
           dataDownloaderFileStem={`clinical-precedence-evidence-${id}`}
           entity={entity}
           sectionName="clinical_precedence"
-          showGlobalFilter={false}
+          showGlobalFilter={true}
           setInitialRequestData={req => {
             setRequest(req);
           }}

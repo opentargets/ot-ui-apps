@@ -211,45 +211,20 @@ export const defaultRowsPerPageOptions = [10, 25, 100];
 // Decimal Places
 export const decimalPlaces = 3;
 
-// Clinical Phases Mapping
-const clinicalPhases: { [key: string]: string } = {
-  "-1": "Unknown",
-  "0": "Phase 0",
-  "0.5": "Phase I (Early)",
-  "1": "Phase I",
-  "2": "Phase II",
-  "3": "Phase III",
-  "4": "Phase IV",
-  APPROVED: "Approved",
-  PHASE_4: "Phase IV",
-  WITHDRAWN: "Withdrawn",
-  PREAPPROVAL: "Pre-approval",
-  PHASE_3: "Phase III",
-  PHASE_2_3: "Phase II/III",
-  PHASE_2: "Phase II",
-  PHASE_1_2: "Phase I/II",
-  PHASE_1: "Phase I",
-  EARLY_PHASE_1: "Phase I (Early)",
-  IND: "IND",
-  PRECLINICAL: "Preclinical",
-  UNKNOWN: "Unknown",
-  // Lowercase display-name keys (from PTS maximumClinicalStage)
-  approved: "Approved",
-  "phase IV": "Phase IV",
-  "phase III": "Phase III",
-  "phase II/III": "Phase II/III",
-  "phase II": "Phase II",
-  "phase I/II": "Phase I/II",
-  "phase I": "Phase I",
-  "early phase I": "Phase I (Early)",
-  "pre-approval": "Pre-approval",
-  preclinical: "Preclinical",
-  unknown: "Unknown",
-};
-
-export const phaseMap = (clinicalPhase: number | string): string => {
-  const clinicalPhaseId = String(clinicalPhase);
-  return clinicalPhases[clinicalPhaseId] || "Unknown";
+export const clinicalStageCategories = {
+  UNKNOWN: { index: 0, label: "Unknown" },
+  PRECLINICAL: { index: 1, label: "Preclinical" },
+  IND: { index: 2, label: "IND" },
+  EARLY_PHASE_1: { index: 3, label: "Early phase I" },
+  PHASE_1: { index: 4, label: "Phase I" },
+  PHASE_1_2: { index: 5, label: "Phase I/II" },
+  PHASE_2: { index: 6, label: "Phase II" },
+  PHASE_2_3: { index: 7, label: "Phase II/III" },
+  PHASE_3: { index: 8, label: "Phase III" },
+  PREAPPROVAL: { index: 9, label: "Preapproval" },
+  APPROVAL: { index: 10, label: "Approval" },
+  PHASE_4: { index: 11, label: "Phase IV" },
+  WITHDRAWAL: { index: 12, label: "Withdrawal" },
 };
 
 // Stop Reason Categories Mapping
@@ -390,22 +365,6 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
     console.error("Error formatting gene location", e);
     return "";
   }
-};
-
-export const clinicalStageCategories = {
-  UNKNOWN: { index: 0, label: "Unknown" },
-  PRECLINICAL: { index: 1, label: "Preclinical" },
-  IND: { index: 2, label: "IND" },
-  EARLY_PHASE_1: { index: 3, label: "Early phase I" },
-  PHASE_1: { index: 4, label: "Phase I" },
-  PHASE_1_2: { index: 5, label: "Phase I/II" },
-  PHASE_2: { index: 6, label: "Phase II" },
-  PHASE_2_3: { index: 7, label: "Phase II/III" },
-  PHASE_3: { index: 8, label: "Phase III" },
-  PREAPPROVAL: { index: 9, label: "Preapproval" },
-  APPROVAL: { index: 10, label: "Approval" },
-  PHASE_4: { index: 11, label: "Phase IV" },
-  WITHDRAWAL: { index: 12, label: "Withdrawal" },
 };
 
 export * from "./alphaFold";
