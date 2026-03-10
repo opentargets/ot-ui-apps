@@ -3,7 +3,7 @@ fragment expressionAtlasSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["expression_atlas"]
-    size: 0
+    size: 1
   ) {
     count
   }

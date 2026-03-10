@@ -165,7 +165,8 @@ test.describe("Disease Page - AOTF Evidence Widgets", { tag: "@smoke" }, () => {
 
     // Map prioritization column IDs to their section IDs
     const prioritizationColumnToSection: Record<string, string> = {
-      maxClinicalTrialPhase: "knownDrugs",
+      maxClinicalTrialPhase: "drugs",
+      maxClinicalStage: "drugs",
       isInMembrane: "subcellularLocation",
       isSecreted: "subcellularLocation",
       hasLigand: "tractability",
