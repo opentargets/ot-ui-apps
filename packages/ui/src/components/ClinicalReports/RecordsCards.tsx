@@ -74,7 +74,6 @@ function RecordsCards({
             >
               <ClinicalRecordDrawer
                 recordId={record.id}
-                literatureIds={record.trialLiterature}
                 recordDetailQuery={RECORD_DETAIL_QUERY}
               >
                 {displayTitle}
@@ -142,7 +141,6 @@ function RecordsCards({
     { id: "source" },
     { id: "trialOverallStatus" },
     { id: "trialStartDate" },
-    { id: "trialLiterature" },
   ];
 
   if (!selectedStage || (loading && !showLoading)) return null;

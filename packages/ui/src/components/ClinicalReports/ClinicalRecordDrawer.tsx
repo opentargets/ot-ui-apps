@@ -165,6 +165,7 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
     trialStartDate,
     url,
     trialDescription,
+    trialLiterature,
     diseases,
     drugs,
     hasExpertReview,
@@ -350,11 +351,27 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
           {trialDescription}
         </Typography>
       )}
+
+      {trialLiterature && trialLiterature.length > 0 && (
+        <Box>
+          <Typography variant="subtitle2">Literature</Typography>
+          <Box sx={{ mt: -5 }}>
+            <PublicationsList
+              entriesIds={trialLiterature}
+              hideSearch
+              name={undefined}
+              symbol={undefined}
+              showRowsPerPageControl={false}
+              showPaginationAlways={false}
+            />
+          </Box>
+        </Box>
+      )}
     </>
   );
 }
 
-function ClinicalRecordDrawer({ recordId, literatureIds, recordDetailQuery, children }: any) {
+function ClinicalRecordDrawer({ recordId, recordDetailQuery, children }: any) {
   const [open, setOpen] = useState(false);
   const classes = useDrawerStyles();
 
@@ -399,22 +416,6 @@ function ClinicalRecordDrawer({ recordId, literatureIds, recordDetailQuery, chil
           {open && (
             <Box mt={2} mb={3} mx={3} p={3} pb={6} bgcolor="white">
               <RecordDetails recordId={recordId} recordDetailQuery={recordDetailQuery} />
-
-              {literatureIds && literatureIds.length > 0 && (
-                <Box>
-                  <Typography variant="subtitle2">Literature</Typography>
-                  <Box sx={{ mt: -5 }}>
-                    <PublicationsList
-                      entriesIds={literatureIds}
-                      hideSearch
-                      name={undefined}
-                      symbol={undefined}
-                      showRowsPerPageControl={false}
-                      showPaginationAlways={false}
-                    />
-                  </Box>
-                </Box>
-              )}
             </Box>
           )}
         </Box>
