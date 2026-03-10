@@ -271,7 +271,9 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
             </Box>
             {trialWhyStopped && (
               <OtLongText variant="body2" lineLimit={2}>
-                {trialWhyStopped}
+                <Box sx={{ whiteSpace: "pre-wrap", tabSize: 4, fontSize: "13px" }}>
+                  {trialWhyStopped}
+                </Box>
               </OtLongText>
             )}
           </Box>
