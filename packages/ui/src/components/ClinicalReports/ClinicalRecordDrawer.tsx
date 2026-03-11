@@ -12,7 +12,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { clinicalStageCategories } from "@ot/constants";
+import { clinicalStageCategories, clinicalReportsSourcesInfo, stopReasonMap } from "@ot/constants";
 import { useApolloClient } from "@apollo/client";
 import Link from "../Link";
 import { PublicationsList } from "../PublicationsDrawer";
@@ -171,6 +171,7 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
     hasExpertReview,
   } = details;
 
+  const sourceInfo = clinicalReportsSourcesInfo[source];
   const dedupedDiseases: any = dedupOnId(diseases, "disease");
   const dedupedDrugs: any = dedupOnId(drugs, "drug");
 
@@ -184,19 +185,26 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
         <Typography variant="caption" component="div" sx={{ mb: 2 }}>{url}</Typography>
       </Link>
 
-      <Box sx={{ position: "relative" }}>
-        <FieldRow label="Source">
-          <Typography variant="body2">{source}</Typography>
-        </FieldRow>
-        {hasExpertReview && (
-          <Chip
-            sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
-            label="Expert review"
-            variant="outlined"
-            size="small"
-          />
-        )}
-      </Box>
+      <FieldRow label="Source">
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+          {sourceInfo ? (
+            <Link to={sourceInfo.url}>
+              <Typography variant="body2">
+                {sourceInfo.name} {sourceInfo.name !== source && `(${source})`}
+              </Typography>
+            </Link>
+          ) : (
+            <Typography variant="body2">{source}</Typography>
+          )}
+          {hasExpertReview && (
+            <Chip
+              label={<Typography variant="caption">Expert review</Typography>}
+              variant="outlined"
+              size="small"
+            />
+          )}
+        </Box>
+      </FieldRow>
 
       {countries?.length > 0 && (
         <FieldRow label="Status">
@@ -262,7 +270,7 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
                     <Chip
                       key={category}
                       sx={{  }}
-                      label={category}
+                      label={stopReasonMap(category)}
                       variant="outlined"
                       size="small"
                     />
