@@ -252,16 +252,95 @@ const stopReasonCategories: { [key: string]: string } = {
 export const stopReasonMap = (category: string): string =>
   stopReasonCategories[category] || category;
 
-// Source Mapping
-export const sourceMap: { [key: string]: string } = {
-  "FDA Information": "FDA",
-  FDA: "FDA",
-  "Clinical Trials Information": "ClinicalTrials.gov",
-  ClinicalTrials: "ClinicalTrials.gov",
-  "DailyMed Information": "DailyMed",
-  DailyMed: "DailyMed",
-  "ATC Information": "ATC",
-  ATC: "ATC",
+export const clinicalReportsSourcesInfo = {
+  AACT: {
+    name: "Aggregate Content of Clinical Trials",
+    url: "https://aact.ctti-clinicaltrials.org/",
+  },
+  TTD: {
+    name: "Therapeutic Target Database",
+    url: "https://ttd.idrblab.cn/",
+  },
+  DailyMed: {
+    name: "DailyMed",
+    url: "https://dailymed.nlm.nih.gov/dailymed/",
+  },
+  ATC: {
+    name: "Anatomical Therapeutic Chemical",
+    url: "https://atcddd.fhi.no/",
+  },
+  PMDA: {
+    name: "Pharmaceutical and Medical Devices Agency",
+    url: "https://www.pmda.go.jp/english/about-pmda/index.html",
+  },
+  "EMA Human Drugs": {
+    name: "European Medicines Agency Human Drugs",
+    url: "https://www.ema.europa.eu/en/medicines",
+  },
+  FDA: {
+    name: "Food and Drug Administration",
+    url: "https://www.fda.gov/",
+  },
+  USAN: {
+    name: "United States Adopted Names",
+    url: "https://www.ama-assn.org/about/united-states-adopted-names-usan",
+  },
+  EMA: {
+    name: "European Medicine Agency",
+    url: "https://www.ema.europa.eu/en/medicines",
+  },
+  INN: {
+    name: "International Nonproprietary Names",
+    url: "https://www.who.int/teams/health-product-and-policy-standards/inn",
+  },
+  WHO: {
+    name: "World Health Organisation",
+    url: "https://www.who.int/",
+  },
+  DOI: {
+    name: "Withdrawal from Drug Information Association Journal",
+    url: "https://link.springer.com/journal/43441",
+  },
+  USGPO: {
+    name: "United States Government Publishing Office",
+    url: "https://www.gpo.gov/",
+  },
+  PubMed: {
+    name: "PubMed",
+    url: "https://pubmed.ncbi.nlm.nih.gov/",
+  },
+  "Health Canada": {
+    name: "Health Canada",
+    url: "https://www.canada.ca/en/health-canada.html",
+  },
+  MHRA: {
+    name: "Medicines and Healthcare products Regulatory Agency",
+    url: "https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency",
+  },
+  TGA: {
+    name: "Therapeutic Goods Administration",
+    url: "https://www.tga.gov.au/",
+  },
+  MEDSAFE: {
+    name: "New Zealand Medicines and Medical Devices Safety Authority",
+    url: "https://www.medsafe.govt.nz/",
+  },
+  HPRA: {
+    name: "Health Products Regulatory Authority",
+    url: "https://www.hpra.ie/",
+  },
+  NICE: {
+    name: "National Institute for Health and Care Excellence",
+    url: "https://www.nice.org.uk/",
+  },
+  HIS: {
+    name: "Haute Autorité de Santé",
+    url: "https://www.has-sante.fr/",
+  },
+  NTP: {
+    name: "National Toxicology Program",
+    url: "https://ntp.niehs.nih.gov/",
+  },
 };
 
 // ClinVar Star Mapping

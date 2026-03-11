@@ -21,7 +21,6 @@ query Safety($ensemblId: String!) {
       }
       datasource
       literature
-      url
     }
   }
 }
