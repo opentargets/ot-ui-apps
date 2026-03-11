@@ -20,6 +20,7 @@ import OtLongText from "../OtLongText";
 import Tooltip from "../Tooltip";
 import useDelayedFlag from "../../hooks/useDelayedFlag";
 import { sentenceCase } from "@ot/utils";
+import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 
 const useDrawerStyles = makeStyles((theme: any) => ({
   drawerLink: {
@@ -48,7 +49,7 @@ const useDrawerStyles = makeStyles((theme: any) => ({
   },
 }));
 
-const getDetails = (client: any, query: any, clinicalReportId: any) =>
+const getDetails = (client, query, clinicalReportId) =>
   client.query({
     query,
     variables: {
@@ -56,7 +57,7 @@ const getDetails = (client: any, query: any, clinicalReportId: any) =>
     },
   });
 
-function FieldLabel({ minWidth = 65, children }: any) {
+function FieldLabel({ minWidth = 65, children }) {
   return (
     <Typography variant="caption" sx={{ fontWeight: 400, minWidth, mr: 0.5 }}>
       {children}
@@ -115,7 +116,7 @@ const tooltipSlotProps: any = {
   },
 };
 
-function RecordDetails({ recordId, recordDetailQuery }: any) {
+function RecordDetails({ recordId, recordDetailQuery = RECORD_DETAIL_QUERY }) {
   const client = useApolloClient();
   const [details, setDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
