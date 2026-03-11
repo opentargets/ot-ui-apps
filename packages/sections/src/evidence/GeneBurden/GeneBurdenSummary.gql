@@ -3,7 +3,7 @@ fragment geneBurdenSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["gene_burden"]
-    size: 0
+    size: 1
   ) {
     count
   }
