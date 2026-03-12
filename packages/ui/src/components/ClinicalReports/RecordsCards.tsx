@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { Link } from "ui";
-import { defaultRowsPerPageOptions } from "@ot/constants";
+import { defaultRowsPerPageOptions, clinicalReportsSourcesInfo } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
@@ -46,20 +46,23 @@ function RecordsCards({
         ),
       renderCell: (record) => {
         const { source, trialStartDate, type, trialOverallStatus, title } = record;
+        const sourceInfo = clinicalReportsSourcesInfo[source];
 
         const displayTitle = (
-          <Typography
-            variant={"body1"}
-            noWrap
-            sx={{
-              minWidth: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {title || `[${sentenceCase(type)}]`}
-          </Typography>
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            <Typography
+              variant={"body1"}
+              noWrap
+              sx={{
+                minWidth: 0,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {title || `[${sentenceCase(type)}]`}
+            </Typography>
+          </Link>
         );
 
         return (
@@ -74,7 +77,6 @@ function RecordsCards({
             >
               <ClinicalRecordDrawer
                 recordId={record.id}
-                literatureIds={record.trialLiterature}
                 recordDetailQuery={RECORD_DETAIL_QUERY}
               >
                 {displayTitle}
@@ -88,21 +90,28 @@ function RecordsCards({
                 gap: 2,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                {source && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box
                     sx={{
                       display: "flex",
-                      minWidth: "100px",
+                      minWidth: "170px",
                       alignItems: "baseline",
                       gap: 0.5,
                     }}
                   >
-                    <Typography variant="caption" sx={{ fontSize: 13 }}>
-                      {source}
-                    </Typography>
+                    <Typography variant="caption">Source:</Typography>
+                    {sourceInfo ? (
+                      <Link to={sourceInfo.url} tooltip={sourceInfo.name}>
+                        <Typography variant="caption" sx={{ fontSize: 13 }}>
+                          {source}
+                        </Typography>
+                      </Link>
+                    ) : (
+                      <Typography variant="caption" sx={{ fontSize: 13 }}>
+                        {source}
+                      </Typography>
+                    )}
                   </Box>
-                )}
                 {trialOverallStatus && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
                     <Typography variant="caption">Status:</Typography>
@@ -142,7 +151,6 @@ function RecordsCards({
     { id: "source" },
     { id: "trialOverallStatus" },
     { id: "trialStartDate" },
-    { id: "trialLiterature" },
   ];
 
   if (!selectedStage || (loading && !showLoading)) return null;
