@@ -1,34 +1,20 @@
-import { useState } from "react";
-// import { makeStyles } from "@mui/styles";
 import {
   Link,
   SectionItem,
   Tooltip,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
-  OtTableSSP,
+  OtTable,
   ClinicalRecordDrawer,
 } from "ui";
+import { useQuery } from "@apollo/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
-import { clinicalStageCategories, naLabel, dataTypesMap } from "@ot/constants";
+import { clinicalStageCategories, naLabel, dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
 import CLINICAL_PRECEDENCE_QUERY from "./ClinicalPrecedence.gql";
 import { Box, Typography } from "@mui/material";
-
-// const useStyles = makeStyles(() => ({
-//   tooltipContainer: {
-//     padding: "0.3em",
-//   },
-//   chipContainer: {
-//     display: "inline-block",
-//     marginTop: "0.4em",
-//   },
-//   chipStyle: {
-//     fontSize: "0.625rem",
-//   },
-// }));
 
 const exportColumns = [
   {
@@ -64,7 +50,7 @@ const exportColumns = [
     exportValue: row => row.clinicalStage,
   },
   {
-    label: "studyStartDate",
+    label: "startDate",
     exportValue: row => row.studyStartDate,
   },
 ];
@@ -75,7 +61,7 @@ const columns = [
     label: "Report",
     sticky: true,
     enableHiding: false,
-    renderCell: ({ clinicalReportId, trialLiterature }) => {
+    renderCell: ({ clinicalReportId }) => {
       if (!clinicalReportId) return naLabel;
       return (
         <ClinicalRecordDrawer
@@ -124,9 +110,10 @@ const columns = [
     },
   },
   {
+    id: "target",
     label: "Targets",
     enableHiding: false,
-    renderCell: ({ target, drug, targetFromSourceId }) => {
+    renderCell: ({ target, drug }) => {
       const mechanismsOfAction = drug.mechanismsOfAction || {};
       const { rows = [] } = mechanismsOfAction;
 
@@ -150,25 +137,14 @@ const columns = [
 
       return (
         <>
-          <Tooltip
-            title={
-              <>
-                Reported target:{" "}
-                <Link external to={`https://identifiers.org/uniprot/${targetFromSourceId}`}>
-                  {targetFromSourceId}
-                </Link>
-              </>
-            }
-            showHelpIcon
-          >
-            <Link asyncTooltip to={`/target/${target.id}`}>{symbol}</Link>
-          </Tooltip>
+          <Link asyncTooltip to={`/target/${target.id}`}>{symbol}</Link>
           {otherTargets.size > 0
             ? ` and ${otherTargets.size} other target${otherTargets.size > 1 ? "s" : ""}`
             : null}
         </>
       );
     },
+    filterValue: ({ target }) => target.approvedSymbol,
   },
   {
     id: "drug.name",
@@ -195,10 +171,9 @@ const columns = [
     label: "Stage",
     sortable: true,
     comparator: (a, b) => {
-      return clinicalStageCategories[b.clinicalStage?.index ?? -1] -
-        clinicalStageCategories[a.clinicalStage?.index ?? -1];
+      return (clinicalStageCategories[a.clinicalStage]?.index ?? -1) -
+        (clinicalStageCategories[b.clinicalStage]?.index ?? -1);
     },
-    // renderCell: ({ clinicalStage }) => clinicalStage,
     renderCell: ({ clinicalStage }) => clinicalStageCategories[clinicalStage]?.label ?? naLabel,
     filterValue: ({ clinicalStage }) => clinicalStageCategories[clinicalStage],
   },
@@ -212,20 +187,25 @@ const columns = [
     },
     sortable: true,
     renderCell: ({ studyStartDate }) => {
-      return new Date(studyStartDate).getFullYear() || naLabel;
+      return studyStartDate ? new Date(studyStartDate).getFullYear() : naLabel;
     },
     filterValue: ({ studyStartDate }) => {
-      return new Date(studyStartDate).getFullYear() || "";
+      return studyStartDate ? new Date(studyStartDate).getFullYear() : "";
     },
   },
 ];
 
 function Body({ id, label, entity }) {
-  const { ensgId: ensemblId, efoId } = id;
-  const [request, setRequest] = useState({ loading: true, data: null, error: false });
 
-  // const classes = useStyles();
-  // const columns = getColumns(classes);
+  const variables = {
+    ensemblId: id.ensgId,
+    efoId: id.efoId,
+    size: sectionsBaseSizeQuery,
+  };
+
+  const request = useQuery(CLINICAL_PRECEDENCE_QUERY, {
+    variables,
+  });
 
   return (
     <SectionItem
@@ -235,24 +215,19 @@ function Body({ id, label, entity }) {
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
-        <OtTableSSP
-          query={CLINICAL_PRECEDENCE_QUERY}
+        <OtTable
           columns={columns}
-          sortBy="clinicalStage"
           dataDownloader
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem={`clinical-precedence-evidence-${id}`}
-          entity={entity}
-          sectionName="clinical_precedence"
-          showGlobalFilter={true}
-          fixed={true}
-          setInitialRequestData={req => {
-            setRequest(req);
-          }}
-          variables={{
-            ensemblId,
-            efoId,
-          }}
+          dataDownloaderFileStem={`${id.ensgId}-${id.efoId}-clinical-precedence-evidence`}
+          rows={request.data?.disease.clinical_precedence.rows}
+          showGlobalFilter
+          query={CLINICAL_PRECEDENCE_QUERY.loc.source.body}
+          variables={variables}
+          loading={request.loading}
+          sortBy="clinicalStage"
+          order="desc"
+          // fixed={true}
         />
       )}
     />
