@@ -7,7 +7,7 @@ import {
   ProfileHeader as BaseProfileHeader,
 } from "ui";
 import { Fragment } from "react";
-import { phaseMap } from "@ot/constants";
+import { clinicalStageCategories } from "@ot/constants";
 
 import Smiles from "./Smiles";
 
@@ -28,11 +28,7 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
     drugType,
     maximumClinicalStage
   } = data?.drug || {};
-
-const clinicalPhase = maximumClinicalStage
-    ? phaseMap(maximumClinicalStage)
-    : "Preclinical";
-
+ 
   return (
     <BaseProfileHeader>
       <>
@@ -40,8 +36,8 @@ const clinicalPhase = maximumClinicalStage
         <Field loading={loading} title="Molecule type">
           {drugType}
         </Field>
-        <Field loading={loading} title="Max phase">
-          {clinicalPhase}
+        <Field loading={loading} title="Max stage">
+          {clinicalStageCategories[maximumClinicalStage]}
         </Field>
         <Field loading={loading} title="Parent molecule">
           {parentMolecule ? (

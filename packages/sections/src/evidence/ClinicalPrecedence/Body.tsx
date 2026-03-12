@@ -1,36 +1,26 @@
-import { useState } from "react";
-import { makeStyles } from "@mui/styles";
 import {
   Link,
   SectionItem,
   Tooltip,
-  ChipList,
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
-  OtTableSSP,
+  OtTable,
+  ClinicalRecordDrawer,
 } from "ui";
-
-import { phaseMap, stopReasonMap, naLabel, dataTypesMap } from "@ot/constants";
+import { useQuery } from "@apollo/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { clinicalStageCategories, naLabel, dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 import Description from "./Description";
 import { definition } from ".";
-
 import CLINICAL_PRECEDENCE_QUERY from "./ClinicalPrecedence.gql";
 import { Box, Typography } from "@mui/material";
 
-const useStyles = makeStyles(() => ({
-  tooltipContainer: {
-    padding: "0.3em",
-  },
-  chipContainer: {
-    display: "inline-block",
-    marginTop: "0.4em",
-  },
-  chipStyle: {
-    fontSize: "0.625rem",
-  },
-}));
-
 const exportColumns = [
+  {
+    label: "clinicalReportId",
+    exportValue: row => row.clinicalReportId,
+  },
   {
     label: "diseaseId",
     exportValue: row => row.disease.id,
@@ -52,244 +42,170 @@ const exportColumns = [
     exportValue: row => row.drug.id,
   },
   {
-    label: "drugType",
-    exportValue: row => row.drug.drugType,
-  },
-  {
-    label: "mechanismsOfAction",
-    exportValue: ({ target, drug }) => {
-      const mechanismsOfAction = drug.mechanismsOfAction || {};
-      const { rows = [] } = mechanismsOfAction;
-
-      let anchorMa = null;
-
-      const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
-        if (anchorMa === null) {
-          let isAssociated = false;
-          for (let i = 0; i < targets.length; i++) {
-            if (targets[i].id === target.id) {
-              anchorMa = mechanismOfAction;
-              isAssociated = true;
-              break;
-            }
-          }
-
-          if (!isAssociated) {
-            acc.add(mechanismOfAction);
-          }
-        } else {
-          acc.add(mechanismOfAction);
-        }
-
-        return acc;
-      }, new Set());
-
-      return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
-    },
+    label: "drugName",
+    exportValue: row => row.drug.name,
   },
   {
     label: "clinicalStage",
     exportValue: row => row.clinicalStage,
   },
   {
-    label: "studyStartDate",
+    label: "startDate",
     exportValue: row => row.studyStartDate,
   },
 ];
 
-function getColumns(classes) {
-  return [
-    {
-      id: "disease.name",
-      label: "Disease/phenotype",
-      enableHiding: false,
-      renderCell: ({ disease, cohortPhenotypes }) => {
-        let displayElement = naLabel;
-        if (disease)
-          displayElement = (
-            <Link asyncTooltip to={`/disease/${disease.id}`}>
-              {disease.name}
-            </Link>
-          );
-        if (cohortPhenotypes && cohortPhenotypes.length) {
-          displayElement = (
-            <Tooltip
-              showHelpIcon
-              title={
-                <Box>
-                  <Typography variant="subtitle2" display="block" align="center">
-                    All reported phenotypes:
-                  </Typography>
-                  {cohortPhenotypes.map(e => (
-                    <div key={e}>{e}</div>
-                  ))}
-                </Box>
-              }
-            >
-              {displayElement}
-            </Tooltip>
-          );
-        }
-        return displayElement;
-      },
+const columns = [
+  {
+    id: "clinicalReportId",
+    label: "Report",
+    sticky: true,
+    enableHiding: false,
+    renderCell: ({ clinicalReportId }) => {
+      if (!clinicalReportId) return naLabel;
+      return (
+        <ClinicalRecordDrawer
+          recordId={clinicalReportId}
+        >
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
+            Details
+            <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
+          </Box>
+        </ClinicalRecordDrawer>
+      );
     },
-    {
-      label: "Targets",
-      renderCell: ({ target, drug, targetFromSourceId }) => {
-        const mechanismsOfAction = drug.mechanismsOfAction || {};
-        const { rows = [] } = mechanismsOfAction;
-
-        let symbol = "";
-
-        const otherTargets = rows.reduce((acc, { targets }) => {
-          targets.forEach(({ id, approvedSymbol }) => {
-            if (id !== target.id) {
-              acc.add(id);
-            } else {
-              symbol = approvedSymbol;
-            }
-          });
-          return acc;
-        }, new Set());
-
-        if (symbol === "") {
-          const { approvedSymbol: targetSymbol } = target;
-          symbol = targetSymbol;
-        }
-
-        return (
-          <>
-            <Tooltip
-              title={
-                <>
-                  Reported target:{" "}
-                  <Link external to={`https://identifiers.org/uniprot/${targetFromSourceId}`}>
-                    {targetFromSourceId}
-                  </Link>
-                </>
-              }
-              showHelpIcon
-            >
-              <Link to={`/target/${target.id}`}>{symbol}</Link>
-            </Tooltip>
-            {otherTargets.size > 0
-              ? ` and ${otherTargets.size} other target${otherTargets.size > 1 ? "s" : ""}`
-              : null}
-          </>
+  },
+  {
+    id: "disease.name",
+    label: "Disease/phenotype",
+    enableHiding: false,
+    renderCell: ({ disease, cohortPhenotypes }) => {
+      let displayElement = naLabel;
+      if (disease)
+        displayElement = (
+          <Link asyncTooltip to={`/disease/${disease.id}`}>
+            {disease.name}
+          </Link>
         );
-      },
-    },
-    {
-      id: "drug.name",
-      label: "Drug",
-      enableHiding: false,
-      renderCell: ({ drug }) => <Link to={`/drug/${drug.id}`}>{drug.name}</Link>,
-    },
-    {
-      id: "drug.drugType",
-      label: "Modality",
-    },
-    {
-      label: "Mechanism of action (MoA)",
-      renderCell: ({ target, drug }) => {
-        const mechanismsOfAction = drug.mechanismsOfAction || {};
-        const { rows = [] } = mechanismsOfAction;
-
-        let anchorMa = null;
-
-        const mas = rows.reduce((acc, { mechanismOfAction, targets }) => {
-          if (anchorMa === null) {
-            let isAssociated = false;
-            for (let i = 0; i < targets.length; i++) {
-              if (targets[i].id === target.id) {
-                anchorMa = mechanismOfAction;
-                isAssociated = true;
-                break;
-              }
+      if (cohortPhenotypes && cohortPhenotypes.length) {
+        displayElement = (
+          <Tooltip
+            showHelpIcon
+            title={
+              <Box>
+                <Typography variant="subtitle2" display="block" align="center">
+                  All reported phenotypes:
+                </Typography>
+                {cohortPhenotypes.map(e => (
+                  <div key={e}>{e}</div>
+                ))}
+              </Box>
             }
+          >
+            {displayElement}
+          </Tooltip>
+        );
+      }
+      return displayElement;
+    },
+  },
+  {
+    id: "target",
+    label: "Targets",
+    enableHiding: false,
+    renderCell: ({ target, drug }) => {
+      const mechanismsOfAction = drug.mechanismsOfAction || {};
+      const { rows = [] } = mechanismsOfAction;
 
-            if (!isAssociated) {
-              acc.add(mechanismOfAction);
-            }
+      let symbol = "";
+
+      const otherTargets = rows.reduce((acc, { targets }) => {
+        targets.forEach(({ id, approvedSymbol }) => {
+          if (id !== target.id) {
+            acc.add(id);
           } else {
-            acc.add(mechanismOfAction);
+            symbol = approvedSymbol;
           }
+        });
+        return acc;
+      }, new Set());
 
-          return acc;
-        }, new Set());
+      if (symbol === "") {
+        const { approvedSymbol: targetSymbol } = target;
+        symbol = targetSymbol;
+      }
 
-        return `${anchorMa || naLabel}${mas.size > 0 ? ` and ${mas.size} other MoA` : ""}`;
-      },
+      return (
+        <>
+          <Link asyncTooltip to={`/target/${target.id}`}>{symbol}</Link>
+          {otherTargets.size > 0
+            ? ` and ${otherTargets.size} other target${otherTargets.size > 1 ? "s" : ""}`
+            : null}
+        </>
+      );
     },
-    {
-      id: "directionOfVariantEffect",
-      label: (
-        <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl"></DirectionOfEffectTooltip>
-      ),
-      renderCell: ({ directionOnTarget, directionOnTrait }) => {
-        return (
-          <DirectionOfEffectIcon
-            variantEffect={directionOnTarget}
-            directionOnTrait={directionOnTrait}
-          />
-        );
-      },
+    filterValue: ({ target }) => target.approvedSymbol,
+  },
+  {
+    id: "drug.name",
+    label: "Drug",
+    enableHiding: false,
+    renderCell: ({ drug }) => <Link asyncTooltip to={`/drug/${drug.id}`}>{drug.name}</Link>,
+  },
+  {
+    id: "directionOfVariantEffect",
+    label: (
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl"></DirectionOfEffectTooltip>
+    ),
+    renderCell: ({ directionOnTarget, directionOnTrait }) => {
+      return (
+        <DirectionOfEffectIcon
+          variantEffect={directionOnTarget}
+          directionOnTrait={directionOnTrait}
+        />
+      );
     },
-    {
-      id: "clinicalStage",
-      label: "Stage",
-      sortable: true,
-      renderCell: ({ clinicalStage }) => phaseMap(clinicalStage),
-      filterValue: ({ clinicalStage }) => phaseMap(clinicalStage),
+  },
+  {
+    id: "clinicalStage",
+    label: "Stage",
+    sortable: true,
+    comparator: (a, b) => {
+      return (clinicalStageCategories[a.clinicalStage]?.index ?? -1) -
+        (clinicalStageCategories[b.clinicalStage]?.index ?? -1);
     },
-    {
-      id: "trialWhyStopped",
-      label: "Why Stopped",
-      renderCell: ({ trialWhyStopped, trialStopReasonCategories }) => {
-        if (trialWhyStopped)
-          return (
-            <Tooltip
-              showHelpIcon
-              title={
-                <div className={classes.tooltipContainer}>
-                  <div>
-                    <span>Trial stop reason: {trialWhyStopped}</span>
-                  </div>
-                  <div className={classes.chipContainer}>
-                    {trialStopReasonCategories ? (
-                      <ChipList
-                        items={trialStopReasonCategories.map(reason => ({
-                          label: stopReasonMap(reason),
-                          customClass: classes.chipStyle,
-                        }))}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              }
-            >
-              {trialWhyStopped}
-            </Tooltip>
-          );
-        return naLabel;
-      },
+    renderCell: ({ clinicalStage }) => clinicalStageCategories[clinicalStage]?.label ?? naLabel,
+    filterValue: ({ clinicalStage }) => clinicalStageCategories[clinicalStage],
+  },
+  {
+    id: "studyStartDate",
+    label: "Start Date",
+    numeric: true,
+    comparator: (a, b) => {
+      return (new Date(a.studyStartDate).getTime() || -1) -
+        (new Date(b.studyStartDate).getTime() || -1);
     },
-    {
-      id: "studyStartDate",
-      label: "Start Date",
-      numeric: true,
-      renderCell: ({ studyStartDate }) =>
-        studyStartDate ? new Date(studyStartDate).getFullYear() : naLabel,
+    sortable: true,
+    renderCell: ({ studyStartDate }) => {
+      return studyStartDate ? new Date(studyStartDate).getFullYear() : naLabel;
     },
-  ];
-}
+    filterValue: ({ studyStartDate }) => {
+      return studyStartDate ? new Date(studyStartDate).getFullYear() : "";
+    },
+  },
+];
 
 function Body({ id, label, entity }) {
-  const { ensgId: ensemblId, efoId } = id;
-  const [request, setRequest] = useState({ loading: true, data: null, error: false });
 
-  const classes = useStyles();
-  const columns = getColumns(classes);
+  const variables = {
+    ensemblId: id.ensgId,
+    efoId: id.efoId,
+    size: sectionsBaseSizeQuery,
+  };
+
+  const request = useQuery(CLINICAL_PRECEDENCE_QUERY, {
+    variables,
+  });
 
   return (
     <SectionItem
@@ -299,23 +215,19 @@ function Body({ id, label, entity }) {
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
-        <OtTableSSP
-          query={CLINICAL_PRECEDENCE_QUERY}
+        <OtTable
           columns={columns}
-          sortBy="clinicalStage"
           dataDownloader
           dataDownloaderColumns={exportColumns}
-          dataDownloaderFileStem={`clinical-precedence-evidence-${id}`}
-          entity={entity}
-          sectionName="clinical_precedence"
-          showGlobalFilter={false}
-          setInitialRequestData={req => {
-            setRequest(req);
-          }}
-          variables={{
-            ensemblId,
-            efoId,
-          }}
+          dataDownloaderFileStem={`${id.ensgId}-${id.efoId}-clinical-precedence-evidence`}
+          rows={request.data?.disease.clinical_precedence.rows}
+          showGlobalFilter
+          query={CLINICAL_PRECEDENCE_QUERY.loc.source.body}
+          variables={variables}
+          loading={request.loading}
+          sortBy="clinicalStage"
+          order="desc"
+          // fixed={true}
         />
       )}
     />

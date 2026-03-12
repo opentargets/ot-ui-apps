@@ -1,4 +1,4 @@
-query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cursor: String) {
+query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!) {
   disease(efoId: $efoId) {
     id
     clinical_precedence: evidences(
@@ -6,9 +6,7 @@ query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cur
       enableIndirect: true
       datasourceIds: ["clinical_precedence"]
       size: $size
-      cursor: $cursor
     ) {
-      cursor
       count
       rows {
         disease {
@@ -22,10 +20,8 @@ query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cur
         drug {
           id
           name
-          drugType
           mechanismsOfAction {
             rows {
-              mechanismOfAction
               targets {
                 id
                 approvedSymbol
@@ -35,12 +31,10 @@ query ClinicalPrecedence($ensemblId: String!, $efoId: String!, $size: Int!, $cur
         }
         directionOnTarget
         directionOnTrait
-        targetFromSourceId
         clinicalStage
         clinicalReportId
         studyStartDate
-        trialWhyStopped
-        trialStopReasonCategories
+
       }
     }
   }
