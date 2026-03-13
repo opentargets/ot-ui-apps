@@ -28,6 +28,8 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
     drugType,
     maximumClinicalStage
   } = data?.drug || {};
+
+  const maxStage = clinicalStageCategories[maximumClinicalStage] ? clinicalStageCategories[maximumClinicalStage].label : "N/A";
  
   return (
     <BaseProfileHeader>
@@ -37,7 +39,7 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
           {drugType}
         </Field>
         <Field loading={loading} title="Max stage">
-          {clinicalStageCategories[maximumClinicalStage]}
+          {maxStage}
         </Field>
         <Field loading={loading} title="Parent molecule">
           {parentMolecule ? (
