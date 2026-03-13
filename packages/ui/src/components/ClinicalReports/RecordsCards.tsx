@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { Link } from "ui";
+import { Link, Tooltip } from "ui";
 import { defaultRowsPerPageOptions, clinicalReportsSourcesInfo } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
@@ -100,17 +100,19 @@ function RecordsCards({
                     }}
                   >
                     <Typography variant="caption">Source:</Typography>
-                    {sourceInfo ? (
-                      <Link to={sourceInfo.url} tooltip={sourceInfo.name}>
-                        <Typography variant="caption" sx={{ fontSize: 13 }}>
-                          {source}
-                        </Typography>
-                      </Link>
-                    ) : (
-                      <Typography variant="caption" sx={{ fontSize: 13 }}>
-                        {source}
-                      </Typography>
-                    )}
+                    <Typography variant="caption" sx={{ fontSize: 13 }}>
+                      {source}
+                      {sourceInfo?.name !== source && (
+                        <Tooltip
+                          showHelpIcon
+                          title={
+                            <Typography variant="caption" sx={{ fontSize: 12 }}>
+                              {sourceInfo.name}
+                            </Typography>
+                          }
+                        />
+                      )}
+                    </Typography>
                   </Box>
                 {trialOverallStatus && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>

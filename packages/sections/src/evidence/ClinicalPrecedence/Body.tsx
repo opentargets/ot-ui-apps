@@ -68,7 +68,7 @@ const columns = [
           recordId={clinicalReportId}
         >
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-            Details
+            View
             <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
           </Box>
         </ClinicalRecordDrawer>
