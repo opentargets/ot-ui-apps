@@ -111,10 +111,10 @@ function tickScaleFactory(filterActionPairs) {
   };
 }
 
-function sumInclusiveIntervals(intervals) {
+function sumInclusiveIntervals(enhancers) {
   const events = new Map();
 
-  for (const { start, end, score } of intervals) {
+  for (const { start, end, score } of enhancers) {
     // interval is [start, end] inclusive
     events.set(start, (events.get(start) || 0) + score);
     events.set(end + 1, (events.get(end + 1) || 0) - score);
@@ -335,8 +335,8 @@ function BodyContentInner() {
   }
 
   // E2G
-  if (data.variant.intervals.count > 0) {
-    const enhancersByGene = Object.groupBy(data.variant.intervals.rows, row => row.target.id);
+  if (data.variant.enhancerToGenes.count > 0) {
+    const enhancersByGene = Object.groupBy(data.variant.enhancerToGenes.rows, row => row.target.id);
     const distributionByGene = {};
     for (const [geneId, enhancers] of Object.entries(enhancersByGene)) {
       distributionByGene[geneId] = sumInclusiveIntervals(enhancers);

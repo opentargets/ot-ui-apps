@@ -51,7 +51,7 @@ function BodyContent({ data }) {
     })
   );
   xExtremes.push(  // enhancers (E2G)
-    data.variant.intervals.rows.map(({ start, end }) => [start, end])
+    data.variant.enhancerToGenes.rows.map(({ start, end }) => [start, end])
   );
   xExtremes.push(  // molQTL coloc
     data.molqtlcolocalisation.rows.map(row => row.otherStudyLocus.variant.position)

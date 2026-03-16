@@ -63,7 +63,7 @@ query SummaryTracksQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
       position
       referenceAllele
       alternateAllele
-      intervals(page: { size: 3000, index: 0 }) {  # E2G
+      enhancerToGenes(page: { size: 3000, index: 0 }) {  # E2G
         count
         rows {
           chromosome

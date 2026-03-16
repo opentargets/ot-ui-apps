@@ -163,7 +163,7 @@ function MyTooltip() {
 }
 ```
 
-#### IImprovements/Features To Add
+#### Improvements/Features To Add
 
 - Crosshairs option on hover. Ideally ink vertical crosshairs so they show on both canvases.
 
