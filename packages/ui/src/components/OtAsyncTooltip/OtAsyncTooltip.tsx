@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Box,
@@ -16,9 +16,10 @@ import {
   getEntityQuery,
   getQueryVariables,
 } from "./utils/asyncTooltipUtil";
-import { naLabel } from "@ot/constants";
+import { GenomicLocationPresentationType, IGeneomicLocation, naLabel } from "@ot/constants";
 
 import StudyPublication from "../StudyPublication";
+import { OtGenomicLocation } from "../..";
 
 const DELAY_REQUEST = 1000;
 
@@ -87,6 +88,8 @@ function OtAsyncTooltip({ children, entity, id }: OtAsyncTooltipProps): ReactEle
     };
   }, []);
 
+
+
   const tooltipContent = getTooltipContent();
 
   return (
@@ -127,7 +130,7 @@ type TooltipData = {
   publicationFirstAuthor?: string;
   publicationDate?: string;
   publicationJournal?: string;
-  genomicLocation?: { chromosome?: string; start?: number };
+  genomicLocation?: IGeneomicLocation;
 };
 
 function AsyncTooltipDataView({
@@ -138,7 +141,8 @@ function AsyncTooltipDataView({
   data: TooltipData;
 }): ReactElement {
   const showSubText = !!(data?.mostSevereConsequence?.label || data?.publicationFirstAuthor);
-  const showChromosome = entity === "target" && data?.genomicLocation?.chromosome;
+
+  const hasGeneLoc = entity === "target" && data?.genomicLocation?.chromosome;
 
   function getSubtext() {
     let finalSubText;
@@ -199,13 +203,11 @@ function AsyncTooltipDataView({
           </Box>
         </Box>
       </Box>
-          {showChromosome && data.genomicLocation?.chromosome && (
-            <>
+          {hasGeneLoc && (
+            <Box sx={{ mt: 1, px:1, typography: "body2" }} component="span">
               <Divider />
-              <Box sx={{ typography: "caption", color: theme => theme.palette.grey[900], pt: 1, pl: 1 }}>
-                {`Chromosome: ${data.genomicLocation.chromosome}${data.genomicLocation.start ? `:${data.genomicLocation.start.toLocaleString()}` : ''}`}
-              </Box>
-            </>
+              <OtGenomicLocation type={GenomicLocationPresentationType.PLAIN} geneLoc={data?.genomicLocation!} />
+            </Box>
           )}
       {showSubText && (
         <>

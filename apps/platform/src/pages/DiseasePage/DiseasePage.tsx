@@ -19,7 +19,8 @@ function DiseasePage(): ReactElement {
   const location = useLocation();
   const { efoId } = useParams<DiseaseURLParams>();
   const { loading, data } = useQuery(DISEASE_PAGE_QUERY, {
-    variables: { efoId },
+    variables: { efoId: efoId! },
+
   });
 
   if (data && !data.disease) {
@@ -62,8 +63,8 @@ function DiseasePage(): ReactElement {
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Profile efoId={efoId} name={name} />} />
-          <Route path="/associations" element={<Associations efoId={efoId} />} />
+          <Route path="/" element={<Profile efoId={efoId!} name={name!} />} />
+          <Route path="/associations" element={<Associations efoId={efoId!} />} />
         </Routes>
       </>
     </BasePage>

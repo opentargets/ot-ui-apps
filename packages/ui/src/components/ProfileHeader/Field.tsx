@@ -5,9 +5,10 @@ type FieldProps = {
   children?: ReactNode;
   loading: boolean;
   title: string;
+  testId?: string;
 };
 
-function Field({ title, loading, children }: FieldProps): ReactNode {
+function Field({ title, loading, children, testId }: FieldProps): ReactNode {
   if (loading) return <Skeleton />;
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
@@ -15,7 +16,7 @@ function Field({ title, loading, children }: FieldProps): ReactNode {
   }
 
   return (
-    <Typography variant="subtitle2">
+    <Typography data-testid={testId} variant="subtitle2">
       {title}:{" "}
       <Typography display="inline" variant="body2">
         {children}

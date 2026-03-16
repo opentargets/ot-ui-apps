@@ -63,9 +63,11 @@ function GtexTab({ symbol, data }) {
   const gtexVariability = useRef();
 
   return (
-    <DownloadSvgPlot svgContainer={gtexVariability} filenameStem={`${symbol}-gtex`}>
-      <GtexVariability data={data.target.expressions} ref={gtexVariability} />
-    </DownloadSvgPlot>
+    <div data-testid="expression-gtex-content">
+      <DownloadSvgPlot svgContainer={gtexVariability} filenameStem={`${symbol}-gtex`}>
+        <GtexVariability data={data.target.expressions} ref={gtexVariability} />
+      </DownloadSvgPlot>
+    </div>
   );
 }
 

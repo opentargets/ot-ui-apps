@@ -159,7 +159,7 @@ function DataDownloader({ columns, rows, fileStem, query, variables, btnLabel = 
 
   return (
     <>
-      <Box>
+      <Box data-testid="data-downloader">
         <Button
           aria-controls={open ? "basic-menu" : undefined}
           aria-haspopup="true"

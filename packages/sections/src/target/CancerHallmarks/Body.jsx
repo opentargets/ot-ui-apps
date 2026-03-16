@@ -85,7 +85,7 @@ function Section({ id, label: symbol, entity }) {
 
         return (
           <>
-            <Box className={classes.roleInCancerBox}>
+            <Box data-testid="role-in-cancer" className={classes.roleInCancerBox}>
               <Typography className={classes.roleInCancerTitle}>Role in cancer:</Typography>
               <ChipList items={roleInCancer?.length > 0 ? roleInCancer : [{ label: "Unknown" }]} />
             </Box>

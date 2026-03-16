@@ -83,12 +83,20 @@ const listComponentStyles = makeStyles(theme => ({
   },
 }));
 
-export function PublicationsList({ entriesIds, hideSearch = false, name, symbol }) {
+export function PublicationsList({
+  entriesIds,
+  hideSearch = false,
+  name,
+  symbol,
+  showRowsPerPageControl,
+  showPaginationAlways,
+}) {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds);
+    // filter out empty ids - these will fetch irrelevant publications
+    const { baseUrl, formBody } = europePmcSearchPOSTQuery(entriesIds.filter(id => id?.trim()));
     const requestOptions = {
       method: "POST",
       headers: {
@@ -194,6 +202,8 @@ export function PublicationsList({ entriesIds, hideSearch = false, name, symbol 
       rows={parsedPublications}
       showGlobalFilter={!hideSearch}
       showColumnVisibilityControl={false}
+      showRowsPerPageControl={showRowsPerPageControl}
+      showPaginationAlways={showPaginationAlways}
     />
   );
 }
@@ -211,10 +221,6 @@ function PublicationsDrawer({
 
   const entriesIds = entries.map(entry => entry.name);
 
-  if (entries.length === 0) {
-    return naLabel;
-  }
-
   const toggleDrawer = event => {
     if (event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
       return;
@@ -225,6 +231,10 @@ function PublicationsDrawer({
   const closeDrawer = () => {
     setOpen(false);
   };
+
+  if (entries.length === 0) {
+    return naLabel;
+  }
 
   return (
     <>
@@ -243,6 +253,7 @@ function PublicationsDrawer({
         classes={{ modal: classes.drawerModal, paper: classes.drawerPaper }}
         open={open}
         onClose={closeDrawer}
+        data-testid="publications-drawer"
       >
         <Paper classes={{ root: classes.drawerTitle }} elevation={0}>
           <Box display="flex" justifyContent="space-between" alignItems="center">

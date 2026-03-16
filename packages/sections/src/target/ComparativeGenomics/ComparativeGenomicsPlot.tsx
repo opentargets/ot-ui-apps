@@ -62,7 +62,7 @@ function Wrapper({ homologues, viewMode, loading, query, variables, columns }) {
       </Box>
     );
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <Box data-testid="comparative-genomics-chart" sx={{ display: "flex", flexDirection: "column" }}>
       <ChartControls data={homologues} query={query} variables={variables} columns={columns} />
       {viewMode !== "default" && (
         <Typography sx={{ width: "85%", my: 2, ml: 4 }} variant="body2">

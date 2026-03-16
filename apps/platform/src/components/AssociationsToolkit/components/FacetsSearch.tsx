@@ -40,9 +40,11 @@ function FacetsSearch(): ReactElement {
         disableElevation
         iconSize="lg"
         sx={{ height: 1, maxHeight: "45px" }}
+        testId="facets-search-button"
       />
 
       <Popover
+        data-testid="facets-popover"
         id={popoverId}
         open={open}
         anchorEl={anchorEl}

@@ -1,4 +1,4 @@
-import { Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 
 import LongText from "../LongText";
 import { ReactNode } from "react";
@@ -18,10 +18,10 @@ function Description({ children, loading = false }: DescriptionProps): ReactNode
   );
 
   return (
-    <>
+    <Box data-testid="profile-description">
       <Typography variant="subtitle2">Description</Typography>
       {loading ? <Skeleton height="5rem" /> : content}
-    </>
+    </Box>
   );
 }
 

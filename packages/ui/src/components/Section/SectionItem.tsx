@@ -92,7 +92,7 @@ function SectionItem({
 
   return (
     <Grid item xs={12}>
-      <section>
+      <section data-testid={`section-${definition.id.toLowerCase().replace(/_/g, '-')}`}>
         <Element name={definition.id}>
           <Card elevation={0} variant="outlined">
             <ErrorBoundary>
@@ -108,6 +108,7 @@ function SectionItem({
                 {/* HEADER, SUB-HEADER & CHIP */}
                 <Box sx={{ flex: 1 }}>
                   <div
+                    data-testid={`section-${definition.id.toLowerCase().replace(/_/g, '-')}-header`}
                     className={classNames(classes.title, classes.titleHasData, {
                       [classes.titleError]: error,
                     })}
@@ -121,6 +122,7 @@ function SectionItem({
                     )}
                   </div>
                   <Typography
+                    data-testid="section-description"
                     className={classNames(classes.description, classes.descriptionHasData, {
                       [classes.descriptionError]: error,
                     })}

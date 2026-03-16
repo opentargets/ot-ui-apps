@@ -76,7 +76,7 @@ function Header({
   const classes = useStyles();
 
   return (
-    <Grid className={classes.titleContainer} container id="profile-page-header-block">
+    <Grid className={classes.titleContainer} data-testid="profile-page-header-block" container id="profile-page-header-block">
       <Grid item zeroMinWidth>
         <Grid container wrap="nowrap">
           <Box sx={iconHeaderStyles}>
@@ -84,7 +84,7 @@ function Header({
           </Box>
           <Grid item zeroMinWidth>
             <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
-              <Typography className={classes.title} variant="h4" noWrap title={title}>
+              <Typography  data-testid="profile-page-header-text" className={classes.title} variant="h4" noWrap title={title}>
                 <Box component="span" sx={iconTextStyles}>
                   <FontAwesomeIcon icon={Icon} size="sm" className={classes.mainIcon} />
                 </Box>
@@ -95,7 +95,7 @@ function Header({
               </Typography>
             </Grid>
             <Grid container sx={{ mb: { xs: 2, md: 0 } }}>
-              <Typography variant="body2" className={classes.externalLinks}>
+              <Typography variant="body2" className={classes.externalLinks} data-testid="external-links">
                 {loading ? <Skeleton width="50vw" /> : externalLinks}
               </Typography>
             </Grid>
