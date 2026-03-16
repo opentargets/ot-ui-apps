@@ -68,7 +68,7 @@ function Body({ id: ensemblId, label: name, entity }) {
               )
             }
             detail={
-              recordsByStage && (
+              (recordsByStage || loadingRecords) && (
                 <RecordsCards
                   records={recordsByStage}
                   loading={loadingRecords}

@@ -12,11 +12,12 @@ import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 import { sum } from "d3";
 
 function RecordsCards({
-  records,
+  records: recordsProp,
   loading,
   maxClinicalStage,
   selectedEntity,
 }) {
+  const records = recordsProp || {};
   const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
@@ -155,8 +156,6 @@ function RecordsCards({
     { id: "trialStartDate" },
   ];
 
-  if (!selectedStage || (loading && !showLoading)) return null;
-
   if (showLoading) {
     return (
       <Box
@@ -171,6 +170,8 @@ function RecordsCards({
       </Box>
     );
   }
+
+  if (!selectedStage || (loading && !showLoading)) return null;
 
   const rows = records[selectedStage]?.toSorted((a: any, b: any) => {
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
