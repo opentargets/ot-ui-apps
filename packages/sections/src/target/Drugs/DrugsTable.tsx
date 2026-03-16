@@ -181,38 +181,36 @@ function DrugsTable({ ensemblId, rows, selectedRow, selectRow, loading }) {
       }}
     >
       <OtTable
-        {...({
-          showGlobalFilter: true,
-          globalFilterPlaceholderText: "Search...",
-          columns,
-          rows: sortedRows,
-          query: DRUGS_QUERY.loc?.source?.body,
-          variables: { ensemblId },
-          dataDownloader: true,
-          dataDownloaderFileStem: "drugs-and-clinical-candidates",
-          dataDownloaderColumns: dataDownloaderColoumns,
-          showColumnVisibilityControl: false,
-          getSelectedRows: (rowsInfo) => {
-            if (!(rowsInfo?.length > 0)) return;
+        showGlobalFilter
+        globalFilterPlaceholderText="Search..."
+        columns={columns}
+        rows={sortedRows}
+        query={DRUGS_QUERY.loc?.source?.body}
+        variables={{ ensemblId }}
+        dataDownloader
+        dataDownloaderFileStem="drugs-and-clinical-candidates"
+        dataDownloaderColumns={dataDownloaderColoumns}
+        showColumnVisibilityControl={false}
+        getSelectedRows={(rowsInfo) => {
+          if (!(rowsInfo?.length > 0)) return;
 
-            const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
-            if (!selectedOriginalRows.length) return;
-            const nextRow =
-              selectedOriginalRows.find(r => r.id !== selectedRow?.id) ?? selectedOriginalRows[0];
+          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+          if (!selectedOriginalRows.length) return;
+          const nextRow =
+            selectedOriginalRows.find(r => r.id !== selectedRow?.id) ?? selectedOriginalRows[0];
 
-            if (!nextRow?.id) return;
+          if (!nextRow?.id) return;
 
-            if (nextRow.id !== selectedRow?.id) {
-              selectRow(nextRow);
-            }
-          },
-          loading,
-          sortBy: "drugCard",
-          order: "desc",
-          showRowsPerPageControl: false,
-          showPaginationAlways: false,
-          wrapControls: { rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } },
-        })}
+          if (nextRow.id !== selectedRow?.id) {
+            selectRow(nextRow);
+          }
+        }}
+        loading={loading}
+        sortBy="drugCard"
+        order="desc"
+        showRowsPerPageControl={false}
+        showPaginationAlways={false}
+        wrapControls={{ rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } }}
       />
     </Box>
   );
