@@ -12,7 +12,7 @@ function DrugHeader({ loading, chemblId, name, crossReferences } : { loading: bo
     : null;
   const wikipedia = crossReferences ? crossReferences.find(cr => cr.source === "Wikipedia") : null;
   const probesDrugs = crossReferences
-    ? crossReferences.find(cr => cr.source === "probes&drugs")
+    ? crossReferences.find(cr => cr.source === "Probes&Drugs")
     : null;
 
   return (
