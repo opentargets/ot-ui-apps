@@ -4,7 +4,7 @@ query GeneOntology($ensemblId: String!) {
     geneOntology {
       term {
         id
-        name
+        label
       }
       aspect
       evidence
