@@ -1,6 +1,7 @@
 import { test as base } from "@playwright/test";
 import type { TestConfig } from "../types";
 import { getTestConfig } from "./testConfig";
+import { GraphQLMonitor } from "../utils/graphqlMonitor";
 
 /**
  * Default base URL for tests
@@ -13,6 +14,7 @@ const DEFAULT_BASE_URL = "http://localhost:3000";
 type TestFixtures = {
   testConfig: TestConfig;
   baseURL: string;
+  graphqlMonitor: GraphQLMonitor;
 };
 
 /**
@@ -29,6 +31,13 @@ export const test = base.extend<TestFixtures>({
   baseURL: async ({}, use) => {
     const url = process.env.PLAYWRIGHT_TEST_BASE_URL || DEFAULT_BASE_URL;
     await use(url);
+  },
+
+  graphqlMonitor: async ({ page }, use) => {
+    const monitor = new GraphQLMonitor(page);
+    await monitor.start();
+    await use(monitor);
+    await monitor.stop();
   },
 });
 
