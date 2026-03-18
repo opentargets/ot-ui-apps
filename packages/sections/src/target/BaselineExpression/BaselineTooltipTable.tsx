@@ -31,9 +31,6 @@ function BaselineTooltipTable({ data, show, showName, showSource }) {
           {data.specificity_score == null ? naLabel : formatZeroToOne(data.specificity_score)}
         </Box>
       </TooltipRow>
-      <TooltipRow label="Distribution score">
-        <Box display="flex">{formatZeroToOne(data.distribution_score)}</Box>
-      </TooltipRow>
       {showSource && data?.[`${show}BiosampleFromSource`] && (
         <TooltipRow label="Reported annotation">
           <Box display="flex">{data?.[`${show}BiosampleFromSource`]}</Box>

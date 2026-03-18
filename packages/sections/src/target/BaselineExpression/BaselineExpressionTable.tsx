@@ -21,8 +21,9 @@ import { green, grey } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { theme } from "@ot/config";
-import { naLabel } from "@ot/constants";
-import { sentenceCase } from "@ot/utils";
+import { naLabel, baselineUnits } from "@ot/constants";
+import { sentenceCase, formatSignificantDigits } from "@ot/utils";
+
 import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import {
   createColumnHelper,
@@ -39,7 +40,7 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Link, Tooltip } from "ui";
+import { Link, ScientificNotation, Tooltip } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 import DetailPlot from "./DetailPlot";
 
@@ -101,6 +102,47 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed || containsSubstr;
 };
 
+function isTopRow(cellcontext) {
+  return cellcontext.row.id === cellcontext.table.getRowModel().rows[0]?.id;
+}
+
+function XAxis({ datatype, maxValue = "max"}) {
+  const displayMax = formatSignificantDigits(maxValue);
+  console.log({ maxValue, displayMax });
+  return (
+    <Box sx={{
+        position: "absolute",
+        top: 0,
+        mt: -5.75,
+        left: "1.5rem",
+        right: "3.5rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "end",
+        height: "36px",
+      }}>
+      {/* <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "start" }}> */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", pb: 0.25 }}>
+          <Typography variant="caption" sx={{ lineHeight: 1 }}>0 {baselineUnits[datatype]}</Typography>
+          <Typography variant="caption" sx={{ lineHeight: 1 }}>
+            {displayMax.toLowerCase().includes("e")
+              ? <ScientificNotation number={maxValue} dp={1} />
+              : displayMax
+            }
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: "100%",
+            height: "4px",
+            borderWidth: "0 1px 1px",
+            borderColor: "#999",
+            borderStyle: "solid",
+          }}></Box>
+      {/* </Box> */}
+    </Box>
+  );
+}
 interface BaselineExpressionDataRow {
   tissueBiosample?: {
     biosampleId: string;
@@ -330,6 +372,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   const [groupByTissue, setGroupByTissue] = useState(true);
   // const [searchTerm, setSearchTerm] = useState("");
 
+  console.log(data)
+
   const handleExpandedChange = useCallback(
     (updaterOrValue: ExpandedState | ((old: ExpandedState) => ExpandedState)) => {
       setExpanded((old) => {
@@ -358,7 +402,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   );
 
   const viewType = groupByTissue ? "tissue" : "celltype";
-  const { firstLevel, secondLevel, thirdLevel } = data[viewType];
+  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[viewType];
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -417,7 +461,12 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           }
           showHelpIcon
         >
-          {groupByTissue ? "Tissue" : "Cell Type"}
+          <Box
+            component="span"
+            sx={{ display: "inline-flex", alignItems: "flex-start", lineHeight: 1 }}
+          >
+            {groupByTissue ? "Tissue" : "Cell Type"}
+          </Box>
         </Tooltip>
       ),
       cell: (cellContext) => {
@@ -515,7 +564,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           },
           {
             accessorKey: datatype,
-            header: datatypeNameLookup[datatype] ?? datatype,
+            header: <Box sx={{ pb: 3.5 }}>{datatypeNameLookup[datatype] ?? datatype}</Box>,
             enableSorting: true,
             sortingFn: getSortingFn(datatype, datatypes),
             cell: (cellContext) => {
@@ -544,98 +593,115 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
               if (value === -1) {
                 return (
-                  <Tooltip
-                    placement="top-start"
-                    slotProps={slotProps}
-                    title={
-                      datatype === "mass-spectrometry proteomics"
-                        ? "No protein detected in the measured tissue sample"
-                        : null
-                    }
-                  >
-                    <Box className={classes.medianCell}>
-                      <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
-                    </Box>
-                  </Tooltip>
+                  <>
+                    {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
+                      <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
+                    )}
+                    <Tooltip
+                      placement="top-start"
+                      slotProps={slotProps}
+                      title={
+                        datatype === "mass-spectrometry proteomics"
+                          ? "No protein detected in the measured tissue sample"
+                          : null
+                      }
+                    >
+                      <Box className={classes.medianCell}>
+                        <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
+                      </Box>
+                    </Tooltip>
+                  </>
                 );
               }
 
-              if (value === -2) return <Box className={classes.medianCell}></Box>;
+              if (value === -2) return (
+                <>
+                  {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
+                    <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
+                  )}
+                  <Box className={classes.medianCell}></Box>
+                </>
+              );
 
               const percent = value >= 0 ? value * 100 : 0;
               const specificityScore = cellContext.row.original[datatype].specificity_score;
 
               return (
-                <Tooltip
-                  placement="top-start"
-                  slotProps={slotProps}
-                  title={
-                    <BaselineTooltipTable
-                      data={cellContext.row.original[datatype]}
-                      show={viewType}
-                      showSource={isSecondLevel && datatype !== datatypes[0]}
-                    />
-                  }
-                >
-                  <Box className={classes.medianCell}>
-                    <Box className={classes.barContainer}>
-                      <Box
-                        className={isFirstLevel ? classes.bar : classes.childBar}
-                        style={{ width: `${percent}%` }}
+                <>
+                  {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
+                    <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
+                  )}
+                  <Tooltip
+                    placement="top-start"
+                    slotProps={slotProps}
+                    title={
+                      <BaselineTooltipTable
+                        data={cellContext.row.original[datatype]}
+                        show={viewType}
+                        showSource={isSecondLevel && datatype !== datatypes[0]}
                       />
-
-                      {specificityScore != null && (
+                    }
+                  >
+                    <Box className={classes.medianCell}>
+                      <Box className={classes.barContainer}>
                         <Box
-                          sx={{
-                            position: "absolute",
-                            right: -18,
-                            top: 0,
-                            fontSize: 10,
-                            fontWeight: 500,
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faCircle}
-                            fontSize={specificityCircleWidth}
-                            color={
-                              specificityColors[
-                                specificityScore >= specificityThreshold ? "high" : "low"
-                              ]
-                            }
-                          />
-                        </Box>
-                      )}
+                          className={isFirstLevel ? classes.bar : classes.childBar}
+                          style={{ width: `${percent}%` }}
+                        />
 
-                      {isSecondLevel && datatype === datatypes[0] && (
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            left: -22,
-                            top: -6,
-                          }}
-                        >
-                          <IconButton
-                            size="small"
-                            disableRipple
-                            className={classes.expandColumn}
+                        {specificityScore != null && (
+                          <Box
                             sx={{
-                              visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
-                              "&:hover": {
-                                bgcolor: "transparent",
-                              },
-                            }} // keeps all rows same height
+                              position: "absolute",
+                              right: -18,
+                              top: 0,
+                              fontSize: 10,
+                              fontWeight: 500,
+                            }}
                           >
-                            {cellContext.row.getIsExpanded() ? (
-                              <FontAwesomeIcon icon={faCaretUp} size="xs" />
-                            ) : (
-                              <FontAwesomeIcon icon={faCaretDown} size="xs" />
-                            )}
-                          </IconButton>
-                        </Box>
-                      )}
+                            <FontAwesomeIcon
+                              icon={faCircle}
+                              fontSize={specificityCircleWidth}
+                              color={
+                                specificityColors[
+                                  specificityScore >= specificityThreshold ? "high" : "low"
+                                ]
+                              }
+                            />
+                          </Box>
+                        )}
+
+                        {isSecondLevel && datatype === datatypes[0] && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              left: -22,
+                              top: -6,
+                            }}
+                          >
+                            <IconButton
+                              size="small"
+                              disableRipple
+                              className={classes.expandColumn}
+                              sx={{
+                                visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
+                                "&:hover": {
+                                  bgcolor: "transparent",
+                                },
+                              }} // keeps all rows same height
+                            >
+                              {cellContext.row.getIsExpanded() ? (
+                                <FontAwesomeIcon icon={faCaretUp} size="xs" />
+                              ) : (
+                                <FontAwesomeIcon icon={faCaretDown} size="xs" />
+                              )}
+                            </IconButton>
+                          </Box>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                </Tooltip>
+                  </Tooltip>
+                </>
               );
             },
           }
@@ -753,12 +819,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           sx={{
                             width: getColumnWidth(index),
                             border: "none",
+                            verticalAlign: index === 0 ? "bottom" : "top",
                           }}
                         >
                           <Box
                             sx={{
                               display: "flex",
-                              alignItems: "center",
+                              alignItems: "flex-start",
                               justifyContent: "space-between",
                               px: 1,
                             }}
@@ -774,8 +841,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 <Box
                                   sx={{
                                     display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: index === 0 ? "start" : "center",
+                                    alignItems: "flex-start",
+                                    justifyContent: "flex-start",
                                   }}
                                 >
                                   <Typography variant="caption" style={{ fontWeight: "bold" }}>

@@ -446,6 +446,12 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
   }
 };
 
+export const baselineUnits = {
+  "scrna-seq": "CPM",
+  "bulk rna-seq": "TPM",
+  "mass-spectrometry proteomics": "PPB",
+};
+
 export * from "./alphaFold";
 export * from "./dataTypes";
 export * from "./particlesBackground";
