@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { Link } from "ui";
+import { Link, Tooltip } from "ui";
 import { defaultRowsPerPageOptions, clinicalReportsSourcesInfo } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
@@ -12,11 +12,12 @@ import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 import { sum } from "d3";
 
 function RecordsCards({
-  records,
+  records: recordsProp,
   loading,
   maxClinicalStage,
   selectedEntity,
 }) {
+  const records = recordsProp || {};
   const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
@@ -100,17 +101,19 @@ function RecordsCards({
                     }}
                   >
                     <Typography variant="caption">Source:</Typography>
-                    {sourceInfo ? (
-                      <Link to={sourceInfo.url} tooltip={sourceInfo.name}>
-                        <Typography variant="caption" sx={{ fontSize: 13 }}>
-                          {source}
-                        </Typography>
-                      </Link>
-                    ) : (
-                      <Typography variant="caption" sx={{ fontSize: 13 }}>
-                        {source}
-                      </Typography>
-                    )}
+                    <Typography variant="caption" sx={{ fontSize: 13 }}>
+                      {source}
+                      {sourceInfo?.name !== source && (
+                        <Tooltip
+                          showHelpIcon
+                          title={
+                            <Typography variant="caption" sx={{ fontSize: 12 }}>
+                              {sourceInfo.name}
+                            </Typography>
+                          }
+                        />
+                      )}
+                    </Typography>
                   </Box>
                 {trialOverallStatus && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
@@ -153,8 +156,6 @@ function RecordsCards({
     { id: "trialStartDate" },
   ];
 
-  if (!selectedStage || (loading && !showLoading)) return null;
-
   if (showLoading) {
     return (
       <Box
@@ -169,6 +170,8 @@ function RecordsCards({
       </Box>
     );
   }
+
+  if (!selectedStage || (loading && !showLoading)) return null;
 
   const rows = records[selectedStage]?.toSorted((a: any, b: any) => {
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();

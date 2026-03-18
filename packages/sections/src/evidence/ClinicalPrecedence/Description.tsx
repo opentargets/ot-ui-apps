@@ -8,6 +8,11 @@ function Description({ symbol, name }) {
       <Link to="https://www.ebi.ac.uk/chembl/" external>
         ChEMBL
       </Link>
+      {" "}and{" "}
+      <Link to="https://platform-docs.opentargets.org/evidence#chembl" external>
+        Open Targets
+      </Link>
+      .
     </>
   );
 }

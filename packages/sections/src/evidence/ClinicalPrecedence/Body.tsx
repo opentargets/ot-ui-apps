@@ -64,14 +64,16 @@ const columns = [
     renderCell: ({ clinicalReportId }) => {
       if (!clinicalReportId) return naLabel;
       return (
-        <ClinicalRecordDrawer
-          recordId={clinicalReportId}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-            Details
-            <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
-          </Box>
-        </ClinicalRecordDrawer>
+        <Box  sx={{ display: "flex", justifyContent: "center" }}>
+          <ClinicalRecordDrawer
+            recordId={clinicalReportId}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography variant="body2">View</Typography>
+              <FontAwesomeIcon size="sm" icon={faArrowRightToBracket} />
+            </Box>
+          </ClinicalRecordDrawer>
+        </Box>
       );
     },
   },
@@ -159,10 +161,12 @@ const columns = [
     ),
     renderCell: ({ directionOnTarget, directionOnTrait }) => {
       return (
-        <DirectionOfEffectIcon
-          variantEffect={directionOnTarget}
-          directionOnTrait={directionOnTrait}
-        />
+        <Box sx={{ maxWidth: "140px" }}>
+          <DirectionOfEffectIcon
+            variantEffect={directionOnTarget}
+            directionOnTrait={directionOnTrait}
+          />
+        </Box>
       );
     },
   },
