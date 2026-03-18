@@ -1,4 +1,4 @@
-import { Page, APIResponse } from "@playwright/test";
+import type { APIResponse, Page } from "@playwright/test";
 
 export interface GraphQLQuery {
   operationName: string;
@@ -49,7 +49,7 @@ export class GraphQLMonitor {
    */
   async start(): Promise<void> {
     console.log("[GraphQLMonitor] Starting response monitoring...");
-    
+
     // Create handler (non-async to avoid blocking page loads)
     this.responseHandler = (response: APIResponse): void => {
       // Only monitor GraphQL endpoints
@@ -67,7 +67,8 @@ export class GraphQLMonitor {
       const startTime = Date.now();
 
       // Read response body asynchronously but don't wait in the handler
-      response.text()
+      response
+        .text()
         .then((responseBody: string): void => {
           const duration = Date.now() - startTime;
 
@@ -98,13 +99,11 @@ export class GraphQLMonitor {
 
             // Track errors
             if (graphqlResponse.errors && graphqlResponse.errors.length > 0) {
-              const errors = graphqlResponse.errors.map(
-                (err: { message: string }) => err.message
-              );
+              const errors = graphqlResponse.errors.map((err: { message: string }) => err.message);
               if (!this.errors.has(operationName)) {
                 this.errors.set(operationName, []);
               }
-              this.errors.get(operationName)!.push(...errors);
+              this.errors.get(operationName)?.push(...errors);
               console.log(`[GraphQLMonitor] Errors detected for ${operationName}`);
             }
 
@@ -113,16 +112,17 @@ export class GraphQLMonitor {
               if (!this.errors.has(operationName)) {
                 this.errors.set(operationName, []);
               }
-              this.errors
-                .get(operationName)!
-                .push(`HTTP ${response.status()}: ${response.statusText()}`);
+              const errorList = this.errors.get(operationName);
+              if (errorList) {
+                errorList.push(`HTTP ${response.status()}: ${response.statusText()}`);
+              }
             }
-          } catch (e) {
-            console.log(`[GraphQLMonitor] Error processing response: ${e}`);
+          } catch (_e) {
+            console.log(`[GraphQLMonitor] Error processing response: ${_e}`);
           }
         })
-        .catch((error: unknown): void => {
-          console.log(`[GraphQLMonitor] Failed to read response body: ${error}`);
+        .catch((_error: unknown): void => {
+          console.log(`[GraphQLMonitor] Failed to read response body: ${_error}`);
         });
     };
 
@@ -181,9 +181,7 @@ export class GraphQLMonitor {
     );
     const successfulRequests = totalRequests - failedRequests;
     const averageResponseTime =
-      totalRequests > 0
-        ? this.requests.reduce((sum, r) => sum + r.duration, 0) / totalRequests
-        : 0;
+      totalRequests > 0 ? this.requests.reduce((sum, r) => sum + r.duration, 0) / totalRequests : 0;
 
     return {
       totalRequests,
@@ -212,19 +210,21 @@ export class GraphQLMonitor {
 ============================================
     GraphQL Request Summary
 ============================================
-Total Requests:      ${stats.totalRequests}
-Successful:          ${stats.successfulRequests}
-Failed:              ${stats.failedRequests}
-Average Response:    ${stats.averageResponseTime.toFixed(2)}ms
+Total Requests:      $stats.totalRequests
+Successful:          $stats.successfulRequests
+Failed:              $stats.failedRequests
+Average Response:    $stats.averageResponseTime.toFixed(2)ms
 ============================================
     `);
 
     if (stats.errors.size > 0) {
       console.log("ERRORS:");
-      Array.from(stats.errors.entries()).forEach(([operation, errors]) => {
-        console.log(`  ${operation}:`);
-        errors.forEach((error) => console.log(`    - ${error}`));
-      });
+      for (const [_operation, errors] of stats.errors.entries()) {
+        console.log(`  ${_operation}:`);
+        for (const error of errors) {
+          console.log(`    - ${error}`);
+        }
+      }
     }
   }
 
@@ -234,15 +234,10 @@ Average Response:    ${stats.averageResponseTime.toFixed(2)}ms
   assertNoErrors(): void {
     if (this.errors.size > 0) {
       const errorSummary = Array.from(this.errors.entries())
-        .map(
-          ([operation, errors]) =>
-            `${operation}: ${errors.join(", ")}`
-        )
+        .map(([operation, errors]) => `${operation}: ${errors.join(", ")}`)
         .join("\n");
 
-      throw new Error(
-        `GraphQL requests failed:\n${errorSummary}`
-      );
+      throw new Error(`GraphQL requests failed:\n${errorSummary}`);
     }
   }
 }

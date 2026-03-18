@@ -1,7 +1,7 @@
 import { test as base } from "@playwright/test";
 import type { TestConfig } from "../types";
-import { getTestConfig } from "./testConfig";
 import { GraphQLMonitor } from "../utils/graphqlMonitor";
+import { getTestConfig } from "./testConfig";
 
 /**
  * Default base URL for tests
