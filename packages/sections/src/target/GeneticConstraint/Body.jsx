@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { SectionItem, Link, Tooltip, OtTable } from "ui";
 
 import { definition } from ".";
+import { naLabel } from "@ot/constants";
 import { formatSignificantDigits } from "@ot/utils";
 import Description from "./Description";
 import upperBin6Map from "./upperBin6Map";
@@ -77,7 +78,7 @@ function getColumns(ensemblId, symbol) {
     {
       id: "exp",
       label: "Expected SNVs",
-      renderCell: ({ exp }) => Math.round(exp),
+      renderCell: ({ exp }) => exp == null ? naLabel : Math.round(exp),
       tooltip: "Expected variant counts were predicted using a depth corrected probability of mutation for each gene. More details can be found in the gnomAD flagship paper. Note that the expected variant counts for bases with a median depth <1 were removed from the totals.",
     },
     {
