@@ -254,7 +254,7 @@ export const stopReasonMap = (category: string): string =>
 
 export const clinicalReportsSourcesInfo = {
   AACT: {
-    name: "Aggregate Content of Clinical Trials",
+    name: "Aggregate Content of ClinicalTrials.gov",
     url: "https://aact.ctti-clinicaltrials.org/",
   },
   TTD: {
