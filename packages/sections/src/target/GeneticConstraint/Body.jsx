@@ -77,7 +77,7 @@ function getColumns(ensemblId, symbol) {
     {
       id: "exp",
       label: "Expected SNVs",
-      renderCell: ({ exp }) => formatSignificantDigits(exp),
+      renderCell: ({ exp }) => Math.round(exp),
       tooltip: "Expected variant counts were predicted using a depth corrected probability of mutation for each gene. More details can be found in the gnomAD flagship paper. Note that the expected variant counts for bases with a median depth <1 were removed from the totals.",
     },
     {

@@ -1,9 +1,10 @@
 /**
- * Formats a number to show only the first 3 non-zero significant digits.
+ * Formats a number to show only the first 3 significant digits.
  * Falls back to scientific notation for very small (<1e-3) or large (>=1e4) magnitudes.
  */
 export function formatSignificantDigits(
-  value: number | string | null | undefined
+  value: number | string | null | undefined,
+  sigFigs = 3
 ): string | number | null | undefined {
   if (value === null || value === undefined) return value;
 
@@ -20,13 +21,16 @@ export function formatSignificantDigits(
 
   // Determine required decimal places to keep 3 significant digits
   const magnitude = Math.floor(Math.log10(absNum)) + 1; // digits before decimal
-  const decimalPlaces = Math.max(0, 3 - magnitude);
+  const decimalPlaces = sigFigs - magnitude;
 
-  const rounded = Math.round(absNum * 10 ** decimalPlaces) / 10 ** decimalPlaces;
-  const formatted = rounded.toFixed(decimalPlaces);
-  const trimmed = formatted.replace(/\.?0+$/, "");
+  const factor = Math.pow(10, decimalPlaces);
+  const rounded = Math.round(num * factor) / factor;
 
-  return num < 0 ? `-${trimmed}` : trimmed;
+  // Convert to string without exponential notation
+  return rounded.toLocaleString("en-US", {
+    useGrouping: false,
+    maximumFractionDigits: Math.max(0, decimalPlaces),
+  });
 }
 
 /**
