@@ -106,43 +106,6 @@ function isTopRow(cellcontext) {
   return cellcontext.row.id === cellcontext.table.getRowModel().rows[0]?.id;
 }
 
-function XAxis({ datatype, maxValue = "max"}) {
-  const displayMax = formatSignificantDigits(maxValue);
-  console.log({ maxValue, displayMax });
-  return (
-    <Box sx={{
-        position: "absolute",
-        top: 0,
-        mt: -5.75,
-        left: "1.5rem",
-        right: "3.5rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "end",
-        height: "36px",
-      }}>
-      {/* <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "start" }}> */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", pb: 0.25 }}>
-          <Typography variant="caption" sx={{ lineHeight: 1 }}>0 {baselineUnits[datatype]}</Typography>
-          <Typography variant="caption" sx={{ lineHeight: 1 }}>
-            {displayMax.toLowerCase().includes("e")
-              ? <ScientificNotation number={maxValue} dp={1} />
-              : displayMax
-            }
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            width: "100%",
-            height: "4px",
-            borderWidth: "0 1px 1px",
-            borderColor: "#999",
-            borderStyle: "solid",
-          }}></Box>
-      {/* </Box> */}
-    </Box>
-  );
-}
 interface BaselineExpressionDataRow {
   tissueBiosample?: {
     biosampleId: string;
@@ -166,7 +129,6 @@ interface BaselineExpressionDataRow {
   datasourceId: string;
   datatypeId: string;
   specificity_score?: number;
-  distribution_score: number;
   unit: string;
 }
 
@@ -312,6 +274,60 @@ const Legend = ({
     </Box>
   );
 };
+
+function XAxis({ datatype, maxMedian }) {
+  const displayMax = formatSignificantDigits(maxMedian);
+  return (
+      <Box 
+        className="xaxis-component"
+        sx={{
+          position: "absolute",
+          top: 0,
+          mt: -3.5,
+          left: "1.5rem",
+          right: "3.5rem",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "end",
+          height: "fit-content",
+          cursor: "auto",
+          pointerEvents: "auto",
+          zIndex: 1,
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+              pb: 0.25,
+            }}
+          >
+            <Typography variant="caption" sx={{ lineHeight: 1, cursor: "default" }}>
+              0 {baselineUnits[datatype]}
+            </Typography>
+            <Typography variant="caption" sx={{ lineHeight: 1, cursor: "default" }}>
+              {displayMax.toLowerCase().includes("e")
+                ? <ScientificNotation number={maxValue} dp={1} />
+                : displayMax
+              }
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              width: "100%",
+              height: "4px",
+              borderWidth: "0 1px 1px",
+              borderColor: "#999",
+              borderStyle: "solid",
+            }}
+          />
+        </Box>
+    </Box>
+  );
+}
 
 const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
@@ -564,7 +580,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           },
           {
             accessorKey: datatype,
-            header: <Box sx={{ pb: 3.5 }}>{datatypeNameLookup[datatype] ?? datatype}</Box>,
+            header: <Box sx={{ pb: 4.5, lineHeight: 1.5 }}>{datatypeNameLookup[datatype] ?? datatype}</Box>,
             enableSorting: true,
             sortingFn: getSortingFn(datatype, datatypes),
             cell: (cellContext) => {
@@ -590,13 +606,14 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   },
                 },
               };
+              const DisplayXAxis = isTopRow(cellContext) && maxMedians[datatype] > 0 && (
+                <XAxis datatype={datatype} maxMedian={maxMedians[datatype]} />
+              );
 
               if (value === -1) {
                 return (
                   <>
-                    {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
-                      <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
-                    )}
+                    {DisplayXAxis}
                     <Tooltip
                       placement="top-start"
                       slotProps={slotProps}
@@ -614,11 +631,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                 );
               }
 
-              if (value === -2) return (
+              if (value === -2) return (                
                 <>
-                  {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
-                    <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
-                  )}
+                  {DisplayXAxis}
                   <Box className={classes.medianCell}></Box>
                 </>
               );
@@ -628,9 +643,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
 
               return (
                 <>
-                  {isTopRow(cellContext) && maxMedians[datatype] > 0 && (
-                    <XAxis datatype={datatype} maxValue={maxMedians[datatype]}/>
-                  )}
+                  {DisplayXAxis}
                   <Tooltip
                     placement="top-start"
                     slotProps={slotProps}
@@ -914,13 +927,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           if (row.getCanExpand()) row.toggleExpanded();
                         }}
                         sx={{
-                          "&:hover": {
+                          "&:hover:not(:has(.xaxis-component:hover))": {
                             outlineOffset: "-1px",
                             outline: "solid 1px",
                             outlineColor: "grey.400",
                           },
                           ...(row.getCanExpand() && {
-                            "&:hover": {
+                            "&:hover:not(:has(.xaxis-component:hover))": {
                               outlineOffset: "-1px",
                               outline: isFirstLevel || !isExpanded ? "solid 1px" : "none",
                               outlineColor: "grey.400",
