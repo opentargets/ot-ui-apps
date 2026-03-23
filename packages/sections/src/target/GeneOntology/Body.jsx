@@ -92,14 +92,14 @@ const columns = [
     renderCell: ({ term }) =>
       term ? (
         <Link external to={`https://identifiers.org/${term.id}`}>
-          {term.name}
+          {term.label}
         </Link>
       ) : (
         "N/A"
       ),
     exportLabel: "GO term",
-    exportValue: ({ term }) => term.name,
-    filterValue: ({ term }) => term.name,
+    exportValue: ({ term }) => term.label,
+    filterValue: ({ term }) => term.label,
   },
   {
     id: "geneProduct",
@@ -116,7 +116,7 @@ const columns = [
         geneProduct
       ),
     exportLabel: "GO term",
-    exportValue: ({ term }) => term.name,
+    exportValue: ({ term }) => term.label,
   },
   {
     id: "evidence",

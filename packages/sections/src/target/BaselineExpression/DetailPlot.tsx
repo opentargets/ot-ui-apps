@@ -2,7 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
 import { nullishComparator } from "@ot/utils";
 import { max, min } from "d3";
-import { ObsPlot, TooltipRow, TooltipTable } from "ui";
+import { ObsPlot } from "ui";
 import BaselineTooltipTable from "./BaselineTooltipTable";
 
 function DetailPlot({

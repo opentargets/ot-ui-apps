@@ -101,7 +101,7 @@ function APIPage() {
           <PrivateWrapper>
             <Accordion sx={{ mb: 2 }}>
               <AccordionSummary expandIcon={<FontAwesomeIcon icon={faChevronDown} />}>
-                <Typography variant="subtitle2" color="secondary">Partner preview specific queries</Typography>
+                <Typography variant="subtitle2" color="secondary">Partner Preview specific queries</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <div>
@@ -123,6 +123,17 @@ function APIPage() {
                     variant="contained"
                     color="primary"
                     onClick={() => setQuery(PPPACCOUNTDISEASES.loc.source.body)}
+                  >
+                    Run sample query
+                  </QueryButton>
+                  <Typography variant="subtitle2" display="block" paragraph>
+                    Explore molQTL credible sets for INSL6, including the ones from OTAR projects studies such as OTAR2057 IBDverse and OTAR2065 Neuroinflammation
+                  </Typography>
+                  <QueryButton
+                    className={classes.buttonMargin}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setQuery(TARGETQTLCREDIBLESSETS.loc.source.body)}
                   >
                     Run sample query
                   </QueryButton>

@@ -30,7 +30,7 @@ const getDownloadRows = expressions =>
 
 function SummaryTab({ symbol, data }) {
   return (
-    <Grid container justifyContent="center">
+    <Grid data-testid="expression-summary-content" container justifyContent="center">
       <ExpressionDataDownloader
         tableHeaders={headers}
         rows={getDownloadRows(data.target.expressions)}

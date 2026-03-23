@@ -1,7 +1,8 @@
 import { faInfo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Alert, Collapse, Tab, Tabs } from "@mui/material";
+import { Alert, Collapse, Tab, Tabs, Typography } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { sentenceCase } from "@ot/utils";
 import { useEffect, useState } from "react";
 import { SectionItem, useApolloClient } from "ui";
 
@@ -10,23 +11,15 @@ import Description from "./Description";
 import GtexTab, { getData as getGtexData } from "./GtexTab";
 import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
-function Section({ id: ensgId, label: symbol, entity }) {
+function Section({ id: ensgId, label: symbol, entity, viewMode }) {
   const defaultTab = "summary";
   const [showAlert, setShowAlert] = useState(true);
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
   const client = useApolloClient();
-  // TODO:
-  // the part about requests (see below) will need rethinking / refactoring
-  // SectionItem checks for data based on these requests, but only works for data coming from the target object
-  // the widget displays based on the summary tab only.
-  // Atlas and gTex tab should always be there is the widget is visible, hence the hack of using requestSummary for Atlas
-  // the request for gTex wraps the data in a structure similar to that from the target object:
-  // this can be probably be rewritten differently, but that's a wider scope than the MUI migration we're currently doing
   const [request, setRequest] = {
     summary: [requestSummary, setRequestSummary],
-    // atlas: [requestSummary, setRequestSummary], // [{ loading: false, data: true }, undefined],
     gtex: [requestGtex, setRequestGtex],
   }[tab];
 
@@ -71,7 +64,13 @@ function Section({ id: ensgId, label: symbol, entity }) {
               severity="info"
               onClose={() => setShowAlert(false)}
             >
-              Preview of new baseline expression widget
+              <Typography variant="body2">Preview of new baseline expression widget</Typography>
+              {viewMode && (
+                <Typography variant="body2" component="div" sx={{ pt: 1, fontSize: 12.8 }}>
+                  {sentenceCase(viewMode)} scores inside the widget are not directly related to the
+                  overall target prioritisation {viewMode} score.
+                </Typography>
+              )}
             </Alert>
           </Collapse>
           <Tabs value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>

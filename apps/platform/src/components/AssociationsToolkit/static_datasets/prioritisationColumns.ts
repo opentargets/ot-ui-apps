@@ -1,10 +1,10 @@
 import { Column, TargetPrioritisationAggregation } from "../types";
 
 const maxClinicalTrialPhase: Column = {
-  id: "maxClinicalTrialPhase",
+  id: "maxClinicalStage",
   label: "Target in clinic",
   aggregation: TargetPrioritisationAggregation.PRECEDENCE,
-  sectionId: "knownDrugs",
+  sectionId: "drugs",
   description: "Target is in clinical trials for any indication",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#target-in-clinic",
@@ -149,6 +149,7 @@ const tissueSpecificity: Column = {
   description: "HPA category types of elevated expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
+  sectionProps: { viewMode: "specificity" },
 };
 
 const tissueDistribution: Column = {
@@ -159,6 +160,7 @@ const tissueDistribution: Column = {
   description: "HPA category types of detectable expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
+  sectionProps: { viewMode: "distribution" },
 };
 
 const cols: Column[] = [

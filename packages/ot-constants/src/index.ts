@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faBook, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { getConfig } from "@ot/config";
+import type { IGeneomicLocation } from "./types/geneLoc";
 
 const config = getConfig();
 
@@ -210,32 +211,136 @@ export const defaultRowsPerPageOptions = [10, 25, 100];
 // Decimal Places
 export const decimalPlaces = 3;
 
-// Clinical Phases Mapping
-const clinicalPhases: { [key: string]: string } = {
-  "-1": "Unknown",
-  "0": "Phase 0",
-  "0.5": "Phase I (Early)",
-  "1": "Phase I",
-  "2": "Phase II",
-  "3": "Phase III",
-  "4": "Phase IV",
+export const clinicalStageCategories = {
+  UNKNOWN: { index: 0, label: "Unknown" },
+  PRECLINICAL: { index: 1, label: "Preclinical" },
+  IND: { index: 2, label: "IND" },
+  EARLY_PHASE_1: { index: 3, label: "Early phase I" },
+  PHASE_1: { index: 4, label: "Phase I" },
+  PHASE_1_2: { index: 5, label: "Phase I/II" },
+  PHASE_2: { index: 6, label: "Phase II" },
+  PHASE_2_3: { index: 7, label: "Phase II/III" },
+  PHASE_3: { index: 8, label: "Phase III" },
+  PREAPPROVAL: { index: 9, label: "Preapproval" },
+  APPROVAL: { index: 10, label: "Approval" },
+  PHASE_4: { index: 11, label: "Phase IV" },
+  WITHDRAWAL: { index: 12, label: "Withdrawal" },
 };
 
-export const phaseMap = (clinicalPhase: number | string): string => {
-  const clinicalPhaseId = String(clinicalPhase);
-  return clinicalPhases[clinicalPhaseId] || "Unknown";
+// Stop Reason Categories Mapping
+const stopReasonCategories: { [key: string]: string } = {
+  Another_Study: "Another study",
+  Business_Administrative: "Business or administrative",
+  Covid19: "COVID-19",
+  Endpoint_Met: "Met endpoint",
+  Ethical_Reason: "Ethical reason",
+  Insufficient_Data: "Insufficient data",
+  Insufficient_Enrollment: "Insufficient enrollment",
+  Interim_Analysis: "Interim analysis",
+  Invalid_Reason: "Invalid reason",
+  Logistics_Resources: "Logistics or resources",
+  Negative: "Negative",
+  No_Context: "No context",
+  Regulatory: "Regulatory",
+  Safety_Sideeffects: "Safety or side effects",
+  Study_Design: "Study design",
+  Study_Staff_Moved: "Study staff moved",
+  Success: "Success",
+  Uncategorised: "Uncategorised",
 };
 
-// Source Mapping
-export const sourceMap: { [key: string]: string } = {
-  "FDA Information": "FDA",
-  FDA: "FDA",
-  "Clinical Trials Information": "ClinicalTrials.gov",
-  ClinicalTrials: "ClinicalTrials.gov",
-  "DailyMed Information": "DailyMed",
-  DailyMed: "DailyMed",
-  "ATC Information": "ATC",
-  ATC: "ATC",
+export const stopReasonMap = (category: string): string =>
+  stopReasonCategories[category] || category;
+
+export const clinicalReportsSourcesInfo = {
+  AACT: {
+    name: "Aggregate Content of ClinicalTrials.gov",
+    url: "https://aact.ctti-clinicaltrials.org/",
+  },
+  TTD: {
+    name: "Therapeutic Target Database",
+    url: "https://ttd.idrblab.cn/",
+  },
+  DailyMed: {
+    name: "DailyMed",
+    url: "https://dailymed.nlm.nih.gov/dailymed/",
+  },
+  ATC: {
+    name: "Anatomical Therapeutic Chemical",
+    url: "https://atcddd.fhi.no/",
+  },
+  PMDA: {
+    name: "Pharmaceutical and Medical Devices Agency",
+    url: "https://www.pmda.go.jp/english/about-pmda/index.html",
+  },
+  "EMA Human Drugs": {
+    name: "European Medicines Agency Human Drugs",
+    url: "https://www.ema.europa.eu/en/medicines",
+  },
+  FDA: {
+    name: "Food and Drug Administration",
+    url: "https://www.fda.gov/",
+  },
+  USAN: {
+    name: "United States Adopted Names",
+    url: "https://www.ama-assn.org/about/united-states-adopted-names-usan",
+  },
+  EMA: {
+    name: "European Medicine Agency",
+    url: "https://www.ema.europa.eu/en/medicines",
+  },
+  INN: {
+    name: "International Nonproprietary Names",
+    url: "https://www.who.int/teams/health-product-and-policy-standards/inn",
+  },
+  WHO: {
+    name: "World Health Organisation",
+    url: "https://www.who.int/",
+  },
+  DOI: {
+    name: "Withdrawal from Drug Information Association Journal",
+    url: "https://link.springer.com/journal/43441",
+  },
+  USGPO: {
+    name: "United States Government Publishing Office",
+    url: "https://www.gpo.gov/",
+  },
+  PubMed: {
+    name: "PubMed",
+    url: "https://pubmed.ncbi.nlm.nih.gov/",
+  },
+  "Health Canada": {
+    name: "Health Canada",
+    url: "https://www.canada.ca/en/health-canada.html",
+  },
+  MHRA: {
+    name: "Medicines and Healthcare products Regulatory Agency",
+    url: "https://www.gov.uk/government/organisations/medicines-and-healthcare-products-regulatory-agency",
+  },
+  TGA: {
+    name: "Therapeutic Goods Administration",
+    url: "https://www.tga.gov.au/",
+  },
+  MEDSAFE: {
+    name: "New Zealand Medicines and Medical Devices Safety Authority",
+    url: "https://www.medsafe.govt.nz/",
+  },
+  HPRA: {
+    name: "Health Products Regulatory Authority",
+    url: "https://www.hpra.ie/",
+  },
+  NICE: {
+    name: "National Institute for Health and Care Excellence",
+    url: "https://www.nice.org.uk/",
+  },
+  HIS: {
+    name: "Haute Autorité de Santé",
+    url: "https://www.has-sante.fr/",
+  },
+  NTP: {
+    name: "National Toxicology Program",
+    url: "https://ntp.niehs.nih.gov/",
+  },
 };
 
 // ClinVar Star Mapping
@@ -328,32 +433,24 @@ export const getStudyItemMetaData = ({
   return metaData;
 };
 
-export const getGenomicLocation = (
-  genomicLocation:
-    | {
-        chromosome?: string;
-        start?: number;
-        end?: number;
-        strand?: number;
-      }
-    | null
-    | undefined
-) => {
-  /****
-   * TODO: add GRCh38 to this function
-   * check all the locations we are using this
-   * option 1:  getGenomicLocation() -> ["GRCh38", "chromosome-string"]
-   * option 2:  getGenomicLocation("GRCh38") -> "GRCh38|chromosome-string"
-   ****/
-  return `${genomicLocation?.chromosome}:${genomicLocation?.start}-${genomicLocation?.end},${
-    Math.sign(genomicLocation?.strand ?? 1) === 1 ? "+" : "-"
-  }`;
+export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | undefined) => {
+  if (!genomicLocation) return "";
+  try {
+    const strandInt = parseInt(genomicLocation.strand?.toString() || "1", 10);
+    const strand = Math.sign(strandInt) === 1 ? "+" : "-";
+    const chromosomeString = `Chr${genomicLocation.chromosome}: ${genomicLocation.start}-${genomicLocation.end},${strand}`;
+    return ["GRCh38", chromosomeString];
+  } catch (e) {
+    console.error("Error formatting gene location", e);
+    return "";
+  }
 };
+
 export * from "./alphaFold";
 export * from "./dataTypes";
 export * from "./particlesBackground";
 export * from "./partnerPreviewUtils";
 export * from "./searchSuggestions";
-export * from "./types/graphql-types";
-export * from "./types/response";
+export * from "./types";
+export * from "./types/geneLoc";
 export * from "./variant";

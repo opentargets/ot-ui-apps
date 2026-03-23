@@ -33,16 +33,22 @@ function DisplayModeSwitch() {
 
   return (
     <StyledToggleButtonGroup
+      data-testid="display-mode-switch"
       value={displayedTable}
       exclusive
       onChange={handleChange}
       aria-label="Visualization switch"
     >
-      <ToggleButton aria-label="Switch to Association view" value={DISPLAY_MODE.ASSOCIATIONS}>
+      <ToggleButton 
+        data-testid="associations-view-button"
+        aria-label="Switch to Association view" 
+        value={DISPLAY_MODE.ASSOCIATIONS}
+      >
         {associationsLabel}
       </ToggleButton>
       {entity === "disease" && (
         <ToggleButton
+          data-testid="prioritisation-view-button"
           aria-label="Switch to Prioritisation view"
           value={DISPLAY_MODE.PRIORITISATION}
         >

@@ -9,6 +9,7 @@ type PopoverButtonProps = {
   icon: IconDefinition;
   label: string;
   handleClick: MouseEventHandler;
+  testId?: string;
   ariaLabel?: string;
   disableElevation?: boolean;
   iconSize?:
@@ -58,11 +59,13 @@ const PopoverButton: React.FC<PopoverButtonProps> = ({
   disableElevation = false,
   iconSize,
   sx,
+  testId,
 }) => {
   return (
     <Button
       aria-describedby={popoverId}
       aria-label={ariaLabel}
+      data-testid={testId}
       variant="text"
       onClick={handleClick}
       disableElevation={disableElevation}

@@ -24,6 +24,7 @@ function ExportMenu() {
     <>
       <PopoverButton
         popoverId={id}
+        testId="export-button"
         open={open}
         icon={faFileArrowDown}
         label="Export"
@@ -35,6 +36,7 @@ function ExportMenu() {
       />
 
       <Popover
+        data-testid="export-popover"
         disableScrollLock
         id={id}
         anchorEl={anchorEl}

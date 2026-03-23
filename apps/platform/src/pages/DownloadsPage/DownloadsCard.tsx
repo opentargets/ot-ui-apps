@@ -23,7 +23,7 @@ function DownloadsCard({ data }: { data: Record<string, unknown> }) {
   }
 
   function hasCategories() {
-    if (Object.hasOwnProperty.call(data, "categories") && data.categories.length) return true;
+    if (Object.hasOwnProperty.call(data, "categories") && data.categories.length ) return true;
     return false;
   }
 

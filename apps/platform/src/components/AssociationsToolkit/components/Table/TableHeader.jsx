@@ -42,7 +42,7 @@ function TableHeader({ table, cols }) {
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
 
   return (
-    <div className="Theader">
+    <div className="Theader" data-testid="associations-table-header">
       <Grid container direction="row" wrap="nowrap">
         {highLevelHeaders.map(highLevelHeader => (
           <GridContainer

@@ -37,10 +37,10 @@ const columns = [
     enableHiding: false,
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
       let content;
-      if (phenotypeEFO && phenotypeEFO.id) {
+      if (phenotypeEFO && phenotypeEFO.id ) {
         content = (
           <Link asyncTooltip to={`/disease/${phenotypeEFO.id}`}>
-            {phenotypeHPO.name}
+            {phenotypeEFO.name}
           </Link>
         );
       } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
@@ -54,23 +54,8 @@ const columns = [
         content
       );
     },
-    filterValue: row => row.phenotypeHPO.name,
-    exportValue: row => row.phenotypeHPO.name,
-  },
-  {
-    id: "phenotypeHDOid",
-    label: "Phenotype ID",
-    enableHiding: false,
-    renderCell: ({ phenotypeHPO }) => {
-      const id = phenotypeHPO?.id.replace("_", ":");
-      return (
-        <Link external to={`https://identifiers.org/ols/${id}`}>
-          {id}
-        </Link>
-      );
-    },
-    filterValue: row => row.phenotypeHPO.id.replace("_", ":"),
-    exportValue: row => row.phenotypeHPO.id.replace("_", ":"),
+    filterValue: ({phenotypeEFO,phenotypeHPO}) => phenotypeHPO && phenotypeHPO?.name ? phenotypeHPO.name : naLabel,
+    exportValue: ({phenotypeEFO,phenotypeHPO}) => phenotypeHPO && phenotypeHPO?.name ? phenotypeHPO.name : naLabel,
   },
   {
     id: "aspect",

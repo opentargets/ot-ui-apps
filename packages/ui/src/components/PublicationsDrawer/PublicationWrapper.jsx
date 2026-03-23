@@ -78,7 +78,7 @@ function PublicationWrapper({
   const externalURL = pmUrl + sourceScope + europePmcId;
 
   return (
-    <Box mb={2}>
+    <Box mb={2} data-testid={`literature-entry-${europePmcId}`}>
       {/* paper title */}
       <Box style={{ whiteSpace: "normal" }}>
         <Typography variant={variant === "small" ? "subtitle2" : "subtitle1"}>

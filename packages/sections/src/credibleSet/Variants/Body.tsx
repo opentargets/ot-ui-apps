@@ -109,18 +109,7 @@ function getColumns({ leadVariantId }: getColumnsType) {
       label: "LD (r²)",
       filterValue: false,
       numeric: true,
-      tooltip: ({ variant }) => (
-        <>
-          Linkage disequilibrium with the lead variant (
-          <DisplayVariantId
-            variantId={leadVariantId}
-            referenceAllele={variant?.leadReferenceAllele}
-            alternateAllele={variant?.leadAlternateAllele}
-            expand={false}
-          />
-          )
-        </>
-      ),
+      tooltip: "Linkage disequilibrium with the lead variant",
       renderCell: ({ r2Overall }) => {
         if (typeof r2Overall !== "number") return naLabel;
         return r2Overall.toPrecision(3);

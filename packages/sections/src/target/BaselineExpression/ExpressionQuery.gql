@@ -4,7 +4,6 @@ query ExpressionQuery($ensemblId: String!) {
     baselineExpression(page: { index: 0, size: 1500 }) {
       count
       rows {
-        targetFromSourceId
         tissueBiosample {
           biosampleId
           biosampleName

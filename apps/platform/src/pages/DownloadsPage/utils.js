@@ -212,7 +212,7 @@ export const addCategoriesToData = (data) => {
   for (const item of data) {
     const categories = item.description.match(/\[(.*?)\]/);
     item.categories = [];
-    if (categories) {
+    if (categories && categories[0] !== "[]") {
       item.categories = [...categories[1].split(", ")];
       item.description = item.description.replace(categories[0], "");
       results.add(...categories[1].split(","));

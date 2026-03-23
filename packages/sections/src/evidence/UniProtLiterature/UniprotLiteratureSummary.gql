@@ -3,7 +3,7 @@ fragment UniprotLiteratureSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["uniprot_literature"]
-    size: 0
+    size: 1
   ) {
     count
   }
