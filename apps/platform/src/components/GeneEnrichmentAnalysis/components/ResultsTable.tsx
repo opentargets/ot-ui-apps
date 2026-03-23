@@ -38,7 +38,7 @@ function getColumns() {
       label: "NES",
       numeric: true,
       sortable: true,
-      tooltip: "Normalized Enrichment Score",
+      tooltip: "Normalised Enrichment Score",
       renderCell: (row: GseaResult) => row.NES?.toFixed(3) ?? "-",
       exportValue: (row: GseaResult) => row.NES,
     },

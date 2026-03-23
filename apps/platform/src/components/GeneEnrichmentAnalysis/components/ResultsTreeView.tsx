@@ -351,39 +351,47 @@ function TreeNodeComponent({
                 )}
                 <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
                   {settings.showNES && (
-                    <Chip
-                      label={`NES: ${result.NES?.toFixed(2)}`}
-                      size="small"
-                      color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
-                      variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="Normalised Enrichment Score · highlighted when |NES| > 1.5">
+                      <Chip
+                        label={`NES: ${result.NES?.toFixed(2)}`}
+                        size="small"
+                        color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
+                        variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showES && (
                     <Chip label={`ES: ${result.ES?.toFixed(2)}`} size="small" variant="outlined" />
                   )}
                   {settings.showPValues && (
-                    <Chip
-                      label={`P: ${result["p-value"]?.toExponential(1)}`}
-                      size="small"
-                      color={result["p-value"] < 0.05 ? "success" : "default"}
-                      variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="P-value · highlighted when p-value < 0.05">
+                      <Chip
+                        label={`P: ${result["p-value"]?.toExponential(1)}`}
+                        size="small"
+                        color={result["p-value"] < 0.05 ? "success" : "default"}
+                        variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showFDR && (
-                    <Chip
-                      label={`FDR: ${result.FDR?.toExponential(1)}`}
-                      size="small"
-                      color={result.FDR < 0.05 ? "success" : "default"}
-                      variant={result.FDR < 0.05 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="False Discovery Rate · highlighted when FDR < 0.05">
+                      <Chip
+                        label={`FDR: ${result.FDR?.toExponential(1)}`}
+                        size="small"
+                        color={result.FDR < 0.05 ? "success" : "default"}
+                        variant={result.FDR < 0.05 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showGeneCount && (
-                    <Chip
-                      label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
+                    <Tooltip title="Overlapping genes / Pathway size">
+                      <Chip
+                        label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Tooltip>
                   )}
                 </Box>
               </Box>
@@ -482,39 +490,47 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
               </Typography>
               <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
                 {settings.showNES && (
-                  <Chip
-                    label={`NES: ${result.NES?.toFixed(2)}`}
-                    size="small"
-                    color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
-                    variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="Normalised Enrichment Score · highlighted when |NES| > 1.5">
+                    <Chip
+                      label={`NES: ${result.NES?.toFixed(2)}`}
+                      size="small"
+                      color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
+                      variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showES && (
                   <Chip label={`ES: ${result.ES?.toFixed(2)}`} size="small" variant="outlined" />
                 )}
                 {settings.showPValues && (
-                  <Chip
-                    label={`P: ${result["p-value"]?.toExponential(1)}`}
-                    size="small"
-                    color={result["p-value"] < 0.05 ? "success" : "default"}
-                    variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="P-value · highlighted when p-value < 0.05">
+                    <Chip
+                      label={`P: ${result["p-value"]?.toExponential(1)}`}
+                      size="small"
+                      color={result["p-value"] < 0.05 ? "success" : "default"}
+                      variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showFDR && (
-                  <Chip
-                    label={`FDR: ${result.FDR?.toExponential(1)}`}
-                    size="small"
-                    color={result.FDR < 0.05 ? "success" : "default"}
-                    variant={result.FDR < 0.05 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="False Discovery Rate · highlighted when FDR < 0.05">
+                    <Chip
+                      label={`FDR: ${result.FDR?.toExponential(1)}`}
+                      size="small"
+                      color={result.FDR < 0.05 ? "success" : "default"}
+                      variant={result.FDR < 0.05 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showGeneCount && (
-                  <Chip
-                    label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
+                  <Tooltip title="Overlapping genes / Pathway size">
+                    <Chip
+                      label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </Tooltip>
                 )}
               </Box>
             </Box>
