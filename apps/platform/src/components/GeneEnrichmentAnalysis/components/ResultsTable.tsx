@@ -156,6 +156,7 @@ function getColumns() {
 
 function ResultsTable({ results }: ResultsTableProps) {
   const columns = getColumns();
+  const dateStem = new Date().toISOString().slice(0, 10);
 
   return (
     <OtTable
@@ -165,7 +166,7 @@ function ResultsTable({ results }: ResultsTableProps) {
       order="asc"
       showGlobalFilter
       dataDownloader
-      dataDownloaderFileStem="gsea-results"
+      dataDownloaderFileStem={`gsea-results-${dateStem}`}
     />
   );
 }
