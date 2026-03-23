@@ -3,11 +3,10 @@ import {
   faChevronDown,
   faChevronRight,
   faCircleInfo,
-  faFlask,
+  faFile,
   faFolder,
   faFolderOpen,
   faGear,
-  faSitemap,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -314,7 +313,7 @@ function TreeNodeComponent({
               </IconButton>
             ) : (
               <FontAwesomeIcon
-                icon={faFlask}
+                icon={faFile}
                 style={{ color: isSignificant ? "#4caf50" : "#bdbdbd", marginLeft: 8 }}
               />
             )}
@@ -465,7 +464,7 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
       <ListItemButton onClick={() => onNodeClick(result)} sx={{ borderRadius: 1 }}>
         <ListItemIcon sx={{ minWidth: 36 }}>
           <FontAwesomeIcon
-            icon={faFlask}
+            icon={faFile}
             style={{ color: isSignificant ? "#4caf50" : "#bdbdbd" }}
           />
         </ListItemIcon>
@@ -714,17 +713,11 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
-              icon={faFlask}
-              style={{ fontSize: "0.7rem", color: "#4caf50", opacity: 0.7 }}
+              icon={faFile}
+              style={{ fontSize: "0.7rem", color: "#757575" }}
             />
             <Typography variant="caption" color="text.disabled">
-              Significant leaf
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon icon={faFlask} style={{ fontSize: "0.7rem", color: "#bdbdbd" }} />
-            <Typography variant="caption" color="text.disabled">
-              Not significant
+              Terminal pathway
             </Typography>
           </Box>
         </Box>
@@ -764,7 +757,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
                     </ListItemIcon>
                     <ListItemIcon sx={{ minWidth: 36 }}>
                       <FontAwesomeIcon
-                        icon={faFolder}
+                        icon={expandedNodes.has(group.id) ? faFolderOpen : faFolder}
                         style={{
                           color:
                             group.color === "success"
