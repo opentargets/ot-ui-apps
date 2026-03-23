@@ -5,7 +5,7 @@ import { faCamera, faChevronLeft, faChevronRight } from "@fortawesome/free-solid
 import { createViewer } from "3dmol";
 import { parseCif } from "./parseCif";
 import { schemeSet1, schemeDark2 } from "d3";
-import { CompactAlphaFoldLegend, Tooltip } from "ui";
+import { ViewerLegend, Tooltip } from "ui";
 import { getAlphaFoldConfidence } from "@ot/constants";
 import { isAlphaFold, zipToObject, modulo, hoverManagerFactory, onClickCapture } from "./helpers";
 import InfoPopper from "./InfoPopper";
@@ -460,7 +460,7 @@ function Viewer({ ensemblId, selectedRow, segments }) {
           )}
         </Box>
       </Box>
-      {isAlphaFold(selectedRow) && <CompactAlphaFoldLegend />}
+      {isAlphaFold(selectedRow) && <ViewerLegend />}
     </>
   );
 }

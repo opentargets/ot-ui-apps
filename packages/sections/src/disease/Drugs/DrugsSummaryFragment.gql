@@ -1,0 +1,5 @@
+fragment DrugsSummaryFragment on Disease {
+  drugAndClinicalCandidates {
+    count
+  }
+}

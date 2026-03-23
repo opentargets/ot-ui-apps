@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Link, SectionItem, OtTable } from "ui";
+import { Link, SectionItem, OtTable, Tooltip } from "ui";
 import { naLabel } from "@ot/constants";
 import { definition } from ".";
 
@@ -35,15 +35,17 @@ const columns = [
     id: "biosample",
     label: "Affected tissue/cell",
     enableHiding: false,
-    renderCell: ({ biosample }: { biosample: Biosample }) => {
+    renderCell: ({ biosample, biosampleFromSourceId }: { biosample: Biosample; biosampleFromSourceId?: string }) => {
       if (!biosample) return naLabel;
       return (
+        <Tooltip title={biosampleFromSourceId || ""}>
         <Link
           external
           to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}
         >
           {biosample.biosampleName || biosample.biosampleId}
         </Link>
+        </Tooltip>
       );
     },
     filterValue: ({ biosample }: { biosample: Biosample }) =>
@@ -170,7 +172,7 @@ function Body({ id, entity }: BodyProps) {
           showGlobalFilter
           columns={columns}
           loading={request.loading}
-          rows={request.data?.credibleSet?.variant?.intervals?.rows || []}
+          rows={request.data?.credibleSet?.variant?.enhancerToGenes?.rows || []}
           query={ENHANCER_TO_GENE_PREDICTIONS_QUERY.loc?.source?.body}
           variables={variables}
           tableDataLoading={request.loading}
