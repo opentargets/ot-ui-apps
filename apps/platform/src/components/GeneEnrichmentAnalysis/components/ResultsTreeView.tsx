@@ -322,7 +322,7 @@ function TreeNodeComponent({
             <ListItemIcon sx={{ minWidth: 28 }}>
               <FontAwesomeIcon
                 icon={isExpanded ? faFolderOpen : faFolder}
-                style={{ color: isSignificant ? "#4caf50" : "#1976d2" }}
+                style={{ color: isSignificant ? "#4caf50" : "#9e9e9e" }}
               />
             </ListItemIcon>
           )}
@@ -705,7 +705,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
               icon={faFolder}
-              style={{ fontSize: "0.7rem", color: "#1976d2", opacity: 0.7 }}
+              style={{ fontSize: "0.7rem", color: "#9e9e9e", opacity: 0.7 }}
             />
             <Typography variant="caption" color="text.disabled">
               Parent pathway
