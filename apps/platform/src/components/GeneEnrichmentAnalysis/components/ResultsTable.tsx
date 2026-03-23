@@ -100,7 +100,7 @@ function getColumns() {
     },
     {
       id: "Number of input genes",
-      label: "Overlap Genes",
+      label: "Overlapping Genes",
       numeric: true,
       sortable: true,
       renderCell: (row: GseaResult) => row["Number of input genes"]?.toString() ?? "-",
