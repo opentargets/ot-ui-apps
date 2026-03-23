@@ -705,7 +705,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
               icon={faFolder}
-              style={{ fontSize: "0.7rem", color: "#9e9e9e", opacity: 0.7 }}
+              style={{ fontSize: "0.7rem", color: "#9e9e9e" }}
             />
             <Typography variant="caption" color="text.disabled">
               Parent pathway
@@ -714,7 +714,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
               icon={faFile}
-              style={{ fontSize: "0.7rem", color: "#757575" }}
+              style={{ fontSize: "0.7rem", color: "#9e9e9e" }}
             />
             <Typography variant="caption" color="text.disabled">
               Terminal pathway
