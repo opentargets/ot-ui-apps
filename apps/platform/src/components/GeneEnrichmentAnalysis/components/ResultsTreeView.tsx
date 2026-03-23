@@ -674,7 +674,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           />
           <Chip label={`Sorted by ${settings.sortBy} (${settings.sortDirection})`} size="small" variant="outlined" />
           {settings.groupBy === "hierarchy" && (
-            <Chip label={`${rootCount} root pathways`} size="small" variant="outlined" />
+            <Chip label={`${rootCount} top-level pathways`} size="small" variant="outlined" />
           )}
           {!hasHierarchyData && settings.groupBy === "hierarchy" && (
             <Chip label="No hierarchy data" color="warning" size="small" variant="outlined" />
