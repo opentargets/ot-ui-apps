@@ -7,6 +7,11 @@ import projectsData from "./projects-data.json";
 
 const FILTER_GROUPS = [
   {
+    key: "integration",
+    label: "Integration",
+    options: ["PPP only", "PPP", "Public"],
+  },
+  {
     key: "project_status",
     label: "Project Status",
     options: [...new Set(projectsData.map(p => p.project_status))].sort(),
@@ -15,11 +20,6 @@ const FILTER_GROUPS = [
     key: "open_targets_therapeutic_area",
     label: "Therapeutic Area",
     options: [...new Set(projectsData.map(p => p.open_targets_therapeutic_area))].sort(),
-  },
-  {
-    key: "integration",
-    label: "Integration",
-    options: ["PPP", "Public"],
   },
 ];
 
@@ -58,6 +58,9 @@ function matchesFilters(project, filters) {
     const ok = filters.integration.every(
       i =>
         (i === "PPP" && project.integrated_into_PPP === "Y") ||
+        (i === "PPP only" &&
+          project.integrated_into_PPP === "Y" &&
+          project.integrated_into_Public === "N") ||
         (i === "Public" && project.integrated_into_Public === "Y")
     );
     if (!ok) return false;
