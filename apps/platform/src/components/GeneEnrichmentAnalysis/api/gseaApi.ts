@@ -18,8 +18,16 @@ export interface GseaResult {
   "Parent pathway"?: string;
 }
 
+export interface InputOverlap {
+  library: string;
+  used_count: number;
+  total_input: number;
+  used_percent: number;
+}
+
 export interface GseaAnalyzeResponse {
   results: GseaResult[];
+  input_overlap: InputOverlap;
 }
 
 export interface GseaAnalyzeParams {
@@ -35,7 +43,7 @@ export async function analyzeGsea({
   genes,
   library,
   analysisDirection = "one_sided_positive",
-}: GseaAnalyzeParams): Promise<GseaResult[]> {
+}: GseaAnalyzeParams): Promise<GseaAnalyzeResponse> {
   const url = new URL(`${GSEA_API_BASE_URL}/analyze/json`);
   url.searchParams.set("gmt_name", library);
   url.searchParams.set("analysis_direction", analysisDirection);
@@ -53,9 +61,7 @@ export async function analyzeGsea({
     throw new Error(`GSEA analysis failed: ${response.status} - ${errorText}`);
   }
 
-  const data = await response.json();
-  // API returns { results: GseaResult[] }
-  return data.results ?? data;
+  return response.json();
 }
 
 /**

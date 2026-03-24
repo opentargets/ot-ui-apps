@@ -2,7 +2,7 @@ import { faChartPie, faCircle, faSitemap, faTableColumns } from "@fortawesome/fr
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useState } from "react";
-import type { GseaResult } from "../api/gseaApi";
+import type { GseaResult, InputOverlap } from "../api/gseaApi";
 import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
 import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
@@ -12,11 +12,12 @@ type ViewMode = "table" | "tree" | "plotly";
 
 interface AnalysisResultsProps {
   results: GseaResult[];
+  inputOverlap: InputOverlap | null;
   onReset: () => void;
   activeRunId?: string | null;
 }
 
-function AnalysisResults({ results, onReset, activeRunId }: AnalysisResultsProps) {
+function AnalysisResults({ results, inputOverlap, onReset, activeRunId }: AnalysisResultsProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
 
   const handleViewChange = (_: React.MouseEvent<HTMLElement>, newMode: ViewMode | null) => {
@@ -45,6 +46,7 @@ function AnalysisResults({ results, onReset, activeRunId }: AnalysisResultsProps
           <Typography variant="h6">Analysis Complete</Typography>
           <Typography variant="body2" color="text.secondary">
             {results.length} enriched pathways ({significantCount} significant at FDR {"<"} 0.05)
+            {inputOverlap && ` · ${inputOverlap.used_count} (${inputOverlap.used_percent}%) of ${inputOverlap.total_input} input genes used`}
           </Typography>
         </Box>
 

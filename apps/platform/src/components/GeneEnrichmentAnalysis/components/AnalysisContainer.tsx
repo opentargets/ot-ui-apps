@@ -21,7 +21,7 @@ function AnalysisContainer() {
     state;
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  const { step, results, error, isLoading, runAnalysis, reset } = useGseaAnalysis({
+  const { step, results, inputOverlap, error, isLoading, runAnalysis, reset } = useGseaAnalysis({
     client,
     state,
     dispatch,
@@ -126,7 +126,7 @@ function AnalysisContainer() {
 
     // Analysis complete
     if (step === "complete") {
-      return <AnalysisResults results={results} onReset={reset} activeRunId={activeRunId} />;
+      return <AnalysisResults results={results} inputOverlap={inputOverlap} onReset={reset} activeRunId={activeRunId} />;
     }
 
     // Default: input form
