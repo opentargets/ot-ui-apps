@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Button, Card, CardContent, CardActions, Chip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare, faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { DetailPopover, Link, OtAsyncTooltip } from "ui";
+import { DetailPopover, Link } from "ui";
 
 type Disease = { label?: string; disease_id: string };
 
@@ -114,17 +114,15 @@ function ProjectCard({ data }: { data: ProjectData }) {
             >
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, maxWidth: 280 }}>
                 {diseases.map(d => (
-                  <OtAsyncTooltip key={d.disease_id} entity="disease" id={d.disease_id}>
-                    <Link to={`/disease/${d.disease_id}`}>
-                      <Chip
-                        size="small"
-                        label={d.label || d.disease_id}
-                        clickable
-                        variant="outlined"
-                        sx={{ color: "text.secondary", borderColor: "grey.300" }}
-                      />
-                    </Link>
-                  </OtAsyncTooltip>
+                  <Link key={d.disease_id} to={`/disease/${d.disease_id}`} asyncTooltip>
+                    <Chip
+                      size="small"
+                      label={d.label || d.disease_id}
+                      clickable
+                      variant="outlined"
+                      sx={{ color: "text.secondary", borderColor: "grey.300" }}
+                    />
+                  </Link>
                 ))}
               </Box>
             </DetailPopover>
