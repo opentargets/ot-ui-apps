@@ -18,7 +18,7 @@ const FILTER_GROUPS = [
   },
   {
     key: "open_targets_therapeutic_area",
-    label: "Therapeutic Area",
+    label: "Research & Development Area",
     options: [...new Set(projectsData.map(p => p.open_targets_therapeutic_area))].sort(),
   },
 ];

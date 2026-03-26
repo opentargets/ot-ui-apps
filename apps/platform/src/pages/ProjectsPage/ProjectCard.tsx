@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Box, Button, Card, CardContent, CardActions, Chip, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpRightFromSquare, faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -51,9 +50,6 @@ function ProjectCard({ data }: { data: ProjectData }) {
         justifyContent: "space-between",
         boxShadow: "none",
         border: theme => `1px solid ${theme.palette.grey[300]}`,
-        "&:hover": {
-          boxShadow: theme => theme.shadows[3],
-        },
       }}
     >
       <CardContent sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
