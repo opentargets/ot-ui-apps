@@ -41,7 +41,8 @@ import {
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Link, ScientificNotation, Tooltip } from "ui";
-import BaselineTooltipTable from "./BaselineTooltipTable";
+import MedianTooltipTable from "./MedianTooltipTable";
+import SpecificityTooltipTable from "./SpecificityTooltipTable";
 import DetailPlot from "./DetailPlot";
 
 const specificityColors = {
@@ -218,59 +219,61 @@ const Legend = ({
 }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 6 }}>
-      <Tooltip
-        title={
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Typography variant="caption">
-              Threshold specificity score: {specificityThreshold}
-            </Typography>
-            <Typography variant="caption">
-              A high value indicates <strong>{symbol}</strong> is in the top 25% of specifically
-              expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
-            </Typography>
-          </Box>
-        }
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+          <Tooltip
+            showHelpIcon
+            title={
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Typography variant="caption">
+                  Specificity score threshold: {100 * specificityThreshold}%
+                </Typography>
+                <Typography variant="caption">
+                  A high value indicates <strong>{symbol}</strong> is in the top 25% of specifically
+                  expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
+                </Typography>
+              </Box>
+            }
+          >
             Specificity
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faCircle}
-              fontSize={specificityCircleWidth}
-              color={specificityColors.high}
-            />
-            <Typography variant="caption">high</Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faCircle}
-              fontSize={specificityCircleWidth}
-              color={specificityColors.low}
-            />
-            <Typography variant="caption">low</Typography>
-          </Box>
+          </Tooltip>
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faCircle}
+            fontSize={specificityCircleWidth}
+            color={specificityColors.high}
+          />
+          <Typography variant="caption">high</Typography>
         </Box>
-      </Tooltip>
-      <Tooltip
-        title={
-          <Typography variant="caption">Median expression normalised within columns</Typography>
-        }
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faCircle}
+            fontSize={specificityCircleWidth}
+            color={specificityColors.low}
+          />
+          <Typography variant="caption">low</Typography>
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+          <Tooltip
+            showHelpIcon
+            title={
+              <Typography variant="caption">Median expression normalised within columns</Typography>
+            }
+          >
             Median expression
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faSquare}
-              fontSize={specificityCircleWidth}
-              color={theme.palette.secondary.main}
-            />
-          </Box>
+          </Tooltip>
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faSquare}
+            fontSize={specificityCircleWidth}
+            color={theme.palette.secondary.main}
+          />
         </Box>
-      </Tooltip>
+      </Box>
     </Box>
   );
 };
@@ -644,33 +647,46 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
               return (
                 <>
                   {DisplayXAxis}
-                  <Tooltip
-                    placement="top-start"
-                    slotProps={slotProps}
-                    title={
-                      <BaselineTooltipTable
-                        data={cellContext.row.original[datatype]}
-                        show={viewType}
-                        showSource={isSecondLevel && datatype !== datatypes[0]}
-                      />
-                    }
-                  >
-                    <Box className={classes.medianCell}>
-                      <Box className={classes.barContainer}>
-                        <Box
-                          className={isFirstLevel ? classes.bar : classes.childBar}
-                          style={{ width: `${percent}%` }}
+                  <Box className={classes.medianCell}>
+                    <Box className={classes.barContainer}>
+                    <Tooltip
+                      placement="top-start"
+                      slotProps={slotProps}
+                      title={
+                        <MedianTooltipTable
+                          data={cellContext.row.original[datatype]}
+                          show={viewType}
+                          showSource={isSecondLevel && datatype !== datatypes[0]}
                         />
+                      }
+                    >
+                      <Box
+                        className={isFirstLevel ? classes.bar : classes.childBar}
+                        style={{ width: `${percent}%` }}
+                      />
+                    </Tooltip>
 
-                        {specificityScore != null && (
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              right: -18,
-                              top: 0,
-                              fontSize: 10,
-                              fontWeight: 500,
-                            }}
+                      {specificityScore != null && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            right: -18,
+                            top: 0,
+                            fontSize: 10,
+                            fontWeight: 500,
+                          }}
+                        >
+                          <Tooltip
+                            placement="top-start"
+                            slotProps={slotProps}
+                            title={
+                              <SpecificityTooltipTable
+                                data={cellContext.row.original[datatype]}
+                                specificityThreshold={specificityThreshold}
+                                groupByTissue={groupByTissue}
+                                symbol={symbol}
+                              />
+                            }
                           >
                             <FontAwesomeIcon
                               icon={faCircle}
@@ -681,39 +697,39 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 ]
                               }
                             />
-                          </Box>
-                        )}
+                          </Tooltip>
+                        </Box>
+                      )}
 
-                        {isSecondLevel && datatype === datatypes[0] && (
-                          <Box
+                      {isSecondLevel && datatype === datatypes[0] && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            left: -22,
+                            top: -6,
+                          }}
+                        >
+                          <IconButton
+                            size="small"
+                            disableRipple
+                            className={classes.expandColumn}
                             sx={{
-                              position: "absolute",
-                              left: -22,
-                              top: -6,
-                            }}
+                              visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
+                              "&:hover": {
+                                bgcolor: "transparent",
+                              },
+                            }} // keeps all rows same height
                           >
-                            <IconButton
-                              size="small"
-                              disableRipple
-                              className={classes.expandColumn}
-                              sx={{
-                                visibility: cellContext.row.getCanExpand() ? "visible" : "hidden",
-                                "&:hover": {
-                                  bgcolor: "transparent",
-                                },
-                              }} // keeps all rows same height
-                            >
-                              {cellContext.row.getIsExpanded() ? (
-                                <FontAwesomeIcon icon={faCaretUp} size="xs" />
-                              ) : (
-                                <FontAwesomeIcon icon={faCaretDown} size="xs" />
-                              )}
-                            </IconButton>
-                          </Box>
-                        )}
-                      </Box>
+                            {cellContext.row.getIsExpanded() ? (
+                              <FontAwesomeIcon icon={faCaretUp} size="xs" />
+                            ) : (
+                              <FontAwesomeIcon icon={faCaretDown} size="xs" />
+                            )}
+                          </IconButton>
+                        </Box>
+                      )}
                     </Box>
-                  </Tooltip>
+                  </Box>
                 </>
               );
             },
