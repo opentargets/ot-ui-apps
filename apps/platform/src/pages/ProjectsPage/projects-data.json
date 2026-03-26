@@ -203,7 +203,7 @@
     "integrated_into_PPP": "Y",
     "integrated_into_Public": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Other Therapy Area",
+    "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": [
       { "label": "Psoriasis", "disease_id": "EFO_0000676" },
       { "label": "Atopic Eczema", "disease_id": "EFO_0000274" }
@@ -258,7 +258,7 @@
     "project_name": "Proteomics",
     "project_lead": "Juan Antonia Vizcaino",
     "generates_data": "Yes",
-    "integrated_into_PPP": "N",
+    "integrated_into_PPP": "Y",
     "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Informatics",
