@@ -37,6 +37,7 @@ export function renderWaterfallPlot({
       reverse: true,
       axis: null,
       grid: true,
+      inset: -1,  // force x-axis upwards to correct position
     },
     marks: [
       // column headers

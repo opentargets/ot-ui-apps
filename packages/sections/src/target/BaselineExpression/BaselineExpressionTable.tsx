@@ -21,8 +21,9 @@ import { green, grey } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { theme } from "@ot/config";
-import { naLabel } from "@ot/constants";
-import { sentenceCase } from "@ot/utils";
+import { naLabel, baselineUnits } from "@ot/constants";
+import { sentenceCase, formatSignificantDigits } from "@ot/utils";
+
 import { type RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import {
   createColumnHelper,
@@ -39,8 +40,9 @@ import {
 } from "@tanstack/react-table";
 import type React from "react";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import { Link, Tooltip } from "ui";
-import BaselineTooltipTable from "./BaselineTooltipTable";
+import { Link, ScientificNotation, Tooltip } from "ui";
+import MedianTooltipTable from "./MedianTooltipTable";
+import SpecificityTooltipTable from "./SpecificityTooltipTable";
 import DetailPlot from "./DetailPlot";
 
 const specificityColors = {
@@ -101,6 +103,10 @@ const searchFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed || containsSubstr;
 };
 
+function isTopRow(cellcontext) {
+  return cellcontext.row.id === cellcontext.table.getRowModel().rows[0]?.id;
+}
+
 interface BaselineExpressionDataRow {
   tissueBiosample?: {
     biosampleId: string;
@@ -124,7 +130,6 @@ interface BaselineExpressionDataRow {
   datasourceId: string;
   datatypeId: string;
   specificity_score?: number;
-  distribution_score: number;
   unit: string;
 }
 
@@ -214,62 +219,138 @@ const Legend = ({
 }) => {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 4, mr: 6 }}>
-      <Tooltip
-        title={
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Typography variant="caption">
-              Threshold specificity score: {specificityThreshold}
-            </Typography>
-            <Typography variant="caption">
-              A high value indicates <strong>{symbol}</strong> is in the top 25% of specifically
-              expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
-            </Typography>
-          </Box>
-        }
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+          <Tooltip
+            showHelpIcon
+            title={
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Typography variant="caption">
+                  Specificity score threshold: {100 * specificityThreshold}%
+                </Typography>
+                <Typography variant="caption">
+                  A high value indicates <strong>{symbol}</strong> is in the top{" "}
+                  {100 * (1 - specificityThreshold)}% of specifically
+                  expressed genes in the {groupByTissue ? "tissue" : "cell type"}.
+                </Typography>
+              </Box>
+            }
+          >
             Specificity
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faCircle}
-              fontSize={specificityCircleWidth}
-              color={specificityColors.high}
-            />
-            <Typography variant="caption">high</Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faCircle}
-              fontSize={specificityCircleWidth}
-              color={specificityColors.low}
-            />
-            <Typography variant="caption">low</Typography>
-          </Box>
+          </Tooltip>
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faCircle}
+            fontSize={specificityCircleWidth}
+            color={specificityColors.high}
+          />
+          <Typography variant="caption">high</Typography>
         </Box>
-      </Tooltip>
-      <Tooltip
-        title={
-          <Typography variant="caption">Median expression normalised within columns</Typography>
-        }
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faCircle}
+            fontSize={specificityCircleWidth}
+            color={specificityColors.low}
+          />
+          <Typography variant="caption">low</Typography>
+        </Box>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="subtitle2" sx={{ fontSize: "12px" }}>
+          <Tooltip
+            showHelpIcon
+            title={
+              <Typography variant="caption">Median expression normalised within columns</Typography>
+            }
+          >
             Median expression
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon
-              icon={faSquare}
-              fontSize={specificityCircleWidth}
-              color={theme.palette.secondary.main}
-            />
-          </Box>
+          </Tooltip>
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+          <FontAwesomeIcon
+            icon={faSquare}
+            fontSize={specificityCircleWidth}
+            color={theme.palette.secondary.main}
+          />
         </Box>
-      </Tooltip>
+      </Box>
     </Box>
   );
 };
+
+function XAxis({ datatype, maxMedian }) {
+  const displayMax = formatSignificantDigits(maxMedian);
+  return (
+    <Box 
+      className="xaxis-component"
+      sx={{
+        position: "absolute",
+        top: 0,
+        mt: -4,
+        left: "1.5rem",
+        right: "3.5rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "end",
+        height: "fit-content",
+        cursor: "auto",
+        pointerEvents: "auto",
+        zIndex: 1,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            height: "1.25em",
+            overflow: "visible",
+            pb: 0.25,
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              display: "inline-block",
+              verticalAlign: "bottom",
+              lineHeight: 1,
+              cursor: "default",
+              fontSize: { md: "11px", lg: "12px" }
+            }}>
+            0 {baselineUnits[datatype]}
+          </Typography>
+          <Typography
+            variant="caption"
+            sx={{
+              display: "inline-block",
+              verticalAlign: "bottom",
+              lineHeight: 1,
+              cursor: "default",
+              fontSize: { md: "11px", lg: "12px" }
+            }}
+          >
+            {displayMax.toLowerCase().includes("e")
+              ? <ScientificNotation number={maxMedian} dp={1} />
+              : displayMax
+            }
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            width: "100%",
+            height: "4px",
+            borderWidth: "0 1px 1px",
+            borderColor: "#999",
+            borderStyle: "solid",
+          }}
+        />
+      </Box>
+    </Box>
+  );
+}
 
 const columnHelper = createColumnHelper<BaselineExpressionTableRow>();
 
@@ -358,7 +439,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   );
 
   const viewType = groupByTissue ? "tissue" : "celltype";
-  const { firstLevel, secondLevel, thirdLevel } = data[viewType];
+  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[viewType];
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -399,26 +480,37 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     columnHelper.accessor((row) => getName(row), {
       id: "name",
       header: (
-        <Tooltip
-          title={
-            <Box onClick={(event) => event.stopPropagation}>
-              Mapped to{" "}
-              <Link
-                external
-                to={
-                  groupByTissue
-                    ? "https://www.ebi.ac.uk/ols4/ontologies/uberon"
-                    : "https://www.ebi.ac.uk/ols4/ontologies/cl"
-                }
-              >
-                {groupByTissue ? "Uber-anatomy ontology (UBERON)" : "Cell Ontology (CL)"}
-              </Link>
-            </Box>
-          }
-          showHelpIcon
+        <Box
+          component="span"
+          sx={{ 
+            width: "100%", 
+            display: "flex", 
+            alignItems: "flex-start", 
+            justifyContent: "flex-start",
+            lineHeight: 1.5
+          }}
         >
-          {groupByTissue ? "Tissue" : "Cell Type"}
-        </Tooltip>
+          <Tooltip
+            title={
+              <Box onClick={(event) => event.stopPropagation}>
+                Mapped to{" "}
+                <Link
+                  external
+                  to={
+                    groupByTissue
+                      ? "https://www.ebi.ac.uk/ols4/ontologies/uberon"
+                      : "https://www.ebi.ac.uk/ols4/ontologies/cl"
+                  }
+                >
+                  {groupByTissue ? "Uber-anatomy ontology (UBERON)" : "Cell Ontology (CL)"}
+                </Link>
+              </Box>
+            }
+            showHelpIcon
+          >
+              {groupByTissue ? "Tissue" : "Cell Type"}
+          </Tooltip>
+        </Box>
       ),
       cell: (cellContext) => {
         const isFirstLevel = cellContext.row.original._firstLevelId;
@@ -515,7 +607,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
           },
           {
             accessorKey: datatype,
-            header: datatypeNameLookup[datatype] ?? datatype,
+            header: <Box sx={{ pb: 4.5, lineHeight: 1.5 }}>{datatypeNameLookup[datatype] ?? datatype}</Box>,
             enableSorting: true,
             sortingFn: getSortingFn(datatype, datatypes),
             cell: (cellContext) => {
@@ -541,48 +633,62 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                   },
                 },
               };
+              const DisplayXAxis = isTopRow(cellContext) && maxMedians[datatype] > 0 && (
+                <XAxis datatype={datatype} maxMedian={maxMedians[datatype]} />
+              );
 
               if (value === -1) {
                 return (
-                  <Tooltip
-                    placement="top-start"
-                    slotProps={slotProps}
-                    title={
-                      datatype === "mass-spectrometry proteomics"
-                        ? "No protein detected in the measured tissue sample"
-                        : null
-                    }
-                  >
-                    <Box className={classes.medianCell}>
-                      <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
-                    </Box>
-                  </Tooltip>
+                  <>
+                    {DisplayXAxis}
+                    <Tooltip
+                      placement="top-start"
+                      slotProps={slotProps}
+                      title={
+                        datatype === "mass-spectrometry proteomics"
+                          ? "No protein detected in the measured tissue sample"
+                          : null
+                      }
+                    >
+                      <Box className={classes.medianCell}>
+                        <Box className={`${classes.barContainer} ${classes.failed}`}>{naLabel}</Box>
+                      </Box>
+                    </Tooltip>
+                  </>
                 );
               }
 
-              if (value === -2) return <Box className={classes.medianCell}></Box>;
+              if (value === -2) return (                
+                <>
+                  {DisplayXAxis}
+                  <Box className={classes.medianCell}></Box>
+                </>
+              );
 
               const percent = value >= 0 ? value * 100 : 0;
               const specificityScore = cellContext.row.original[datatype].specificity_score;
 
               return (
-                <Tooltip
-                  placement="top-start"
-                  slotProps={slotProps}
-                  title={
-                    <BaselineTooltipTable
-                      data={cellContext.row.original[datatype]}
-                      show={viewType}
-                      showSource={isSecondLevel && datatype !== datatypes[0]}
-                    />
-                  }
-                >
+                <>
+                  {DisplayXAxis}
                   <Box className={classes.medianCell}>
                     <Box className={classes.barContainer}>
+                    <Tooltip
+                      placement="top-start"
+                      slotProps={slotProps}
+                      title={
+                        <MedianTooltipTable
+                          data={cellContext.row.original[datatype]}
+                          show={viewType}
+                          showSource={isSecondLevel && datatype !== datatypes[0]}
+                        />
+                      }
+                    >
                       <Box
                         className={isFirstLevel ? classes.bar : classes.childBar}
                         style={{ width: `${percent}%` }}
                       />
+                    </Tooltip>
 
                       {specificityScore != null && (
                         <Box
@@ -594,15 +700,28 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             fontWeight: 500,
                           }}
                         >
-                          <FontAwesomeIcon
-                            icon={faCircle}
-                            fontSize={specificityCircleWidth}
-                            color={
-                              specificityColors[
-                                specificityScore >= specificityThreshold ? "high" : "low"
-                              ]
+                          <Tooltip
+                            placement="top-start"
+                            slotProps={slotProps}
+                            title={
+                              <SpecificityTooltipTable
+                                data={cellContext.row.original[datatype]}
+                                specificityThreshold={specificityThreshold}
+                                groupByTissue={groupByTissue}
+                                symbol={symbol}
+                              />
                             }
-                          />
+                          >
+                            <FontAwesomeIcon
+                              icon={faCircle}
+                              fontSize={specificityCircleWidth}
+                              color={
+                                specificityColors[
+                                  specificityScore >= specificityThreshold ? "high" : "low"
+                                ]
+                              }
+                            />
+                          </Tooltip>
                         </Box>
                       )}
 
@@ -635,7 +754,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       )}
                     </Box>
                   </Box>
-                </Tooltip>
+                </>
               );
             },
           }
@@ -753,12 +872,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           sx={{
                             width: getColumnWidth(index),
                             border: "none",
+                            verticalAlign: index === 0 ? "bottom" : "top",
                           }}
                         >
                           <Box
                             sx={{
                               display: "flex",
-                              alignItems: "center",
+                              alignItems: index === 0 ? "flex-end" : "flex-start",
                               justifyContent: "space-between",
                               px: 1,
                             }}
@@ -767,6 +887,8 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                               sx={{
                                 cursor: header.column.getCanSort() ? "pointer" : "default",
                                 flex: 1,
+                                display: "flex",
+                                alignItems: index === 0 ? "flex-end" : "flex-start",
                               }}
                               onClick={header.column.getToggleSortingHandler()}
                             >
@@ -774,11 +896,23 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 <Box
                                   sx={{
                                     display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: index === 0 ? "start" : "center",
+                                    alignItems: index === 0 ? "flex-end" : "flex-start",
+                                    justifyContent: "flex-start",
+                                    flex: 1,
+                                    minWidth: 0,
+                                    gap: 0.5,
                                   }}
                                 >
-                                  <Typography variant="caption" style={{ fontWeight: "bold" }}>
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      fontWeight: "bold",
+                                      lineHeight: 1,
+                                      whiteSpace: index === 0 ? "nowrap" : "normal",
+                                      overflow: index === 0 ? "hidden" : undefined,
+                                      textOverflow: index === 0 ? "ellipsis" : undefined,
+                                    }}
+                                  >
                                     {flexRender(
                                       header.column.columnDef.header,
                                       header.getContext()
@@ -847,13 +981,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           if (row.getCanExpand()) row.toggleExpanded();
                         }}
                         sx={{
-                          "&:hover": {
+                          "&:hover:not(:has(.xaxis-component:hover))": {
                             outlineOffset: "-1px",
                             outline: "solid 1px",
                             outlineColor: "grey.400",
                           },
                           ...(row.getCanExpand() && {
-                            "&:hover": {
+                            "&:hover:not(:has(.xaxis-component:hover))": {
                               outlineOffset: "-1px",
                               outline: isFirstLevel || !isExpanded ? "solid 1px" : "none",
                               outlineColor: "grey.400",

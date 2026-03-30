@@ -5,9 +5,14 @@ function Description({ symbol, name }) {
     <>
       Clinical candidates and/or approved drugs pharmacologically targeting{" "}
       <strong>{symbol}</strong> and indicated for <strong>{name}</strong>. Source:{" "}
+      <Link to="https://platform-docs.opentargets.org/evidence#clinical-precedence" external>
+        Open Targets
+      </Link>
+      {" "}and{" "}
       <Link to="https://www.ebi.ac.uk/chembl/" external>
         ChEMBL
       </Link>
+      .
     </>
   );
 }

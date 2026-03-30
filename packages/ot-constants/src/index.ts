@@ -254,7 +254,7 @@ export const stopReasonMap = (category: string): string =>
 
 export const clinicalReportsSourcesInfo = {
   AACT: {
-    name: "Aggregate Content of Clinical Trials",
+    name: "Aggregate Content of ClinicalTrials.gov",
     url: "https://aact.ctti-clinicaltrials.org/",
   },
   TTD: {
@@ -444,6 +444,12 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
     console.error("Error formatting gene location", e);
     return "";
   }
+};
+
+export const baselineUnits = {
+  "scrna-seq": "CPM",
+  "bulk rna-seq": "TPM",
+  "mass-spectrometry proteomics": "PPB",
 };
 
 export * from "./alphaFold";
