@@ -287,7 +287,7 @@ function XAxis({ datatype, maxMedian }) {
       sx={{
         position: "absolute",
         top: 0,
-        mt: -3.5,
+        mt: -4,
         left: "1.5rem",
         right: "3.5rem",
         display: "flex",
@@ -305,13 +305,17 @@ function XAxis({ datatype, maxMedian }) {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "baseline",
+            alignItems: "flex-end",
+            height: "1.25em",
+            overflow: "visible",
             pb: 0.25,
           }}
         >
           <Typography
             variant="caption"
             sx={{
+              display: "inline-block",
+              verticalAlign: "bottom",
               lineHeight: 1,
               cursor: "default",
               fontSize: { md: "11px", lg: "12px" }
@@ -321,6 +325,8 @@ function XAxis({ datatype, maxMedian }) {
           <Typography
             variant="caption"
             sx={{
+              display: "inline-block",
+              verticalAlign: "bottom",
               lineHeight: 1,
               cursor: "default",
               fontSize: { md: "11px", lg: "12px" }
