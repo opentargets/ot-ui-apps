@@ -19,7 +19,9 @@
     "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Oncology",
-    "disease_mapping": []
+    "disease_mapping": [
+      { "label": "lung cancer", "disease_id": "MONDO_0008903" }
+    ]
   },
   {
     "otar_code": "OTAR2079",
@@ -70,7 +72,9 @@
     "integrated_into_Public": "N",
     "project_status": "Active",
     "open_targets_therapeutic_area": "Neurodegenerative Disease",
-    "disease_mapping": []
+    "disease_mapping": [
+       { "label": "alzheimer disease", "disease_id": "MONDO_0004975" }
+    ]
   },
   {
     "otar_code": "OTAR2065",
@@ -217,7 +221,7 @@
     "integrated_into_PPP": "N",
     "integrated_into_Public": "N",
     "project_status": "Active",
-    "open_targets_therapeutic_area": "Neurodegenerative Disease , Immunology and Inflammation",
+    "open_targets_therapeutic_area": "Immunology and Inflammation",
     "disease_mapping": []
   },
   {
