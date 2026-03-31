@@ -1,7 +1,9 @@
+import { ReactElement, ReactNode } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Button, Typography, useMediaQuery, Box } from "@mui/material";
-import { makeStyles, useTheme } from "@mui/styles";
+import { AppBar, Toolbar, Button, Typography, useMediaQuery, Box, Theme } from "@mui/material";
+import { CSSProperties, makeStyles, useTheme } from "@mui/styles";
 import { styled } from "@mui/material/styles";
+import { PopperPlacementType } from "@mui/material";
 import classNames from "classnames";
 import { v1 } from "uuid";
 
@@ -10,12 +12,12 @@ import OpenTargetsTitle from "./OpenTargetsTitle";
 import HeaderMenu from "./HeaderMenu";
 import PrivateWrapper from "./PrivateWrapper";
 
-const LogoBTN = styled(Button)`
+const LogoBTN = styled(Button)<{ component?: React.ElementType; to?: string }>`
   border: none;
   color: white;
 `;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   navbar: {
     backgroundColor: `${theme.palette.primary.dark} !important`,
     margin: 0,
@@ -25,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     top: 0,
     position: "absolute !important",
-  },
+  }  as unknown as CSSProperties,
   flex: {
     flexGrow: 1,
   },
@@ -76,7 +78,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function MenuExternalLink({ classes, href, children }) {
+type NavBarItem = {
+  external: boolean;
+  name: string;
+  showOnlyPartner?: boolean;
+  url: string;
+};
+
+type MenuExternalLinkProps = {
+  classes: Record<string, string>;
+  href: string;
+  children: ReactNode;
+};
+
+type NavBarProps = {
+  name?: string;
+  search?: ReactNode;
+  api?: string;
+  downloads?: string;
+  docs?: string;
+  contact?: string;
+  homepage?: boolean;
+  items?: NavBarItem[];
+  placement?: PopperPlacementType;
+};
+
+function MenuExternalLink({ classes, href, children }: MenuExternalLinkProps): ReactElement {
   return (
     <Typography color="inherit" className={classes.menuExternalLinkContainer}>
       <a target="_blank" rel="noopener noreferrer" href={href} className={classes.menuExternalLink}>
@@ -86,9 +113,9 @@ function MenuExternalLink({ classes, href, children }) {
   );
 }
 
-function NavBar({ name, search, api, downloads, docs, contact, homepage, items, placement }) {
+function NavBar({ name, search, api, downloads, docs, contact, homepage, items, placement }: NavBarProps): ReactElement {
   const classes = useStyles();
-  const theme = useTheme();
+  const theme = useTheme<Theme>();
   const smMQ = useMediaQuery(theme.breakpoints.down("sm"));
   const isHomePageRegular = homepage && !smMQ;
   return (
@@ -122,7 +149,7 @@ function NavBar({ name, search, api, downloads, docs, contact, homepage, items, 
         >
           {homepage ? null : (
             <LogoBTN component={ReactRouterLink} to="/" color="inherit">
-              <OpenTargetsTitle name={name} />
+              <OpenTargetsTitle name={name ?? ""} />
             </LogoBTN>
           )}
         </Box>
@@ -172,7 +199,7 @@ function NavBar({ name, search, api, downloads, docs, contact, homepage, items, 
 
           {isHomePageRegular && (
             <Box sx={{ display: "flex" }}>
-              {items.map(item => {
+              {(items ?? []).map(item => {
                 if (item.showOnlyPartner) {
                   return (
                     <PrivateWrapper key={v1()}>
