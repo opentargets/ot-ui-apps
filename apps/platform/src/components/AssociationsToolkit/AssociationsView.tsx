@@ -9,10 +9,10 @@ import {
   AssociationsProvider,
   ColumnOptionsMenu,
   DisplayModeSwitch,
-  NameFilter,
   TableAssociations,
 } from "./index";
 import type { ENTITY } from "./types";
+import AnalysisMenu from "./components/AnalysisMenu";
 
 interface AssociationsView {
   id: string;
@@ -47,6 +47,7 @@ const AssociationsView = ({ id, entity, query }: AssociationsView) => (
             <ColumnOptionsMenu />
             <DataUploader />
             <ExportMenu />
+            <AnalysisMenu />
           </Box>
         </Box>
         <Box sx={{ display: "flex", justifyContent: "end" }}>
