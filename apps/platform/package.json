@@ -45,6 +45,7 @@
     "typeface-inter": "^3.3.0",
     "typeface-roboto-mono": "^1.1.13",
     "ui": "*",
+    "@thehyve/data-metrics-plugin": "*",
     "uuid": "^9.0.0",
     "xlsx": "^0.18.5"
   },
