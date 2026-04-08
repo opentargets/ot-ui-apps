@@ -7,8 +7,7 @@ import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
 import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
-import ResultsGoJSTree from "./ResultsGoJSTree";
-import ResultsEnrichmentMap from "./ResultsEnrichmentMap";
+import {ResultsEnrichmentMap} from "./ResultsEnrichmentMap/";
 
 type ViewMode = "table" | "tree" | "plotly";
 
