@@ -1,4 +1,5 @@
 import type { ElementDefinition } from "cytoscape";
+import type { Gene } from "../../../types";
 import { getGeneList } from "./index";
 
 export interface GeneNodeMetadata {
@@ -75,7 +76,6 @@ export function buildGeneToPathwaysMap(
   results: Array<Record<string, unknown>>
 ): Map<string, Array<{ pathway: string; fdr: number; nes: number }>> {
   const geneToPathways = new Map<string, Array<{ pathway: string; fdr: number; nes: number }>>();
-
   for (const r of results) {
     const geneList_ = getGeneList(r);
     for (const gene of geneList_) {
@@ -92,7 +92,7 @@ export function buildGeneToPathwaysMap(
       }
     }
   }
-
+  console.log("[buildGeneToPathwaysMap] Built gene-to-pathways map with", geneToPathways, "genes");
   return geneToPathways;
 }
 
@@ -148,6 +148,7 @@ export function buildGeneViewNodes(
   stats: { totalGenes: number; edges: number; totalPathways: number; significantCount: number };
 } {
   const geneToPathways = buildGeneToPathwaysMap(displayResults);
+
   const sortedGenes = filterAndSortGenes(geneToPathways);
 
   const nodes: ElementDefinition[] = [];
@@ -175,7 +176,8 @@ export function buildGeneViewNodes(
 export function createPathwayNode(
   result: Record<string, unknown>,
   geneList: string[],
-  sizeBy: "significance" | "pathwaySize" | "geneCount"
+  sizeBy: "significance" | "pathwaySize" | "geneCount",
+  geneExpressionMap?: Map<string, Gene>
 ): ElementDefinition {
   const fdr = result.FDR as number;
   const color = getSignificanceColor(fdr);
@@ -184,6 +186,23 @@ export function createPathwayNode(
     sizeBy === "pathwaySize" ? (result["Pathway size"] as number) : fdr,
     geneList.length
   );
+
+  // Extract gene expression data from input genes
+  const geneExpression: Array<{ gene: string; status: "up" | "down"; score: number }> = [];
+  if (geneExpressionMap) {
+    for (const gene of geneList) {
+      const geneData = geneExpressionMap.get(gene);
+      if (geneData) {
+        geneExpression.push({
+          gene: gene,
+          status: geneData.globalScore >= 0 ? "up" : "down",
+          score: Math.abs(geneData.globalScore),
+        });
+      }
+    }
+    // Sort by score and take top 10
+    geneExpression.sort((a, b) => b.score - a.score).splice(10);
+  }
 
   return {
     data: {
@@ -197,6 +216,7 @@ export function createPathwayNode(
       pathwaySize: result["Pathway size"],
       inputGenes: result["Number of input genes"],
       geneCount: geneList.length,
+      geneExpression: geneExpression,
       color: color,
       borderColor: getBorderColor(color),
       size: nodeSize,
@@ -213,7 +233,8 @@ export function createPathwayNode(
  */
 export function buildPathwayViewNodes(
   displayResults: Array<Record<string, unknown>>,
-  sizeBy: "significance" | "pathwaySize" | "geneCount"
+  sizeBy: "significance" | "pathwaySize" | "geneCount",
+  genes?: Gene[]
 ): {
   nodes: ElementDefinition[];
   stats: { totalPathways: number; edges: number; totalGenes: number; significantCount: number };
@@ -233,10 +254,18 @@ export function buildPathwayViewNodes(
     }
   }
 
+  // Build gene expression map for fast lookup
+  const geneExpressionMap = new Map<string, Gene>();
+  if (genes) {
+    for (const gene of genes) {
+      geneExpressionMap.set(gene.symbol, gene);
+    }
+  }
+
   const nodes: ElementDefinition[] = [];
   for (const r of displayResults) {
     const geneList_ = getGeneList(r);
-    nodes.push(createPathwayNode(r, geneList_, sizeBy));
+    nodes.push(createPathwayNode(r, geneList_, sizeBy, geneExpressionMap));
   }
 
   return {

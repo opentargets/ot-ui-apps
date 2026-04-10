@@ -3,11 +3,12 @@ export { computeGeneViewEdges, computePathwayViewElements } from "./computations
 // Cytoscape initialization
 export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytoscape";
 export { buildGeneViewEdges } from "./edgeBuilder";
+// Gene expression rendering
+export { cleanupGeneExpressions, renderGeneExpressions } from "./geneExpression";
 export { getGeneList, jaccardSimilarity } from "./geneUtils";
 
 // Layout effects
 export { getLayoutConfig } from "./layout";
-
 // Node building
 export {
   buildGeneViewNodes,
@@ -28,3 +29,5 @@ export {
   styleAndAppendTooltip,
 } from "./tooltips";
 export type { ComputedStats, ResultsEnrichmentMapProps } from "./types";
+// Hooks
+export { useDebounce } from "./useDebounce";

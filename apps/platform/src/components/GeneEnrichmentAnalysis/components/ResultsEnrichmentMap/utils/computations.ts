@@ -44,7 +44,7 @@ export async function computeGeneViewEdges(
       onComplete(nodes, {
         totalGenes: nodes.length,
         edges: 0,
-        totalPathways: 0,
+        totalPathways: results.length,
         significantCount: 0,
       });
       return;
@@ -124,8 +124,8 @@ export async function computeGeneViewEdges(
     onComplete([...nodes, ...edges], {
       totalGenes: nodes.length,
       edges: edgeCount,
-      totalPathways: significantResults.length,
-      significantCount: significantResults.length,
+      totalPathways: results.length,
+      significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
     });
   } catch (err) {
     if (!isMountedRef.current) {
@@ -297,10 +297,11 @@ export function computePathwayViewElements(
   return {
     elements: [...nodes, ...edges],
     stats: {
-      totalPathways: nodes.length,
+      totalPathways: results.length,
+      displayedPathways: nodes.length,
       edges: edgeCount,
       totalGenes: geneToPathways.size,
-      significantCount: displayResults.filter((r) => (r.FDR as number) < 0.05).length,
+      significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
     },
   };
 }

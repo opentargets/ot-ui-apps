@@ -2,6 +2,8 @@
  * Cytoscape layout configuration for pathway view
  */
 export function getLayoutConfig(
+  _viewMode: "genes" | "pathways",
+  _nodeCount?: number
 ): Record<string, unknown> {
   const layoutConfig: Record<string, unknown> = {
     name: "cose",
