@@ -1,5 +1,6 @@
 import { GenTrackProvider, GenTrackTooltipProvider } from "ui";
-import BodyContentInner from "./BodyContentInner";
+import GeneVisInner from "./GeneVisInner";
+
 
 function GeneVis({
   data,
@@ -18,7 +19,7 @@ function GeneVis({
   return (
     <GenTrackProvider initialState={{ data, xMin, xMax }} >
       <GenTrackTooltipProvider >
-        <BodyContentInner
+        <GeneVisInner
           chromosome={chromosome}
           geneAxisLabel={geneAxisLabel}
           variantsLabel={variantAxisLabel}

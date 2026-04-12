@@ -6,7 +6,7 @@ import path from 'path';
 
 // === CONFIG ===
 const GTF_FILE = "/Users/gmcneill/projects/ensembl-data/Homo_sapiens.GRCh38.115.gtf.gz"; // downloaded GTF
-const OUTPUT_DIR = './packages/sections/src/credibleSet/SummaryTracks/genesByChromosome/';
+const OUTPUT_DIR = './packages/sections/src/credibleSet/BrowserView/genesByChromosome/';
 
 // Create output directory if missing
 // if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);

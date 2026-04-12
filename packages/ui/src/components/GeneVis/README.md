@@ -6,19 +6,19 @@ Component to show genome browser style visualisation of (at least one of) genes 
 
 Main visualisation component.
 
-| Prop                | Type                   | Default                       | Description                                                                                                                                  |
-| ------------------- | ---------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `data`              | `object`               |                               | Properties: `genes`, `variants` - see below.                                                                                                 |
-| `chromosome`        | `string`               |                               |                                                                                                                                              |
-| `xMin`              | `number`               |                               | Miniumum position on chromosome shown.                                                                                                       |
-| `xMax`              | `number`               |                               | Maximum position on chromosome shown.                                                                                                        |
-| `geneAxisLabel`     | `string` or `component | 'Genes'                       | y label for genes track.                                                                                                                     |
-| `variantsAxisLabel` | `string` or `component | 'Variants'                    | y label for variants track.                                                                                                                  |
-| `geneLabel`         | `function`             | `gene => gene.approvedSymbol` | Passed a gene object and should return a string.                                                                                             |
-| `geneColor`         | `string` or `function` |                               | If a function, should take gene object and return a colour string.                                                                           |
-| `variantColor`      | `string` or `function` |                               | If a function, should take variant object and return a colour string.                                                                        |
-| `fixedTracks`       | `boolean` or `array`   | `true`                        | Which fixed (i.e. non-zoomable) tracks to show. Use a boolean for all/none or an array to specifiy tracks by name, e.g. [`gene`, `variant`]. |
-| `zoomableTracks`    | `boolean` or `array`   | `true`                        | Which zoomable tracks to show - see `topTracks` for possible values.                                                                         |
+| Prop                | Type                   | Default                       | Description                                                                                                                                    |
+| ------------------- | ---------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`              | `object`               |                               | Properties: `genes`, `variants` - see below.                                                                                                   |
+| `chromosome`        | `string`               |                               |                                                                                                                                                |
+| `xMin`              | `number`               |                               | Miniumum position on chromosome shown.                                                                                                         |
+| `xMax`              | `number`               |                               | Maximum position on chromosome shown.                                                                                                          |
+| `geneAxisLabel`     | `string` or `component | 'Genes'                       | y label for genes track.                                                                                                                       |
+| `variantsAxisLabel` | `string` or `component | 'Variants'                    | y label for variants track.                                                                                                                    |
+| `geneLabel`         | `function`             | `gene => gene.approvedSymbol` | Passed a gene object and should return a string.                                                                                               |
+| `geneColor`         | `string` or `function` |                               | If a function, should take gene object and return a colour string.                                                                             |
+| `variantColor`      | `string` or `function` |                               | If a function, should take variant object and return a colour string.                                                                          |
+| `fixedTracks`       | `boolean` or `array`   | `true`                        | Which fixed (i.e. non-zoomable) tracks to show. Use a boolean for all/none or an array to specifiy tracks by name, e.g. [`genes`, `variants`]. |
+| `zoomableTracks`    | `boolean` or `array`   | `true`                        | Which zoomable tracks to show - see `topTracks` for possible values.                                                                           |
 
 ## Data
 
