@@ -30,6 +30,8 @@ function Body({ id, entity }: BodyProps) {
       try {
         const mod = await import(`./genesByChromosome/chr${chromosome}.json`);
         const arr = (mod as any).default ?? mod;
+
+        // filter to those within (or overlapping) start-to-end
         const filtered = Array.isArray(arr)
           ? arr.filter((item: any) => {
               const gs = Number(item.start);
@@ -37,7 +39,25 @@ function Body({ id, entity }: BodyProps) {
               return Number.isFinite(gs) && Number.isFinite(ge) && ge >= start && gs <= end;
             })
           : [];
-        if (!cancelled) setData(filtered);
+        
+        // rewrite data into format returned by API
+        if (!cancelled) {
+          const formatted = filtered.map(o => ({
+            target: {
+              id: o.id,
+              approvedSymbol: o.name,
+              biotype: o.biotype,
+              canonicalExons: o.exons,
+              genomicLocation: {
+                start: o.start,
+                end: o.end,
+                strand: o.strand,
+                chromosome: chromosome,
+              }
+            }
+          }));
+          setData(formatted);
+        }
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error("Failed to load chromosome data", e);
@@ -66,7 +86,7 @@ function Body({ id, entity }: BodyProps) {
             chromosome={chromosome}
             xMin={start}
             xMax={end}
-            geneColor="steelblue",
+            geneColor="steelblue"
           />
         : <h2>Loading...</h2>
       }

@@ -6,6 +6,7 @@ import {
   useGenTrackTooltipState
 } from "ui";
 import { Box } from "@mui/material";
+import { useMeasure } from "@uidotdev/usehooks";
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
 import { getGenesTrack } from "./getGenesTrack";
@@ -23,24 +24,36 @@ function GeneVisInner({
 
   const genTrackState = useGenTrackState();
   const { data, xMin, xMax } = genTrackState;
+
+  const Y_INFO_WIDTH = 180;
+  const Y_INFO_GAP = 8;
+  const [widthRef, { width: totalWidth }] = useMeasure();
+  const canvasWidth = (totalWidth ?? 0) - Y_INFO_WIDTH - Y_INFO_GAP;
+
   const tracks = [];
   
   // add gene track
   if (data.genes &&
     (fixedTracks === true || fixedTracks?.includes("genes") ||
-    (zoomableTracks === true || zoomableTracks?.includes("genes")) {
-    tracks.push(getGenesTrack({ geneLabel, geneColor }));
+     zoomableTracks === true || zoomableTracks?.includes("genes"))) {
+    tracks.push(getGenesTrack({
+      geneLabel,
+      geneColor,
+      canvasWidth,
+      pixelGap: 1,
+      pixelGapStartToStart: 10,
+    }));
   }
 
   // add variants track
-  if (data.variants &&
-    (fixedTracks === true || fixedTracks?.includes("variants") ||
-    (zoomableTracks === true || zoomableTracks?.includes("variants")) {
-    tracks.push(getVariantsTrack({ variantLabel, variantColor }));
-  }
+  // if (data.variants &&
+  //   (fixedTracks === true || fixedTracks?.includes("variants") ||
+  //    zoomableTracks === true || zoomableTracks?.includes("variants"))) {
+  //   tracks.push(getVariantsTrack({ variantLabel, variantColor }));
+  // }
 
   return (
-    <Box sx={{mr: 3}}>
+    <Box ref={widthRef} sx={{mr: 3}}>
       <GenTrack
         XInfo={XAxis}
         XYInfo={XAxisLabel}
@@ -52,19 +65,13 @@ function GeneVisInner({
         yInfoWidth={180}
         zoomLines
         panZoomTopGap={0}
-        paddingBottom={24}
+        paddingBottom={12}
       />
     </Box>
   );
 }
 
-
-
-
 export default GeneVisInner;
-
-!!!! HERE !!!!!
-how pass the chromosome to the XAxisLabel????
 
 /*
 TO DO:

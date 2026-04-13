@@ -1,40 +1,42 @@
 type GenomicLocation = {
   start: number;
   end: number;
-  [key: string]: any;
+  strand: number;
+  chromosome: string;
 };
 
 type Target = {
   id: string;
+  approvedSymbol: string;
+  biotype: string;
+  canonicalExons: any;
   genomicLocation: GenomicLocation;
-  [key: string]: any;
 };
 
 type IntervalInput = {
   target: Target;
-  [key: string]: any;
 };
 
 type PackResult = Record<string, number>; // id -> rowIndex
 
-function packIntervals(
+export function packIntervals(
   intervals: IntervalInput[],
   options: {
     pixelGap?: number;
-    minStartGapPx?: number;
-    bpPerPixel: number;
+    pixelGapStartToStart?: number;
+    bpPerPixel?: number;
     previousLayout?: Record<string, number>; // for stability
   }
 ): PackResult {
   const {
     pixelGap = 0,
-    minStartGapPx = 0,
-    bpPerPixel,
+    pixelGapStartToStart = 0,
+    bpPerPixel = 1,
     previousLayout = {}
   } = options;
 
   const gapBp = pixelGap * bpPerPixel;
-  const startGapBp = minStartGapPx * bpPerPixel;
+  const startGapBp = pixelGapStartToStart * bpPerPixel;
 
   const sorted = intervals
     .map((d, i) => ({

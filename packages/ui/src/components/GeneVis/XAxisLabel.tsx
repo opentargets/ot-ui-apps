@@ -1,12 +1,15 @@
 import { Box, Typography } from "@mui/material";
 import { infoStyle } from "./helpers";
+import { useGenTrackState } from "../../providers/GenTrackProvider";
 
-// data should be the chromosome (string)
-function XAxisLabel({ data }: { data: string }) { 
+function XAxisLabel() { 
+  const genTrackState = useGenTrackState(); 
+  const { chromosome } = genTrackState;
+
   return (
     <Box sx={{ ...infoStyle, alignItems: "end"}}>
       <Typography component="div" variant="caption" sx={{ height: "12px", fontSize: "11px" }}>
-        Chr {data}
+        Chr {chromosome}
       </Typography>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { scaleLinear, axisTop, select } from "d3";
 
 function XAxis({ start, end, canvasWidth }) {
