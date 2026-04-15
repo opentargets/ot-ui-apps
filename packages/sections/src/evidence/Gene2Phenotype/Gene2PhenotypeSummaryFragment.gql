@@ -3,7 +3,7 @@ fragment Gene2PhenotypeSummaryFragment on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["gene2phenotype"]
-    size: 0
+    size: 1
   ) {
     count
   }

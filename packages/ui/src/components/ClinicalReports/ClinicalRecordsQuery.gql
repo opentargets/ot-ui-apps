@@ -3,11 +3,9 @@ query ClinicalRecordsQuery($clinicalReportsIds: [String!]!) {
     clinicalStage
     id
     source
-    trialLiterature
     title
     trialOverallStatus
     trialStartDate
     type
-    year
   }
 }

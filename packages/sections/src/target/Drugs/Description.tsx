@@ -5,12 +5,12 @@ function Description({ name }: any) {
     <>
       Investigational and approved drugs for <strong>{name}</strong> curated from clinical trial
       records and post-marketing package inserts. Source:{" "}
-      <Link to="https://www.ebi.ac.uk/chembl/" external>
-        ChEMBL
+      <Link to="https://platform-docs.opentargets.org/target/drugs" external>
+        Open Targets
       </Link>
       {" "}and{" "}
-      <Link to="#" external>
-        Open Targets
+      <Link to="https://www.ebi.ac.uk/chembl/" external>
+        ChEMBL
       </Link>
       .
     </>

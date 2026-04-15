@@ -3,7 +3,7 @@ fragment CancerBiomarkersEvidenceFragment on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["cancer_biomarkers"]
-    size: 0
+    size: 1
   ) {
     count
   }

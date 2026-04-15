@@ -247,13 +247,13 @@ export type ChemicalProbeUrl = {
 export type ClinRepDrugListItem = {
   __typename?: 'ClinRepDrugListItem';
   drug?: Maybe<Drug>;
-  drugFromSource: Scalars['String']['output'];
+  drugFromSource?: Maybe<Scalars['String']['output']>;
 };
 
 export type ClinicalDiseaseListItem = {
   __typename?: 'ClinicalDiseaseListItem';
   disease?: Maybe<Disease>;
-  diseaseFromSource: Scalars['String']['output'];
+  diseaseFromSource?: Maybe<Scalars['String']['output']>;
 };
 
 export type ClinicalIndicationFromDisease = {
@@ -1191,8 +1191,8 @@ export type GeneOntologyTerm = {
   __typename?: 'GeneOntologyTerm';
   /** Gene ontology term identifier [bioregistry:go] */
   id: Scalars['String']['output'];
-  /** Gene ontology term name */
-  name: Scalars['String']['output'];
+  /** Gene ontology term label */
+  label: Scalars['String']['output'];
 };
 
 /** Genomic location information of the target gene */
@@ -2509,7 +2509,7 @@ export type Transcript = {
   /** Biotype classification of the transcript */
   biotype: Scalars['String']['output'];
   /** Whether this is the Ensembl canonical transcript */
-  isEnsemblCanonical: Scalars['Boolean']['output'];
+  isEnsemblCanonical?: Maybe<Scalars['Boolean']['output']>;
   /** Whether the UniProt entry is reviewed (Swiss-Prot) */
   isUniprotReviewed?: Maybe<Scalars['Boolean']['output']>;
   /** Ensembl transcript identifier */

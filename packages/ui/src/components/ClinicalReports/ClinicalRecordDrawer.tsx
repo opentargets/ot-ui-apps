@@ -12,7 +12,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { clinicalStageCategories } from "@ot/constants";
+import { clinicalStageCategories, clinicalReportsSourcesInfo, stopReasonMap } from "@ot/constants";
 import { useApolloClient } from "@apollo/client";
 import Link from "../Link";
 import { PublicationsList } from "../PublicationsDrawer";
@@ -20,6 +20,7 @@ import OtLongText from "../OtLongText";
 import Tooltip from "../Tooltip";
 import useDelayedFlag from "../../hooks/useDelayedFlag";
 import { sentenceCase } from "@ot/utils";
+import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 
 const useDrawerStyles = makeStyles((theme: any) => ({
   drawerLink: {
@@ -48,7 +49,7 @@ const useDrawerStyles = makeStyles((theme: any) => ({
   },
 }));
 
-const getDetails = (client: any, query: any, clinicalReportId: any) =>
+const getDetails = (client, query, clinicalReportId) =>
   client.query({
     query,
     variables: {
@@ -56,7 +57,7 @@ const getDetails = (client: any, query: any, clinicalReportId: any) =>
     },
   });
 
-function FieldLabel({ minWidth = 65, children }: any) {
+function FieldLabel({ minWidth = 65, children }) {
   return (
     <Typography variant="caption" sx={{ fontWeight: 400, minWidth, mr: 0.5 }}>
       {children}
@@ -115,7 +116,7 @@ const tooltipSlotProps: any = {
   },
 };
 
-function RecordDetails({ recordId, recordDetailQuery }: any) {
+function RecordDetails({ recordId, recordDetailQuery = RECORD_DETAIL_QUERY }) {
   const client = useApolloClient();
   const [details, setDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -165,11 +166,13 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
     trialStartDate,
     url,
     trialDescription,
+    trialLiterature,
     diseases,
     drugs,
     hasExpertReview,
   } = details;
 
+  const sourceInfo = clinicalReportsSourcesInfo[source];
   const dedupedDiseases: any = dedupOnId(diseases, "disease");
   const dedupedDrugs: any = dedupOnId(drugs, "drug");
 
@@ -183,19 +186,26 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
         <Typography variant="caption" component="div" sx={{ mb: 2 }}>{url}</Typography>
       </Link>
 
-      <Box sx={{ position: "relative" }}>
-        <FieldRow label="Source">
-          <Typography variant="body2">{source}</Typography>
-        </FieldRow>
-        {hasExpertReview && (
-          <Chip
-            sx={{ position: "absolute", right: 0, top: 0, opacity: 0.8 }}
-            label="Expert review"
-            variant="outlined"
-            size="small"
-          />
-        )}
-      </Box>
+      <FieldRow label="Source">
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+          {sourceInfo ? (
+            <Link to={sourceInfo.url}>
+              <Typography variant="body2">
+                {sourceInfo.name} {sourceInfo.name !== source && `(${source})`}
+              </Typography>
+            </Link>
+          ) : (
+            <Typography variant="body2">{source}</Typography>
+          )}
+          {hasExpertReview && (
+            <Chip
+              label={<Typography variant="caption">Expert review</Typography>}
+              variant="outlined"
+              size="small"
+            />
+          )}
+        </Box>
+      </FieldRow>
 
       {countries?.length > 0 && (
         <FieldRow label="Status">
@@ -261,7 +271,7 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
                     <Chip
                       key={category}
                       sx={{  }}
-                      label={category}
+                      label={stopReasonMap(category)}
                       variant="outlined"
                       size="small"
                     />
@@ -271,7 +281,9 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
             </Box>
             {trialWhyStopped && (
               <OtLongText variant="body2" lineLimit={2}>
-                {trialWhyStopped}
+                <Box sx={{ whiteSpace: "pre-wrap", tabSize: 4, fontSize: "13px" }}>
+                  {trialWhyStopped}
+                </Box>
               </OtLongText>
             )}
           </Box>
@@ -350,11 +362,27 @@ function RecordDetails({ recordId, recordDetailQuery }: any) {
           {trialDescription}
         </Typography>
       )}
+
+      {trialLiterature && trialLiterature.length > 0 && (
+        <Box>
+          <Typography variant="subtitle2">Literature</Typography>
+          <Box sx={{ mt: -5 }}>
+            <PublicationsList
+              entriesIds={trialLiterature}
+              hideSearch
+              name={undefined}
+              symbol={undefined}
+              showRowsPerPageControl={false}
+              showPaginationAlways={false}
+            />
+          </Box>
+        </Box>
+      )}
     </>
   );
 }
 
-function ClinicalRecordDrawer({ recordId, literatureIds, recordDetailQuery, children }: any) {
+function ClinicalRecordDrawer({ recordId, recordDetailQuery, children }: any) {
   const [open, setOpen] = useState(false);
   const classes = useDrawerStyles();
 
@@ -399,22 +427,6 @@ function ClinicalRecordDrawer({ recordId, literatureIds, recordDetailQuery, chil
           {open && (
             <Box mt={2} mb={3} mx={3} p={3} pb={6} bgcolor="white">
               <RecordDetails recordId={recordId} recordDetailQuery={recordDetailQuery} />
-
-              {literatureIds && literatureIds.length > 0 && (
-                <Box>
-                  <Typography variant="subtitle2">Literature</Typography>
-                  <Box sx={{ mt: -5 }}>
-                    <PublicationsList
-                      entriesIds={literatureIds}
-                      hideSearch
-                      name={undefined}
-                      symbol={undefined}
-                      showRowsPerPageControl={false}
-                      showPaginationAlways={false}
-                    />
-                  </Box>
-                </Box>
-              )}
             </Box>
           )}
         </Box>

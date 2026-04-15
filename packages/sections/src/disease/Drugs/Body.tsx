@@ -68,7 +68,7 @@ function Body({ id: efoId, label: name, entity }) {
               )
             }
             detail={
-              recordsByStage && (
+              (recordsByStage || loadingRecords) && (
                 <RecordsCards
                   records={recordsByStage}
                   loading={loadingRecords}

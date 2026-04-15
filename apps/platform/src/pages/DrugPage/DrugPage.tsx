@@ -50,7 +50,7 @@ function DrugPage(): ReactNode {
           </Tabs>
         </Box>
         <Routes>
-          <Route path="/" element={<Profile key={chemblId} chemblId={chemblId} name={name} />} />
+          <Route path="/" element={<Profile chemblId={chemblId} name={name} />} />
         </Routes>
       </>
     </BasePage>

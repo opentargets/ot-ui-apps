@@ -189,39 +189,37 @@ function IndicationsTable({
       }}
     >
       <OtTable
-        {...({
-          showGlobalFilter: true,
-          globalFilterPlaceholderText: "Search...",
-          columns,
-          rows: sortedRows,
-          query: INDICATIONS_QUERY.loc?.source?.body,
-          variables: { chemblId },
-          dataDownloader: true,
-          dataDownloaderFileStem: "clinical-indications",
-          dataDownloaderColumns: dataDownloaderColoumns,
-          showColumnVisibilityControl: false,
-          getSelectedRows: (rowsInfo: any[]) => {
-            if (!(rowsInfo?.length > 0)) return;
+        showGlobalFilter
+        globalFilterPlaceholderText="Search..."
+        columns={columns}
+        rows={sortedRows}
+        query={INDICATIONS_QUERY.loc?.source?.body}
+        variables={{ chemblId }}
+        dataDownloader
+        dataDownloaderFileStem="clinical-indications"
+        dataDownloaderColumns={dataDownloaderColoumns}
+        showColumnVisibilityControl={false}
+        getSelectedRows={(rowsInfo: any[]) => {
+          if (!(rowsInfo?.length > 0)) return;
 
-            const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
-            if (!selectedOriginalRows.length) return;
-            const nextRow =
-              selectedOriginalRows.find(r => r.id !== selectedRow?.id) ??
-              selectedOriginalRows[0];
+          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+          if (!selectedOriginalRows.length) return;
+          const nextRow =
+            selectedOriginalRows.find(r => r.id !== selectedRow?.id) ??
+            selectedOriginalRows[0];
 
-            if (!nextRow?.id) return;
+          if (!nextRow?.id) return;
 
-            if (nextRow.id !== selectedRow?.id) {
-              selectRow(nextRow);
-            }
-          },
-          loading,
-          sortBy: "indicationCard",
-          order: "desc",
-          showRowsPerPageControl: false,
-          showPaginationAlways: false,
-          wrapControls: { rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } },
-        } as any)}
+          if (nextRow.id !== selectedRow?.id) {
+            selectRow(nextRow);
+          }
+        }}
+        loading={loading}
+        sortBy="indicationCard"
+        order="desc"
+        showRowsPerPageControl={false}
+        showPaginationAlways={false}
+        wrapControls={{ rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } }}
       />
     </Box>
   );

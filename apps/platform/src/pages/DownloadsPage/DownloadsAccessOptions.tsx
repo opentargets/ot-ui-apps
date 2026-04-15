@@ -58,11 +58,11 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
       component: <WgetScript link={getLink("ftp-location")} />,
     },
     gcp: {
-      title: "Google Cloud",
+      title: "Google Cloud CLI",
       component: <GcpScript link={getLink("gcp-location")} />,
     },
     aws: {
-      title: "AWS",
+      title: "AWS CLI",
       component: <AwsScript link={getLink("aws-location")} />,
     },
   };
@@ -175,7 +175,7 @@ function GcpScript({ link }: { link: string }) {
 }
 
 function AwsScript({ link }: { link: string }) {
-  const cmd = `aws s3 cp -r ${link}/ .`;
+  const cmd = `aws s3 cp --recursive --no-sign-request ${link}/ .`;
   return (
     <Box sx={{ p: 2 }}>
       <OtCodeBlock textToCopy={cmd}>{cmd}</OtCodeBlock>

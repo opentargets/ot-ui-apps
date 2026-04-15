@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
-import { Link } from "ui";
-import { defaultRowsPerPageOptions } from "@ot/constants";
+import { Link, Tooltip } from "ui";
+import { defaultRowsPerPageOptions, clinicalReportsSourcesInfo } from "@ot/constants";
 import { sentenceCase } from "@ot/utils";
 import StageFilter from "./StageFilter";
 import ClinicalRecordDrawer from "./ClinicalRecordDrawer";
@@ -12,11 +12,12 @@ import RECORD_DETAIL_QUERY from "./RecordDetailQuery.gql";
 import { sum } from "d3";
 
 function RecordsCards({
-  records,
+  records: recordsProp,
   loading,
   maxClinicalStage,
   selectedEntity,
 }) {
+  const records = recordsProp || {};
   const [selectedStage, setSelectedStage] = useState(null);
 
   useEffect(() => {
@@ -46,20 +47,23 @@ function RecordsCards({
         ),
       renderCell: (record) => {
         const { source, trialStartDate, type, trialOverallStatus, title } = record;
+        const sourceInfo = clinicalReportsSourcesInfo[source];
 
         const displayTitle = (
-          <Typography
-            variant={"body1"}
-            noWrap
-            sx={{
-              minWidth: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {title || `[${sentenceCase(type)}]`}
-          </Typography>
+          <Link to="#" onClick={(e) => e.preventDefault()}>
+            <Typography
+              variant={"body1"}
+              noWrap
+              sx={{
+                minWidth: 0,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {title || `[${sentenceCase(type)}]`}
+            </Typography>
+          </Link>
         );
 
         return (
@@ -74,7 +78,6 @@ function RecordsCards({
             >
               <ClinicalRecordDrawer
                 recordId={record.id}
-                literatureIds={record.trialLiterature}
                 recordDetailQuery={RECORD_DETAIL_QUERY}
               >
                 {displayTitle}
@@ -88,21 +91,30 @@ function RecordsCards({
                 gap: 2,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                {source && (
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box
                     sx={{
                       display: "flex",
-                      minWidth: "100px",
+                      minWidth: "170px",
                       alignItems: "baseline",
                       gap: 0.5,
                     }}
                   >
+                    <Typography variant="caption">Source:</Typography>
                     <Typography variant="caption" sx={{ fontSize: 13 }}>
                       {source}
+                      {sourceInfo?.name !== source && (
+                        <Tooltip
+                          showHelpIcon
+                          title={
+                            <Typography variant="caption" sx={{ fontSize: 12 }}>
+                              {sourceInfo.name}
+                            </Typography>
+                          }
+                        />
+                      )}
                     </Typography>
                   </Box>
-                )}
                 {trialOverallStatus && (
                   <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
                     <Typography variant="caption">Status:</Typography>
@@ -142,10 +154,7 @@ function RecordsCards({
     { id: "source" },
     { id: "trialOverallStatus" },
     { id: "trialStartDate" },
-    { id: "trialLiterature" },
   ];
-
-  if (!selectedStage || (loading && !showLoading)) return null;
 
   if (showLoading) {
     return (
@@ -161,6 +170,8 @@ function RecordsCards({
       </Box>
     );
   }
+
+  if (!selectedStage || (loading && !showLoading)) return null;
 
   const rows = records[selectedStage]?.toSorted((a: any, b: any) => {
     return new Date(b.trialStartDate).getTime() - new Date(a.trialStartDate).getTime();
