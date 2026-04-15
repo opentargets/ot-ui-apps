@@ -1,4 +1,5 @@
 import type { ElementDefinition } from "cytoscape";
+import type { GseaResult } from "../../../api/gseaApi";
 import { buildGeneViewEdgesOptimized } from "./edgeBuilder";
 import { getGeneList, jaccardSimilarity } from "./index";
 import type { ComputedStats } from "./types";
@@ -14,29 +15,13 @@ export async function computeGeneViewEdges(
   isMountedRef: React.MutableRefObject<boolean>,
   onComplete: (elements: ElementDefinition[], stats: ComputedStats) => void,
   onError: (err: Error) => void,
-  significanceCutoff: number = 0.25  // More permissive default
+  significanceCutoff: number = 0.1  // More permissive default
 ): Promise<void> {
   try {
     // Only use highly significant pathways
     const significantResults = results.filter(
       (r) => (r.FDR as number) < significanceCutoff
     );
-
-    // If no significant pathways at strict cutoff, relax and retry
-    if (significantResults.length === 0 && significanceCutoff < 0.25) {
-      console.log(
-        `[GENE_VIEW] No pathways with FDR < ${significanceCutoff}, relaxing to FDR<0.25`
-      );
-      return computeGeneViewEdges(
-        results,
-        nodes,
-        similarityThreshold,
-        isMountedRef,
-        onComplete,
-        onError,
-        0.25  // Retry with more permissive cutoff
-      );
-    }
 
     // Early exit if still no significant pathways after relaxation
     if (significantResults.length === 0) {
@@ -57,16 +42,19 @@ export async function computeGeneViewEdges(
 
     // Only process genes from significant pathways
     for (const r of significantResults) {
-      const geneList_ = getGeneList(r);
+      const geneList_ = getGeneList(r as unknown as GseaResult);
       for (const gene of geneList_) {
         if (!geneToPathways.has(gene)) {
           geneToPathways.set(gene, []);
         }
-        geneToPathways.get(gene)!.push({
-          pathway: r.Pathway as string,
-          fdr: r.FDR as number,
-          nes: r.NES as number,
-        });
+        const pathwaysForGene = geneToPathways.get(gene);
+        if (pathwaysForGene) {
+          pathwaysForGene.push({
+            pathway: r.Pathway as string,
+            fdr: r.FDR as number,
+            nes: r.NES as number,
+          });
+        }
       }
     }
 
@@ -74,28 +62,25 @@ export async function computeGeneViewEdges(
     const sortedGenes = Array.from(geneToPathways.entries())
       .filter(([_, pathways]) => pathways.length >= 2)
       .sort((a, b) => b[1].length - a[1].length)
-      .slice(0, 500)
+
       .map(([gene]) => gene);
 
-    // If very few genes, relax the filter
-    if (sortedGenes.length < 10 && significanceCutoff < 0.25) {
-      console.log(
-        `[GENE_VIEW] Only ${sortedGenes.length} genes at FDR<${significanceCutoff}, relaxing to FDR<0.25`
-      );
-      return computeGeneViewEdges(
-        results,
-        nodes,
-        similarityThreshold,
-        isMountedRef,
-        onComplete,
-        onError,
-        0.25  // Retry with more permissive cutoff
-      );
-    }
+
 
     const filteredGeneToPathways = new Map(
-      sortedGenes.map((gene) => [gene, geneToPathways.get(gene)!])
+      sortedGenes.map((gene) => {
+        const pathways = geneToPathways.get(gene);
+        if (pathways) {
+          return [gene, pathways];
+        }
+        return null;
+      }).filter((item): item is [string, Array<{ pathway: string; fdr: number; nes: number }>] => item !== null)
     );
+
+    // Only use genes that exist in the nodes array to avoid edge creation errors
+    const nodeGeneIds = new Set(nodes.map((n) => n.data?.id as string));
+    console.log(nodeGeneIds.size, 'genes present in nodes after filtering');
+    const validSortedGenes = sortedGenes.filter((gene) => nodeGeneIds.has(gene));
 
     // Wrapper function to adapt jaccardSimilarity to buildGeneViewEdgesOptimized's expected signature
     const computeSimilarity = (
@@ -109,7 +94,7 @@ export async function computeGeneViewEdges(
     };
 
     const { edges, edgeCount } = await buildGeneViewEdgesOptimized(
-      sortedGenes,
+      validSortedGenes,
       filteredGeneToPathways,
       similarityThreshold,
       computeSimilarity,
@@ -233,7 +218,7 @@ export function computePathwayViewElements(
   const geneToPathways = new Map<string, string[]>();
 
   for (const r of displayResults) {
-    const geneList_ = getGeneList(r);
+    const geneList_ = getGeneList(r as unknown as GseaResult);
     for (const gene of geneList_) {
       if (!geneToPathways.has(gene)) {
         geneToPathways.set(gene, []);
@@ -249,7 +234,7 @@ export function computePathwayViewElements(
   let edgeCount = 0;
   const pathwayGenes = new Map<string, string[]>();
   for (const r of displayResults) {
-    pathwayGenes.set(r.ID as string || (r.Pathway as string), getGeneList(r));
+    pathwayGenes.set(r.ID as string || (r.Pathway as string), getGeneList(r as unknown as GseaResult));
   }
 
   const pathwayIds = Array.from(pathwayGenes.keys());

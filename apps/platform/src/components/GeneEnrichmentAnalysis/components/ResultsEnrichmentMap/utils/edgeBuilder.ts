@@ -131,7 +131,7 @@ export async function buildGeneViewEdgesOptimized(
 
       // PRE-FILTER: Skip if genes share fewer than 2 pathways
       const sharedCount = countSharedPathways(gene1, gene2);
-      if (sharedCount < 2) {
+      if (sharedCount < 1) {
         comparisonsSkipped++;
         continue;
       }
@@ -161,6 +161,8 @@ export async function buildGeneViewEdgesOptimized(
             similarity,
             sharedPathways,
             sharedCount,
+            edgeWidth: Math.max(1, similarity * 3),
+            edgeOpacity: Math.min(1, Math.max(0.3, similarity)),
           },
         });
       }

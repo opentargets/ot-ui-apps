@@ -9,15 +9,18 @@ export { getGeneList, jaccardSimilarity } from "./geneUtils";
 
 // Layout effects
 export { getLayoutConfig } from "./layout";
+export type { GeneNodeMetadata, GeneRegulationStatus, PathwayNodeMetadata } from "./nodeBuilder";
 // Node building
 export {
   buildGeneViewNodes,
   buildPathwayViewNodes,
   calculateNodeSize,
+  computeGeneRegulationStatus,
   createGeneNode,
   createPathwayNode,
   filterAndSortGenes,
   getBorderColor,
+  getRegulationColor,
   getSignificanceColor,
 } from "./nodeBuilder";
 export { createStylesheet } from "./stylesheet";

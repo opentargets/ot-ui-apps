@@ -84,7 +84,7 @@ export function initializeCytoscapeInstance(
     const updatePosition = () => {
       try {
         const pos = edge.renderedMidpoint();
-        tooltip.style.left = `${pos.x + 2}px`;
+        tooltip.style.left = `${pos.x + 300}px`;
         tooltip.style.top = `${pos.y - 2}px`;
       } catch (err) {
         console.warn("[EDGE_HOVER] Failed to update position:", err);

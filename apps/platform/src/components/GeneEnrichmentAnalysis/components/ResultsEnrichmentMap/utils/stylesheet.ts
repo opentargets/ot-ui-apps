@@ -34,7 +34,7 @@ export function createStylesheet(): cytoscape.StylesheetCSS[] {
       },
     },
     {
-      selector: "edge",
+      selector: "edge[edgeWidth]",
       css: {
         "line-color": "#90caf9",
         width: "data(edgeWidth)",
