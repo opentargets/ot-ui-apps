@@ -28,6 +28,9 @@ interface MenuItem {
   showOnlyPartner?: boolean;
 }
 
+export const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql";
+export const PPP_WEB_URL = "https://partner-platform.opentargets.org";
+
 export const PHARM_GKB_COLOR = {
   green: "#52a237",
   yellow: "#f0c584",
