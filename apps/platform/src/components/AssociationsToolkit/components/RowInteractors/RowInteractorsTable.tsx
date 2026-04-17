@@ -203,9 +203,13 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
   const cols = interactorsTable.getHeaderGroups()[0].headers[1].subHeaders;
 
   return (
-    <Box sx={{ pb: 2, background: grey[100], position: "relative" }}>
+    <Box
+      data-testid={`interactors-table-${row.id}`}
+      sx={{ pb: 2, background: grey[100], position: "relative" }}
+    >
       <Box sx={{ position: "relative", pt: 2 }}>
         <Box
+          data-testid="interactors-header"
           sx={{
             boxSizing: "border-box",
             alignItems: "center",
@@ -220,7 +224,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
             <FontAwesomeIcon icon={faBezierCurve} />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
-            <Typography variant="controlHeader" sx={{ mr: 2 }}>
+            <Typography data-testid="interactors-label" variant="controlHeader" sx={{ mr: 2 }}>
               Interactors for {label}
             </Typography>
             <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} flex={1}>
@@ -231,6 +235,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   </InputLabel>
                   <NativeSelect
                     id="intaractor_data_source"
+                    data-testid="interactors-source-select"
                     onChange={e => {
                       onInteractorsSourceChange(e.target.value);
                     }}
@@ -261,13 +266,18 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                           Interaction score
                         </Tooltip>
                         :{" "}
-                        <Box component="span" sx={{ width: "30px", display: "inline-block" }}>
+                        <Box
+                          component="span"
+                          data-testid="interactors-threshold-value"
+                          sx={{ width: "30px", display: "inline-block" }}
+                        >
                           {threshold}
                         </Box>
                       </InputLabel>
                       <Box width={75} sx={{ display: "flex", ml: 1 }}>
                         <OTSlider
                           id="threshold_slider"
+                          data-testid="interactors-threshold-slider"
                           value={threshold}
                           onChange={handleChange}
                           onChangeCommitted={(_, newValue) =>
@@ -289,6 +299,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                     </>
                   ) : (
                     <Box
+                      data-testid="interactors-threshold-unavailable"
                       sx={{ width: "222px", height: "28px", display: "flex", alignItems: "center" }}
                     >
                       <Typography variant="caption">
@@ -299,9 +310,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                 </Box>
               </Box>
               {loading ? (
-                <Skeleton width={500} />
+                <Skeleton data-testid="interactors-loading" width={500} />
               ) : (
-                <Typography variant="body2" sx={{ mr: 4 }}>
+                <Typography data-testid="interactors-summary" variant="body2" sx={{ mr: 4 }}>
                   {INTERACTORS_SOURCE_LABEL(
                     data?.length,
                     interactorsMetadata?.count,
@@ -313,18 +324,25 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
             </Box>
           </Box>
           <Tooltip title={`Close ${label} interactors`}>
-            <Box onClick={() => onClickCloseInteractors()} sx={rightBTNStyles}>
+            <Box
+              data-testid="interactors-close-button"
+              onClick={() => onClickCloseInteractors()}
+              sx={rightBTNStyles}
+            >
               <FontAwesomeIcon size="xl" icon={faClose} />
             </Box>
           </Tooltip>
         </Box>
       </Box>
-      <Box>
+      <Box data-testid="interactors-body">
         <TableBody noInteractors core={interactorsTable} cols={cols} />
         {data.length > 0 ? (
-          <Box sx={{ width: "100%", display: "flex", justifyContent: "end", mt: 2 }}>
+          <Box
+            data-testid="interactors-pagination"
+            sx={{ width: "100%", display: "flex", justifyContent: "end", mt: 2 }}
+          >
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Typography variant="body2">
+              <Typography data-testid="interactors-pagination-info" variant="body2">
                 <strong>
                   {interactorsTable.getState().pagination.pageIndex *
                     interactorsTable.getState().pagination.pageSize +
@@ -342,6 +360,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
               </Typography>
               <Box sx={{ display: "flex", gap: 2, mx: 3 }}>
                 <IconButton
+                  data-testid="interactors-previous-page"
                   disableRipple
                   onClick={() => interactorsTable.previousPage()}
                   disabled={!interactorsTable.getCanPreviousPage()}
@@ -349,6 +368,7 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
                   <FontAwesomeIcon icon={faChevronLeft} size="2xs" />
                 </IconButton>
                 <IconButton
+                  data-testid="interactors-next-page"
                   disableRipple
                   onClick={() => interactorsTable.nextPage()}
                   disabled={!interactorsTable.getCanNextPage()}

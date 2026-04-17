@@ -1,6 +1,5 @@
 export * as CancerBiomarkers from "./CancerBiomarkers";
 export * as CancerGeneCensus from "./CancerGeneCensus";
-export * as Chembl from "./Chembl";
 export * as ClinGen from "./ClinGen";
 export * as CRISPR from "./CRISPR";
 export * as CRISPRScreen from "./CRISPRScreen";
@@ -21,3 +20,4 @@ export * as OTValidation from "./OTValidation";
 export * as Reactome from "./Reactome";
 export * as UniProtLiterature from "./UniProtLiterature";
 export * as UniProtVariants from "./UniProtVariants";
+export * as ClinicalPrecedence from "./ClinicalPrecedence";

@@ -1,5 +1,5 @@
 query GWASColocQuery {
-  credibleSet(studyLocusId: "7d68cc9c70351c9dbd2a2c0c145e555d") {
+  credibleSet(studyLocusId: "118db6d05cf67fe7668ee7bac1170fd3") {
     colocalisation(studyTypes: [gwas]) {
       count
       rows {

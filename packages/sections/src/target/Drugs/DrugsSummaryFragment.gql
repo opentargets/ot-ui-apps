@@ -1,0 +1,5 @@
+fragment TargetDrugsSummaryFragment on Target {
+  drugAndClinicalCandidates {
+    count
+  }
+}

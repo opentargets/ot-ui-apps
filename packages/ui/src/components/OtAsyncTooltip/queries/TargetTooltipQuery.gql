@@ -6,6 +6,8 @@ query TargetTooltipQuery($ensgId: String!) {
     genomicLocation {
       chromosome
       start
+      end
+      strand
     }
   }
 }

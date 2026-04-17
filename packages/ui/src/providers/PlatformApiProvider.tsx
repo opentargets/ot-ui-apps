@@ -1,5 +1,5 @@
 import { useMemo, createContext, ReactNode } from "react";
-import { useQuery, DocumentNode, QueryResult } from "@apollo/client";
+import { useQuery, DocumentNode, QueryResult, OperationVariables } from "@apollo/client";
 
 interface PlatformApiContextValue {
   entity: string;
@@ -12,20 +12,20 @@ interface PlatformApiContextValue {
 
 const PlatformApiContext = createContext<PlatformApiContextValue | undefined>(undefined);
 
-interface PlatformApiProviderProps {
+interface PlatformApiProviderProps <T, K extends OperationVariables> {
   entity: string;
   query: DocumentNode;
-  variables?: Record<string, any>;
+  variables?: K;
   children: ReactNode;
 }
 
-function PlatformApiProvider({
+function PlatformApiProvider<T, K extends OperationVariables>({
   entity,
   query,
   variables,
   children,
-}: PlatformApiProviderProps) {
-  const request: QueryResult = useQuery(query, { variables });
+}: PlatformApiProviderProps<T, K>) {
+  const request: QueryResult<T, K> = useQuery<T, K>(query, { variables });
 
   const { loading, error, data, refetch, fetchMore } = request;
 
@@ -50,3 +50,4 @@ function PlatformApiProvider({
 
 export default PlatformApiProvider;
 export { PlatformApiContext };
+export type { PlatformApiContextValue };

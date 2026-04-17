@@ -1,10 +1,10 @@
 import { Column, TargetPrioritisationAggregation } from "../types";
 
 const maxClinicalTrialPhase: Column = {
-  id: "maxClinicalTrialPhase",
+  id: "maxClinicalStage",
   label: "Target in clinic",
   aggregation: TargetPrioritisationAggregation.PRECEDENCE,
-  sectionId: "knownDrugs",
+  sectionId: "drugs",
   description: "Target is in clinical trials for any indication",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#target-in-clinic",

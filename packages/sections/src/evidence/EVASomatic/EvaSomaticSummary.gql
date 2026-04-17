@@ -3,7 +3,7 @@ fragment evaSomaticSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["eva_somatic"]
-    size: 0
+    size: 1
   ) {
     count
   }

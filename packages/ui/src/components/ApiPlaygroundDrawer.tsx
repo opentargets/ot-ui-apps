@@ -12,7 +12,6 @@ import {
   Paper,
   styled,
 } from "@mui/material";
-
 import { KeyboardEvent, ReactElement, Suspense, lazy, useState } from "react";
 import { fetcher } from "@ot/utils";
 

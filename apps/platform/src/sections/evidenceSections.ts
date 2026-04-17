@@ -4,7 +4,6 @@ const evidenceSections = new Map([
   ["eva", Evidence.EVA.getBodyComponent()],
   ["impc", Evidence.Impc.getBodyComponent()],
   ["crispr", Evidence.CRISPR.getBodyComponent()],
-  ["chembl", Evidence.Chembl.getBodyComponent()],
   ["encore", Evidence.OTEncore.getBodyComponent()],
   ["clingen", Evidence.ClinGen.getBodyComponent()],
   ["intogen", Evidence.IntOgen.getBodyComponent()],
@@ -24,6 +23,7 @@ const evidenceSections = new Map([
   ["cancer_gene_census", Evidence.CancerGeneCensus.getBodyComponent()],
   ["gwas_credible_sets", Evidence.GWASCredibleSets.getBodyComponent()],
   ["uniprot_literature", Evidence.UniProtLiterature.getBodyComponent()],
+  ["clinical_precedence", Evidence.ClinicalPrecedence.getBodyComponent()],
 ]);
 
 export default evidenceSections;

@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import viteCompression from "vite-plugin-compression";
@@ -16,6 +17,11 @@ const getGitVersion = () => {
 export default defineConfig({
   build: {
     outDir: "./bundle-platform",
+  },
+  resolve: {
+    alias: {
+      graphiql: resolve(__dirname, "./node_modules/graphiql"),
+    },
   },
   define: {
     "import.meta.env.VITE_GIT_VERSION": JSON.stringify(getGitVersion()),

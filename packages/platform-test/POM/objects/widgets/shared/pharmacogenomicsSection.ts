@@ -98,7 +98,6 @@ export class PharmacogenomicsSection {
 
   async clickGeneLink(rowIndex: number): Promise<void> {
     const link = await this.getGeneLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 
@@ -120,7 +119,6 @@ export class PharmacogenomicsSection {
 
   async clickPhenotypeLink(rowIndex: number): Promise<void> {
     const link = await this.getPhenotypeLink(rowIndex);
-    await link.scrollIntoViewIfNeeded();
     await link.click();
   }
 

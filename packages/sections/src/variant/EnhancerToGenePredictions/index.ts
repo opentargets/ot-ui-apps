@@ -6,7 +6,7 @@ export const definition = {
   name: "Enhancer-to-gene predictions",
   shortName: "EG",
   hasData: (data: Variant) => {
-    return (data.intervals?.count || 0) > 0;
+    return (data.enhancerToGenes?.count || 0) > 0;
   },
 };
 

@@ -24,7 +24,7 @@ const evidenceProfileWidgets = new Map<string, Widget>([
   [Evidence.CancerGeneCensus.definition.id, Evidence.CancerGeneCensus],
   [Evidence.IntOgen.definition.id, Evidence.IntOgen],
   [Evidence.EVASomatic.definition.id, Evidence.EVASomatic],
-  [Evidence.Chembl.definition.id, Evidence.Chembl],
+  [Evidence.ClinicalPrecedence.definition.id, Evidence.ClinicalPrecedence],
   [Evidence.CRISPR.definition.id, Evidence.CRISPR],
   [Evidence.CRISPRScreen.definition.id, Evidence.CRISPRScreen],
   [Evidence.CancerBiomarkers.definition.id, Evidence.CancerBiomarkers],

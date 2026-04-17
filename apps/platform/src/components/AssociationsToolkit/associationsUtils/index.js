@@ -85,13 +85,24 @@ export const getColumAndSection = (cell, displayedTable) => {
 export const cellHasValue = score => typeof score === "number";
 
 export const defaulDatasourcesWeigths = dataSources.map(
-  ({ id, weight, required, aggregation }) => ({
-    id,
-    weight,
-    required,
-    aggregation,
+  ({ id, weight, required, aggregation }) => {
+    const sharedWeightConfig = {
+      id,
+      weight,
+      required,
+      aggregation,
+    }
+    if(id === "expression_atlas") {
+      return ({
+...sharedWeightConfig,
+    propagate: false,
+      })
+    }
+    return ({
+...sharedWeightConfig,
     propagate: true,
   })
+}
 );
 
 export const getWightSourceDefault = source => {
