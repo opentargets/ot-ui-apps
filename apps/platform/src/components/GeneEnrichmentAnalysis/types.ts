@@ -1,4 +1,4 @@
-import type { GseaResult } from "./api/gseaApi";
+import type { GseaResult, InputOverlap } from "./api/gseaApi";
 
 /*****************
  * ACTIONS TYPES *
@@ -68,6 +68,7 @@ export interface AnalysisRun {
   efoId: string;
   genes: Gene[];
   results: GseaResult[];
+  inputOverlap: InputOverlap | null;
   error: string | null;
 }
 

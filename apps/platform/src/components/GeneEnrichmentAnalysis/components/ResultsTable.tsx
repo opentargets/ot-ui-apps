@@ -38,7 +38,7 @@ function getColumns() {
       label: "NES",
       numeric: true,
       sortable: true,
-      tooltip: "Normalized Enrichment Score",
+      tooltip: "Normalised Enrichment Score",
       renderCell: (row: GseaResult) => row.NES?.toFixed(3) ?? "-",
       exportValue: (row: GseaResult) => row.NES,
     },
@@ -56,6 +56,7 @@ function getColumns() {
       label: "P-value",
       numeric: true,
       sortable: true,
+      tooltip: "Nominal p-value from the enrichment test (before multiple testing correction)",
       renderCell: (row: GseaResult) => {
         const pval = row["p-value"];
         if (pval == null) return "-";
@@ -95,14 +96,16 @@ function getColumns() {
       label: "Pathway Size",
       numeric: true,
       sortable: true,
+      tooltip: "Total number of genes in the pathway gene set",
       renderCell: (row: GseaResult) => row["Pathway size"]?.toString() ?? "-",
       exportValue: (row: GseaResult) => row["Pathway size"],
     },
     {
       id: "Number of input genes",
-      label: "Overlap Genes",
+      label: "Overlapping Genes",
       numeric: true,
       sortable: true,
+      tooltip: "Number of input genes found in this pathway gene set",
       renderCell: (row: GseaResult) => row["Number of input genes"]?.toString() ?? "-",
       exportValue: (row: GseaResult) => row["Number of input genes"],
     },
@@ -111,6 +114,7 @@ function getColumns() {
       label: "Leading Edge Genes",
       sortable: false,
       filterValue: false,
+      tooltip: "Subset of genes that contribute most to the enrichment signal",
       renderCell: (row: GseaResult) => {
         const genes = row["Leading edge genes"];
         if (!genes || genes === "") return "-";
@@ -152,6 +156,7 @@ function getColumns() {
 
 function ResultsTable({ results }: ResultsTableProps) {
   const columns = getColumns();
+  const dateStem = new Date().toISOString().slice(0, 10);
 
   return (
     <OtTable
@@ -161,7 +166,7 @@ function ResultsTable({ results }: ResultsTableProps) {
       order="asc"
       showGlobalFilter
       dataDownloader
-      dataDownloaderFileStem="gsea-results"
+      dataDownloaderFileStem={`gsea-results-${dateStem}`}
     />
   );
 }

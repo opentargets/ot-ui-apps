@@ -3,11 +3,10 @@ import {
   faChevronDown,
   faChevronRight,
   faCircleInfo,
-  faFlask,
+  faFile,
   faFolder,
   faFolderOpen,
   faGear,
-  faSitemap,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -314,7 +313,7 @@ function TreeNodeComponent({
               </IconButton>
             ) : (
               <FontAwesomeIcon
-                icon={faFlask}
+                icon={faFile}
                 style={{ color: isSignificant ? "#4caf50" : "#bdbdbd", marginLeft: 8 }}
               />
             )}
@@ -323,7 +322,7 @@ function TreeNodeComponent({
             <ListItemIcon sx={{ minWidth: 28 }}>
               <FontAwesomeIcon
                 icon={isExpanded ? faFolderOpen : faFolder}
-                style={{ color: isSignificant ? "#4caf50" : "#1976d2" }}
+                style={{ color: isSignificant ? "#4caf50" : "#9e9e9e" }}
               />
             </ListItemIcon>
           )}
@@ -352,39 +351,47 @@ function TreeNodeComponent({
                 )}
                 <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
                   {settings.showNES && (
-                    <Chip
-                      label={`NES: ${result.NES?.toFixed(2)}`}
-                      size="small"
-                      color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
-                      variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="Normalised Enrichment Score · highlighted when |NES| > 1.5">
+                      <Chip
+                        label={`NES: ${result.NES?.toFixed(2)}`}
+                        size="small"
+                        color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
+                        variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showES && (
                     <Chip label={`ES: ${result.ES?.toFixed(2)}`} size="small" variant="outlined" />
                   )}
                   {settings.showPValues && (
-                    <Chip
-                      label={`P: ${result["p-value"]?.toExponential(1)}`}
-                      size="small"
-                      color={result["p-value"] < 0.05 ? "success" : "default"}
-                      variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="P-value · highlighted when p-value < 0.05">
+                      <Chip
+                        label={`P: ${result["p-value"]?.toExponential(1)}`}
+                        size="small"
+                        color={result["p-value"] < 0.05 ? "success" : "default"}
+                        variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showFDR && (
-                    <Chip
-                      label={`FDR: ${result.FDR?.toExponential(1)}`}
-                      size="small"
-                      color={result.FDR < 0.05 ? "success" : "default"}
-                      variant={result.FDR < 0.05 ? "filled" : "outlined"}
-                    />
+                    <Tooltip title="False Discovery Rate · highlighted when FDR < 0.05">
+                      <Chip
+                        label={`FDR: ${result.FDR?.toExponential(1)}`}
+                        size="small"
+                        color={result.FDR < 0.05 ? "success" : "default"}
+                        variant={result.FDR < 0.05 ? "filled" : "outlined"}
+                      />
+                    </Tooltip>
                   )}
                   {settings.showGeneCount && (
-                    <Chip
-                      label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
+                    <Tooltip title="Overlapping genes / Pathway size">
+                      <Chip
+                        label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                    </Tooltip>
                   )}
                 </Box>
               </Box>
@@ -465,7 +472,7 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
       <ListItemButton onClick={() => onNodeClick(result)} sx={{ borderRadius: 1 }}>
         <ListItemIcon sx={{ minWidth: 36 }}>
           <FontAwesomeIcon
-            icon={faFlask}
+            icon={faFile}
             style={{ color: isSignificant ? "#4caf50" : "#bdbdbd" }}
           />
         </ListItemIcon>
@@ -483,39 +490,47 @@ function ResultNode({ result, settings, onNodeClick, level }: ResultNodeProps) {
               </Typography>
               <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
                 {settings.showNES && (
-                  <Chip
-                    label={`NES: ${result.NES?.toFixed(2)}`}
-                    size="small"
-                    color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
-                    variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="Normalised Enrichment Score · highlighted when |NES| > 1.5">
+                    <Chip
+                      label={`NES: ${result.NES?.toFixed(2)}`}
+                      size="small"
+                      color={Math.abs(result.NES) > 1.5 ? "success" : "default"}
+                      variant={Math.abs(result.NES) > 1.5 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showES && (
                   <Chip label={`ES: ${result.ES?.toFixed(2)}`} size="small" variant="outlined" />
                 )}
                 {settings.showPValues && (
-                  <Chip
-                    label={`P: ${result["p-value"]?.toExponential(1)}`}
-                    size="small"
-                    color={result["p-value"] < 0.05 ? "success" : "default"}
-                    variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="P-value · highlighted when p-value < 0.05">
+                    <Chip
+                      label={`P: ${result["p-value"]?.toExponential(1)}`}
+                      size="small"
+                      color={result["p-value"] < 0.05 ? "success" : "default"}
+                      variant={result["p-value"] < 0.05 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showFDR && (
-                  <Chip
-                    label={`FDR: ${result.FDR?.toExponential(1)}`}
-                    size="small"
-                    color={result.FDR < 0.05 ? "success" : "default"}
-                    variant={result.FDR < 0.05 ? "filled" : "outlined"}
-                  />
+                  <Tooltip title="False Discovery Rate · highlighted when FDR < 0.05">
+                    <Chip
+                      label={`FDR: ${result.FDR?.toExponential(1)}`}
+                      size="small"
+                      color={result.FDR < 0.05 ? "success" : "default"}
+                      variant={result.FDR < 0.05 ? "filled" : "outlined"}
+                    />
+                  </Tooltip>
                 )}
                 {settings.showGeneCount && (
-                  <Chip
-                    label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
-                    size="small"
-                    color="primary"
-                    variant="outlined"
-                  />
+                  <Tooltip title="Overlapping genes / Pathway size">
+                    <Chip
+                      label={`${result["Number of input genes"]}/${result["Pathway size"]} genes`}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </Tooltip>
                 )}
               </Box>
             </Box>
@@ -675,7 +690,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           />
           <Chip label={`Sorted by ${settings.sortBy} (${settings.sortDirection})`} size="small" variant="outlined" />
           {settings.groupBy === "hierarchy" && (
-            <Chip label={`${rootCount} root pathways`} size="small" variant="outlined" />
+            <Chip label={`${rootCount} top-level pathways`} size="small" variant="outlined" />
           )}
           {!hasHierarchyData && settings.groupBy === "hierarchy" && (
             <Chip label="No hierarchy data" color="warning" size="small" variant="outlined" />
@@ -706,7 +721,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
               icon={faFolder}
-              style={{ fontSize: "0.7rem", color: "#1976d2", opacity: 0.7 }}
+              style={{ fontSize: "0.7rem", color: "#9e9e9e" }}
             />
             <Typography variant="caption" color="text.disabled">
               Parent pathway
@@ -714,17 +729,11 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
             <FontAwesomeIcon
-              icon={faFlask}
-              style={{ fontSize: "0.7rem", color: "#4caf50", opacity: 0.7 }}
+              icon={faFile}
+              style={{ fontSize: "0.7rem", color: "#9e9e9e" }}
             />
             <Typography variant="caption" color="text.disabled">
-              Significant leaf
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            <FontAwesomeIcon icon={faFlask} style={{ fontSize: "0.7rem", color: "#bdbdbd" }} />
-            <Typography variant="caption" color="text.disabled">
-              Not significant
+              Terminal pathway
             </Typography>
           </Box>
         </Box>
@@ -764,7 +773,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
                     </ListItemIcon>
                     <ListItemIcon sx={{ minWidth: 36 }}>
                       <FontAwesomeIcon
-                        icon={faFolder}
+                        icon={expandedNodes.has(group.id) ? faFolderOpen : faFolder}
                         style={{
                           color:
                             group.color === "success"

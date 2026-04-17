@@ -32,6 +32,7 @@ export function useGseaAnalysis({ client, state, dispatch }: UseGseaAnalysisPara
       efoId: associationsState.efoId,
       genes: [],
       results: [],
+      inputOverlap: null,
       error: null,
     };
 
@@ -85,14 +86,14 @@ export function useGseaAnalysis({ client, state, dispatch }: UseGseaAnalysisPara
       dispatch(updateRun(runId, { genes, status: "running_gsea" }));
 
       // Step 2: Call GSEA API
-      const results = await analyzeGsea({
+      const { results, input_overlap: inputOverlap } = await analyzeGsea({
         genes,
         library: analysisInputs.selectedLibrary,
         analysisDirection: analysisInputs.analysisDirection,
       });
 
       // Update with results and mark complete
-      dispatch(updateRun(runId, { results, status: "complete" }));
+      dispatch(updateRun(runId, { results, inputOverlap, status: "complete" }));
     } catch (error) {
       dispatch(
         updateRun(runId, {
@@ -114,6 +115,7 @@ export function useGseaAnalysis({ client, state, dispatch }: UseGseaAnalysisPara
     step: activeRun?.status ?? "idle",
     genes: activeRun?.genes ?? [],
     results: activeRun?.results ?? [],
+    inputOverlap: activeRun?.inputOverlap ?? null,
     error: activeRun?.error ?? null,
     activeRun,
     runs,
