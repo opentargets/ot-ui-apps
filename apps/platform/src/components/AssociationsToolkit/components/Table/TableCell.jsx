@@ -1,4 +1,4 @@
-import { Skeleton, styled } from "@mui/material";
+import { Box, Skeleton, Typography, styled } from "@mui/material";
 import Tooltip from "./AssocTooltip";
 import { cellHasValue, getColumAndSection, TABLE_PREFIX } from "../../associationsUtils";
 import {
@@ -46,6 +46,20 @@ const defaultCell = {
   table: {
     getState: () => ({ prefix: "", loading: false }),
   },
+};
+
+const SPECIFICITY_ANNOTATION_KEYS = {
+  newTissueSpecificity: "newTissueSpecificityAnnotation",
+  newTissueDistribution: "newTissueSpecificityAnnotation",
+  newCellTypeSpecificity: "newCellTypeSpecificityAnnotation",
+  newCellTypeDistribution: "newCellTypeSpecificityAnnotation",
+};
+
+const getAnnotation = cell => {
+  const annotationKey = SPECIFICITY_ANNOTATION_KEYS[cell?.column?.id];
+  if (!annotationKey) return undefined;
+
+  return cell?.row?.original?.prioritisations?.[annotationKey];
 };
 
 function TableCell({ shape = "circular", cell = defaultCell, colorScale, displayedTable, label }) {
@@ -109,9 +123,21 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
     );
 
   const scoreText = `Score: ${cellValue.toFixed(2)}`;
+  const annotation = getAnnotation(cell);
+  const tooltipTitle = annotation ? (
+    <Box>
+      <Typography variant="body2">{scoreText}</Typography>
+      <Typography variant="caption">Highest specificity annotation: {annotation}</Typography>
+    </Box>
+  ) : (
+    scoreText
+  );
+  const ariaLabel = annotation
+    ? `${scoreText}. Highest specificity annotation: ${annotation}`
+    : scoreText;
 
   return (
-    <Tooltip title={scoreText} arrow disableHoverListener={false}>
+    <Tooltip title={tooltipTitle} arrow disableHoverListener={false}>
       <ScoreElement
         data-testid={`score-cell-${cell.column.id}`}
         backgroundColor={backgroundColor}
@@ -119,7 +145,7 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
         onClick={() => onClickHandler()}
         shape={shape}
         active={active}
-        aria-label={scoreText}
+        aria-label={ariaLabel}
         data-score={cellValue.toFixed(2)}
       />
     </Tooltip>

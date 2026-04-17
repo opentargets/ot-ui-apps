@@ -163,6 +163,48 @@ const tissueDistribution: Column = {
   sectionProps: { viewMode: "distribution" },
 };
 
+const newTissueSpecificity: Column = {
+  id: "newTissueSpecificity",
+  label: "New Tissue Specificity",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "Custom tissue specificity score loaded from the static prioritisation lookup",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
+  sectionProps: { viewMode: "specificity" },
+};
+
+const newTissueDistribution: Column = {
+  id: "newTissueDistribution",
+  label: "New Tissue Distribution",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "Custom tissue distribution score loaded from the static prioritisation lookup",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
+  sectionProps: { viewMode: "distribution" },
+};
+
+const newCellTypeSpecificity: Column = {
+  id: "newCellTypeSpecificity",
+  label: "New Cell-type Specificity",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "Custom cell-type specificity score loaded from the static prioritisation lookup",
+  docsLink: "https://platform-docs.opentargets.org/web-interface/target-prioritisation",
+  sectionProps: { viewMode: "specificity" },
+};
+
+const newCellTypeDistribution: Column = {
+  id: "newCellTypeDistribution",
+  label: "New Cell-type Distribution",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "Custom cell-type distribution score loaded from the static prioritisation lookup",
+  docsLink: "https://platform-docs.opentargets.org/web-interface/target-prioritisation",
+  sectionProps: { viewMode: "distribution" },
+};
+
 const cols: Column[] = [
   maxClinicalTrialPhase,
   isInMembrane,
@@ -180,6 +222,10 @@ const cols: Column[] = [
   paralogMaxIdentityPercentage,
   tissueSpecificity,
   tissueDistribution,
+  newTissueSpecificity,
+  newTissueDistribution,
+  newCellTypeSpecificity,
+  newCellTypeDistribution,
 ];
 
 export default cols;
