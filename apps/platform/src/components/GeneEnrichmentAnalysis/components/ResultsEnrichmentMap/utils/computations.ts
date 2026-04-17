@@ -1,7 +1,7 @@
 import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
 import { buildGeneViewEdgesOptimized } from "./edgeBuilder";
-import { getGeneList, jaccardSimilarity } from "./index";
+import { getGeneList, jaccardSimilarity, overlapSimilarity } from "./index";
 import type { ComputedStats } from "./types";
 
 /**
@@ -82,15 +82,17 @@ export async function computeGeneViewEdges(
     console.log(nodeGeneIds.size, 'genes present in nodes after filtering');
     const validSortedGenes = sortedGenes.filter((gene) => nodeGeneIds.has(gene));
 
-    // Wrapper function to adapt jaccardSimilarity to buildGeneViewEdgesOptimized's expected signature
+    // Wrapper function to adapt overlapSimilarity to buildGeneViewEdgesOptimized's expected signature
+    // Uses overlap instead of Jaccard to reduce hub gene bias
     const computeSimilarity = (
       gene1: string,
       gene2: string,
       map: Map<string, Array<{ pathway: string; fdr: number; nes: number }>>
     ): number => {
+      console.log(gene1, gene2, map.get(gene1)?.length, map.get(gene2)?.length);
       const pathways1 = map.get(gene1)?.map((p) => p.pathway) ?? [];
       const pathways2 = map.get(gene2)?.map((p) => p.pathway) ?? [];
-      return jaccardSimilarity(pathways1, pathways2);
+      return overlapSimilarity(pathways1, pathways2);
     };
 
     const { edges, edgeCount } = await buildGeneViewEdgesOptimized(

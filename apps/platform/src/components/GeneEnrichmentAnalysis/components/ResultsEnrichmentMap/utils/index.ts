@@ -5,7 +5,7 @@ export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytosca
 export { buildGeneViewEdges } from "./edgeBuilder";
 // Gene expression rendering
 export { cleanupGeneExpressions, renderGeneExpressions } from "./geneExpression";
-export { getGeneList, jaccardSimilarity } from "./geneUtils";
+export { getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
 
 // Layout effects
 export { getLayoutConfig } from "./layout";

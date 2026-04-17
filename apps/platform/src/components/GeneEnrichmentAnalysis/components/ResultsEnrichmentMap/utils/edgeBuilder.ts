@@ -139,7 +139,7 @@ export async function buildGeneViewEdgesOptimized(
       // Compute expensive Jaccard similarity only for promising pairs
       const similarity = similarityFn(gene1, gene2, geneToPathways);
       comparisonsMade++;
-
+      console.log(`Compared ${gene1} vs ${gene2}: shared=${sharedCount}, jaccard=${similarity.toFixed(3)}, threshold=${threshold.toFixed(3)}`);
       if (similarity >= threshold) {
         // Get actual shared pathways for tooltip display
         const p1 = genePathwaySets.get(gene1);
