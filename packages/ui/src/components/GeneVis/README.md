@@ -48,3 +48,10 @@ Variant objects:
 | `standardError`        | `number` |         |                                                                                                         |
 | `r2Overall`            | `number` |         |                                                                                                         |
 | `logBF`                | `number` |         |                                                                                                         |
+
+## TO DO
+
+## COULD DO
+
+## Issues
+

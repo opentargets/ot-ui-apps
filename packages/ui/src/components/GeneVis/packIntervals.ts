@@ -23,20 +23,20 @@ export function packIntervals(
   intervals: IntervalInput[],
   options: {
     pixelGap?: number;
-    pixelGapStartToStart?: number;
+    pixelGapCenterToCenter?: number;
     bpPerPixel?: number;
     previousLayout?: Record<string, number>; // for stability
   }
 ): PackResult {
   const {
     pixelGap = 0,
-    pixelGapStartToStart = 0,
+    pixelGapCenterToCenter = 0,
     bpPerPixel = 1,
     previousLayout = {}
   } = options;
 
   const gapBp = pixelGap * bpPerPixel;
-  const startGapBp = pixelGapStartToStart * bpPerPixel;
+  const centerGapBp = pixelGapCenterToCenter * bpPerPixel;
 
   const sorted = intervals
     .map((d, i) => ({
@@ -50,13 +50,14 @@ export function packIntervals(
 
   // Track per-row state
   const rowEnd: number[] = [];
-  const rowLastStart: number[] = [];
+  const rowLastCenter: number[] = [];
 
   const idToRow: PackResult = {};
 
   for (const interval of sorted) {
     const start = interval._start;
     const end = interval._end;
+    const center = (start + end) / 2;
 
     let assignedRow = -1;
 
@@ -67,10 +68,10 @@ export function packIntervals(
       rowEnd[preferred] !== undefined
     ) {
       const endOK = rowEnd[preferred] + gapBp <= start;
-      const startOK =
-        rowLastStart[preferred] + startGapBp <= start;
+      const centerOK =
+        rowLastCenter[preferred] + centerGapBp <= center;
 
-      if (endOK && startOK) {
+      if (endOK && centerOK) {
         assignedRow = preferred;
       }
     }
@@ -79,10 +80,10 @@ export function packIntervals(
     if (assignedRow === -1) {
       for (let r = 0; r < rowEnd.length; r++) {
         const endOK = rowEnd[r] + gapBp <= start;
-        const startOK =
-          rowLastStart[r] + startGapBp <= start;
+        const centerOK =
+          rowLastCenter[r] + centerGapBp <= center;
 
-        if (endOK && startOK) {
+        if (endOK && centerOK) {
           assignedRow = r;
           break; // first-fit → stable
         }
@@ -98,7 +99,7 @@ export function packIntervals(
     idToRow[id] = assignedRow;
 
     rowEnd[assignedRow] = end;
-    rowLastStart[assignedRow] = start;
+    rowLastCenter[assignedRow] = center;
   }
 
   return idToRow;

@@ -18,9 +18,9 @@ function Body({ id, entity }: BodyProps) {
   const request = useQuery(BROWSER_VIEW_QUERY, { variables });
 
   // select data
-  const chromosome = "4";
-  const start = 9_000_000;
-  const end = 10_000_000;
+  const chromosome = "17";
+  const start = 35_000_000;
+  const end = 36_000_000;
 
   // load local chromosome data
   useEffect(() => {
@@ -32,13 +32,19 @@ function Body({ id, entity }: BodyProps) {
         const arr = (mod as any).default ?? mod;
 
         // filter to those within (or overlapping) start-to-end
-        const filtered = Array.isArray(arr)
+        let filtered = Array.isArray(arr)
           ? arr.filter((item: any) => {
               const gs = Number(item.start);
               const ge = Number(item.end);
               return Number.isFinite(gs) && Number.isFinite(ge) && ge >= start && gs <= end;
             })
           : [];
+
+        // !! FILTER ON BIOTYPE HERE FOR NOW !!
+        filtered = filtered.filter(o => (
+          // !o.biotype.includes("pseudogene") && 
+          !o.biotype.includes("RNA")
+        ));
         
         // rewrite data into format returned by API
         if (!cancelled) {
@@ -86,7 +92,7 @@ function Body({ id, entity }: BodyProps) {
             chromosome={chromosome}
             xMin={start}
             xMax={end}
-            geneColor="steelblue"
+            geneColor={gene => gene.target.biotype === "protein_coding" ? "steelblue" : "firebrick"}
           />
         : <h2>Loading...</h2>
       }

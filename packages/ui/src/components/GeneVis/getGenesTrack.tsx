@@ -1,6 +1,6 @@
 import { Fragment } from "react";
-import { Sprite, Text } from '@pixi/react';
-import { TextStyle } from "pixi.js";
+import { Container, Sprite, Text } from '@pixi/react';
+import { TextStyle, Text as PixiText } from "pixi.js";
 import { Box, Typography } from "@mui/material";
 import { useRectangleTexture } from "../GenTrack/shapes";
 import { packIntervals } from "./packIntervals";
@@ -12,12 +12,12 @@ import {
 } from "ui";
 
 // horizontal strip, y prop is the y-center
-function Strip({ rectTexture, xStart, xEnd, yStart, height, spriteProps }) {
+function Strip({ rectTexture, xStart, xEnd, y, height, spriteProps }) {
   return (
     <Sprite
       texture={rectTexture}
       x={xStart}
-      y={yStart}
+      y={y - height / 2}
       width={xEnd - xStart}
       height={height}
       {...spriteProps}
@@ -25,26 +25,42 @@ function Strip({ rectTexture, xStart, xEnd, yStart, height, spriteProps }) {
   );
 }
 
-export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap = 0, pixelGapStartToStart = 0 }) {
+function getValue(value, arg) {
+  return typeof value === "function" ? value(arg) : value;
+}
+
+function tickScaleFactory(filterActionPairs) {
+  return (wrapper) => {
+    objectLoop: for (const obj of wrapper.children[0].children) {
+      for (const { filterFn, actionFn } of filterActionPairs) {
+        if (filterFn(obj)) {
+          actionFn(obj, wrapper);
+          continue objectLoop;
+        }
+      }
+    }
+  };
+}
+
+export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap = 0, pixelGapCenterToCenter = 0 }) {
   const genTrackState = useGenTrackState(); 
   const { data, xMin, xMax } = genTrackState ?? { data: null, xMin: 0, xMax: 0 };
+
+  console.log(data.genes.map(d => d.target.genomicLocation. strand))
 
   const bpPerPixel = (canvasWidth > 0 && xMax > xMin) ? (xMax - xMin) / canvasWidth : 1;
 
   const rowHeight = 30;
-  // const rowGap = 10;
   const labelHeight = 12;
-  const GeneToRow = packIntervals(data.genes, { bpPerPixel, pixelGap, pixelGapStartToStart });
+  const intronHeight = 4;
+  const exonHeight = 12;
+  const utrHeight = 8;
+
+  const yTop = (rowIndex) => rowIndex * rowHeight;
+  const ycenter = (rowIndex) => rowIndex * rowHeight + labelHeight + (rowHeight - labelHeight) / 2;
+  const GeneToRow = packIntervals(data.genes, { bpPerPixel, pixelGap, pixelGapCenterToCenter });
   const nRows = Math.max(...Object.values(GeneToRow)) + 1;
   const trackHeight = rowHeight * nRows;
-
-  console.log(GeneToRow)
-  // console.log(trackHeight);
-
-!!!! NOW !!!1
-- switch back to strips use yCenter since easier for showing introns + exons + UTC
-- color by coding versus non-coding
-  - and highlight if score and show score
 
   return {
     id: "genes",
@@ -62,18 +78,20 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
     Track: () => {
       const rectTexture = useRectangleTexture();
       return (
-        <Fragment>
-          {data.genes.map(({ target }) => {
-            const { start, end } = target.genomicLocation;
-            // console.log({start, end});
-            // debugger
+        <Container>
+          {data.genes.map(gene => {
+            const { target } = gene;
             return (
               <Fragment key={target.id}>
-                {/* <Text
-                  text={target.approvedSymbol ?? target.id}  // !! USE geneLabel HERE !! - can be component?
-                  x={start}
-                  y={0}
-                  anchor={[0, 0]}
+                <Text  // !! USE geneLabel HERE !! - can be component??
+                  text={`${target.genomicLocation.strand === "-1" ? "← " : "" }${
+                    target.approvedSymbol ?? target.id}${
+                    target.genomicLocation.strand === "1" ? "" : " →" }`}
+              ?? WHY NOT SHOWING LEFT ARROWS??
+              - THEN TWEAK TEXT - SMALLER AND LOWER?
+                  x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
+                  y={yTop(GeneToRow[target.id])}
+                  anchor={[0.5, 0]}
                   style={
                     new TextStyle({
                       align: 'center',
@@ -83,23 +101,45 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
                       wordWrap: false,
                     })
                   }
-                /> */}
+                />
                 <Strip
                   rectTexture={rectTexture}
-                  // start={9_300_000}
-                  // end={9_700_000}
-                  xStart={start}
-                  xEnd={end}
-                  // yStart={0}
-                  yStart={GeneToRow[target.id] * rowHeight + labelHeight}
-                  height={16}
-                  spriteProps={{ tint: geneColor }}  // !! NEED TO ALLOW FOR FUNCTION !!
+                  xStart={target.genomicLocation.start}
+                  xEnd={target.genomicLocation.end}
+                  y={ycenter(GeneToRow[target.id])}
+                  height={intronHeight}
+                  spriteProps={{ tint: getValue(geneColor, gene) }}
                 />
+                {target.canonicalExons?.map(exon => (
+                  <Strip
+                    rectTexture={rectTexture}
+                    xStart={exon.start}
+                    xEnd={exon.end}
+                    y={ycenter(GeneToRow[target.id])}
+                    height={exonHeight}
+                    spriteProps={{ tint: getValue(geneColor, gene) }}
+                  />
+                ))}
               </Fragment>
             )
           })}
-        </Fragment>
+        </Container>
       );
     },
+    onTick: tickScaleFactory([
+      {
+        filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
+        actionFn: (obj, wrapper) => {
+          obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
+          obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
+        }
+      },
+      // {
+      //   filterFn: obj => obj instanceof PixiSprite,
+      //   actionFn: (obj, wrapper) => {
+      //     obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
+      //   }
+      // },
+    ])
   }
 }

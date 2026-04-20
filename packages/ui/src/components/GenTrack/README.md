@@ -69,27 +69,27 @@ __Note:__ The code wrapping the gen track can use `useGenTrackDispatch` but shou
 
 Top-level gen track component. This contains the x-info and tracks (each of which contains its own y-info). A `GenTrack` component should be inside a `GenTrackProvider` - and a `GenTrackInnerProvider` if showing inner tracks.
 
-| Prop                | Type        | Default        | Description                                                                                                         |
-| ------------------- | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `tracks`            | `Track[]`   |                | Tracks.                                                                                                             |
-| `XInfo`             | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `data`, `start`, `end`, `isInner` and `canvasWidth` props. |
-| `XYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `xyInfoHeight`. Can take `data` and `isInner` props. |
-| `xyInfoHeight` | `number` | `32` | Height of `XInfo` and `XYInfo` containers. |
-| `Tooltip`           | `component` |                | Tooltip - see [Tooltip](#tooltip).                                                                                  |
-| `tooltipProps`      | `object`    |                | Additional tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                       |
-| `innerTracks`       | `Track[]`   |                | Inner tracks.                                                                                                       |
+| Prop                | Type        | Default        | Description                                                                                                                                                                                                                                      |
+| ------------------- | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tracks`            | `Track[]`   |                | Tracks.                                                                                                                                                                                                                                          |
+| `XInfo`             | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `data`, `start`, `end`, `isInner` and `canvasWidth` props.                                                                                               |
+| `XYInfo`            |             |                | Rendered inside a container with width equal to `yInfoWidth` and height equal to `xyInfoHeight`. Can take `data` and `isInner` props.                                                                                                            |
+| `xyInfoHeight`      | `number`    | `32`           | Height of `XInfo` and `XYInfo` containers.                                                                                                                                                                                                       |
+| `Tooltip`           | `component` |                | Tooltip - see [Tooltip](#tooltip).                                                                                                                                                                                                               |
+| `tooltipProps`      | `object`    |                | Additional tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                                                                                                                                                    |
+| `innerTracks`       | `Track[]`   |                | Inner tracks.                                                                                                                                                                                                                                    |
 | `InnerXInfo`        | `component` |                | React component to show info about the shared x scale - e.g. a label and axis. Can take `data`, `start`, `end`, `isInner` and `canvasWidth` props - `InnerXInfo` __must__ take a `canvasWidth` prop (even if unsued) to ensure correct behavior. |
-| `InnerXYInfo` | | | Rendered inside a container with width equal to `yInfoWidth` and height equal to `innerXYInfoHeight`. Can take `data` ans `isInner` props. |
-| `innerXYInfoHeight` | `number` | `32` | Height of `InnerXInfo` and `XYInfo` containers. |
-| `InnerTooltip`      | `component` |                | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                 |
-| `innerTooltipProps` | `object`    |                | Additional inner tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                 |
-| `yInfoWidth`        | `number`    | `160`          | Space on left reserved for y-info of tracks.                                                                        |
-| `yInfoGap`          | `number`    | `16`           | Horizontal space between yInfo components and tracks.                                                               |
-| `paddingBottom` | `number` | `16` | Padding inside the canvas below the bottom track - use the `paddingTop` of individual tracks for padding above tracks. |
-| `panZoomTopGap`     | `number`    | `16 `          | Vertical space above pan-zoom panel.                                                                                |
-| `panZoomBottomGap`  | `number`    | `16 `          | Vertical space below pan-zoom panel.                                                                                |
-| `zoomLines`         | `boolean`   | `false `       | Indicate zoom window on top-level canvas.                                                                           |
-| `initialZoom`       | `number[]`  | `[xMin, xMax]` | Initial limits for pan-zoom window. Should be within the x-limits used for the top-level tracks.                    |
+| `InnerXYInfo`       |             |                | Rendered inside a container with width equal to `yInfoWidth` and height equal to `innerXYInfoHeight`. Can take `data` ans `isInner` props.                                                                                                       |
+| `innerXYInfoHeight` | `number`    | `32`           | Height of `InnerXInfo` and `XYInfo` containers.                                                                                                                                                                                                  |
+| `InnerTooltip`      | `component` |                | Tooltip for inner tracks - see [Tooltip](#tooltip).                                                                                                                                                                                              |
+| `innerTooltipProps` | `object`    |                | Additional inner tooltip options: `xAnchor`, `yAnchor`, `dx`, `dy`.                                                                                                                                                                              |
+| `yInfoWidth`        | `number`    | `160`          | Space on left reserved for y-info of tracks.                                                                                                                                                                                                     |
+| `yInfoGap`          | `number`    | `16`           | Horizontal space between yInfo components and tracks.                                                                                                                                                                                            |
+| `paddingBottom`     | `number`    | `16`           | Padding inside the canvas below the bottom track - use the `paddingTop` of individual tracks for padding above tracks.                                                                                                                           |
+| `panZoomTopGap`     | `number`    | `16 `          | Vertical space above pan-zoom panel.                                                                                                                                                                                                             |
+| `panZoomBottomGap`  | `number`    | `16 `          | Vertical space below pan-zoom panel.                                                                                                                                                                                                             |
+| `zoomLines`         | `boolean`   | `false `       | Indicate zoom window on top-level canvas.                                                                                                                                                                                                        |
+| `initialZoom`       | `number[]`  | `[xMin, xMax]` | Initial limits for pan-zoom window. Should be within the x-limits used for the top-level tracks.                                                                                                                                                 |
 
 A `GenTrack` fills the width of its parent container.
 
@@ -97,16 +97,16 @@ A `GenTrack` fills the width of its parent container.
 
 The `tracks` prop of a `GenTrack` should be passed an array of objects, where each object has the form:
 
-| Property     | Type        | Default | Description                                                                                                                                                                                                                  |
-| ------------ | ----------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`         | `string`    |         | Unique id for the track. Typically a readable name, e.g. `'domains'`.                                                                                                                                                        |
-| `yMin`       | `number`    | `0`     | Minimum y value for y-scale.                                                                                                                                                                                                 |
-| `yMax`       | `number`    | `100`   | Maximum y value for y-scale.                                                                                                                                                                                                 |
-| `YInfo`      | `component` |         | Rendered inside a container with width equal to the `yInfoWidth` of the parent `GenTrack` and height equal to `height`. Can take `data` and `isInner` props.                                                                                                    |                                                    |
+| Property     | Type        | Default | Description                                                                                                                                                                                                                                                                                                                      |
+| ------------ | ----------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`         | `string`    |         | Unique id for the track. Typically a readable name, e.g. `'domains'`.                                                                                                                                                                                                                                                            |
+| `yMin`       | `number`    | `0`     | Minimum y value for y-scale.                                                                                                                                                                                                                                                                                                     |
+| `yMax`       | `number`    | `100`   | Maximum y value for y-scale.                                                                                                                                                                                                                                                                                                     |
+| `YInfo`      | `component` |         | Rendered inside a container with width equal to the `yInfoWidth` of the parent `GenTrack` and height equal to `height`. Can take `data` and `isInner` props.                                                                                                                                                                     |                                                    |
 | `Track`      | `component` |         | Passed an `isInner` prop. Should return a Pixi display object such as a container, sprite or graphics object. This is wrapped in a container that is vertically translated to the appropriate part of the canvas, stretched to the width of the canvas, given height equal to `height` and given the appropriate x and y scales. |                                                    |
-| `onTick` | `function` |  | Called every tick. Passed the Pixi container that wraps the tracks content. |
+| `onTick`     | `function`  |         | Called every tick. Passed the Pixi container that wraps the tracks content.                                                                                                                                                                                                                                                      |
 | `height`     | `number`    | `50`    |
-| `paddingTop` | `number`    | `0`     | Padding above track.                                                                                                                                                                                                             | Height of `YInfo` container and `Track` container. |
+| `paddingTop` | `number`    | `0`     | Padding above track.                                                                                                                                                                                                                                                                                                             | Height of `YInfo` container and `Track` container. |
 
 Inside either the `Track` itself or one of its ancestors, it is standard use `useGenTrackState` to access the data and x-limits.
 
@@ -188,6 +188,8 @@ function MyTooltip() {
 - Is the initial width of the inner tracks canvas sometimes too narrow? - then coorects after first interaction with zoom window?
 
 - Is rescaling every frame purely to get fixed pixel size marks expensive? If so, could only change scale when canvasWidth or x-limits change?
+
+- move the tickScaleFactory into main component and document with examples
 
 #### Notes
 
