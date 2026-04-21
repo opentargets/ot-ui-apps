@@ -62,7 +62,7 @@ function GeneVisInner({
         innerTracks={tracks}
         InnerXYInfo={XAxisLabel}
         yInfoGap={8}
-        yInfoWidth={180}
+        yInfoWidth={40}
         zoomLines
         panZoomTopGap={0}
         paddingBottom={12}
@@ -72,18 +72,3 @@ function GeneVisInner({
 }
 
 export default GeneVisInner;
-
-/*
-TO DO:
-- dynamic rerender of gene track only when width changes
-  - recompute packing when the width changes - since computes min-pixels gaps
-    based on window/container width
-- API
-  - should we allow filtering by biotype? - if there are biotypes we definitely
-    will not show - which biotypes do we want to show?! - which will actually come from the API?
-- Check that axis always smooth updating when pan-zoom. Looks same as when
-  'nice ticks' was preventing this in earlier experiments
-- how deal with genes that overlap the window boundaries? Cut them off or show part of them?
-  - cannot extend window to fit them since then just get new overlapping genes with the new window ...
-  - use blur or similar to incicate there is unshown/cutoff content?
-*/

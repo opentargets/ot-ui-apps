@@ -46,15 +46,12 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
   const genTrackState = useGenTrackState(); 
   const { data, xMin, xMax } = genTrackState ?? { data: null, xMin: 0, xMax: 0 };
 
-  console.log(data.genes.map(d => d.target.genomicLocation. strand))
-
   const bpPerPixel = (canvasWidth > 0 && xMax > xMin) ? (xMax - xMin) / canvasWidth : 1;
 
-  const rowHeight = 30;
-  const labelHeight = 12;
-  const intronHeight = 4;
+  const rowHeight = 32;
+  const intronHeight = 2;
   const exonHeight = 12;
-  const utrHeight = 8;
+  const labelHeight = rowHeight - exonHeight;
 
   const yTop = (rowIndex) => rowIndex * rowHeight;
   const ycenter = (rowIndex) => rowIndex * rowHeight + labelHeight + (rowHeight - labelHeight) / 2;
@@ -68,13 +65,14 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
     paddingTop: 0,
     yMin: 0,
     yMax: trackHeight,
-    YInfo: () => (
-      <Box sx={infoStyle}> 
-        <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-          Genes
-        </Typography>
-      </Box>
-    ),
+    // YInfo: null,
+    // YInfo: () => (
+    //   <Box sx={infoStyle}> 
+    //     <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
+    //       Genes
+    //     </Typography>
+    //   </Box>
+    // ),
     Track: () => {
       const rectTexture = useRectangleTexture();
       return (
@@ -84,19 +82,17 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
             return (
               <Fragment key={target.id}>
                 <Text  // !! USE geneLabel HERE !! - can be component??
-                  text={`${target.genomicLocation.strand === "-1" ? "← " : "" }${
+                  text={`${target.genomicLocation.strand === -1 ? "← " : "" }${
                     target.approvedSymbol ?? target.id}${
-                    target.genomicLocation.strand === "1" ? "" : " →" }`}
-              ?? WHY NOT SHOWING LEFT ARROWS??
-              - THEN TWEAK TEXT - SMALLER AND LOWER?
+                    target.genomicLocation.strand === 1 ? " →" : "" }`}
                   x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
-                  y={yTop(GeneToRow[target.id])}
-                  anchor={[0.5, 0]}
+                  y={yTop(GeneToRow[target.id]) + labelHeight}
+                  anchor={[0.5, 1]}
                   style={
                     new TextStyle({
                       align: 'center',
                       fill: "#000",
-                      fontSize: 11,
+                      fontSize: 10.5,
                       fontWeight: '100',
                       wordWrap: false,
                     })

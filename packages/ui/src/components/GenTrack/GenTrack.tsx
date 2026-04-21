@@ -213,7 +213,7 @@ function GenTrack({
           }}>
             {tracks.map(({ id, height, paddingTop, YInfo, yMin, yMax }) => (
               <Box key={id} sx={{ width: px(yInfoWidth), height: px(height), mt: px(paddingTop) }}>
-                <YInfo data={data} start={yMin} end={yMax} isInner={_isInner}/>
+                {YInfo && <YInfo data={data} start={yMin} end={yMax} isInner={_isInner}/>}
               </Box>
             ))}
           </Box>
