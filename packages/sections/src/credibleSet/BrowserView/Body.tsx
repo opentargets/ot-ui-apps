@@ -18,7 +18,7 @@ function Body({ id, entity }: BodyProps) {
   const request = useQuery(BROWSER_VIEW_QUERY, { variables });
 
   // select data
-  const chromosome = "17";
+  const chromosome = "1";
   const start = 35_000_000;
   const end = 36_000_000;
 
