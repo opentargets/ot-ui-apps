@@ -1,15 +1,14 @@
-import { faChartPie, faCircle, faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faChartPie, faHexagonNodes, faSitemap, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useState } from "react";
 import type { GseaResult, InputOverlap } from "../api/gseaApi";
 import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
-import ResultsSunburst from "./ResultsSunburst";
 import ResultsTable from "./ResultsTable";
 import ResultsTreeView from "./ResultsTreeView";
 import {ResultsEnrichmentMap} from "./ResultsEnrichmentMap/";
 
-type ViewMode = "table" | "tree" | "plotly";
+type ViewMode = "table" | "tree" | "plotly" | "network";
 
 interface AnalysisResultsProps {
   results: GseaResult[];
@@ -43,7 +42,7 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId }: Analys
           flexShrink: 0,
         }}
       >
-        <Box>
+        <Box sx={{ width: "fit-content" }}>
           <Typography variant="h6">Analysis Complete</Typography>
           <Typography variant="body2" color="text.secondary">
             {results.length} enriched pathways ({significantCount} significant at FDR {"<"} 0.05)
@@ -61,13 +60,13 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId }: Analys
               <FontAwesomeIcon icon={faSitemap} style={{ marginRight: 6 }} />
               Tree view
             </ToggleButton>
-            {/* <ToggleButton value="sunburst">
-              <FontAwesomeIcon icon={faCircle} style={{ marginRight: 6 }} />
-              Sunburst
-            </ToggleButton> */}
             <ToggleButton value="plotly">
               <FontAwesomeIcon icon={faChartPie} style={{ marginRight: 6 }} />
               Sunburst
+            </ToggleButton>
+            <ToggleButton value="network">
+              <FontAwesomeIcon icon={faHexagonNodes} style={{ marginRight: 6 }} />
+              Network view
             </ToggleButton>
           </ToggleButtonGroup>
         </Box>
@@ -77,9 +76,9 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId }: Analys
       <Box sx={{ flex: 1, overflow: "auto", p: viewMode === "plotly" ? 0 : 2 }}>
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
-        {/* {viewMode === "sunburst" && <ResultsSunburst results={results} />} */}
-        {/* {viewMode === "plotly" && <ResultsPlotlySunburst key={activeRunId} results={results} />} */}
-        {viewMode === "plotly" && <ResultsEnrichmentMap results={results} />}
+        {/* {viewMode === "plotly" && <ResultsSunburst results={results} />} */}
+        {viewMode === "plotly" && <ResultsPlotlySunburst key={activeRunId} results={results} />}
+        {viewMode === "network" && <ResultsEnrichmentMap results={results} />}
       </Box>
     </Box>
   );

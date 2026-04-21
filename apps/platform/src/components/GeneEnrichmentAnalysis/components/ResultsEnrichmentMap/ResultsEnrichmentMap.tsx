@@ -1,4 +1,4 @@
-import { Box, Paper, Typography } from "@mui/material";
+import { Box, CircularProgress, Paper, Typography } from "@mui/material";
 import type { Core as CytoscapeCore, ElementDefinition } from "cytoscape";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -39,7 +39,6 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
   const cyRef = useRef<CytoscapeCore | null>(null);
   const tooltipsRef = useRef<Set<HTMLDivElement>>(new Set());
   const isMountedRef = useRef(true);
-  const [viewMode, setViewMode] = useState<"genes" | "pathways">("pathways");
 
   // Only set isMountedRef to false on actual component unmount
   useEffect(() => {
@@ -49,12 +48,14 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
   }, []);
 
   // UI state - responds immediately to user input for smooth interaction
+  const [uiViewMode, setUiViewMode] = useState<"genes" | "pathways">("pathways");
   const [uiSimilarityThreshold, setUiSimilarityThreshold] = useState<number>(1);
   const [uiSizeBy, setUiSizeBy] = useState<"significance" | "pathwaySize" | "geneCount">(
     "significance"
   );
 
   // Debounced state - triggers expensive computations after delay
+  const debouncedViewMode = useDebounce(uiViewMode, 300);
   const debouncedSimilarityThreshold = useDebounce(uiSimilarityThreshold, 300);
   const debouncedSizeBy = useDebounce(uiSizeBy, 300);
 
@@ -63,11 +64,18 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
     edges: 0,
     significantCount: 0,
   });
-  const [isComputingGeneEdges, setIsComputingGeneEdges] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  /**
+   * Show loader immediately when any debounced input changes
+   */
+  useEffect(() => {
+    setIsLoading(true);
+  }, [debouncedViewMode, debouncedSimilarityThreshold, debouncedSizeBy]);
 
   /**
    * Memoized computation for nodes based on view mode
-   * Uses debounced sizeBy to avoid recomputation on every slider/select change
+   * Uses debounced sizeBy and viewMode to avoid recomputation on every slider/select change
    */
   const { nodes, initialStats } = useMemo(() => {
     const significantResults = results.filter((r) => (r.FDR as number) < 0.25);
@@ -77,7 +85,7 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
     const resultsAsRecords = displayResults as unknown as Array<Record<string, unknown>>;
     const allResultsAsRecords = results as unknown as Array<Record<string, unknown>>;
 
-    if (viewMode === "genes") {
+    if (debouncedViewMode === "genes") {
       const result = buildGeneViewNodes(resultsAsRecords, debouncedSizeBy);
       return {
         nodes: result.nodes,
@@ -98,7 +106,7 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
         },
       };
     }
-  }, [results, debouncedSizeBy, genes, viewMode]);
+  }, [results, debouncedSizeBy, genes, debouncedViewMode]);
 
   // Initialize stats from node builder
   useEffect(() => {
@@ -106,15 +114,12 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
   }, [initialStats]);
 
   /**
-   * Element assembly based on view mode
-   * Uses debounced similarity threshold to avoid expensive computations while dragging slider
+   * Element assembly based on view mode and node configuration
+   * Triggers when debounced inputs change or nodes are recalculated (e.g., due to size changes)
    */
-  // biome-ignore lint: nodes is derived from dependencies below (results, debouncedSizeBy, genes, viewMode)
   useEffect(() => {
-    if (viewMode === "genes") {
+    if (debouncedViewMode === "genes") {
       // For gene view, wait for edges to compute before setting elements
-      setIsComputingGeneEdges(true);
-
       computeGeneViewEdges(
         results as unknown as Array<Record<string, unknown>>,
         nodes,
@@ -125,12 +130,10 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
           if (isMountedRef.current) {
             setComputedElements(elements);
             setComputedStats(stats);
-            setIsComputingGeneEdges(false);
           }
         },
         (err) => {
           console.error("[GENE_VIEW] Error computing edges:", err);
-          setIsComputingGeneEdges(false);
         }
       );
     } else {
@@ -141,9 +144,16 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
       );
       setComputedElements(elements);
       setComputedStats(stats);
-      setIsComputingGeneEdges(false);
     }
-  }, [results, debouncedSimilarityThreshold, viewMode]);
+  }, [results, debouncedSimilarityThreshold, debouncedViewMode, nodes]);
+
+  /**
+   * Hide loader when elements finish computing
+   * Separated into its own effect to ensure loader has a chance to render
+   */
+  useEffect(() => {
+    setIsLoading(false);
+  }, [computedElements]);
 
   /**
    * Initialize Cytoscape instance
@@ -151,8 +161,8 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
   useEffect(() => {
     if (!containerRef.current || results.length === 0 || computedElements.length === 0) return;
 
-    // For gene view, wait until edges are done computing
-    if (viewMode === "genes" && isComputingGeneEdges) return;
+    // Wait until loading is complete before initializing
+    if (isLoading) return;
 
     // Destroy previous instance
     if (cyRef.current) {
@@ -163,13 +173,13 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
     }
 
     const nodeCount = computedElements.filter((el) => !el.data?.source).length;
-    const layoutConfig = getLayoutConfig(viewMode, nodeCount);
+    const layoutConfig = getLayoutConfig(debouncedViewMode, nodeCount);
 
     cyRef.current = initializeCytoscapeInstance(
       containerRef.current,
       computedElements,
       layoutConfig,
-      viewMode,
+      debouncedViewMode,
       tooltipsRef
     );
 
@@ -186,7 +196,7 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
       }
       cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
     };
-  }, [computedElements, results.length, genes, viewMode, isComputingGeneEdges]);
+  }, [computedElements, results.length, genes, debouncedViewMode, isLoading]);
 
   if (results.length === 0) {
     return (
@@ -208,19 +218,19 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
           gap: 2,
         }}
       >
-        <EnrichmentMapHeader stats={computedStats} viewMode={viewMode} />
+        <EnrichmentMapHeader stats={computedStats} viewMode={uiViewMode} />
 
         <EnrichmentMapControls
-          viewMode={viewMode}
+          viewMode={uiViewMode}
           sizeBy={uiSizeBy}
           similarityThreshold={uiSimilarityThreshold}
-          onViewModeChange={setViewMode}
+          onViewModeChange={setUiViewMode}
           onSizeByChange={setUiSizeBy}
           onSimilarityThresholdChange={setUiSimilarityThreshold}
         />
       </Box>
 
-      <EnrichmentMapLegend />
+      <EnrichmentMapLegend viewMode={uiViewMode} />
 
       <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
         Tip: Hover over nodes to see pathway details. Related gene-sets cluster together to reveal
@@ -228,7 +238,33 @@ export function ResultsEnrichmentMap({ results, genes }: ResultsEnrichmentMapPro
         zoom.
       </Typography>
 
-      <EnrichmentMapContainer ref={containerRef} />
+      <Box sx={{ position: "relative" }}>
+        <EnrichmentMapContainer ref={containerRef} />
+        {isLoading && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(255, 255, 255, 0.7)",
+              borderRadius: 1,
+              zIndex: 10,
+            }}
+          >
+            <Box sx={{ textAlign: "center" }}>
+              <CircularProgress size={40} sx={{ mb: 1 }} />
+              <Typography variant="body2" color="text.secondary">
+                Computing network...
+              </Typography>
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Paper>
   );
 }

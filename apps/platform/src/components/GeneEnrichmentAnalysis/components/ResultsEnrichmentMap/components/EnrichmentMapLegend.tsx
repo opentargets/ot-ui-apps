@@ -1,8 +1,12 @@
 import { Box, Typography } from "@mui/material";
 
-export function EnrichmentMapLegend() {
-  return (
-    <Box sx={{ display: "flex", gap: 3, mb: 2, flexWrap: "wrap" }}>
+interface EnrichmentMapLegendProps {
+  viewMode?: "genes" | "pathways";
+}
+
+export function EnrichmentMapLegend({ viewMode = "pathways" }: EnrichmentMapLegendProps) {
+  const pathwayItems = (
+    <>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <Box
           sx={{
@@ -57,6 +61,71 @@ export function EnrichmentMapLegend() {
           Edge = gene overlap (functional theme)
         </Typography>
       </Box>
+    </>
+  );
+
+  const geneItems = (
+    <>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box
+          sx={{
+            width: 8,
+            height: 8,
+            bgcolor: "#e91e63",
+            borderRadius: "50%",
+            border: "1px solid #ad1457",
+          }}
+        />
+        <Typography variant="caption">Up-regulated</Typography>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box
+          sx={{
+            width: 8,
+            height: 8,
+            bgcolor: "#2196f3",
+            borderRadius: "50%",
+            border: "1px solid #1565c0",
+          }}
+        />
+        <Typography variant="caption">Down-regulated</Typography>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box
+          sx={{
+            width: 8,
+            height: 8,
+            bgcolor: "#9c27b0",
+            borderRadius: "50%",
+            border: "1px solid #6a1b9a",
+          }}
+        />
+        <Typography variant="caption">Conflicting</Typography>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box
+          sx={{
+            width: 8,
+            height: 8,
+            bgcolor: "#bdbdbd",
+            borderRadius: "50%",
+            border: "1px solid #616161",
+          }}
+        />
+        <Typography variant="caption">Non-leading-edge</Typography>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ width: 30, height: 3, bgcolor: "#90caf9", borderRadius: 1 }} />
+        <Typography variant="caption">
+          Edge = shared pathways
+        </Typography>
+      </Box>
+    </>
+  );
+
+  return (
+    <Box sx={{ display: "flex", gap: 3, mb: 2, flexWrap: "wrap" }}>
+      {viewMode === "genes" ? geneItems : pathwayItems}
     </Box>
   );
 }

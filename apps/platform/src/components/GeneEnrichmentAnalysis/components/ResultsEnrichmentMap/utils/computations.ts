@@ -122,84 +122,6 @@ export async function computeGeneViewEdges(
     onError(err as Error);
   }
 }
-// export async function computeGeneViewEdges(
-//   results: Array<Record<string, unknown>>,
-//   nodes: ElementDefinition[],
-//   similarityThreshold: number,
-//   isMountedRef: React.MutableRefObject<boolean>,
-//   onComplete: (elements: ElementDefinition[], stats: ComputedStats) => void,
-//   onError: (err: Error) => void
-// ): Promise<void> {
-//   try {
-//     const significantResults = results.filter((r) => (r.FDR as number) < 0.25);
-//     const displayResults =
-//       significantResults.length > 0 ? significantResults : results.slice(0, 50);
-
-//     const geneToPathways = new Map<
-//       string,
-//       Array<{ pathway: string; fdr: number; nes: number }>
-//     >();
-
-//     for (const r of displayResults) {
-//       const geneList_ = getGeneList(r);
-//       for (const gene of geneList_) {
-//         if (!geneToPathways.has(gene)) {
-//           geneToPathways.set(gene, []);
-//         }
-//         const pathwaysForGene = geneToPathways.get(gene);
-//         if (pathwaysForGene) {
-//           pathwaysForGene.push({
-//             pathway: r.Pathway as string,
-//             fdr: r.FDR as number,
-//             nes: r.NES as number,
-//           });
-//         }
-//       }
-//     }
-
-//     const sortedGenes = Array.from(geneToPathways.entries())
-//       .filter(([_, pathways]) => pathways.length >= 2)
-//       .sort((a, b) => b[1].length - a[1].length)
-//       .slice(0, 500)
-//       .map(([gene]) => gene);
-
-//     const filteredGeneToPathways = new Map<
-//       string,
-//       Array<{ pathway: string; fdr: number; nes: number }>
-//     >();
-//     for (const gene of sortedGenes) {
-//       const pathways = geneToPathways.get(gene);
-//       if (pathways) {
-//         filteredGeneToPathways.set(gene, pathways);
-//       }
-//     }
-
-//     const { edges, edgeCount } = await buildGeneViewEdges(
-//       sortedGenes,
-//       filteredGeneToPathways,
-//       similarityThreshold,
-//       jaccardSimilarity
-//     );
-
-//     if (!isMountedRef.current) {
-//       console.log("[GENE_VIEW] Skipping setState - component unmounted");
-//       return;
-//     }
-
-//     onComplete([...nodes, ...edges], {
-//       totalGenes: nodes.length,
-//       edges: edgeCount,
-//       totalPathways: displayResults.length,
-//       significantCount: displayResults.filter((r) => (r.FDR as number) < 0.05).length,
-//     });
-//   } catch (err) {
-//     if (!isMountedRef.current) {
-//       console.log("[GENE_VIEW] Error logged but component unmounted:", err);
-//       return;
-//     }
-//     onError(err as Error);
-//   }
-// }
 
 
 /**
@@ -252,7 +174,7 @@ export function computePathwayViewElements(
       if (genesA.length === 0 || genesB.length === 0) continue;
 
       const jaccard = jaccardSimilarity(genesA, genesB);
-      const minPathwayThreshold = 0.15;
+      const minPathwayThreshold = 0.05;
       const jaccardThreshold = Math.max(minPathwayThreshold, similarityThreshold / 10);
 
       if (jaccard >= jaccardThreshold) {
