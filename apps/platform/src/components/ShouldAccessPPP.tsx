@@ -11,9 +11,9 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
+import { isOnPublic, testPPPaccess } from "@ot/utils";
+import { PPP_WEB_URL } from "@ot/constants";
 
-const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql";
-const PPP_WEB_URL = "https://partner-platform.opentargets.org";
 const FOURTEEN = 14;
 
 const useStyles = makeStyles(theme => ({
@@ -48,13 +48,6 @@ function ShouldAccessPPP() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const classes = useStyles();
 
-  const isOnPublic = () => {
-    const windowLocation = window.location.href;
-    // escape validation on dev mode
-    if (import.meta.env.DEV) return false;
-    return !windowLocation.includes("partner");
-  };
-
   const shouldShowPopupAfterFixedDays = (DAYS: number) => {
     const currentDate = new Date();
     const oldDateObject = JSON.parse(localStorage.getItem("ppp-reminder-closed-on") || "{}");
@@ -85,25 +78,7 @@ function ShouldAccessPPP() {
   };
 
   const checkPPPaccess = () => {
-    fetch(PPP_API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        operationName: "DataVersion",
-        variables: {},
-        query: `query DataVersion {
-        meta {
-          dataVersion {
-            month
-            year
-            __typename
-          }
-          __typename
-	
-      }
-    }`,
-      }),
-    })
+    testPPPaccess()
       .then(response => {
         if (response.status === 200) handleOpenDialog();
       })
@@ -119,7 +94,7 @@ function ShouldAccessPPP() {
   const goToPPP = () => {
     window.location.href = `${PPP_WEB_URL}${location.pathname}`;
   };
-
+  
   return (
     <>
       <Dialog
