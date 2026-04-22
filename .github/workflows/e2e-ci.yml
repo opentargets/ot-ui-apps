@@ -4,6 +4,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      branch:
+        description: 'Branch to deploy (for fork PRs, use: username:branch-name)'
+        required: false
+        type: string
       test_scope:
         description: 'Test scope to run'
         required: true
@@ -55,6 +59,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
       
       - uses: actions/setup-node@v3
         with:
@@ -105,6 +111,8 @@ jobs:
     timeout-minutes: 50
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.branch || github.ref }}
       
       - uses: actions/setup-node@v3
         with:
