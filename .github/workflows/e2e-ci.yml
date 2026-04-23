@@ -4,8 +4,8 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'Branch to deploy (for fork PRs, use: username:branch-name)'
+      pr:
+        description: "PR number or PR URL to deploy/test (supports fork PRs). Example: 1234"
         required: false
         type: string
       test_scope:
@@ -23,7 +23,7 @@ on:
       test_scenario:
         description: 'Scenario name from the CSV to use for tests'
         required: false
-        default: 'Happy_Path_Full_Data'
+        default: 'carlos_case'
         type: string
       base_url:
         description: 'Base URL to run tests against (defaults to Netlify branch preview)'
@@ -37,22 +37,40 @@ jobs:
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
       deploy_alias: ${{ steps.extract_branch.outputs.deploy_alias }}
+      head_sha: ${{ steps.extract_branch.outputs.head_sha }}
     steps:
-      - name: Extract branch name
+      - name: Resolve branch / PR head (workflow_dispatch supports fork PRs)
+        id: extract_branch
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_INPUT: ${{ github.event.inputs.pr }}
+          REPOSITORY: ${{ github.repository }}
+          DEFAULT_SHA: ${{ github.sha }}
         run: |
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
-          echo "branch=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-          # Sanitize branch name for Netlify alias (lowercase, replace invalid chars)
-          # For main branch, use a safe e2e-specific alias to avoid production deployment
-          if [ "$BRANCH_NAME" = "main" ] || [ "$BRANCH_NAME" = "master" ]; then
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "workflow_dispatch" && -n "$PR_INPUT" ]]; then
+            echo "Resolving PR: $PR_INPUT"
+            PR_JSON="$(gh pr view "$PR_INPUT" --repo "$REPOSITORY" --json headRefOid,headRefName)"
+            HEAD_SHA="$(echo "$PR_JSON" | jq -r .headRefOid)"
+            BRANCH_NAME="$(echo "$PR_JSON" | jq -r .headRefName)"
+          else
+            BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+            HEAD_SHA="$DEFAULT_SHA"
+          fi
+
+          echo "branch=${BRANCH_NAME}" >> "$GITHUB_OUTPUT"
+          echo "head_sha=${HEAD_SHA}" >> "$GITHUB_OUTPUT"
+
+          # Sanitize branch name into a valid deploy alias
+          if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == "master" ]]; then
             DEPLOY_ALIAS="e2e-main-preview"
           else
-            DEPLOY_ALIAS=$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | cut -c1-37)
+            DEPLOY_ALIAS="$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | cut -c1-37)"
           fi
-          echo "deploy_alias=${DEPLOY_ALIAS}" >> $GITHUB_OUTPUT
-        id: extract_branch
-
+          echo "deploy_alias=${DEPLOY_ALIAS}" >> "$GITHUB_OUTPUT"
   tests_e2e_netlify_prepare:
     needs: [get_branch_name]
     name: Deploy preview for E2E tests
