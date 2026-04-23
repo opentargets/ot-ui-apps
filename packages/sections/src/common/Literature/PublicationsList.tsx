@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Grid, Fade, Skeleton } from "@mui/material";
+import { Box, Grid, Fade, Skeleton, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { PublicationWrapper, Table, useApolloClient } from "ui";
 import Loader from "./Loader";
@@ -12,6 +12,9 @@ import {
   useDetailsDispatch,
 } from "./LiteratureContext";
 import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
+import { grey } from "@mui/material/colors";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -45,18 +48,50 @@ function SkeletonRow() {
   return (
     <Fade in>
       <Box mb={2}>
-        <Skeleton height={60} />
-        <Skeleton width="60%" height={45} />
+        <Skeleton height={44} />
+        <Skeleton width="60%" height={44} />
         <Grid container wrap="nowrap">
           <Box width={130} mr={1}>
-            <Skeleton height={45} />
+            <Skeleton height={44} />
           </Box>
           <Box width={130}>
-            <Skeleton height={45} />
+            <Skeleton height={44} />
           </Box>
         </Grid>
       </Box>
     </Fade>
+  );
+}
+
+function TimedOutRow({ id }) {
+  return (
+    <Box
+      minHeight={148}
+      sx={{
+        "@keyframes fadeIn": { from: { opacity: 0 }, to: { opacity: 1 } },
+        animation: "fadeIn 0.3s ease-in",
+        display: "flex",
+        alignItems: "start",
+        gap: 2,
+        pt: 1,
+        pl: 1.5,
+        whiteSpace: "normal",
+      }}
+    >
+      <FontAwesomeIcon
+        icon={faCircleExclamation}
+        size="lg"
+        style={{ color: grey[500], paddingTop: 8 }}
+      />
+      <Box sx={{ minWidth: 0, flex: 1 }}>
+        <Typography component="div" variant="body1" sx={{ pt: 0.5, color: grey[500] }}>
+          Could not download publication details
+        </Typography>
+        <Typography component="div" variant="body2" sx={{ pt: 1, color: grey[500] }}>
+          Publication ID: {id}
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 
@@ -79,13 +114,21 @@ function PublicationsList({ hideSearch = false }) {
         type: "setToLoading",
         value: missingDetails,
       });
-      const queryResult = await literaturesEuropePMCQuery({
-        literaturesIds: missingDetails,
-      });
-      detailsDispatch({
-        type: "addDetails",
-        value: parsePublications(queryResult),
-      });
+      const timeoutId = setTimeout(() => {
+        detailsDispatch({ type: "setToTimedOut", value: missingDetails });
+      }, 3000);
+      try {
+        const queryResult = await literaturesEuropePMCQuery({
+          literaturesIds: missingDetails,
+        });
+        detailsDispatch({
+          type: "addDetails",
+          value: parsePublications(queryResult),
+        });
+      } catch (e) {
+        clearTimeout(timeoutId);
+        detailsDispatch({ type: "setToTimedOut", value: missingDetails });
+      }
     };
     fetchFunction().catch(console.error);
   }, [literature]);
@@ -190,6 +233,8 @@ function PublicationsList({ hideSearch = false }) {
         const det = details[id];
         if (det === "loading") {
           return <SkeletonRow />;
+        } else if (det === "timedOut") {
+          return <TimedOutRow id={id} />;
         } else if (!det) {
           return null;
         } else {
