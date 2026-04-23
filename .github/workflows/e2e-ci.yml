@@ -47,15 +47,30 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           PR_INPUT: ${{ github.event.inputs.pr }}
           REPOSITORY: ${{ github.repository }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           DEFAULT_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
 
-          if [[ "$EVENT_NAME" == "workflow_dispatch" && -n "$PR_INPUT" ]]; then
-            echo "Resolving PR: $PR_INPUT"
-            PR_JSON="$(gh pr view "$PR_INPUT" --repo "$REPOSITORY" --json headRefOid,headRefName)"
+          if [[ "$EVENT_NAME" == "workflow_dispatch" && -n "${PR_INPUT:-}" ]]; then
+            # Accept "123" or a full PR URL ending in /pull/123
+            if [[ "$PR_INPUT" =~ ^[0-9]+$ ]]; then
+              PR_NUMBER="$PR_INPUT"
+            elif [[ "$PR_INPUT" =~ /pull/([0-9]+)$ ]]; then
+              PR_NUMBER="${BASH_REMATCH[1]}"
+            else
+              echo "Invalid pr input: '$PR_INPUT' (expected a PR number like 123 or a URL ending in /pull/123)" >&2
+              exit 1
+            fi
+            echo "Resolving PR: $PR_NUMBER"
+            PR_JSON="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid,headRefName)"
             HEAD_SHA="$(echo "$PR_JSON" | jq -r .headRefOid)"
             BRANCH_NAME="$(echo "$PR_JSON" | jq -r .headRefName)"
+          elif [[ "$EVENT_NAME" == "pull_request" ]]; then
+            # Use PR head directly — github.sha is the merge commit, not the PR head
+            HEAD_SHA="$PR_HEAD_SHA"
+            BRANCH_NAME="$PR_HEAD_REF"
           else
             BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
             HEAD_SHA="$DEFAULT_SHA"
@@ -68,9 +83,13 @@ jobs:
           if [[ "$BRANCH_NAME" == "main" || "$BRANCH_NAME" == "master" ]]; then
             DEPLOY_ALIAS="e2e-main-preview"
           else
-            DEPLOY_ALIAS="$(echo "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9-]/-/g' | cut -c1-37)"
+            DEPLOY_ALIAS="$(echo "$BRANCH_NAME" \
+              | tr '[:upper:]' '[:lower:]' \
+              | sed 's/[^a-z0-9-]/-/g; s/^-\+//; s/-\+$//' \
+              | cut -c1-37)"
           fi
           echo "deploy_alias=${DEPLOY_ALIAS}" >> "$GITHUB_OUTPUT"
+
   tests_e2e_netlify_prepare:
     needs: [get_branch_name]
     name: Deploy preview for E2E tests
@@ -78,19 +97,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
-      
+          # Fix: use resolved head_sha so fork PRs check out the right commit
+          ref: ${{ needs.get_branch_name.outputs.head_sha || github.ref }}
+
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      
+
       - name: Enable Corepack
         run: corepack enable
-      
+
       - name: Get yarn cache directory
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-      
+
       - name: Cache yarn dependencies
         uses: actions/cache@v4
         with:
@@ -100,7 +120,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      
+
       - name: Cache npm global packages (Netlify CLI)
         uses: actions/cache@v4
         with:
@@ -108,20 +128,26 @@ jobs:
           key: ${{ runner.os }}-npm-netlify-cli-v1
           restore-keys: |
             ${{ runner.os }}-npm-
-      
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      
+
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
-      
+
       - name: Deploy to Netlify (E2E Preview)
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
+          DEPLOY_ALIAS: ${{ needs.get_branch_name.outputs.deploy_alias }}
         run: |
-           echo "Deploying with alias: ${{ needs.get_branch_name.outputs.deploy_alias }}"
-           yarn build:platform && netlify deploy --dir=${{ github.workspace }}/apps/platform/bundle-platform/ --alias=${{ needs.get_branch_name.outputs.deploy_alias }} --filter platform --site ${{ vars.NETLIFY_SITE_ID }}
+          echo "Deploying with alias: $DEPLOY_ALIAS"
+          yarn build:platform && netlify deploy \
+            --dir=${{ github.workspace }}/apps/platform/bundle-platform/ \
+            --alias="$DEPLOY_ALIAS" \
+            --filter platform \
+            --site ${{ vars.NETLIFY_SITE_ID }}
+
   tests_e2e_netlify:
     needs: [tests_e2e_netlify_prepare, get_branch_name]
     name: Run end-to-end tests on Netlify PR preview
@@ -130,19 +156,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.branch || github.ref }}
-      
+          # Fix: use resolved head_sha so fork PRs check out the right commit
+          ref: ${{ needs.get_branch_name.outputs.head_sha || github.ref }}
+
       - uses: actions/setup-node@v3
         with:
           node-version: '20'
-      
+
       - name: Enable Corepack
         run: corepack enable
-      
+
       - name: Get yarn cache directory
         id: yarn-cache-dir
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-      
+
       - name: Cache yarn dependencies
         uses: actions/cache@v4
         with:
@@ -152,7 +179,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
@@ -160,34 +187,35 @@ jobs:
           key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-playwright-
-      
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      
+
       - name: Install Playwright browsers
         run: |
           cd packages/platform-test
           yarn playwright install --with-deps chromium webkit
-      
+
       - name: Run E2E tests
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.test_scope }}" == "all" ]]; then
-            yarn dev:test:platform:e2e
-          else
-            yarn dev:test:platform:e2e:smoke
-          fi
+        # Fix: move expressions into env vars to avoid script injection
         env:
           CI: true
+          EVENT_NAME: ${{ github.event_name }}
+          TEST_SCOPE: ${{ github.event.inputs.test_scope }}
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.deploy_alias) }}
           DEBUG: pw:api
           TEST_CONFIG_URL: ${{ github.event.inputs.test_config_url }}
           TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" && "$TEST_SCOPE" == "all" ]]; then
+            yarn dev:test:platform:e2e
+          else
+            yarn dev:test:platform:e2e:smoke
+          fi
+
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: ${{ github.workspace }}/packages/platform-test/playwright-report
           retention-days: 7
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.inputs.base_url || format('https://{0}--ot-platform.netlify.app', needs.get_branch_name.outputs.deploy_alias) }}
-          DEBUG: pw:api
