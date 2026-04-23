@@ -116,15 +116,19 @@ function PublicationsList({ hideSearch = false }) {
       });
       const timeoutId = setTimeout(() => {
         detailsDispatch({ type: "setToTimedOut", value: missingDetails });
-      }, 3000);
+      }, 5000);
       try {
         const queryResult = await literaturesEuropePMCQuery({
           literaturesIds: missingDetails,
         });
-        detailsDispatch({
-          type: "addDetails",
-          value: parsePublications(queryResult),
-        });
+        clearTimeout(timeoutId);
+        const parsed = parsePublications(queryResult);
+        detailsDispatch({ type: "addDetails", value: parsed });
+        const returnedIds = new Set(Object.keys(parsed));
+        const notFoundIds = missingDetails.filter(id => !returnedIds.has(id));
+        if (notFoundIds.length > 0) {
+          detailsDispatch({ type: "setToTimedOut", value: notFoundIds });
+        }
       } catch (e) {
         clearTimeout(timeoutId);
         detailsDispatch({ type: "setToTimedOut", value: missingDetails });
