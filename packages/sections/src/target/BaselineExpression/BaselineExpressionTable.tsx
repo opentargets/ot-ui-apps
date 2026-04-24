@@ -143,6 +143,7 @@ interface BaselineExpressionTableProps {
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
   specificityThreshold: number;
+  viewMode: "tissue" | "celltype";
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -400,7 +401,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   datatypes,
   DownloaderComponent,
   specificityThreshold,
+  viewMode = "tissue",
 }) => {
+
   const classes = useStyles();
   const [sorting, setSorting] = useState<SortingState>([{ id: datatypes[0], desc: true }]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -408,7 +411,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     pageSize: 50,
   });
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [groupByTissue, setGroupByTissue] = useState(true);
+  const [groupByTissue, setGroupByTissue] = useState(viewMode === 'tissue');
   // const [searchTerm, setSearchTerm] = useState("");
 
   const handleExpandedChange = useCallback(
@@ -438,8 +441,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     []
   );
 
-  const viewType = groupByTissue ? "tissue" : "celltype";
-  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[viewType];
+  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[groupByTissue ? "tissue" : "celltype"];
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -679,7 +681,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       title={
                         <MedianTooltipTable
                           data={cellContext.row.original[datatype]}
-                          show={viewType}
+                          show={groupByTissue ? "tissue" : "celltype"}
                           showSource={isSecondLevel && datatype !== datatypes[0]}
                         />
                       }

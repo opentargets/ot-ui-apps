@@ -149,7 +149,7 @@ const tissueSpecificity: Column = {
   description: "HPA category types of elevated expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
-  sectionProps: { viewMode: "specificity" },
+  sectionProps: { viewMode: "tissue" },
 };
 
 const tissueDistribution: Column = {
@@ -160,7 +160,7 @@ const tissueDistribution: Column = {
   description: "HPA category types of detectable expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
-  sectionProps: { viewMode: "distribution" },
+  sectionProps: { viewMode: "celltype" },
 };
 
 const cols: Column[] = [
