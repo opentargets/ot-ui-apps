@@ -157,7 +157,7 @@ const columns = [
   {
     id: "directionOfVariantEffect",
     label: (
-      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#chembl"></DirectionOfEffectTooltip>
+      <DirectionOfEffectTooltip docsUrl="https://platform-docs.opentargets.org/evidence#clinical-precedence"></DirectionOfEffectTooltip>
     ),
     renderCell: ({ directionOnTarget, directionOnTrait }) => {
       return (
