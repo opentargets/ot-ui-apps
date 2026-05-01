@@ -79,7 +79,12 @@ export function processData(
   }
 
   // 1st level and max specificity
-  let maxSpecificity = { datatype: undefined, score: undefined };
+  let maxSpecificity = {
+    datatype: undefined,
+    score: undefined,
+    _firstLevelName: undefined,
+    _firstLevelId: undefined,
+  };
   for (const objects of Object.values(secondLevel)) {
     const firstLevelRow = {};
     for (const obj of objects) {
@@ -132,7 +137,12 @@ export function processData(
             (row.specificity_score !== null &&
               (maxSpecificity.score === null || row.specificity_score > maxSpecificity.score))
           )
-            maxSpecificity = { datatype: datatypeId, score: row.specificity_score };
+            maxSpecificity = {
+              datatype: datatypeId,
+              score: row.specificity_score,
+              _firstLevelName: firstLevelRow._firstLevelName,
+              _firstLevelId: firstLevelRow._firstLevelId,
+            };
         }
       }
     }

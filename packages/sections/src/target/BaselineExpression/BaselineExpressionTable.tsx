@@ -16,6 +16,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   Typography,
+  Button,
 } from "@mui/material";
 import { green, grey } from "@mui/material/colors";
 import type { Theme } from "@mui/material/styles";
@@ -855,8 +856,24 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
             />
           </Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>{DownloaderComponent}</Box>
-        </Box>
+        </Box>  
       </Box>
+      
+    {/* FOR NOW, ADD BUTTON TO EXPAND MAX SPECIFICITY ROW */}
+      <Button
+        onClick={() => {
+          const maxSpecificityId = data[groupByTissue ? 'tissue' : 'celltype'].firstLevel._maxSpecificity._firstLevelId;
+          if (!maxSpecificityId) return;
+          const maxSpecificityRow = table.getCoreRowModel().rows.find(row => row.original._firstLevelId === maxSpecificityId);
+          if (maxSpecificityRow) {
+            table.setExpanded(prev => ({ ...prev, [maxSpecificityRow.id]: true }));
+          }
+        }}
+      >
+        <Typography variant="body2">
+          Expand max specificity row
+        </Typography>
+      </Button>
       <Grid justifyContent="center" container>
         <Grid item xs={12} md={10}>
           <TableContainer component={Paper} elevation={0}>
