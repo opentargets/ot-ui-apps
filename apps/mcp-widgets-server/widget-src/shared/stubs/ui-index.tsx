@@ -204,6 +204,7 @@ export { default as useBatchQuery } from "@ot/ui/hooks/useBatchQuery";
 export { default as useClinicalReportsMasterDetail } from "@ot/ui/hooks/useClinicalReportsMasterDetail";
 export { default as RecordsCards } from "@ot/ui/components/ClinicalReports/RecordsCards";
 export { default as ClinicalReportsMasterDetailFrame } from "@ot/ui/components/ClinicalReports/ClinicalReportsMasterDetailFrame";
+export { default as ClinicalRecordDrawer } from "@ot/ui/components/ClinicalReports/ClinicalRecordDrawer";
 
 /** usePlatformApi: returns null — fragments are not needed inside the widget */
 export function usePlatformApi() {

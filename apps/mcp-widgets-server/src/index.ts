@@ -5,8 +5,9 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { createMcpServer } from "./mcp-server.js";
 import { registerChatRoute, MODEL_ID, MODEL_DISPLAY } from "./chat.js";
 import { isOtpConnected } from "./otp-client.js";
+import { WIDGET_REGISTRY } from "./widgets/index.js";
 
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT ?? "3001", 10);
 
 const app = express();
 app.use(express.json());
@@ -52,11 +53,12 @@ app.delete("/mcp", async (req, res) => {
 
 // ----- Static assets -----
 
-// Serve the sandbox proxy on a different origin (port 3001 ≠ platform port 3000).
+// Serve the sandbox proxy (only in local dev — the platform app must be present).
+const sandboxProxyRoot = new URL("../../../apps/platform/public", import.meta.url).pathname;
 app.get("/sandbox_proxy.html", (_req, res) => {
   res.setHeader("Content-Type", "text/html");
-  res.sendFile("sandbox_proxy.html", {
-    root: new URL("../../../apps/platform/public", import.meta.url).pathname,
+  res.sendFile("sandbox_proxy.html", { root: sandboxProxyRoot }, err => {
+    if (err) res.status(404).send("Not available in this deployment");
   });
 });
 
@@ -85,6 +87,7 @@ app.get("/status", (_req, res) =>
     model: MODEL_ID,
     modelDisplay: MODEL_DISPLAY,
     provider: "Anthropic",
+    widgets: WIDGET_REGISTRY.length,
   })
 );
 
