@@ -108,6 +108,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
                 />
                 {target.canonicalExons?.map(exon => (
                   <Strip
+                    key={`${target.id}-${exon.start}-${exon.end}`}
                     rectTexture={rectTexture}
                     xStart={exon.start}
                     xEnd={exon.end}

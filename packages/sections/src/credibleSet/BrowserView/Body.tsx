@@ -19,8 +19,8 @@ function Body({ id, entity }: BodyProps) {
 
   // select data
   const chromosome = "1";
-  const start = 35_000_000;
-  const end = 36_000_000;
+  const start = 10_000_000;
+  const end = 11_000_000;
 
   // load local chromosome data
   useEffect(() => {
