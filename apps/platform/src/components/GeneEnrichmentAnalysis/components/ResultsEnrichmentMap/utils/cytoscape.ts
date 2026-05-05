@@ -16,7 +16,9 @@ export function initializeCytoscapeInstance(
   elements: ElementDefinition[],
   layoutConfig: Record<string, unknown>,
   viewMode: "genes" | "pathways",
-  tooltipsRef: React.MutableRefObject<Set<HTMLDivElement>>
+  tooltipsRef: React.MutableRefObject<Set<HTMLDivElement>>,
+  onNodeClick?: (data: Record<string, unknown>) => void,
+  onEdgeClick?: (data: Record<string, unknown>) => void
 ): Core {
   const stylesheet = createStylesheet();
   const cy = cytoscape({
@@ -25,6 +27,10 @@ export function initializeCytoscapeInstance(
     style: stylesheet,
     layout: layoutConfig as unknown as LayoutOptions,
     wheelSensitivity: 0.1,
+    // Enable selection functionality
+    selectionType: "single",
+    // userSelectableElements: true,
+    autoungrabify: false,
   });
 
   // Node hover handler
@@ -111,7 +117,71 @@ export function initializeCytoscapeInstance(
     });
   });
 
+  // Node click handler - handle selection with Ctrl/Cmd+click support
+  cy.on("click", "node", (evt) => {
+    const node = evt.target;
+    const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+    const isMultiSelectKey = isMac ? evt.originalEvent.metaKey : evt.originalEvent.ctrlKey;
+
+    if (isMultiSelectKey) {
+      // Ctrl/Cmd+click: toggle selection for this node
+      if (node.selected()) {
+        node.unselect();
+      } else {
+        node.select();
+      }
+    } else {
+      // Regular click: select only this node, deselect others
+      cy.nodes().unselect();
+      node.select();
+      // Open modal for single click without modifier
+      if (onNodeClick) {
+        onNodeClick(node.data());
+      }
+    }
+
+    const selectedCount = cy.nodes(":selected").length;
+    console.log(
+      `[NODE_CLICK] Selected nodes: ${selectedCount}, Node ID: ${node.id()}`
+    );
+  });
+
+  // Canvas click handler - deselect all when clicking background
+  cy.on("click", (evt) => {
+    if (evt.target === cy) {
+      // Clicking on canvas, not on any element
+      cy.nodes().unselect();
+      cy.edges().unselect();
+      console.log("[CANVAS_CLICK] Deselected all elements");
+    }
+  });
+
+  // Edge click handler - show modal with shared genes
+  cy.on("click", "edge", (evt) => {
+    const edge = evt.target;
+    if (onEdgeClick) {
+      onEdgeClick(edge.data());
+    }
+    console.log(`[EDGE_CLICK] Clicked edge: ${edge.id()}`);
+  });
+
+  // Add keyboard support for selection (attach to container for scoped behavior)
+  const keydownHandler = (evt: KeyboardEvent) => {
+    if ((evt.ctrlKey || evt.metaKey) && evt.key === "a") {
+      // Ctrl/Cmd+A: select all nodes
+      evt.preventDefault();
+      cy.nodes().select();
+      console.log(`[KEYBOARD] Selected all ${cy.nodes().length} nodes`);
+    }
+  };
+
+  container.addEventListener("keydown", keydownHandler);
+
+  // Store handler reference on cy for cleanup
+  (cy as any)._selectionKeydownHandler = { container, handler: keydownHandler };
+
   return cy;
+
 }
 
 /**
@@ -122,6 +192,13 @@ export function cleanupCytoscapeInstance(
   tooltipsRef: React.MutableRefObject<Set<HTMLDivElement>>
 ): void {
   if (!cy) return;
+
+  // Remove keyboard event listener
+  const selectionHandler = (cy as any)._selectionKeydownHandler;
+  if (selectionHandler) {
+    selectionHandler.container.removeEventListener("keydown", selectionHandler.handler);
+    delete (cy as any)._selectionKeydownHandler;
+  }
 
   console.log("[CLEANUP] Starting tooltip cleanup, count:", tooltipsRef.current.size);
   let cleanupIndex = 0;

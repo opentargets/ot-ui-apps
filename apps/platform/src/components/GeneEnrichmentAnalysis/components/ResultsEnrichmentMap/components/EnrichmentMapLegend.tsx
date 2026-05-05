@@ -1,131 +1,68 @@
 import { Box, Typography } from "@mui/material";
+import { PRIORITISATION_COLORS } from "../../../utils/colorPalettes";
 
 interface EnrichmentMapLegendProps {
-  viewMode?: "genes" | "pathways";
+  nesRange?: { min: number; max: number };
 }
 
-export function EnrichmentMapLegend({ viewMode = "pathways" }: EnrichmentMapLegendProps) {
+export function EnrichmentMapLegend({ nesRange }: EnrichmentMapLegendProps) {
   const pathwayItems = (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 14,
-            height: 14,
-            bgcolor: "#4caf50",
-            borderRadius: "50%",
-            border: "2px solid #2e7d32",
-          }}
-        />
-        <Typography variant="caption">FDR &lt; 0.01</Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box>
+          <Typography variant="caption" sx={{ fontWeight: 600, mb: 1, display: "block" }}>
+            NES Score {nesRange && `(${nesRange.min.toFixed(2)} to ${nesRange.max.toFixed(2)})`}
+          </Typography>
+          <Box
+            sx={{
+              width: 200,
+              height: 24,
+              background: `linear-gradient(to right, ${PRIORITISATION_COLORS.join(", ")})`,
+              border: "1px solid #ccc",
+              borderRadius: "2px",
+            }}
+          />
+          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 0.5, mt: 0.5 }}>
+            <Typography variant="caption" sx={{ fontSize: "0.65rem" }}>
+              Negative
+            </Typography>
+            <Typography variant="caption" sx={{ fontSize: "0.65rem" }}>
+              Positive
+            </Typography>
+          </Box>
+        </Box>
       </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 14,
-            height: 14,
-            bgcolor: "#8bc34a",
-            borderRadius: "50%",
-            border: "2px solid #558b2f",
-          }}
-        />
-        <Typography variant="caption">FDR &lt; 0.05</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 14,
-            height: 14,
-            bgcolor: "#ff9800",
-            borderRadius: "50%",
-            border: "2px solid #ef6c00",
-          }}
-        />
-        <Typography variant="caption">FDR &lt; 0.1</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 14,
-            height: 14,
-            bgcolor: "#ffcc80",
-            borderRadius: "50%",
-            border: "2px solid #ff9800",
-          }}
-        />
-        <Typography variant="caption">FDR &lt; 0.25</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box sx={{ width: 30, height: 3, bgcolor: "#90caf9", borderRadius: 1 }} />
-        <Typography variant="caption">
-          Edge = gene overlap (functional theme)
+      <Box>
+        <Typography variant="caption" sx={{ fontWeight: 600, mb: 0.5, display: "block" }}>
+          Edge Thickness = Jaccard Similarity
         </Typography>
-      </Box>
-    </>
-  );
-
-  const geneItems = (
-    <>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 8,
-            height: 8,
-            bgcolor: "#e91e63",
-            borderRadius: "50%",
-            border: "1px solid #ad1457",
-          }}
-        />
-        <Typography variant="caption">Up-regulated</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 8,
-            height: 8,
-            bgcolor: "#2196f3",
-            borderRadius: "50%",
-            border: "1px solid #1565c0",
-          }}
-        />
-        <Typography variant="caption">Down-regulated</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 8,
-            height: 8,
-            bgcolor: "#9c27b0",
-            borderRadius: "50%",
-            border: "1px solid #6a1b9a",
-          }}
-        />
-        <Typography variant="caption">Conflicting</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box
-          sx={{
-            width: 8,
-            height: 8,
-            bgcolor: "#bdbdbd",
-            borderRadius: "50%",
-            border: "1px solid #616161",
-          }}
-        />
-        <Typography variant="caption">Non-leading-edge</Typography>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Box sx={{ width: 30, height: 3, bgcolor: "#90caf9", borderRadius: 1 }} />
-        <Typography variant="caption">
-          Edge = shared pathways
-        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.8, ml: 0.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={{ width: 40, height: 1.2, bgcolor: "#90caf9", borderRadius: 1 }} />
+            <Typography variant="caption" sx={{ fontSize: "0.75rem" }}>
+              Low (0.1)
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={{ width: 40, height: 2.5, bgcolor: "#90caf9", borderRadius: 1 }} />
+            <Typography variant="caption" sx={{ fontSize: "0.75rem" }}>
+              Medium (0.5)
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={{ width: 40, height: 4, bgcolor: "#90caf9", borderRadius: 1 }} />
+            <Typography variant="caption" sx={{ fontSize: "0.75rem" }}>
+              High (0.9)
+            </Typography>
+          </Box>
+        </Box>
       </Box>
     </>
   );
 
   return (
     <Box sx={{ display: "flex", gap: 3, mb: 2, flexWrap: "wrap" }}>
-      {viewMode === "genes" ? geneItems : pathwayItems}
+      {pathwayItems}
     </Box>
   );
 }

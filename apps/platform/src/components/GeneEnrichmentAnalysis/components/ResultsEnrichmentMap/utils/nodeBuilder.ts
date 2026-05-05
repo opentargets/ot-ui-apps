@@ -338,6 +338,7 @@ export function createPathwayNode(
       id: nodeId,
       label: nodePathway,
       pathway: nodePathway,
+      link: result.Link as string | undefined,
       nes: result.NES,
       es: result.ES,
       fdr: fdr,

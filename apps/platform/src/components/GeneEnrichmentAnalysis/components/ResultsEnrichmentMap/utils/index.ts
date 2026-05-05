@@ -5,7 +5,24 @@ export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytosca
 export { buildGeneViewEdges } from "./edgeBuilder";
 // Gene expression rendering
 export { cleanupGeneExpressions, renderGeneExpressions } from "./geneExpression";
-export { getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
+export { filterNodesWithoutEdges, getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
+// Gene mapping
+export { buildGeneToTargetIdMapping, getGeneTargetUrl } from "./geneMapping";
+// Gene search
+export {
+  findGeneCentricShortestPaths,
+  findNodesAndEdgesWithGene,
+  updateElementHighlight,
+  updateGeneCentricHighlight,
+} from "./geneSearch";
+// Shortest path algorithms
+export {
+  computeGeneSubgraph,
+  filterEdgesByGene,
+  findPathwaysWithGeneInLeadingEdge,
+  findShortestPath,
+  type ShortestPathResult,
+} from "./shortestPath";
 
 // Layout effects
 export { getLayoutConfig } from "./layout";
@@ -34,3 +51,12 @@ export {
 export type { ComputedStats, ResultsEnrichmentMapProps } from "./types";
 // Hooks
 export { useDebounce } from "./useDebounce";
+// Context
+export {
+  EnrichmentMapControlsContext,
+  EnrichmentMapControlsProvider,
+  createInitialState,
+  enrichmentMapControlsReducer,
+  type EnrichmentMapControlsAction,
+  type EnrichmentMapControlsState,
+} from "./EnrichmentMapControlsContext";

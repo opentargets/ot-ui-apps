@@ -1,3 +1,4 @@
+import { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
 
 /**
@@ -41,4 +42,45 @@ export function overlapSimilarity(setA: string[], setB: string[]): number {
   }
   const minSize = Math.min(setA.length, setB.length);
   return minSize > 0 ? intersection / minSize : 0;
+}
+
+/**
+ * Filter elements to remove isolated nodes (nodes without any edges)
+ * This dynamically removes nodes as similarity/FDR thresholds are adjusted
+ *
+ * @param elements - Combined array of nodes and edges from Cytoscape
+ * @returns Filtered elements with isolated nodes removed
+ */
+export function filterNodesWithoutEdges(
+  elements: Array<ElementDefinition>
+): Array<ElementDefinition> {
+  // Identify all nodes that are referenced by edges
+  const nodesWithEdges = new Set<string>();
+
+  for (const el of elements) {
+    const data = el.data as Record<string, unknown> | undefined;
+    if (data?.source && data?.target) {
+      // This is an edge
+      nodesWithEdges.add(data.source as string);
+      nodesWithEdges.add(data.target as string);
+    }
+  }
+
+  // Filter: keep all edges and only nodes that have connections
+  const filtered = elements.filter((el) => {
+    const data = el.data as Record<string, unknown> | undefined;
+    // Keep edges, and nodes that have edges
+    if (data?.source && data?.target) {
+      // This is an edge, keep it
+      return true;
+    }
+    // This is a node, keep only if it has edges
+    return nodesWithEdges.has(data?.id as string);
+  });
+
+  console.log(
+    `[FILTER_NODES] Removed ${elements.length - filtered.length} isolated node(s), kept ${filtered.length} elements`
+  );
+
+  return filtered;
 }

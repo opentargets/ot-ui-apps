@@ -4,6 +4,7 @@ import type { Gene } from "../../../types";
 export interface ResultsEnrichmentMapProps {
   results: GseaResult[];
   genes?: Gene[];
+  diseaseId?: string; // Optional disease ID for AOTF links
 }
 
 export interface ComputedStats {

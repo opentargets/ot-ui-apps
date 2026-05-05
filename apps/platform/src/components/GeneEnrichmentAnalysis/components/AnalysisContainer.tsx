@@ -126,7 +126,7 @@ function AnalysisContainer() {
 
     // Analysis complete
     if (step === "complete") {
-      return <AnalysisResults results={results} inputOverlap={inputOverlap} onReset={reset} activeRunId={activeRunId} />;
+      return <AnalysisResults results={results} inputOverlap={inputOverlap} onReset={reset} activeRunId={activeRunId} diseaseId={state.associationsState.efoId} />;
     }
 
     // Default: input form

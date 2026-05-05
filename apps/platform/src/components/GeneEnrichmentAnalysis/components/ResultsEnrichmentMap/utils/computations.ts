@@ -161,6 +161,15 @@ export function computePathwayViewElements(
     pathwayGenes.set(r.ID as string || (r.Pathway as string), getGeneList(r as unknown as GseaResult));
   }
 
+  // Create maps for pathway ID -> name and link lookup
+  const pathwayNameMap = new Map<string, string>();
+  const pathwayLinkMap = new Map<string, string | undefined>();
+  for (const r of displayResults) {
+    const id = (r.ID as string) || (r.Pathway as string);
+    pathwayNameMap.set(id, r.Pathway as string);
+    pathwayLinkMap.set(id, r.Link as string | undefined);
+  }
+
   const pathwayIds = Array.from(pathwayGenes.keys());
   const edgeSet = new Set<string>();
 
@@ -190,6 +199,10 @@ export function computePathwayViewElements(
               id: edgeId,
               source: idA,
               target: idB,
+              sourceName: pathwayNameMap.get(idA),
+              targetName: pathwayNameMap.get(idB),
+              sourceLink: pathwayLinkMap.get(idA),
+              targetLink: pathwayLinkMap.get(idB),
               sharedGenes,
               sharedCount: sharedGenes.length,
               jaccardCoefficient: jaccard,

@@ -1,0 +1,112 @@
+import { createContext, useReducer, ReactNode } from "react";
+
+/**
+ * State for enrichment map controls
+ */
+export interface EnrichmentMapControlsState {
+  similarityThreshold: number;
+  sizeBy: "significance" | "pathwaySize" | "geneCount";
+  fdrThreshold: number;
+  searchGene: string;
+  nesRange: [number, number];
+  nesDataRange: { min: number; max: number };
+  useGeneCentricPaths: boolean;
+}
+
+/**
+ * Action types for enrichment map controls
+ */
+export type EnrichmentMapControlsAction =
+  | { type: "SET_SIMILARITY_THRESHOLD"; payload: number }
+  | { type: "SET_SIZE_BY"; payload: "significance" | "pathwaySize" | "geneCount" }
+  | { type: "SET_FDR_THRESHOLD"; payload: number }
+  | { type: "SET_SEARCH_GENE"; payload: string }
+  | { type: "SET_NES_RANGE"; payload: [number, number] }
+  | { type: "INITIALIZE_NES_RANGE"; payload: { min: number; max: number } }
+  | { type: "TOGGLE_GENE_CENTRIC_PATHS" }
+  | { type: "RESET_FILTERS" };
+
+/**
+ * Reducer for enrichment map controls state
+ */
+export function enrichmentMapControlsReducer(
+  state: EnrichmentMapControlsState,
+  action: EnrichmentMapControlsAction
+): EnrichmentMapControlsState {
+  switch (action.type) {
+    case "SET_SIMILARITY_THRESHOLD":
+      return { ...state, similarityThreshold: action.payload };
+
+    case "SET_SIZE_BY":
+      return { ...state, sizeBy: action.payload };
+
+    case "SET_FDR_THRESHOLD":
+      return { ...state, fdrThreshold: action.payload };
+
+    case "SET_SEARCH_GENE":
+      return { ...state, searchGene: action.payload };
+
+    case "SET_NES_RANGE":
+      return { ...state, nesRange: action.payload };
+
+    case "INITIALIZE_NES_RANGE":
+      return {
+        ...state,
+        nesDataRange: action.payload,
+        nesRange: [action.payload.min, action.payload.max],
+      };
+
+    case "TOGGLE_GENE_CENTRIC_PATHS":
+      return { ...state, useGeneCentricPaths: !state.useGeneCentricPaths };
+
+    case "RESET_FILTERS":
+      return {
+        ...state,
+        similarityThreshold: 1,
+        fdrThreshold: 0.25,
+        searchGene: "",
+        nesRange: [state.nesDataRange.min, state.nesDataRange.max],
+        useGeneCentricPaths: false,
+      };
+
+    default:
+      return state;
+  }
+}
+
+/**
+ * Context for enrichment map controls
+ */
+export const EnrichmentMapControlsContext = createContext<{
+  state: EnrichmentMapControlsState;
+  dispatch: (action: EnrichmentMapControlsAction) => void;
+} | null>(null);
+
+/**
+ * Initial state for enrichment map controls
+ */
+export const createInitialState = (): EnrichmentMapControlsState => ({
+  similarityThreshold: 1,
+  sizeBy: "pathwaySize",
+  fdrThreshold: 0.25,
+  searchGene: "",
+  nesRange: [-3, 3],
+  nesDataRange: { min: -3, max: 3 },
+  useGeneCentricPaths: false,
+});
+
+/**
+ * Provider component for enrichment map controls
+ */
+export function EnrichmentMapControlsProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(
+    enrichmentMapControlsReducer,
+    createInitialState()
+  );
+
+  return (
+    <EnrichmentMapControlsContext.Provider value={{ state, dispatch }}>
+      {children}
+    </EnrichmentMapControlsContext.Provider>
+  );
+}
