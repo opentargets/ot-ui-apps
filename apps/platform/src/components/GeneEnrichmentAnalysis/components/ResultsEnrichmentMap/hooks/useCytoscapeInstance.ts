@@ -22,36 +22,74 @@ export function useCytoscapeInstance(
 ) {
   const cyRef = useRef<CytoscapeCore | null>(null);
   const tooltipsRef = useRef<Set<HTMLDivElement>>(new Set());
+  const prevElementsRef = useRef<string>("");
+  const shortestPathRef = useRef<{ nodes: Set<string>; edges: Set<string> }>({ nodes: new Set(), edges: new Set() });
 
   useEffect(() => {
     if (!containerRef.current || results.length === 0 || computedElements.length === 0 || isLoading) {
       return;
     }
 
-    // Destroy previous instance
-    if (cyRef.current) {
-      cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
-      if (containerRef.current) {
-        cleanupGeneExpressions(containerRef.current, cyRef.current);
+    // Create a stable string representation of element IDs and key properties for comparison
+    const elementSignature = computedElements
+      .map((el) => `${el.data?.id}:${el.data?.source || ""}:${JSON.stringify(el.data)}`)
+      .sort()
+      .join("|");
+
+    const elementsChanged = prevElementsRef.current !== elementSignature;
+
+    if (elementsChanged || !cyRef.current) {
+      // Store shortest path styling before recreation
+      if (cyRef.current) {
+        shortestPathRef.current = {
+          nodes: new Set(cyRef.current.elements(".shortestPath:node").map((el) => el.id())),
+          edges: new Set(cyRef.current.elements(".shortestPath:edge").map((el) => el.id())),
+        };
       }
-    }
 
-    const nodeCount = computedElements.filter((el) => !el.data?.source).length;
-    const layoutConfig = getLayoutConfig("pathways", nodeCount);
+      prevElementsRef.current = elementSignature;
 
-    cyRef.current = initializeCytoscapeInstance(
-      containerRef.current,
-      computedElements,
-      layoutConfig,
-      "pathways",
-      tooltipsRef,
-      onNodeClick,
-      onEdgeClick
-    );
+      // Destroy previous instance
+      if (cyRef.current) {
+        cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
+        if (containerRef.current) {
+          cleanupGeneExpressions(containerRef.current, cyRef.current);
+        }
+      }
 
-    // Render gene expression circles if genes available
-    if (genes && genes.length > 0) {
-      renderGeneExpressions(containerRef.current, cyRef.current);
+      const nodeCount = computedElements.filter((el) => !el.data?.source).length;
+      const layoutConfig = getLayoutConfig("pathways", nodeCount);
+
+      cyRef.current = initializeCytoscapeInstance(
+        containerRef.current,
+        computedElements,
+        layoutConfig,
+        "pathways",
+        tooltipsRef,
+        onNodeClick,
+        onEdgeClick
+      );
+
+      // Restore shortest path styling
+      if (cyRef.current && (shortestPathRef.current.nodes.size > 0 || shortestPathRef.current.edges.size > 0)) {
+        shortestPathRef.current.nodes.forEach((nodeId) => {
+          const node = cyRef.current?.getElementById(nodeId);
+          if (node && node.isNode()) {
+            node.addClass("shortestPath");
+          }
+        });
+        shortestPathRef.current.edges.forEach((edgeId) => {
+          const edge = cyRef.current?.getElementById(edgeId);
+          if (edge && edge.isEdge()) {
+            edge.addClass("shortestPath");
+          }
+        });
+      }
+
+      // Render gene expression circles if genes available
+      if (genes && genes.length > 0) {
+        renderGeneExpressions(containerRef.current, cyRef.current);
+      }
     }
 
     return () => {
@@ -59,8 +97,9 @@ export function useCytoscapeInstance(
         cleanupGeneExpressions(containerRef.current, cyRef.current);
       }
       cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
+      cyRef.current = null;
     };
-  }, [computedElements, results.length, genes, isLoading, onNodeClick, onEdgeClick]);
+  }, [computedElements, results.length, genes, isLoading]);
 
   return { cyRef, tooltipsRef };
 }

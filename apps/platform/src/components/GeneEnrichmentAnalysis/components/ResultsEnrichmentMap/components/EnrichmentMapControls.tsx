@@ -6,10 +6,12 @@ import { EnrichmentMapControlsContext } from "../utils/EnrichmentMapControlsCont
 
 interface EnrichmentMapControlsProps {
   onOpenPathwaySelection?: () => void;
+  isGoData?: boolean;
 }
 
 export function EnrichmentMapControls({
   onOpenPathwaySelection,
+  isGoData = false,
 }: EnrichmentMapControlsProps) {
   const controlsContext = useContext(EnrichmentMapControlsContext);
   if (!controlsContext) {
@@ -64,21 +66,35 @@ export function EnrichmentMapControls({
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Box>
               <Typography variant="caption" color="text.secondary">
-                FDR: {state.fdrThreshold.toFixed(2)}
+                FDR: {state.fdrThreshold.toFixed(4)}
               </Typography>
-              <Slider
-                value={state.fdrThreshold}
-                onChange={(_, value) => dispatch({ type: "SET_FDR_THRESHOLD", payload: value as number })}
-                min={0.01}
-                max={1}
-                step={0.01}
-                size="small"
-                marks={[
-                  { value: 0.01, label: "0.01" },
-                  { value: 0.25, label: "0.25" },
-                  { value: 1, label: "1" },
-                ]}
-              />
+              {isGoData ? (
+                <Slider
+                  value={0.05}
+                  min={0.05}
+                  max={0.05}
+                  size="small"
+                  disabled
+                  marks={[
+                    { value: 0.05, label: "0.05 (Fixed for GO)" },
+                  ]}
+                />
+              ) : (
+                <Slider
+                  value={state.fdrThreshold}
+                  onChange={(_, value) => dispatch({ type: "SET_FDR_THRESHOLD", payload: value as number })}
+                  min={0.01}
+                  max={1}
+                  step={0.01}
+                  size="small"
+                  marks={[
+                    { value: 0.01, label: "0.01" },
+                    { value: 0.25, label: "0.25" },
+                    { value: 1, label: "1" },
+                  ]}
+                />
+              )}
+              
             </Box>
 
             <Box>

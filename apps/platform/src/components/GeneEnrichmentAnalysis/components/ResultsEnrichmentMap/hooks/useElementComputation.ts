@@ -111,10 +111,24 @@ export function useElementComputation(
 
   // Assemble elements
   useEffect(() => {
-    const { elements, stats } = computePathwayViewElements(fdrFilteredResults, nodes, debouncedSimilarityThreshold);
-    const filteredElements = filterNodesWithoutEdges(elements as ElementDefinition[]);
-    setComputedElements(filteredElements as ElementDefinition[]);
-    setComputedStats(stats);
+    let isMounted = true;
+
+    const computeElements = async () => {
+        console.log('starting element computation');
+      const { elements, stats } = await computePathwayViewElements(fdrFilteredResults, nodes, debouncedSimilarityThreshold);
+      console.log('finished element computation', elements.length, stats);
+      if (isMounted) {
+        const filteredElements = filterNodesWithoutEdges(elements as ElementDefinition[]);
+        setComputedElements(filteredElements as ElementDefinition[]);
+        setComputedStats(stats);
+      }
+    };
+
+    computeElements();
+
+    return () => {
+      isMounted = false;
+    };
   }, [fdrFilteredResults, debouncedSimilarityThreshold, nodes]);
 
   // Hide loader when done
