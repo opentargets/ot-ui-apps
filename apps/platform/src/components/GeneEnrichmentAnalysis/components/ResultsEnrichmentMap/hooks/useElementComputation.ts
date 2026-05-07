@@ -8,15 +8,17 @@ import {
 } from "../utils";
 import type { ComputedStats } from "../utils";
 import { mapToPrioritizationColor } from "../../../utils/colorPalettes";
+import { GseaResult } from "../../../api/gseaApi";
+import { Gene } from "../../../types";
 
 /**
  * Manages element computation including NES range, FDR filtering, node building, and element assembly
  */
 export function useElementComputation(
-  results: Array<Record<string, unknown>>,
+  results: Array<GseaResult>,
   genes: { symbol: string }[] | undefined,
   similarityThreshold: number,
-  sizeBy: string,
+  sizeBy: "significance" | "pathwaySize" | "geneCount",
   fdrThreshold: number,
   nesRange: [number, number]
 ) {
@@ -72,11 +74,11 @@ export function useElementComputation(
   }, [fdrFilteredResults]);
 
   // Compute pathway nodes
-  const { nodes, initialStats } = useMemo(() => {
+  const { nodes } = useMemo(() => {
     const significantResults = fdrFilteredResults.filter((r) => (r.FDR as number) < 0.25);
     const displayResults = significantResults.length > 0 ? significantResults : fdrFilteredResults.slice(0, 50);
 
-    const result = buildPathwayViewNodes(displayResults, debouncedSizeBy, genes);
+    const result = buildPathwayViewNodes(displayResults, debouncedSizeBy, genes as Array<Gene>);
     let builtNodes = result.nodes;
     const stats = {
       ...result.stats,
@@ -111,24 +113,14 @@ export function useElementComputation(
 
   // Assemble elements
   useEffect(() => {
-    let isMounted = true;
 
     const computeElements = async () => {
-        console.log('starting element computation');
       const { elements, stats } = await computePathwayViewElements(fdrFilteredResults, nodes, debouncedSimilarityThreshold);
-      console.log('finished element computation', elements.length, stats);
-      if (isMounted) {
-        const filteredElements = filterNodesWithoutEdges(elements as ElementDefinition[]);
-        setComputedElements(filteredElements as ElementDefinition[]);
-        setComputedStats(stats);
-      }
+      setComputedElements(filterNodesWithoutEdges(elements));
+      setComputedStats(stats);
     };
 
     computeElements();
-
-    return () => {
-      isMounted = false;
-    };
   }, [fdrFilteredResults, debouncedSimilarityThreshold, nodes]);
 
   // Hide loader when done

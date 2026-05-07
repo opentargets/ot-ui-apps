@@ -310,7 +310,6 @@ export function EnrichmentMapDetailsModal({
       if (!apolloClient) return;
       const sharedGenes = (data as EdgeData).sharedGenes || [];
       const mapping = await buildGeneToTargetIdMapping(apolloClient, sharedGenes);
-      console.log("[GENE_MAPPING] Gene target ID mapping for edge genes:", mapping);
       setGeneToTargetIdMapping(mapping);
     };
 

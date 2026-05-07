@@ -1,7 +1,7 @@
 import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
-import type { Gene } from "../../../types";
 import { getGeneList } from "./index";
+import { Gene } from "../../../types";
 
 export interface GeneNodeMetadata {
   gene: string;
@@ -302,8 +302,7 @@ export function buildGeneViewNodes(
 export function createPathwayNode(
   result: Record<string, unknown>,
   geneList: string[],
-  sizeBy: "significance" | "pathwaySize" | "geneCount",
-  geneExpressionMap?: Map<string, Gene>
+  sizeBy: "significance" | "pathwaySize" | "geneCount"
 ): ElementDefinition {
   const fdr = result.FDR as number;
   const color = getSignificanceColor(fdr);
@@ -312,23 +311,6 @@ export function createPathwayNode(
     sizeBy === "pathwaySize" ? (result["Pathway size"] as number) : fdr,
     geneList.length
   );
-
-  // Extract gene expression data from input genes
-  const geneExpression: Array<{ gene: string; status: "up" | "down"; score: number }> = [];
-  if (geneExpressionMap) {
-    for (const gene of geneList) {
-      const geneData = geneExpressionMap.get(gene);
-      if (geneData) {
-        geneExpression.push({
-          gene: gene,
-          status: geneData.globalScore >= 0 ? "up" : "down",
-          score: Math.abs(geneData.globalScore),
-        });
-      }
-    }
-    // Sort by score and take top 10
-    geneExpression.sort((a, b) => b.score - a.score).splice(10);
-  }
 
   const nodeId = (result.ID as string) || (result.Pathway as string);
   const nodePathway = result.Pathway as string;
@@ -346,7 +328,6 @@ export function createPathwayNode(
       pathwaySize: result["Pathway size"],
       inputGenes: result["Number of input genes"],
       geneCount: geneList.length,
-      geneExpression: geneExpression,
       color: color,
       borderColor: getBorderColor(color),
       size: nodeSize,
@@ -381,19 +362,11 @@ export function buildPathwayViewNodes(
     }
   }
 
-  // Build gene expression map for fast lookup
-  const geneExpressionMap = new Map<string, Gene>();
-  if (genes) {
-    for (const gene of genes) {
-      geneExpressionMap.set(gene.symbol, gene);
-    }
-  }
-
   const nodes: ElementDefinition[] = [];
   for (const r of displayResults) {
     const geneList_ = getGeneList(r as GseaResult);
     nodes.push(
-      createPathwayNode(r as Record<string, unknown>, geneList_, sizeBy, geneExpressionMap)
+      createPathwayNode(r as Record<string, unknown>, geneList_, sizeBy)
     );
   }
 

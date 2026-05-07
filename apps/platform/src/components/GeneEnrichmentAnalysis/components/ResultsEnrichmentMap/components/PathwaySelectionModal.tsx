@@ -43,8 +43,6 @@ export function PathwaySelectionModal({
     onClose();
   };
 
-  console.log(foundPath);
-
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle>Find Shortest Path Between Pathways</DialogTitle>

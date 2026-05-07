@@ -2,10 +2,6 @@ import type cytoscape from "cytoscape";
 
 /**
  * Cytoscape stylesheet for enrichment map visualization
- * 
- * Note: Gene expression circles (up/down-regulated genes) are rendered as custom SVG overlays
- * on top of Cytoscape nodes, as Cytoscape's CSS styling doesn't natively support nested child elements.
- * The gene expression data is stored in node.data().geneExpression for custom rendering.
  */
 export function createStylesheet(): cytoscape.StylesheetCSS[] {
   return [

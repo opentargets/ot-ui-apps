@@ -28,11 +28,6 @@ export function useGeneSearch(
         geneEdgeIds,
       } = findGeneCentricShortestPaths(cyRef.current, searchGene);
 
-      console.log(
-        `[GENE_SEARCH] Gene-centric paths: ${sourcePathwayIds.size} source pathways, ` +
-        `${nodeIds.size} connected nodes, ${edgeIds.size} connecting edges`
-      );
-
       updateGeneCentricHighlight(
         cyRef.current,
         sourcePathwayIds,

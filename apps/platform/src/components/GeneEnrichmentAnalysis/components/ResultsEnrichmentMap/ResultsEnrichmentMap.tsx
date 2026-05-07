@@ -43,7 +43,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
 
   // Detect if this is GO data
   const isGoData = useMemo(() => {
-    return (results as Array<Record<string, unknown>>).some((r) => /^GO:\d+$/.test((r.ID as string) || ""));
+    return (results).some((r) => /^GO:\d+$/.test((r.ID as string) || ""));
   }, [results]);
 
   const containerRef = useRef<HTMLDivElement>(null);

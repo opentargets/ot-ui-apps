@@ -32,8 +32,6 @@ export async function buildGeneToTargetIdMapping(
     return mapping;
   }
 
-  console.log(`[GENE_MAPPING] Fetching target IDs for ${uniqueSymbols.length} genes...`);
-
   try {
     const result = await client.query({
       query: MAP_IDS_QUERY,
@@ -41,6 +39,9 @@ export async function buildGeneToTargetIdMapping(
     });
 
     const mappings = result.data?.mapIds?.mappings || [];
+    if (mappings.length > 0) {
+      console.log(`[GENE_MAPPING] Fetched ${mappings.length} mappings`);
+    }
     mappings.forEach((mapping_item: any) => {
       const term = mapping_item.term;
       if (mapping_item.hits && mapping_item.hits.length > 0) {

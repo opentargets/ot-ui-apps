@@ -2,10 +2,8 @@ import { useEffect, useRef } from "react";
 import type { Core as CytoscapeCore, ElementDefinition } from "cytoscape";
 import {
   cleanupCytoscapeInstance,
-  cleanupGeneExpressions,
   getLayoutConfig,
   initializeCytoscapeInstance,
-  renderGeneExpressions,
 } from "../utils";
 
 /**
@@ -52,9 +50,6 @@ export function useCytoscapeInstance(
       // Destroy previous instance
       if (cyRef.current) {
         cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
-        if (containerRef.current) {
-          cleanupGeneExpressions(containerRef.current, cyRef.current);
-        }
       }
 
       const nodeCount = computedElements.filter((el) => !el.data?.source).length;
@@ -86,16 +81,9 @@ export function useCytoscapeInstance(
         });
       }
 
-      // Render gene expression circles if genes available
-      if (genes && genes.length > 0) {
-        renderGeneExpressions(containerRef.current, cyRef.current);
-      }
     }
 
     return () => {
-      if (containerRef.current && cyRef.current) {
-        cleanupGeneExpressions(containerRef.current, cyRef.current);
-      }
       cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
       cyRef.current = null;
     };

@@ -5,7 +5,7 @@ import type { GseaResult } from "../../../api/gseaApi";
  * Extract gene list from comma-separated string in Leading edge genes field
  */
 export function getGeneList(result: GseaResult): string[] {
-  const genes = result["Pathway genes"];
+  const genes = result["Leading edge genes"];
   if (!genes || genes === "") return [];
   return genes
     .split(",")

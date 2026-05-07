@@ -66,7 +66,6 @@ export function initializeCytoscapeInstance(
     node.on("mouseout", () => {
       try {
         cy.off("pan zoom", moveListener);
-        console.log("[NODE_MOUSEOUT] Detached pan zoom listener");
       } catch (err) {
         console.warn("[NODE_MOUSEOUT] Failed to detach pan zoom listener:", err);
       }
@@ -108,7 +107,6 @@ export function initializeCytoscapeInstance(
     edge.on("mouseout", () => {
       try {
         cy.off("pan zoom", moveListener);
-        console.log("[EDGE_MOUSEOUT] Detached pan zoom listener");
       } catch (err) {
         console.warn("[EDGE_MOUSEOUT] Failed to detach pan zoom listener:", err);
       }

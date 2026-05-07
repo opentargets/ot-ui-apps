@@ -1,10 +1,10 @@
 // Computations
-export { computeGeneViewEdges, computePathwayViewElements } from "./computations";
+export { computePathwayViewElements } from "./pathwayViewComputation";
+// Browser utilities
+export { yieldToBrowser } from "./browser";
 // Cytoscape initialization
 export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytoscape";
 export { buildGeneViewEdges } from "./edgeBuilder";
-// Gene expression rendering
-export { cleanupGeneExpressions, renderGeneExpressions } from "./geneExpression";
 export { filterNodesWithoutEdges, getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
 // Gene mapping
 export { buildGeneToTargetIdMapping, getGeneTargetUrl } from "./geneMapping";
