@@ -4,7 +4,6 @@ export { computePathwayViewElements } from "./pathwayViewComputation";
 export { yieldToBrowser } from "./browser";
 // Cytoscape initialization
 export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytoscape";
-export { buildGeneViewEdges } from "./edgeBuilder";
 export { filterNodesWithoutEdges, getPathwayGenesList as getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
 // Gene mapping
 export { buildGeneToTargetIdMapping, getGeneTargetUrl } from "./geneMapping";
