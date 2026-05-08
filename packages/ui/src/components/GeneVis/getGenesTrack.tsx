@@ -1,46 +1,23 @@
 import { Fragment } from "react";
-import { Container, Sprite, Text } from '@pixi/react';
-import { TextStyle, Text as PixiText } from "pixi.js";
-import { Box, Typography } from "@mui/material";
-import { useRectangleTexture } from "../GenTrack/shapes";
+import { Container } from '@pixi/react';
+import { TextStyle } from "pixi.js";
+import { DataSprite, DataText } from "../GenTrack";
 import { packIntervals } from "./packIntervals";
-import { infoStyle } from "./helpers";
-import {
-  useGenTrackState,
-  // useGenTrackTooltipDispatch,
-  // useGenTrackTooltipState
-} from "ui";
-
-// horizontal strip, y prop is the y-center
-function Strip({ rectTexture, xStart, xEnd, y, height, spriteProps }) {
-  return (
-    <Sprite
-      texture={rectTexture}
-      x={xStart}
-      y={y - height / 2}
-      width={xEnd - xStart}
-      height={height}
-      {...spriteProps}
-    />
-  );
-}
+import { useGenTrackState } from "ui";
+import type { RefObject } from "react";
+import type { ScalesRef } from "../GenTrack/ScalesContext";
 
 function getValue(value, arg) {
   return typeof value === "function" ? value(arg) : value;
 }
 
-function tickScaleFactory(filterActionPairs) {
-  return (wrapper) => {
-    objectLoop: for (const obj of wrapper.children[0].children) {
-      for (const { filterFn, actionFn } of filterActionPairs) {
-        if (filterFn(obj)) {
-          actionFn(obj, wrapper);
-          continue objectLoop;
-        }
-      }
-    }
-  };
-}
+const geneLabelStyle = new TextStyle({
+  align: 'center',
+  fill: "#000",
+  fontSize: 10.5,
+  fontWeight: '100',
+  wordWrap: false,
+});
 
 export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap = 0, pixelGapCenterToCenter = 0 }) {
   const genTrackState = useGenTrackState(); 
@@ -65,78 +42,54 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
     paddingTop: 0,
     yMin: 0,
     yMax: trackHeight,
-    // YInfo: null,
-    // YInfo: () => (
-    //   <Box sx={infoStyle}> 
-    //     <Typography component="div" variant="caption" sx={{ fontWeight: 500 }}>
-    //       Genes
-    //     </Typography>
-    //   </Box>
-    // ),
-    Track: () => {
-      const rectTexture = useRectangleTexture();
+    Track: ({ trackId, scalesRef }: { trackId: string; isInner: boolean; scalesRef: RefObject<ScalesRef> }) => {
       return (
         <Container>
           {data.genes.map(gene => {
             const { target } = gene;
+            const rowIndex = GeneToRow[target.id];
+            const labelText = `${target.genomicLocation.strand === -1 ? "← " : ""}${
+              target.approvedSymbol ?? target.id}${
+              target.genomicLocation.strand === 1 ? " →" : ""}`;
+            const tint = getValue(geneColor, gene);
             return (
               <Fragment key={target.id}>
-                <Text  // !! USE geneLabel HERE !! - can be component??
-                  text={`${target.genomicLocation.strand === -1 ? "← " : "" }${
-                    target.approvedSymbol ?? target.id}${
-                    target.genomicLocation.strand === 1 ? " →" : "" }`}
+                <DataText
+                  scalesRef={scalesRef}
+                  trackId={trackId}
                   x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
-                  y={yTop(GeneToRow[target.id]) + labelHeight}
+                  y={yTop(rowIndex) + labelHeight}
+                  text={labelText}
                   anchor={[0.5, 1]}
-                  style={
-                    new TextStyle({
-                      align: 'center',
-                      fill: "#000",
-                      fontSize: 10.5,
-                      fontWeight: '100',
-                      wordWrap: false,
-                    })
-                  }
+                  style={geneLabelStyle}
                 />
-                <Strip
-                  rectTexture={rectTexture}
-                  xStart={target.genomicLocation.start}
-                  xEnd={target.genomicLocation.end}
-                  y={ycenter(GeneToRow[target.id])}
+                <DataSprite
+                  scalesRef={scalesRef}
+                  trackId={trackId}
+                  x={target.genomicLocation.start}
+                  y={ycenter(rowIndex) - intronHeight / 2}
+                  width={target.genomicLocation.end - target.genomicLocation.start}
                   height={intronHeight}
-                  spriteProps={{ tint: getValue(geneColor, gene) }}
+                  tint={tint}
                 />
                 {target.canonicalExons?.map(exon => (
-                  <Strip
+                  <DataSprite
                     key={`${target.id}-${exon.start}-${exon.end}`}
-                    rectTexture={rectTexture}
-                    xStart={exon.start}
-                    xEnd={exon.end}
-                    y={ycenter(GeneToRow[target.id])}
+                    scalesRef={scalesRef}
+                    trackId={trackId}
+                    x={exon.start}
+                    y={ycenter(rowIndex) - exonHeight / 2}
+                    width={exon.end - exon.start}
                     height={exonHeight}
-                    spriteProps={{ tint: getValue(geneColor, gene) }}
+                    tint={tint}
+                    minPixelWidth={1}
                   />
                 ))}
               </Fragment>
-            )
+            );
           })}
         </Container>
       );
     },
-    onTick: tickScaleFactory([
-      {
-        filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
-        actionFn: (obj, wrapper) => {
-          obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
-          obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
-        }
-      },
-      // {
-      //   filterFn: obj => obj instanceof PixiSprite,
-      //   actionFn: (obj, wrapper) => {
-      //     obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
-      //   }
-      // },
-    ])
   }
 }

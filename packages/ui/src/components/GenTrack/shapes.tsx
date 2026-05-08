@@ -3,6 +3,7 @@ import { useMemo, useCallback, useEffect } from 'react';
 import * as PIXI from 'pixi.js';
 import { Graphics } from '@pixi/react';
 
+
 // create normal graphics rectangle
 export function Rectangle(props) {
   const draw = useCallback(

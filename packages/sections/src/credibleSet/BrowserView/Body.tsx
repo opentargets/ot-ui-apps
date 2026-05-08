@@ -19,8 +19,8 @@ function Body({ id, entity }: BodyProps) {
 
   // select data
   const chromosome = "1";
-  const start = 10_000_000;
-  const end = 11_000_000;
+  const start = 11_000_000;
+  const end = 12_000_000;
 
   // load local chromosome data
   useEffect(() => {
@@ -93,6 +93,7 @@ function Body({ id, entity }: BodyProps) {
             xMin={start}
             xMax={end}
             geneColor={gene => gene.target.biotype === "protein_coding" ? "steelblue" : "firebrick"}
+            variantColor={() => "grey"}
           />
         : <h2>Loading...</h2>
       }
