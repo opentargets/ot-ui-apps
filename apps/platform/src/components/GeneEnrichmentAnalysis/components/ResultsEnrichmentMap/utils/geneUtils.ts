@@ -1,11 +1,26 @@
 import { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
 
+type GeneListField = "Leading edge genes" | "Pathway genes";
+
 /**
  * Extract gene list from comma-separated string in Leading edge genes field
  */
-export function getGeneList(result: GseaResult): string[] {
-  const genes = result["Leading edge genes"];
+export function getPathwayGenesList(result: GseaResult): string[] {
+  const field = "Pathway genes";
+  return getGeneList(result, field);
+}
+
+export function getLeadingEdgeGenesList(result: GseaResult): string[] {
+  const field = "Leading edge genes";
+  return getGeneList(result, field);
+}
+
+export function getGeneList(
+  result: GseaResult,
+  field: GeneListField
+): string[] {
+  const genes = result[field];
   if (!genes || genes === "") return [];
   return genes
     .split(",")

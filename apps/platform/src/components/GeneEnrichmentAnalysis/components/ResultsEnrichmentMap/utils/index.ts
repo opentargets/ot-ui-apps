@@ -5,7 +5,7 @@ export { yieldToBrowser } from "./browser";
 // Cytoscape initialization
 export { cleanupCytoscapeInstance, initializeCytoscapeInstance } from "./cytoscape";
 export { buildGeneViewEdges } from "./edgeBuilder";
-export { filterNodesWithoutEdges, getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
+export { filterNodesWithoutEdges, getPathwayGenesList as getGeneList, jaccardSimilarity, overlapSimilarity } from "./geneUtils";
 // Gene mapping
 export { buildGeneToTargetIdMapping, getGeneTargetUrl } from "./geneMapping";
 // Gene search
@@ -26,18 +26,14 @@ export {
 
 // Layout effects
 export { getLayoutConfig } from "./layout";
-export type { GeneNodeMetadata, GeneRegulationStatus, PathwayNodeMetadata } from "./nodeBuilder";
+export type { GeneNodeMetadata, PathwayNodeMetadata } from "./nodeBuilder";
 // Node building
 export {
-  buildGeneViewNodes,
   buildPathwayViewNodes,
   calculateNodeSize,
-  computeGeneRegulationStatus,
-  createGeneNode,
   createPathwayNode,
   filterAndSortGenes,
   getBorderColor,
-  getRegulationColor,
   getSignificanceColor,
 } from "./nodeBuilder";
 export { createStylesheet } from "./stylesheet";

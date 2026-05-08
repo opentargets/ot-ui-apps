@@ -21,16 +21,7 @@ export interface PathwayNodeMetadata {
   geneCount: number;
 }
 
-/**
- * Regulation status of a gene based on leading edge pathway information
- */
-export interface GeneRegulationStatus {
-  gene: string;
-  isLeadingEdge: boolean;
-  upRegulatedCount: number;
-  downRegulatedCount: number;
-  pathwaysWithNES: Array<{ pathway: string; nes: number; fdr: number }>;
-}
+
 
 /**
  * Determines significance color based on FDR value
@@ -70,40 +61,6 @@ export function getBorderColor(nodeColor: string): string {
 }
 
 /**
- * Determines regulation color based on gene's leading edge status and NES values
- * - Red (#e91e63): Gene is leading edge in upregulated pathways (positive NES)
- * - Blue (#2196f3): Gene is leading edge in downregulated pathways (negative NES)
- * - Purple (#9c27b0): Gene is leading edge in pathways with conflicting NES signs
- * - Grey (#bdbdbd): Gene is not a leading edge gene in any pathway
- */
-export function getRegulationColor(regulationStatus: GeneRegulationStatus): string {
-  // If not a leading edge gene in any pathway, return grey
-  if (!regulationStatus.isLeadingEdge || regulationStatus.pathwaysWithNES.length === 0) {
-    return "#bdbdbd"; // Grey for non-leading-edge genes
-  }
-
-  const upCount = regulationStatus.upRegulatedCount;
-  const downCount = regulationStatus.downRegulatedCount;
-
-  // If only upregulated pathways
-  if (upCount > 0 && downCount === 0) {
-    return "#e91e63"; // Red for upregulated
-  }
-
-  // If only downregulated pathways
-  if (downCount > 0 && upCount === 0) {
-    return "#2196f3"; // Blue for downregulated
-  }
-
-  // If both upregulated and downregulated pathways
-  if (upCount > 0 && downCount > 0) {
-    return "#9c27b0"; // Purple for conflicting regulation
-  }
-
-  return "#bdbdbd"; // Default grey
-}
-
-/**
  * Calculates node size based on sizeBy parameter and value
  */
 export function calculateNodeSize(
@@ -126,49 +83,6 @@ export function calculateNodeSize(
   }
 }
 
-/**
- * Computes gene regulation status from leading edge pathway information
- * Groups genes by their regulation direction based on NES values in the pathways they lead
- */
-export function computeGeneRegulationStatus(
-  results: Array<Record<string, unknown>> | GseaResult[]
-): Map<string, GeneRegulationStatus> {
-  const geneRegulationMap = new Map<string, GeneRegulationStatus>();
-
-  for (const result of results) {
-    const geneList_ = getGeneList(result as GseaResult);
-    const nes = result.NES as number;
-    const pathway = result.Pathway as string;
-    const fdr = result.FDR as number;
-
-    for (const gene of geneList_) {
-      const existingStatus = geneRegulationMap.get(gene);
-      if (!existingStatus) {
-        geneRegulationMap.set(gene, {
-          gene,
-          isLeadingEdge: true,
-          upRegulatedCount: 0,
-          downRegulatedCount: 0,
-          pathwaysWithNES: [],
-        });
-      }
-
-      const status = geneRegulationMap.get(gene);
-      if (status) {
-        status.pathwaysWithNES.push({ pathway, nes, fdr });
-
-        // Count upregulated (positive NES) vs downregulated (negative NES) pathways
-        if (nes > 0) {
-          status.upRegulatedCount += 1;
-        } else if (nes < 0) {
-          status.downRegulatedCount += 1;
-        }
-      }
-    }
-  }
-
-  return geneRegulationMap;
-}
 
 /**
  * Builds gene-to-pathways mapping from results
@@ -210,91 +124,8 @@ export function filterAndSortGenes(
     .map(([gene]) => gene);
 }
 
-/**
- * Creates a gene node element for Cytoscape
- */
-export function createGeneNode(
-  gene: string,
-  pathways: Array<{ pathway: string; fdr: number; nes: number }>,
-  sizeBy: "significance" | "pathwaySize" | "geneCount",
-  regulationStatus?: GeneRegulationStatus
-): ElementDefinition {
-  const bestFDR = Math.min(...pathways.map((p) => p.fdr));
 
-  // Use regulation-based coloring if available, otherwise fall back to significance-based
-  const color = regulationStatus
-    ? getRegulationColor(regulationStatus)
-    : getSignificanceColor(bestFDR);
-  const nodeSize = calculateNodeSize(sizeBy, bestFDR, pathways.length);
 
-  return {
-    data: {
-      id: gene,
-      label: gene,
-      gene: gene,
-      pathwayCount: pathways.length,
-      bestFDR: bestFDR,
-      pathways: pathways.map((p) => p.pathway),
-      color: color,
-      borderColor: getBorderColor(color),
-      size: nodeSize,
-      displayLabel: gene.length > 15 ? `${gene.substring(0, 12)}...` : gene,
-      // Store regulation information for tooltips and styling
-      isLeadingEdge: regulationStatus?.isLeadingEdge ?? false,
-      upRegulatedCount: regulationStatus?.upRegulatedCount ?? 0,
-      downRegulatedCount: regulationStatus?.downRegulatedCount ?? 0,
-      regulationStatus: regulationStatus
-        ? regulationStatus.upRegulatedCount > 0 && regulationStatus.downRegulatedCount === 0
-          ? "upregulated"
-          : regulationStatus.downRegulatedCount > 0 && regulationStatus.upRegulatedCount === 0
-            ? "downregulated"
-            : regulationStatus.upRegulatedCount > 0 && regulationStatus.downRegulatedCount > 0
-              ? "conflicting"
-              : "non-leading-edge"
-        : "unknown",
-    },
-  };
-}
-
-/**
- * Builds gene view nodes
- */
-export function buildGeneViewNodes(
-  displayResults: Array<Record<string, unknown>> | GseaResult[],
-  sizeBy: "significance" | "pathwaySize" | "geneCount"
-): {
-  nodes: ElementDefinition[];
-  stats: { totalGenes: number; edges: number; totalPathways: number; significantCount: number };
-} {
-  const geneToPathways = buildGeneToPathwaysMap(displayResults);
-  const geneRegulationMap = computeGeneRegulationStatus(displayResults);
-
-  const sortedGenes = filterAndSortGenes(geneToPathways);
-
-  const nodes: ElementDefinition[] = [];
-  for (const gene of sortedGenes) {
-    const pathways = geneToPathways.get(gene);
-    const regulationStatus = geneRegulationMap.get(gene);
-    if (pathways) {
-      nodes.push(createGeneNode(gene, pathways, sizeBy, regulationStatus));
-    }
-  }
-
-  console.log("[buildGeneViewNodes] Built gene nodes:", nodes);
-
-  const result = {
-    nodes,
-    stats: {
-      totalGenes: nodes.length,
-      edges: 0,
-      totalPathways: displayResults.length,
-      significantCount: displayResults.filter((r) => (r.FDR as number) < 0.05).length,
-    },
-  };
-  console.log("[buildGeneViewNodes] Computed stats:", result.stats);
-
-  return result;
-}
 
 /**
  * Creates a pathway node element for Cytoscape
@@ -328,6 +159,7 @@ export function createPathwayNode(
       pathwaySize: result["Pathway size"],
       inputGenes: result["Number of input genes"],
       geneCount: geneList.length,
+      leadingGenes: result["Leading edge genes"],
       color: color,
       borderColor: getBorderColor(color),
       size: nodeSize,

@@ -84,6 +84,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
     genes,
     isLoading,
     (data) => {
+      console.log("Node clicked with data:", data);
       setModalType("node");
       setModalData(data);
       setModalOpen(true);

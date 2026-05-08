@@ -57,7 +57,7 @@ export function useElementComputation(
       const nes = r.NES as number;
       const fdrPass = fdr < debouncedFdrThreshold;
       const nesPass = nes >= debouncedNesRange[0] && nes <= debouncedNesRange[1];
-      return fdrPass && nesPass;
+      return fdrPass || nesPass;
     });
   }, [results, debouncedFdrThreshold, debouncedNesRange]);
 

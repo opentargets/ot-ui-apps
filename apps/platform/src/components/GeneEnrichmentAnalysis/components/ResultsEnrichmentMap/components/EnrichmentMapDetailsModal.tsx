@@ -29,6 +29,7 @@ interface NodeData {
   pathwaySize?: number;
   geneCount?: number;
   displayLabel?: string;
+  leadingGenes?: string[];
 }
 
 interface EdgeData {
@@ -55,7 +56,7 @@ interface EnrichmentMapDetailsModalProps {
 /**
  * Node Details Content Component
  */
-function NodeDetailsContent({ data }: { data: NodeData }) {
+function NodeDetailsContent({ data, diseaseId, geneToTargetIdMapping }: { data: NodeData; diseaseId?: string; geneToTargetIdMapping?: Map<string, string> }) {
   return (
     <>
       <Box>
@@ -109,14 +110,140 @@ function NodeDetailsContent({ data }: { data: NodeData }) {
       </Box>
 
       <Box>
-        <Typography variant="caption" color="text.secondary">
-          Leading Edge Genes
-        </Typography>
-        <Typography variant="body2" fontWeight={500}>
-          {data.geneCount}
-        </Typography>
+        <GeneList title="Leading Edge Genes" genes={data?.leadingGenes?.split(",") || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
+
       </Box>
     </>
+  );
+}
+
+type GeneListProps = {
+  genes: string[];
+  diseaseId?: string;
+  geneToTargetIdMapping?: Map<string, string>;
+};
+
+export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: GeneListProps & { title: string }) {
+  const [copied, setCopied] = useState(false);
+
+    const handleCopyGenes = async () => {
+    const geneText = (genes || []).join("\n");
+    try {
+      await navigator.clipboard.writeText(geneText);
+      setCopied(true);
+      // Reset the icon after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("[COPY_GENES] Failed to copy to clipboard:", err);
+    }
+  };
+
+    const handleViewInAOTF = () => {
+        const targetIds = getTargetIdsFromMapping(genes || [], geneToTargetIdMapping || new Map());
+        const aotfLink = buildAOTFLink(diseaseId || "", targetIds);
+        window.open(aotfLink, "_blank");
+    };
+
+  return (
+    <Box>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{ alignItems: "center", mb: 1 }}
+      >
+        <Typography variant="subtitle2" fontWeight={600}>
+          {title}: {genes.length}
+        </Typography>
+
+        <Tooltip title={copied ? "Copied!" : "Copy all genes"}>
+          <IconButton
+            size="small"
+            onClick={handleCopyGenes}
+            sx={{
+              p: 0.5,
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.04)",
+              },
+            }}
+          >
+            {copied ? (
+              <FontAwesomeIcon
+                icon={faCheck}
+                style={{
+                  fontSize: "12px",
+                  color: "#4caf50",
+                  fontWeight: "bold",
+                }}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faCopy}
+                style={{
+                  fontSize: "12px",
+                  color: "#1976d2",
+                }}
+              />
+            )}
+          </IconButton>
+        </Tooltip>
+      </Stack>
+
+      <Box
+        sx={{
+          mt: 1,
+          p: 1.5,
+          bgcolor: "#f5f5f5",
+          borderRadius: 1,
+          maxHeight: 200,
+          overflow: "auto",
+        }}
+      >
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+          {genes.map((gene, idx) => {
+            const targetUrl = getGeneTargetUrl(
+              gene,
+              geneToTargetIdMapping || new Map()
+            );
+
+            return (
+              <MuiLink
+                key={`${gene}-${idx}`}
+                href={targetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  textDecoration: "none",
+                  display: "inline-block",
+                }}
+              >
+                <Chip
+                  label={gene}
+                  size="small"
+                  component="span"
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#e0e0e0",
+                      cursor: "pointer",
+                    },
+                  }}
+                />
+              </MuiLink>
+            );
+          })}
+        </Box>
+      </Box>
+
+      {diseaseId && (
+        <Button
+          onClick={handleViewInAOTF}
+          size="small"
+          variant="outlined"
+          sx={{ mt: 1 }}
+        >
+          View genes in AOTF page
+        </Button>
+      )}
+    </Box>
   );
 }
 
@@ -132,25 +259,7 @@ function EdgeDetailsContent({
   geneToTargetIdMapping?: Map<string, string>;
   diseaseId?: string;
 }) {
-  const [copied, setCopied] = useState(false);
 
-  const handleCopyGenes = async () => {
-    const geneText = (data.sharedGenes || []).join("\n");
-    try {
-      await navigator.clipboard.writeText(geneText);
-      setCopied(true);
-      // Reset the icon after 2 seconds
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("[COPY_GENES] Failed to copy to clipboard:", err);
-    }
-  };
-
-  const handleViewInAOTF = () => {
-    const targetIds = getTargetIdsFromMapping(data.sharedGenes || [], geneToTargetIdMapping || new Map());
-    const aotfLink = buildAOTFLink(diseaseId || "", targetIds);
-    window.open(aotfLink, "_blank");
-  };
   return (
     <>
       <Box>
@@ -184,94 +293,7 @@ function EdgeDetailsContent({
 
       <Divider />
 
-      <Box>
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center", mb: 1 }}>
-          <Typography variant="subtitle2" fontWeight={600}>
-            Shared Genes: {data.sharedCount}
-          </Typography>
-          <Tooltip title={copied ? "Copied!" : "Copy all genes"}>
-            <IconButton
-              size="small"
-              onClick={handleCopyGenes}
-              sx={{
-                p: 0.5,
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.04)",
-                },
-              }}
-            >
-              {copied ? (
-                <FontAwesomeIcon
-                  icon={faCheck}
-                  style={{
-                    fontSize: "12px",
-                    color: "#4caf50",
-                    fontWeight: "bold",
-                  }}
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faCopy}
-                  style={{
-                    fontSize: "12px",
-                    color: "#1976d2",
-                  }}
-                />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Stack>
-        <Box
-          sx={{
-            mt: 1,
-            p: 1.5,
-            bgcolor: "#f5f5f5",
-            borderRadius: 1,
-            maxHeight: 200,
-            overflow: "auto",
-          }}
-        >
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-            {(data.sharedGenes || []).map((gene, idx) => {
-              const targetUrl = getGeneTargetUrl(gene, geneToTargetIdMapping || new Map());
-              return (
-                <MuiLink
-                  key={`${gene}-${idx}`}
-                  href={targetUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    textDecoration: "none",
-                    display: "inline-block",
-                  }}
-                >
-                  <Chip
-                    label={gene}
-                    size="small"
-                    component="span"
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "#e0e0e0",
-                        cursor: "pointer",
-                      },
-                    }}
-                  />
-                </MuiLink>
-              );
-            })}
-          </Box>
-        </Box>
-        {diseaseId && (
-          <Button
-            onClick={handleViewInAOTF}
-            size="small"
-            variant="outlined"
-            sx={{ mt: 1 }}
-          >
-            View genes in AOTF page
-          </Button>
-        )}
-      </Box>
+      <GeneList title="Shared Genes" genes={data.sharedGenes || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
 
       <Box>
         <Typography variant="caption" color="text.secondary">
@@ -302,13 +324,20 @@ export function EnrichmentMapDetailsModal({
 
   // Lazy-load gene mapping when modal opens with edge data
   useEffect(() => {
-    if (!open || type !== "edge" || !data || !(data as EdgeData).sharedGenes) {
+    if (!open  || !data || !(data as EdgeData).sharedGenes) {
       return;
     }
 
     const buildMapping = async () => {
       if (!apolloClient) return;
-      const sharedGenes = (data as EdgeData).sharedGenes || [];
+      let sharedGenes: string[] = [];
+      if( type === "edge") {
+        sharedGenes = (data as EdgeData).sharedGenes || [];
+      } else if (type === "node") {
+        sharedGenes = (data as NodeData).leadingGenes || [];
+      } else {
+        sharedGenes = [];
+      }
       const mapping = await buildGeneToTargetIdMapping(apolloClient, sharedGenes);
       setGeneToTargetIdMapping(mapping);
     };
@@ -329,7 +358,7 @@ export function EnrichmentMapDetailsModal({
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
           {isNode && (data as NodeData).pathway && (
-            <NodeDetailsContent data={data as NodeData} />
+            <NodeDetailsContent data={data as NodeData} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
           )}
 
           {isEdge && (data as EdgeData).sharedGenes && (

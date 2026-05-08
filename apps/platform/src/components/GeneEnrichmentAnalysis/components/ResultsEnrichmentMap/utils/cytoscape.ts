@@ -120,7 +120,7 @@ export function initializeCytoscapeInstance(
     const node = evt.target;
     const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform);
     const isMultiSelectKey = isMac ? evt.originalEvent.metaKey : evt.originalEvent.ctrlKey;
-
+ console.log("Node clicked with data:", node.data());
     if (isMultiSelectKey) {
       // Ctrl/Cmd+click: toggle selection for this node
       if (node.selected()) {
@@ -134,6 +134,7 @@ export function initializeCytoscapeInstance(
       node.select();
       // Open modal for single click without modifier
       if (onNodeClick) {
+       
         onNodeClick(node.data());
       }
     }
