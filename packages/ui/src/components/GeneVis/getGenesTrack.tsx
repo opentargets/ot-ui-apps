@@ -48,10 +48,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
           {data.genes.map(gene => {
             const { target } = gene;
             const rowIndex = GeneToRow[target.id];
-            const labelText = `${target.genomicLocation.strand === -1 ? "← " : ""}${
-              target.approvedSymbol ?? target.id}${
-              target.genomicLocation.strand === 1 ? " →" : ""}`;
-            const tint = getValue(geneColor, gene);
+            const tint = getValue(geneColor, target);
             return (
               <Fragment key={target.id}>
                 <DataText
@@ -59,7 +56,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
                   trackId={trackId}
                   x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
                   y={yTop(rowIndex) + labelHeight}
-                  text={labelText}
+                  text={geneLabel(target)}
                   anchor={[0.5, 1]}
                   style={geneLabelStyle}
                 />

@@ -10,20 +10,16 @@ interface NestedXInfoProps {
 }
 
 function NestedXInfo({ data, scalesRef, XInfo, isInner, canvasWidth }: NestedXInfoProps) {
-  // Read initial values from ref
-  const initialStart = scalesRef.current?.viewStart ?? 0;
-  const initialEnd = scalesRef.current?.viewEnd ?? 100;
-  
-  const [range, setRange] = useState({
-    start: initialStart,
-    end: initialEnd,
-  });
+  const [range, setRange] = useState(() => ({
+    start: scalesRef.current?.viewStart ?? 0,
+    end: scalesRef.current?.viewEnd ?? 100,
+  }));
 
   // Poll the ref for changes (since the ref updates imperatively during pan/zoom)
   useEffect(() => {
     let rafId: number;
-    let lastStart = initialStart;
-    let lastEnd = initialEnd;
+    let lastStart = range.start;
+    let lastEnd = range.end;
     
     const checkForChanges = () => {
       const scales = scalesRef.current;
@@ -43,7 +39,7 @@ function NestedXInfo({ data, scalesRef, XInfo, isInner, canvasWidth }: NestedXIn
     rafId = requestAnimationFrame(checkForChanges);
     
     return () => cancelAnimationFrame(rafId);
-  }, [scalesRef, initialStart, initialEnd]);
+  }, [scalesRef]);
 
   return <XInfo data={data} start={range.start} end={range.end} isInner={isInner} canvasWidth={canvasWidth} />;
 }

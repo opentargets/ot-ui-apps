@@ -39,7 +39,7 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
 
   const HANDLE_WIDTH = 8;
   const PANEL_HEIGHT = 20;
-  const MIN_WINDOW_WIDTH_DATA = 20 * (xMax - xMin) / canvasWidth;
+  const MIN_WINDOW_WIDTH_DATA = 10 * (xMax - xMin) / canvasWidth;
   const HANDLE_COLOR = '#00aaff';
 
   const updateDOM = useCallback((start: number, end: number) => {
@@ -58,30 +58,9 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
     updateDOM(internalViewRef.current.start, internalViewRef.current.end);
   }, [canvasWidth, updateDOM]);
 
-  // Calculate initial window bounds for SSR/first render
+  // Calculate initial window bounds for first render
   const windowX = (internalView.start - xMin) / (xMax - xMin) * canvasWidth;
   const windowWidth = (internalView.end - internalView.start) / (xMax - xMin) * canvasWidth;
-
-  const handleMouseDown = useCallback((type: 'move' | 'left' | 'right', e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-
-    const { start, end } = internalViewRef.current;
-    const startX = (start - xMin) / (xMax - xMin) * canvasWidth;
-    const startW = (end - start) / (xMax - xMin) * canvasWidth;
-    dragState.current = {
-      type,
-      rectLeft: rect.left,
-      startClientX: e.clientX,
-      startTransformX: startX,
-      startWidth: startW,
-      start,
-      end,
-    };
-  }, [xMin, xMax, canvasWidth]);
 
   // schedule a batched view update via RAF
   const scheduleViewUpdate = useCallback((start: number, end: number) => {
@@ -144,29 +123,65 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
     scheduleViewUpdate(newStart, newEnd);
   }, [canvasWidth, xMin, xMax, MIN_WINDOW_WIDTH_DATA, scheduleViewUpdate, HANDLE_WIDTH]);
 
+  // Store handler refs so we can remove them in mouseup
+  const moveHandlerRef = useRef<(e: MouseEvent) => void>();
+  const upHandlerRef = useRef<() => void>();
+
+  // Keep handleMouseUp ref current for the closure (initialized later)
+  const handleMouseUpRef = useRef<() => void>(() => {});
+
+  const handleMouseDown = useCallback((type: 'move' | 'left' | 'right', e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+
+    const { start, end } = internalViewRef.current;
+    const startX = (start - xMin) / (xMax - xMin) * canvasWidth;
+    const startW = (end - start) / (xMax - xMin) * canvasWidth;
+    dragState.current = {
+      type,
+      rectLeft: rect.left,
+      startClientX: e.clientX,
+      startTransformX: startX,
+      startWidth: startW,
+      start,
+      end,
+    };
+
+    // Attach global listeners only during drag
+    const handleGlobalMouseMove = (e: MouseEvent) => handleMouseMove(e);
+    const handleGlobalMouseUp = () => handleMouseUpRef.current();
+
+    moveHandlerRef.current = handleGlobalMouseMove;
+    upHandlerRef.current = handleGlobalMouseUp;
+
+    document.addEventListener('mousemove', handleGlobalMouseMove);
+    document.addEventListener('mouseup', handleGlobalMouseUp);
+  }, [xMin, xMax, canvasWidth, handleMouseMove]);
+
   const handleMouseUp = useCallback(() => {
+    // Remove global listeners
+    if (moveHandlerRef.current) {
+      document.removeEventListener('mousemove', moveHandlerRef.current);
+    }
+    if (upHandlerRef.current) {
+      document.removeEventListener('mouseup', upHandlerRef.current);
+    }
+    moveHandlerRef.current = undefined;
+    upHandlerRef.current = undefined;
+
     dragState.current = null;
     const { start, end } = internalViewRef.current;
     onViewChange(start, end);
     setInternalView({ start, end });
   }, [onViewChange]);
 
+  // Keep handleMouseUp ref current for the closure
   useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => {
-      if (dragState.current) handleMouseMove(e);
-    };
-    const handleGlobalMouseUp = () => {
-      if (dragState.current) handleMouseUp();
-    };
-
-    document.addEventListener('mousemove', handleGlobalMouseMove);
-    document.addEventListener('mouseup', handleGlobalMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleGlobalMouseMove);
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
-    };
-  }, [handleMouseMove, handleMouseUp]);
+    handleMouseUpRef.current = handleMouseUp;
+  }, [handleMouseUp]);
 
   return (
     <Box

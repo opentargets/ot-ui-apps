@@ -92,7 +92,11 @@ function Body({ id, entity }: BodyProps) {
             chromosome={chromosome}
             xMin={start}
             xMax={end}
-            geneColor={gene => gene.target.biotype === "protein_coding" ? "steelblue" : "firebrick"}
+            geneColor={target => `${target.biotype === "protein_coding" ? "steelblue" : "firebrick"}`}
+            geneLabel={target => `${target.genomicLocation.strand === -1 ? "← " : ""}${
+              target.approvedSymbol ?? target.id}${
+              target.genomicLocation.strand === 1 ? " →" : ""}`
+            }
             variantColor={() => "grey"}
           />
         : <h2>Loading...</h2>

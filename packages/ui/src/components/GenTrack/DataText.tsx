@@ -24,8 +24,8 @@ export function DataText({
   text,
   style,
   anchor,
-  alpha,
-  rotation,
+  alpha = 1,
+  rotation = 0,
 }: DataTextProps) {
   const textRef = useRef<PixiText | null>(null);
 
