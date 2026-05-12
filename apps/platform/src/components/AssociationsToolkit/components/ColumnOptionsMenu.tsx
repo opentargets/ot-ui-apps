@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Popover, FormGroup, Button, FormControlLabel, Box, Switch } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { faCaretUp, faCaretDown, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
-import { Tooltip } from "ui";
 
 import { useAotfURLState } from "../context/AssociationsURLContext";
 
@@ -14,18 +13,14 @@ const StyledBotton = styled(Button)({
   },
 });
 
-const PopoverContent = styled("div")({
-  padding: "15px",
-});
-
 function DataMenu() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const { displayedTable, activeHeadersControlls, setActiveHeadersControlls } = useAotfURLState();
 
   const isPrioritisation = displayedTable === "prioritisations";
 
-  const handleClick = event => {
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setActiveHeadersControlls(!activeHeadersControlls);
   };

@@ -36,7 +36,7 @@ const TableSpacer = styled("div")({
   marginBottom: 5,
 });
 
-const getIndicatorLabel = (prefix) => {
+const getIndicatorLabel = (prefix: string): string => {
   switch (prefix) {
     case TABLE_PREFIX.CORE:
       return "All";
@@ -49,7 +49,11 @@ const getIndicatorLabel = (prefix) => {
   }
 };
 
-const getIndicatorCount = (prefix, count, filteredCount) => {
+const getIndicatorCount = (
+  prefix: string,
+  count: number,
+  filteredCount: number
+): string | number => {
   switch (prefix) {
     case TABLE_PREFIX.CORE:
       return count;
@@ -58,6 +62,15 @@ const getIndicatorCount = (prefix, count, filteredCount) => {
   }
 };
 
+interface TableIndicatorControlProps {
+  prefix?: string;
+  open?: boolean;
+  count?: number;
+  filteredCount?: number;
+  onClickToggle?: () => void;
+  onClickDelete?: () => void;
+}
+
 const TableIndicatorControl = ({
   prefix = "",
   open = true,
@@ -65,14 +78,14 @@ const TableIndicatorControl = ({
   filteredCount = 0,
   onClickToggle,
   onClickDelete,
-}) => {
+}: TableIndicatorControlProps) => {
   const label = getIndicatorLabel(prefix);
   const countLabel = getIndicatorCount(prefix, count, filteredCount);
   return (
     <Box sx={{ display: "flex", my: 1, gap: 1, alignItems: "center" }}>
       {prefix !== TABLE_PREFIX.CORE && (
-        <Box 
-          onClick={onClickDelete} 
+        <Box
+          onClick={onClickDelete}
           sx={{ color: grey[600], cursor: "pointer" }}
           data-testid={`delete-${prefix.toLowerCase()}-button`}
         >
@@ -105,7 +118,7 @@ const TableIndicatorControl = ({
   );
 };
 
-const columnHelper = createColumnHelper();
+const columnHelper = createColumnHelper<any>();
 
 const evidenceViewColumns = getDatasources({
   displayedTable: "associations",
@@ -116,12 +129,12 @@ const prioritisationViewColumns = getDatasources({
   colorScale: getScale(false),
 });
 
-const CUSTOM_CELL_RENDERERS = {
+const CUSTOM_CELL_RENDERERS: Record<string, (cell: any) => React.ReactNode> = {
   noveltyIcon: cell => <NoveltyGaugeCell value={cell.getValue()} row={cell.row.original} />,
 };
 
 const metricsColumns = ROW_METRICS.map(metric =>
-  columnHelper.accessor(row => row[metric.id], {
+  columnHelper.accessor((row: any) => row[metric.id], {
     id: metric.id,
     enableSorting: metric.sortable,
     header: (
@@ -129,7 +142,7 @@ const metricsColumns = ROW_METRICS.map(metric =>
         {metric.label}
       </Typography>
     ),
-    cell: cell => {
+    cell: (cell: any) => {
       const customRenderer = CUSTOM_CELL_RENDERERS[metric.id];
       if (customRenderer) return customRenderer(cell);
       return (
@@ -141,15 +154,20 @@ const metricsColumns = ROW_METRICS.map(metric =>
   })
 );
 
-/* Build table columns bases on displayed table */
-function getDatasources({ displayedTable, colorScale }) {
+function getDatasources({
+  displayedTable,
+  colorScale,
+}: {
+  displayedTable: string;
+  colorScale: (v: number) => string;
+}) {
   const isAssociations = displayedTable === "associations";
   const baseCols = isAssociations ? dataSourcesCols : prioritizationCols;
   const dataProp = isAssociations ? "dataSources" : "prioritisations";
-  const datasources = [];
-  baseCols.forEach(({ id, label, sectionId, description, aggregation, isPrivate, docsLink }) => {
+  const datasources: any[] = [];
+  baseCols.forEach(({ id, label, sectionId, description, aggregation, isPrivate, docsLink }: any) => {
     if (isPrivate && isPrivate !== isPartnerPreview) return;
-    const column = columnHelper.accessor((row) => row[dataProp][id], {
+    const column = columnHelper.accessor((row: any) => row[dataProp][id], {
       id,
       sectionId,
       enableSorting: isAssociations,
@@ -157,15 +175,19 @@ function getDatasources({ displayedTable, colorScale }) {
       isPrivate,
       docsLink,
       header: isAssociations ? (
-        <Typography variant="assoc_header" data-testid={`table-header-${id}`}>{label}</Typography>
+        <Typography variant="assoc_header" data-testid={`table-header-${id}`}>
+          {label}
+        </Typography>
       ) : (
         <AggregationsTooltip title={description} placement="right">
           <div className="cursor-help">
-            <Typography variant="assoc_header" data-testid={`table-header-${id}`}>{label}</Typography>
+            <Typography variant="assoc_header" data-testid={`table-header-${id}`}>
+              {label}
+            </Typography>
           </div>
         </AggregationsTooltip>
       ),
-      cell: (cell) => (
+      cell: (cell: any) => (
         <TableCell cell={cell} colorScale={colorScale} displayedTable={displayedTable} />
       ),
     });
@@ -177,8 +199,22 @@ function getDatasources({ displayedTable, colorScale }) {
 function TableAssociations() {
   const { entity, entityToGet, pagination, sorting } = useAotfQueryState();
   const { handlePaginationChange, handleSortingChange } = useAotfQueryDispatch();
-  const { displayedTable, pinnedEntries, uploadedEntries, setPinnedEntries, setUploadedEntries } = useAotfURLState();
-  const { data, count, loading: associationsLoading, pinnedData, pinnedLoading, uploadedData, uploadedLoading } = useAotfData();
+  const {
+    displayedTable,
+    pinnedEntries,
+    uploadedEntries,
+    setPinnedEntries,
+    setUploadedEntries,
+  } = useAotfURLState();
+  const {
+    data,
+    count,
+    loading: associationsLoading,
+    pinnedData,
+    pinnedLoading,
+    uploadedData,
+    uploadedLoading,
+  } = useAotfData();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";
@@ -193,12 +229,10 @@ function TableAssociations() {
         header: "header",
         id: "naiming-cols",
         columns: [
-          columnHelper.accessor((row) => row[entityToGet][rowNameEntity], {
+          columnHelper.accessor((row: any) => row[entityToGet][rowNameEntity], {
             id: "name",
             enableSorting: false,
-            cell: (cell) => {
-              return <CellName cell={cell} colorScale={associationsColorScale} />;
-            },
+            cell: (cell: any) => <CellName cell={cell} colorScale={associationsColorScale} />,
             header: () => {
               const label = entityToGet === "target" ? "Target" : "Disease";
               return (
@@ -211,20 +245,24 @@ function TableAssociations() {
                     pr: 2,
                   }}
                 >
-                  <Typography data-testid="table-header-name" variant="assoc_header">{label}</Typography>
+                  <Typography data-testid="table-header-name" variant="assoc_header">
+                    {label}
+                  </Typography>
                   <NameFilter />
                 </Box>
               );
             },
           }),
-          columnHelper.accessor((row) => row.score, {
+          columnHelper.accessor((row: any) => row.score, {
             id: "score",
-            header: <Typography variant="assoc_header" data-testid="table-header-score">Association Score</Typography>,
-            cell: (cell) => (
+            header: (
+              <Typography variant="assoc_header" data-testid="table-header-score">
+                Association Score
+              </Typography>
+            ),
+            cell: (cell: any) => (
               <Box sx={{ marginRight: "10px" }}>
                 <TableCell
-                  scoreValue={cell.getValue()}
-                  globalScore
                   shape="rectangular"
                   colorScale={associationsColorScale}
                   cell={cell}
@@ -240,20 +278,18 @@ function TableAssociations() {
         columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
       }),
       ...(isAssociations
-        ? [columnHelper.group({
-            header: "metrics",
-            id: "metrics-cols",
-            columns: metricsColumns,
-          })]
+        ? [
+            columnHelper.group({
+              header: "metrics",
+              id: "metrics-cols",
+              columns: metricsColumns,
+            }),
+          ]
         : []),
     ],
     [displayedTable, entityToGet, rowNameEntity]
   );
 
-  /**
-   * TABLE HOOK
-   * @description tanstack/react-table
-   */
   const coreAssociationsTable = useReactTable({
     data,
     columns,
@@ -262,12 +298,12 @@ function TableAssociations() {
       sorting,
       prefix: TABLE_PREFIX.CORE,
       loading: associationsLoading,
-    },
+    } as any,
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row[entityToGet].id,
+    getRowId: (row: any) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
@@ -276,19 +312,16 @@ function TableAssociations() {
     data: pinnedData,
     columns,
     state: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 150,
-      },
+      pagination: { pageIndex: 0, pageSize: 150 },
       sorting,
       prefix: TABLE_PREFIX.PINNING,
       loading: pinnedLoading,
-    },
+    } as any,
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row[entityToGet].id,
+    getRowId: (row: any) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
@@ -297,19 +330,16 @@ function TableAssociations() {
     data: uploadedData,
     columns,
     state: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 150,
-      },
+      pagination: { pageIndex: 0, pageSize: 150 },
       sorting,
       prefix: TABLE_PREFIX.UPLOADED,
       loading: uploadedLoading,
-    },
+    } as any,
     pageCount: count,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row[entityToGet].id,
+    getRowId: (row: any) => row[entityToGet].id,
     manualPagination: true,
     manualSorting: true,
   });
@@ -330,90 +360,60 @@ function TableAssociations() {
     }
   }, [pinnedData, uploadedData]);
 
-  const onClickPinnedIndicator = () => {
-    setPinningOpen(!pinningOpen);
-  };
-  const onClickUploadedIndicator = () => {
-    setUploadedOpen(!uploadedOpen);
-  };
-  const onClickCoreIndicator = () => {
-    setCoreOpen(!coreOpen);
-  };
-
-  const onClickPinnedDeleteAll = () => {
-    setPinnedEntries([]);
-  };
-  const onClickUploadedDeleteAll = () => {
-    setUploadedEntries([]);
-  };
-
   const entitesHeaders = coreAssociationsTable.getHeaderGroups()[0].headers[1].subHeaders;
+
   return (
     <div className="TAssociations" style={tableCSSVariables} data-testid="associations-table">
       <TableElement>
-        {/* HEADER */}
         <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
 
-        {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />
 
         <TableSpacer />
 
-        {/* Pinning */}
         {pinnedEntries.length > 0 && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.PINNING}
             count={pinnedEntries.length}
             filteredCount={corePinnedTable.getRowCount()}
             open={pinningOpen}
-            onClickToggle={onClickPinnedIndicator}
-            onClickDelete={onClickPinnedDeleteAll}
+            onClickToggle={() => setPinningOpen(!pinningOpen)}
+            onClickDelete={() => setPinnedEntries([])}
           />
         )}
         {pinnedData.length > 0 && pinnedEntries.length > 0 && (
           <Collapse in={pinningOpen}>
-            <TableBody core={corePinnedTable} prefix={TABLE_PREFIX.PINNING} cols={entitesHeaders} />
+            <TableBody core={corePinnedTable} cols={entitesHeaders} />
           </Collapse>
         )}
-        {/* Upload */}
+
         {uploadedEntries.length > 0 && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.UPLOADED}
             count={uploadedEntries.length}
             filteredCount={coreUploadedTable.getRowCount()}
             open={uploadedOpen}
-            onClickToggle={onClickUploadedIndicator}
-            onClickDelete={onClickUploadedDeleteAll}
+            onClickToggle={() => setUploadedOpen(!uploadedOpen)}
+            onClickDelete={() => setUploadedEntries([])}
           />
         )}
         {coreUploadedTable.getRowCount() > 0 && uploadedEntries.length > 0 && (
           <Collapse in={uploadedOpen}>
-            <TableBody
-              core={coreUploadedTable}
-              prefix={TABLE_PREFIX.UPLOADED}
-              cols={entitesHeaders}
-            />
+            <TableBody core={coreUploadedTable} cols={entitesHeaders} />
           </Collapse>
         )}
-        {/* Core */}
+
         {(uploadedEntries.length > 0 || pinnedEntries.length > 0) && (
           <TableIndicatorControl
             prefix={TABLE_PREFIX.CORE}
             count={count}
             open={coreOpen}
-            onClickToggle={onClickCoreIndicator}
+            onClickToggle={() => setCoreOpen(!coreOpen)}
           />
         )}
 
-        {coreOpen && (
-          <TableBody
-            core={coreAssociationsTable}
-            prefix={TABLE_PREFIX.CORE}
-            cols={entitesHeaders}
-          />
-        )}
+        {coreOpen && <TableBody core={coreAssociationsTable} cols={entitesHeaders} />}
 
-        {/* FOOTER */}
         <TableFooter table={coreAssociationsTable} coreOpen={coreOpen} />
       </TableElement>
     </div>

@@ -22,14 +22,30 @@ import {
 } from "../layout";
 import { rowNameProperty, TABLE_PREFIX } from "../../associationsUtils";
 
-/* HELPERS */
-function BodyZone({ id, columnsCount, children, ...props }) {
-  if (id.includes("naiming-cols")) return <NaimingBodyZone {...props}>{children}</NaimingBodyZone>;
-  if (id.includes("metrics-cols")) return <MetricsBodyZone {...props}>{children}</MetricsBodyZone>;
-  return <EntityBodyZone columnsCount={columnsCount} {...props}>{children}</EntityBodyZone>;
+interface BodyZoneProps {
+  id: string;
+  columnsCount: number;
+  children: React.ReactNode;
+  [key: string]: any;
 }
 
-function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
+function BodyZone({ id, columnsCount, children, ...props }: BodyZoneProps) {
+  if (id.includes("naiming-cols")) return <NaimingBodyZone {...props}>{children}</NaimingBodyZone>;
+  if (id.includes("metrics-cols")) return <MetricsBodyZone {...props}>{children}</MetricsBodyZone>;
+  return (
+    <EntityBodyZone columnsCount={columnsCount} {...props}>
+      {children}
+    </EntityBodyZone>
+  );
+}
+
+function getIsRowActive(
+  prefix: string,
+  row: any,
+  focusState: any[] = [],
+  parentRow: string,
+  parentTable: string
+): boolean {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
     return focusState.some(
       entry =>
@@ -48,7 +64,13 @@ function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
   );
 }
 
-function getFocusSection(prefix, row, focusState, parentRow, parentTable) {
+function getFocusSection(
+  prefix: string,
+  row: any,
+  focusState: any[],
+  parentRow: string,
+  parentTable: string
+): string[] | undefined {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
     return focusState.find(
       entry =>
@@ -94,7 +116,7 @@ function EmptyMessage() {
       <Typography variant="h5" sx={{ mb: 2 }}>
         No results found
       </Typography>
-      <Typography variant="body">
+      <Typography variant="body1">
         Try adjust your search or filter to find what you looking for.
       </Typography>
     </Box>
@@ -103,7 +125,13 @@ function EmptyMessage() {
 
 const borderStyle = `1px solid ${grey[400]}`;
 
-function TableBody({ core, cols, noInteractors }) {
+interface TableBodyProps {
+  core: any;
+  cols: any[];
+  noInteractors?: boolean;
+}
+
+function TableBody({ core, cols, noInteractors }: TableBodyProps) {
   const { id, entity, entityToGet } = useAotfQueryState();
   const { displayedTable } = useAotfURLState();
 
@@ -125,23 +153,23 @@ function TableBody({ core, cols, noInteractors }) {
       <div>
         <TableBodyContent prefix={prefix}>
           <RowsContainer>
-            {rows.map((row, index) => (
+            {rows.map((row: any, index: number) => (
               <Fragment key={row.id}>
                 <RowContainer
                   data-testid={`table-row-${prefix.toLowerCase()}-${index}`}
                   interactors={prefix === TABLE_PREFIX.INTERACTORS}
                   rowExpanded={
-                    focusState.filter(e => e.row === row.id && e.table === prefix).length > 0
+                    focusState.filter((e: any) => e.row === row.id && e.table === prefix).length > 0
                   }
                 >
-                  {highLevelHeaders.map(columnGroup => (
+                  {highLevelHeaders.map((columnGroup: any) => (
                     <BodyZone
                       id={columnGroup.id}
                       columnsCount={cols.length}
                       key={columnGroup.id}
                     >
-                      {columnGroup.subHeaders.map(column => {
-                        const cell = row.getVisibleCells().find(el => el.column.id === column.id);
+                      {columnGroup.subHeaders.map((column: any) => {
+                        const cell = row.getVisibleCells().find((el: any) => el.column.id === column.id);
                         return (
                           <div key={cell.id}>
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}

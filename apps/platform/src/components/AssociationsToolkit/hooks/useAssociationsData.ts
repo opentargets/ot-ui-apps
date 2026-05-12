@@ -1,9 +1,36 @@
 import { useEffect, useState } from "react";
+import { ApolloClient, DocumentNode } from "@apollo/client";
 import { getInitialLoadingData, getAssociationsData, getAllDataCount } from "../associationsUtils";
+import { columnAdvanceControl } from "../types";
+import { Facet } from "../Facets/facetsTypes";
 
 const INITIAL_ROW_COUNT = 25;
 
-const getInitialState = rowCount => ({
+interface UseAssociationsDataOptions {
+  id?: string;
+  index?: number;
+  size?: number;
+  filter?: string;
+  sortBy?: string;
+  enableIndirect?: boolean;
+  datasources?: columnAdvanceControl[];
+  rowsFilter?: string[];
+  entity?: string;
+  facetFilters?: Facet[];
+  entitySearch?: string;
+  laodingCount?: number;
+  includeMeasurements?: boolean;
+}
+
+interface AssociationsDataState {
+  loading: boolean;
+  error: boolean;
+  data: any[];
+  initialLoading: boolean;
+  count: number;
+}
+
+const getInitialState = (rowCount: number): AssociationsDataState => ({
   loading: true,
   error: false,
   data: getInitialLoadingData(rowCount),
@@ -11,9 +38,6 @@ const getInitialState = rowCount => ({
   count: 0,
 });
 
-/********
- * HOOK *
- ********/
 function useAssociationsData({
   client,
   query,
@@ -32,15 +56,17 @@ function useAssociationsData({
     laodingCount = INITIAL_ROW_COUNT,
     includeMeasurements = false,
   },
-}) {
-  const [state, setState] = useState(getInitialState(laodingCount));
+}: {
+  client: ApolloClient<any>;
+  query: DocumentNode;
+  options: UseAssociationsDataOptions;
+}): AssociationsDataState {
+  const [state, setState] = useState<AssociationsDataState>(getInitialState(laodingCount));
+
   useEffect(() => {
     let isCurrent = true;
     const fetchData = async () => {
-      setState({
-        ...state,
-        loading: true,
-      });
+      setState(prev => ({ ...prev, loading: true }));
       const resData = await client.query({
         query,
         variables: {
@@ -62,18 +88,23 @@ function useAssociationsData({
           includeMeasurements,
         },
       });
-      const parsedData = getAssociationsData(entity, resData.data);
-      const dataCount = getAllDataCount(entity, resData.data);
+      const parsedData = getAssociationsData(entity!, resData.data);
+      const dataCount = getAllDataCount(entity!, resData.data);
 
-      setState({
-        count: dataCount,
-        data: parsedData,
-        loading: false,
-        initialLoading: false,
-      });
+      if (isCurrent) {
+        setState({
+          count: dataCount,
+          data: parsedData,
+          loading: false,
+          initialLoading: false,
+          error: false,
+        });
+      }
     };
-    if (true) fetchData();
-    return () => (isCurrent = false);
+    fetchData();
+    return () => {
+      isCurrent = false;
+    };
   }, [
     id,
     index,
@@ -85,7 +116,7 @@ function useAssociationsData({
     entity,
     facetFilters,
     entitySearch,
-    includeMeasurements
+    includeMeasurements,
   ]);
 
   return state;

@@ -1,4 +1,16 @@
-const dataSources = [
+export interface DataSourceDef {
+  id: string;
+  sectionId: string;
+  label: string;
+  aggregation: string;
+  aggregationId: string;
+  weight: number;
+  isPrivate: boolean;
+  docsLink: string;
+  required: boolean;
+}
+
+const dataSources: DataSourceDef[] = [
   {
     id: "clinical_precedence",
     sectionId: "clinical_precedence",

@@ -50,10 +50,9 @@ const config = getConfig();
 const { isPartnerPreview } = config.profile;
 
 const dataSources = OriginalDataSources.filter(e => {
-  if (isPartnerPreview && e.isPrivate) {
-    return e;
-  } else if (!e.isPrivate) return e;
-  return;
+  if (isPartnerPreview && e.isPrivate) return e;
+  else if (!e.isPrivate) return e;
+  return undefined;
 });
 
 const StyledMenuItem = styled(MenuItem)({
@@ -83,45 +82,30 @@ const styles = makeStyles(theme => ({
   snackbarContentRoot: {
     padding: 0,
   },
-  backdrop: {
-    "& .MuiBackdrop-root": {
-      opacity: "0 !important",
-    },
-  },
-  container: {
-    width: "80%",
-    backgroundColor: theme.palette.grey[300],
-  },
-  paper: {
-    margin: "1.5rem",
-    padding: "1rem",
-  },
-  title: {
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: "white",
-    borderBottom: "1px solid #ccc",
-    fontSize: "1.2rem",
-    fontWeight: "bold",
-    padding: "1rem",
-  },
-  playgroundContainer: {
-    margin: "0 1.5rem 1.5rem 1.5rem",
-    height: "100%",
-  },
 }));
 
 const allAssociationsAggregation = [...new Set(dataSources.map(e => e.aggregation))];
 const allPrioritizationAggregation = [...new Set(prioritizationCols.map(e => e.aggregation))];
 
-const initialState = {
+interface DownloaderState {
+  associationAggregationSelectValue: string[];
+  prioritisationAggregationSelectValue: string[];
+  selectedAssociationAggregationColumnObjectValue: any[];
+  selectedPrioritisationAggregationColumnObjectValue: any[];
+}
+
+const initialState: DownloaderState = {
   associationAggregationSelectValue: allAssociationsAggregation,
   prioritisationAggregationSelectValue: allPrioritizationAggregation,
   selectedAssociationAggregationColumnObjectValue: [...dataSources],
   selectedPrioritisationAggregationColumnObjectValue: [...prioritizationCols],
 };
 
-const reducer = (state = initialState, action) => {
+type DownloaderAction =
+  | { type: "UPDATE_ASSOCIATION_COLUMNS"; payload: string[] }
+  | { type: "UPDATE_PRIORITISATION_COLUMNS"; payload: string[] };
+
+const reducer = (state: DownloaderState = initialState, action: DownloaderAction): DownloaderState => {
   switch (action.type) {
     case "UPDATE_ASSOCIATION_COLUMNS":
       return {
@@ -147,11 +131,11 @@ const reducer = (state = initialState, action) => {
 };
 
 const actions = {
-  UPDATE_ASSOCIATION_COLUMNS: payload => ({
+  UPDATE_ASSOCIATION_COLUMNS: (payload: string[]): DownloaderAction => ({
     type: "UPDATE_ASSOCIATION_COLUMNS",
     payload,
   }),
-  UPDATE_PRIORITISATION_COLUMNS: payload => ({
+  UPDATE_PRIORITISATION_COLUMNS: (payload: string[]): DownloaderAction => ({
     type: "UPDATE_PRIORITISATION_COLUMNS",
     payload,
   }),
@@ -163,7 +147,17 @@ function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { version } = useAPIMetadata();
   const classes = styles();
-  const { id, query, sorting, enableIndirect, entity, entityToGet, modifiedSourcesDataControls, dataSourceControls: dataSourcesWeights, entitySearch } = useAotfQueryState();
+  const {
+    id,
+    query,
+    sorting,
+    enableIndirect,
+    entity,
+    entityToGet,
+    modifiedSourcesDataControls,
+    dataSourceControls: dataSourcesWeights,
+    entitySearch,
+  } = useAotfQueryState();
   const { pinnedEntries } = useAotfURLState();
   const { pinnedData } = useAotfData();
   const fileStem = `OT-${id}-associated-${entityToGet}s`;
@@ -173,7 +167,8 @@ function DataDownloader() {
   const client = useApolloClient();
 
   const [downloading, setDownloading] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
   const columns = useMemo(
     () =>
       getExportedColumns(
@@ -189,6 +184,7 @@ function DataDownloader() {
       pinnedData,
     ]
   );
+
   const prioritisationColumns = useMemo(
     () =>
       getExportedPrioritisationColumns(
@@ -198,6 +194,7 @@ function DataDownloader() {
       ),
     [state.selectedPrioritisationAggregationColumnObjectValue, pinnedData, entityToGet]
   );
+
   const queryResponseSelector = useMemo(() => getRowsQuerySelector(entityToGet), [entityToGet]);
 
   const allAssociationsVariable = {
@@ -239,16 +236,19 @@ function DataDownloader() {
   const open = Boolean(anchorEl);
   const popoverId = open ? "downloader-popover" : undefined;
 
-  const downloadData = async (format, dataColumns, rows, dataFileStem) => {
+  const downloadData = async (
+    format: string,
+    dataColumns: any[],
+    rows: any,
+    dataFileStem: string
+  ) => {
     let allRows = rows;
     if (typeof rows === "function") {
       setDownloading(true);
       allRows = await rows();
       setDownloading(false);
     }
-    if (!allRows || allRows.length === 0) {
-      return;
-    }
+    if (!allRows || allRows.length === 0) return;
     const blob = createBlob(format)(dataColumns, allRows);
     const d = new Date().toLocaleDateString();
     FileSaver.saveAs(blob, `${dataFileStem}-${d}-v${version.year}_${version.month}.${format}`, {
@@ -256,7 +256,7 @@ function DataDownloader() {
     });
   };
 
-  const handleClickBTN = event => {
+  const handleClickBTN = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -410,7 +410,7 @@ function DataDownloader() {
                       onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
                     />
                   }
-                  label={`Only pinned ${isPartnerPreview ? " / uploaded " : ""} rows`}
+                  label={`Only pinned${isPartnerPreview ? " / uploaded " : " "}rows`}
                 />
 
                 {entity === "disease" && (

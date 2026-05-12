@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import { ReactNode, useState } from "react";
 import { List, FormControlLabel, Checkbox, Box } from "@mui/material";
 
-function LABEL_ELEMENT(children) {
+interface Hit {
+  id: string;
+  name?: string;
+  checked: boolean;
+}
+
+function LABEL_ELEMENT(children: ReactNode) {
   return (
     <Box sx={{ typography: "body2", fontWeight: "bold" }} display="inline">
       {children}
@@ -9,8 +15,22 @@ function LABEL_ELEMENT(children) {
   );
 }
 
-const NestedItem = ({ children, hits, term, handleParentChange, handleChangeChildCheckbox }) => {
-  const [childrenCheckbox, setChildrenCheckbox] = useState(hits);
+interface NestedItemProps {
+  children: ReactNode;
+  hits: Hit[];
+  term: string;
+  handleParentChange: (term: string) => void;
+  handleChangeChildCheckbox: (id: string) => void;
+}
+
+const NestedItem = ({
+  children,
+  hits,
+  term,
+  handleParentChange,
+  handleChangeChildCheckbox,
+}: NestedItemProps) => {
+  const [childrenCheckbox, setChildrenCheckbox] = useState<Hit[]>(hits);
   return (
     <List sx={{ mx: 1.5 }}>
       {childrenCheckbox.length === 1 && (

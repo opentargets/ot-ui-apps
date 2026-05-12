@@ -97,49 +97,63 @@ const SuggestionContainer = styled("div")`
 
 const steps = ["Add a file", "Entity validation"];
 
-const getEntityToUploadLabel = {
+const getEntityToUploadLabel: Record<string, string> = {
   target: "targets",
   disease: "diseases",
 };
 
-const getValidationResults = async (entity, queryTerms, client) =>
+const getValidationResults = async (entity: string[], queryTerms: string[], client: any) =>
   client.query({
     query: ValidationQuery,
     variables: { entity, queryTerms },
   });
 
-function formatQueryTermsResults(queryResult) {
-  const sortedResult = [...queryResult.data.mapIds.mappings].sort((a, b) =>
-    a.hits.length < b.hits.length ? 1 : -1
-  );
-  const parsedResult = sortedResult.map((qT) => {
-    const parsedQueryTerm = {
-      ...qT,
-      hits: [...qT.hits.map((e) => ({ ...e, checked: true }))],
-    };
-    return parsedQueryTerm;
-  });
-
-  return parsedResult;
+interface Hit {
+  id: string;
+  name?: string;
+  checked: boolean;
 }
 
-const uploadSuggestions = {
+interface QueryTermResult {
+  term: string;
+  hits: Hit[];
+}
+
+function formatQueryTermsResults(queryResult: any): QueryTermResult[] {
+  const sortedResult = [...queryResult.data.mapIds.mappings].sort(
+    (a: any, b: any) => (a.hits.length < b.hits.length ? 1 : -1)
+  );
+  return sortedResult.map((qT: any) => ({
+    ...qT,
+    hits: [...qT.hits.map((e: any) => ({ ...e, checked: true }))],
+  }));
+}
+
+const uploadSuggestions: Record<string, string[]> = {
   target: ["ENSG00000232810", "interleukin 6", "TP53", "ENSG00000105329", "P15692", "CD4"],
-  disease: ["EFO_0000508", "neoplasm", "MONDO_0004992", "EFO_0000182", "infection", "OBI_1110021"],
+  disease: [
+    "EFO_0000508",
+    "neoplasm",
+    "MONDO_0004992",
+    "EFO_0000182",
+    "infection",
+    "OBI_1110021",
+  ],
 };
 
-const FileExample = ({ entity = "target", runAction }) => {
+interface FileExampleProps {
+  entity?: string;
+  runAction: (terms: string[]) => void;
+}
+
+const FileExample = ({ entity = "target", runAction }: FileExampleProps) => {
   const examples = uploadSuggestions[entity];
 
   const [open, setExpanded] = useState(false);
   const [fileType, setFileType] = useState("text");
 
-  const handleFileTypeChange = (event, newFileType) => {
+  const handleFileTypeChange = (_event: any, newFileType: string) => {
     setFileType(newFileType);
-  };
-
-  const handleChange = () => {
-    setExpanded(open ? false : true);
   };
 
   function handleClickRun() {
@@ -150,9 +164,10 @@ const FileExample = ({ entity = "target", runAction }) => {
   function copyToClipboard() {
     navigator.clipboard.writeText(JSON.stringify(examples));
   }
+
   return (
     <Box sx={{ mb: 6 }}>
-      <BorderAccordion expanded={open} onChange={() => handleChange()}>
+      <BorderAccordion expanded={open} onChange={() => setExpanded(!open)}>
         <AccordionSummary
           aria-controls="panel1a-content"
           id="panel1a-header"
@@ -197,7 +212,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                   {fileType === "json" && (
                     <>
                       [
-                      {examples.map((ex) => (
+                      {examples.map(ex => (
                         <Typography key={v1()} variant="monoText" display="block" gutterBottom>
                           {`"${ex}",`}
                         </Typography>
@@ -206,7 +221,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                     </>
                   )}
                   {fileType === "text" &&
-                    examples.map((ex) => (
+                    examples.map(ex => (
                       <Typography key={v1()} variant="monoText" display="block" gutterBottom>
                         {ex}
                       </Typography>
@@ -219,7 +234,7 @@ const FileExample = ({ entity = "target", runAction }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {examples.map((ex) => (
+                        {examples.map(ex => (
                           <tr
                             key={v1()}
                             style={{ border: "1px solid black", borderCollapse: "collapse" }}
@@ -246,12 +261,13 @@ const FileExample = ({ entity = "target", runAction }) => {
 
 function DataUploader() {
   const [activeStep, setActiveStep] = useState(0);
-  const [queryTermsResults, setQueryTermsResults] = useState(null);
+  const [queryTermsResults, setQueryTermsResults] = useState<QueryTermResult[] | null>(null);
   const { entityToGet } = useAotfQueryState();
   const { uploadedEntries, setUploadedEntries } = useAotfURLState();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const client = useApolloClient();
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "text/html": [".txt"],
@@ -271,12 +287,15 @@ function DataUploader() {
       else if (fileType === "json") reader.readAsText(file);
       else setOpenErrorSnackbar(true);
 
-      reader.onload = async (e) => {
-        let contents;
+      reader.onload = async e => {
+        let contents: string[];
         if (fileType === "spreadsheet") contents = getDataFromSpreadsheet(e);
         else if (fileType === "text") contents = getDataFromTextFile(e);
-        else if (fileType === "json") contents = JSON.parse(e.target.result);
-        else setOpenErrorSnackbar(true);
+        else if (fileType === "json") contents = JSON.parse((e.target as FileReader).result as string);
+        else {
+          setOpenErrorSnackbar(true);
+          return;
+        }
 
         const result = await getValidationResults([entityToGet], contents, client);
         setQueryTermsResults(formatQueryTermsResults(result));
@@ -285,13 +304,11 @@ function DataUploader() {
     },
   });
 
-  function getDataFromSpreadsheet(file) {
-    const wb = XLSX.read(file.target.result, { type: "binary", bookVBA: true });
-    /* Get first worksheet */
+  function getDataFromSpreadsheet(file: ProgressEvent<FileReader>): string[] {
+    const wb = XLSX.read(file.target!.result, { type: "binary", bookVBA: true });
     const wsname = wb.SheetNames[0];
     const ws = wb.Sheets[wsname];
-    /* Convert array of arrays */
-    const data = XLSX.utils.sheet_to_json(ws);
+    const data: any[] = XLSX.utils.sheet_to_json(ws);
 
     if (!Object.hasOwn(data[0], "id")) {
       setOpenErrorSnackbar(true);
@@ -300,23 +317,19 @@ function DataUploader() {
       );
     }
 
-    const terms = data.map((item) => item["id"]);
-    return terms;
+    return data.map(item => item["id"]);
   }
 
-  function getDataFromTextFile(file) {
-    const contents = file.target.result;
-    const terms = contents.split("\n");
-    return terms;
+  function getDataFromTextFile(file: ProgressEvent<FileReader>): string[] {
+    const contents = file.target!.result as string;
+    return contents.split("\n");
   }
 
-  function getFileType(fileName) {
-    const fileType = fileName.split(".").pop();
-    switch (fileType) {
+  function getFileType(fileName: string): string {
+    const ext = fileName.split(".").pop();
+    switch (ext) {
       case "csv":
-        return "spreadsheet";
       case "tsv":
-        return "spreadsheet";
       case "xlsx":
         return "spreadsheet";
       case "txt":
@@ -324,11 +337,11 @@ function DataUploader() {
       case "json":
         return "json";
       default:
-        return fileType;
+        return ext ?? "";
     }
   }
 
-  const handleRunExample = async (terms) => {
+  const handleRunExample = async (terms: string[]) => {
     const result = await getValidationResults([entityToGet], terms, client);
     setQueryTermsResults(formatQueryTermsResults(result));
     setActiveStep(1);
@@ -337,12 +350,10 @@ function DataUploader() {
   const entityToUploadLabel = getEntityToUploadLabel[entityToGet];
 
   const handlePinElements = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    const allHits = [];
-    for (let index = 0; index < queryTermsResults.length; index++) {
-      const term = queryTermsResults[index];
-      for (let r = 0; r < term.hits.length; r++) {
-        const hit = term.hits[r];
+    setActiveStep(prev => prev + 1);
+    const allHits: string[] = [];
+    for (const termResult of queryTermsResults ?? []) {
+      for (const hit of termResult.hits) {
         if (hit.checked) allHits.push(hit.id);
       }
     }
@@ -352,7 +363,7 @@ function DataUploader() {
 
   const handleBack = () => {
     if (activeStep < 1) handleClosePopover();
-    else setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    else setActiveStep(prev => prev - 1);
   };
 
   const handleReset = () => {
@@ -362,7 +373,7 @@ function DataUploader() {
   const open = Boolean(anchorEl);
   const popoverId = open ? "downloader-popover" : undefined;
 
-  const handleClickBTN = (event) => {
+  const handleClickBTN = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -372,30 +383,28 @@ function DataUploader() {
     handleReset();
   };
 
-  function handleParentChange(term) {
-    const checkboxUpdateState = [...queryTermsResults];
-    checkboxUpdateState.find((hitItem) => {
-      if (hitItem.term === term) {
-        hitItem.hits.every((el) => !el.checked)
-          ? hitItem.hits.map((el) => (el.checked = true))
-          : hitItem.hits.map((el) => (el.checked = false));
-      }
-    });
-    setQueryTermsResults(checkboxUpdateState);
+  function handleParentChange(term: string) {
+    setQueryTermsResults(prev =>
+      prev!.map(hitItem => {
+        if (hitItem.term !== term) return hitItem;
+        const allChecked = hitItem.hits.every(el => el.checked);
+        return {
+          ...hitItem,
+          hits: hitItem.hits.map(el => ({ ...el, checked: !allChecked })),
+        };
+      })
+    );
   }
 
-  function handleChangeChildCheckbox(hitId) {
-    const checkboxUpdateState = [...queryTermsResults];
-    checkboxUpdateState.find((hitItem) => {
-      hitItem.hits.find((el) => {
-        if (el.id === hitId) return (el.checked = !el.checked);
-      });
-    });
-    setQueryTermsResults(checkboxUpdateState);
-  }
-
-  function handleCloseErrorSnackbar() {
-    setOpenErrorSnackbar(false);
+  function handleChangeChildCheckbox(hitId: string) {
+    setQueryTermsResults(prev =>
+      prev!.map(hitItem => ({
+        ...hitItem,
+        hits: hitItem.hits.map(el =>
+          el.id === hitId ? { ...el, checked: !el.checked } : el
+        ),
+      }))
+    );
   }
 
   return (
@@ -419,14 +428,14 @@ function DataUploader() {
           ".MuiDialog-paper": {
             width: "70%",
             maxWidth: "800px !important",
-            borderRadius: (theme) => theme.spacing(1),
+            borderRadius: theme => theme.spacing(1),
           },
         }}
       >
         <DialogTitle>{`Upload list of ${entityToUploadLabel}`}</DialogTitle>
         <DialogContent sx={{ pb: 0, overflowY: "scroll" }} dividers>
           <Typography
-            sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
+            sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
             gutterBottom
           >
@@ -443,31 +452,25 @@ function DataUploader() {
             </Link>
           </Typography>
           {activeStep === 0 && <FileExample entity={entityToGet} runAction={handleRunExample} />}
-          <Box sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
+          <Box sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}>
             <Stepper activeStep={activeStep}>
-              {steps.map((label) => {
-                const stepProps = {};
-                const labelProps = {};
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                );
-              })}
+              {steps.map(label => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
             </Stepper>
           </Box>
 
           {activeStep === 0 && (
-            <>
-              <StyledContainer>
-                <div {...getRootProps({ className: "dropzone" })}>
-                  <input {...getInputProps()} />
-                  <p>Drag and drop a file here, or click to select file (see example format).</p>
-                </div>
-              </StyledContainer>
-            </>
+            <StyledContainer>
+              <div {...getRootProps({ className: "dropzone" })}>
+                <input {...getInputProps()} />
+                <p>Drag and drop a file here, or click to select file (see example format).</p>
+              </div>
+            </StyledContainer>
           )}
-          {activeStep === 1 && (
+          {activeStep === 1 && queryTermsResults && (
             <Box>
               <Box sx={{ overflowY: "scroll" }}>
                 <List
@@ -524,11 +527,11 @@ function DataUploader() {
       <Snackbar
         open={openErrorSnackbar}
         autoHideDuration={10000}
-        onClose={handleCloseErrorSnackbar}
+        onClose={() => setOpenErrorSnackbar(false)}
         message={
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             Please ensure the uploaded file has id in column header (see example format)
-            <IconButton sx={{ color: "white" }} onClick={handleCloseErrorSnackbar}>
+            <IconButton sx={{ color: "white" }} onClick={() => setOpenErrorSnackbar(false)}>
               <FontAwesomeIcon icon={faXmark} />
             </IconButton>
           </Box>

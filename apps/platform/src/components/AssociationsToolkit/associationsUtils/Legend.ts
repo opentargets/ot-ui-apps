@@ -12,11 +12,25 @@ import {
   axisBottom,
 } from "d3";
 
-function ramp(color, n = 256) {
+interface LegendOptions {
+  title?: string;
+  tickSize?: number;
+  width?: number;
+  height?: number;
+  marginTop?: number;
+  marginRight?: number;
+  marginBottom?: number;
+  marginLeft?: number;
+  ticks?: number;
+  tickFormat?: string | ((d: any, i: number) => string);
+  tickValues?: any[];
+}
+
+function ramp(color: (t: number) => string, n = 256): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = n;
   canvas.height = 1;
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d")!;
   for (let i = 0; i < n; ++i) {
     context.fillStyle = color(i / (n - 1));
     context.fillRect(i, 0, 1, 1);
@@ -24,9 +38,8 @@ function ramp(color, n = 256) {
   return canvas;
 }
 
-function Legend(
-  color,
-  {
+function Legend(color: any, options: LegendOptions = {}): SVGSVGElement | null {
+  const {
     title,
     tickSize = 6,
     width = 320,
@@ -38,8 +51,8 @@ function Legend(
     ticks = width / 64,
     tickFormat,
     tickValues,
-  } = {}
-) {
+  } = options;
+
   const svg = create("svg")
     .attr("width", width)
     .attr("height", height)
@@ -47,8 +60,11 @@ function Legend(
     .style("overflow", "visible")
     .style("display", "block");
 
-  let tickAdjust = g => g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
-  let x;
+  let tickAdjust: (g: any) => void = g =>
+    g.selectAll(".tick line").attr("y1", marginTop + marginBottom - height);
+  let x: any;
+  let resolvedTickFormat = tickFormat;
+  let resolvedTickValues = tickValues;
 
   // Continuous
   if (color.interpolate) {
@@ -86,14 +102,14 @@ function Legend(
       .attr("preserveAspectRatio", "none")
       .attr("xlink:href", ramp(color.interpolator()).toDataURL());
 
-    // scaleSequentialQuantile doesn’t implement ticks or tickFormat.
+    // scaleSequentialQuantile doesn't implement ticks or tickFormat.
     if (!x.ticks) {
-      if (tickValues === undefined) {
+      if (resolvedTickValues === undefined) {
         const n = Math.round(ticks + 1);
-        tickValues = range(n).map(i => quantile(color.domain(), i / (n - 1)));
+        resolvedTickValues = range(n).map(i => quantile(color.domain(), i / (n - 1)));
       }
-      if (typeof tickFormat !== "function") {
-        tickFormat = format(tickFormat === undefined ? ",f" : tickFormat);
+      if (typeof resolvedTickFormat !== "function") {
+        resolvedTickFormat = format(resolvedTickFormat === undefined ? ",f" : resolvedTickFormat);
       }
     }
   }
@@ -107,11 +123,11 @@ function Legend(
       : color.domain(); // scaleThreshold
 
     const thresholdFormat =
-      tickFormat === undefined
-        ? d => d
-        : typeof tickFormat === "string"
-        ? format(tickFormat)
-        : tickFormat;
+      resolvedTickFormat === undefined
+        ? (d: any) => d
+        : typeof resolvedTickFormat === "string"
+        ? format(resolvedTickFormat)
+        : resolvedTickFormat;
 
     x = scaleLinear()
       .domain([-1, color.range().length - 1])
@@ -122,14 +138,14 @@ function Legend(
       .selectAll("rect")
       .data(color.range())
       .join("rect")
-      .attr("x", (d, i) => x(i - 1))
+      .attr("x", (d: any, i: number) => x(i - 1))
       .attr("y", marginTop)
-      .attr("width", (d, i) => x(i) - x(i - 1))
+      .attr("width", (d: any, i: number) => x(i) - x(i - 1))
       .attr("height", height - marginTop - marginBottom)
-      .attr("fill", d => d);
+      .attr("fill", (d: any) => d);
 
-    tickValues = range(thresholds.length);
-    tickFormat = i => thresholdFormat(thresholds[i], i);
+    resolvedTickValues = range(thresholds.length);
+    resolvedTickFormat = (i: number) => thresholdFormat(thresholds[i], i);
   }
 
   // Ordinal
@@ -158,10 +174,10 @@ function Legend(
     .attr("class", "ticks")
     .call(
       axisBottom(x)
-        .ticks(ticks, typeof tickFormat === "string" ? tickFormat : undefined)
-        .tickFormat(typeof tickFormat === "function" ? tickFormat : undefined)
+        .ticks(ticks, typeof resolvedTickFormat === "string" ? resolvedTickFormat : undefined)
+        .tickFormat(typeof resolvedTickFormat === "function" ? resolvedTickFormat : undefined)
         .tickSize(tickSize)
-        .tickValues(tickValues)
+        .tickValues(resolvedTickValues)
     )
     .call(tickAdjust)
     .call(g => g.select(".domain").remove())

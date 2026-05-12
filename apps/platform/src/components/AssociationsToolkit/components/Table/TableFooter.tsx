@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { TablePagination } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { useAotfData } from "../../context/AssociationsDataContext";
 import TableCell from "./TableCell";
 import { getLegend } from "../../associationsUtils";
-import { styled } from "@mui/styles";
 
 const TableFooterContainer = styled("div")({
   position: "sticky",
@@ -19,18 +19,23 @@ const TableFooterContainer = styled("div")({
   marginTop: 12,
 });
 
-function TableFooter({ table, coreOpen }) {
+interface TableFooterProps {
+  table: any;
+  coreOpen: boolean;
+}
+
+function TableFooter({ table, coreOpen }: TableFooterProps) {
   const { pagination } = useAotfQueryState();
   const { displayedTable } = useAotfURLState();
   const { count, loading } = useAotfData();
 
-  /**
-   * LEGEND EFECT
-   */
   useEffect(() => {
-    const Legend = getLegend(displayedTable === "associations");
-    document.getElementById("legend").innerHTML = "";
-    document.getElementById("legend").appendChild(Legend);
+    const legend = getLegend(displayedTable === "associations");
+    const container = document.getElementById("legend");
+    if (container && legend) {
+      container.innerHTML = "";
+      container.appendChild(legend);
+    }
   }, [displayedTable]);
 
   return (

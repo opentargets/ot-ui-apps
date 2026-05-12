@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, MouseEvent } from "react";
 import {
   styled,
   Typography,
@@ -66,9 +66,13 @@ const TextContainer = styled("div")({
   },
 });
 
+interface ContextMenuContainerProps {
+  active?: boolean;
+}
+
 const ContextMenuContainer = styled("div", {
   shouldForwardProp: prop => prop !== "active",
-})(({ active, theme }) => ({
+})<ContextMenuContainerProps>(({ active, theme }) => ({
   opacity: active ? "1" : "0",
   cursor: "pointer",
   borderRadius: 5,
@@ -85,13 +89,18 @@ const ContextMenuContainer = styled("div", {
   },
 }));
 
-function CellName({ cell, colorScale }) {
+interface CellNameProps {
+  cell: any;
+  colorScale: (score: number) => string;
+}
+
+function CellName({ cell, colorScale }: CellNameProps) {
   const navigate = useNavigate();
-  const contextMenuRef = useRef();
+  const contextMenuRef = useRef<HTMLDivElement>(null);
   const { entityToGet, id: currentEntityId } = useAotfQueryState();
   const { pinnedEntries, setPinnedEntries } = useAotfURLState();
   const { loading, prefix } = cell.table.getState();
-  const name = cell.getValue();
+  const name: string = cell.getValue();
   const { id } = cell.row;
   const { score } = cell.row.original;
   const scoreIndicatorColor = colorScale(score);
@@ -102,7 +111,6 @@ function CellName({ cell, colorScale }) {
   const isPinned = pinnedEntries.find(e => e === id);
   const profileURL = `/${entityToGet}/${id}`;
   const associationsURL = `/${entityToGet}/${id}/associations`;
-  // Using entity to get for condition instead of entity because we are already fetching entityToGet from aotfContext
   const evidenceURL =
     entityToGet === ENTITIES.TARGET
       ? `/evidence/${id}/${currentEntityId}`
@@ -112,14 +120,11 @@ function CellName({ cell, colorScale }) {
     setOpenContext(false);
     dispatch({
       type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
-      focus: {
-        table: prefix,
-        row: cell.row.id,
-      },
+      focus: { table: prefix, row: cell.row.id },
     });
   };
 
-  const handleContextMenu = e => {
+  const handleContextMenu = (e: MouseEvent) => {
     e.preventDefault();
     handleToggle();
   };
@@ -128,58 +133,29 @@ function CellName({ cell, colorScale }) {
     setOpenContext(true);
     dispatch({
       type: FocusActionType.SET_FOCUS_CONTEXT_MENU,
-      focus: {
-        table: prefix,
-        row: cell.row.id,
-      },
+      focus: { table: prefix, row: cell.row.id },
     });
   };
 
   const handleClickInteractors = () => {
     dispatch({
       type: FocusActionType.SET_INTERACTORS_ON,
-      focus: {
-        table: prefix,
-        row: cell.row.id,
-      },
+      focus: { table: prefix, row: cell.row.id },
     });
     setOpenContext(false);
   };
 
   const handleClickPin = () => {
     if (isPinned) {
-      const newPinnedData = pinnedEntries.filter(e => e !== id);
-      setPinnedEntries(newPinnedData);
-      dispatch({
-        type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
-        focus: {
-          table: prefix,
-          row: cell.row.id,
-        },
-      });
+      setPinnedEntries(pinnedEntries.filter(e => e !== id));
     } else {
       setPinnedEntries([...pinnedEntries, id]);
-      dispatch({
-        type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
-        focus: {
-          table: prefix,
-          row: cell.row.id,
-        },
-      });
     }
+    dispatch({
+      type: FocusActionType.CLEAR_FOCUS_CONTEXT_MENU,
+      focus: { table: prefix, row: cell.row.id },
+    });
     setOpenContext(false);
-  };
-
-  const handleNavigateToProfile = () => {
-    navigate(profileURL);
-  };
-
-  const handleNavigateToAssociations = () => {
-    navigate(associationsURL);
-  };
-
-  const handleNavigateToEvidence = () => {
-    navigate(evidenceURL);
   };
 
   const loadingWidth = entityToGet === ENTITIES.TARGET ? 50 : 150;
@@ -188,7 +164,7 @@ function CellName({ cell, colorScale }) {
   const interactorsLabel = isPartnerPreview ? "Target interactors (beta)" : "Target interactors";
 
   if (loading)
-    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin}} />
+    return <Skeleton width={loadingWidth} height={20} sx={{ marginLeft: loadingMargin }} />;
 
   return (
     <NameContainer data-testid="name-cell">
@@ -226,10 +202,7 @@ function CellName({ cell, colorScale }) {
         open={openContext}
         anchorEl={contextMenuRef.current}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
         TransitionComponent={Fade}
         transitionDuration={200}
         elevation={2}
@@ -259,35 +232,29 @@ function CellName({ cell, colorScale }) {
               <ListItemText>Unpin {entityToGet}</ListItemText>
             </StyledMenuItem>
           )}
-
           {prefix !== TABLE_PREFIX.INTERACTORS && entityToGet === ENTITIES.TARGET && (
-            <StyledMenuItem
-              onClick={() => {
-                handleClickInteractors();
-              }}
-            >
+            <StyledMenuItem onClick={handleClickInteractors}>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBezierCurve} />
               </ListItemIcon>
               <ListItemText>{interactorsLabel}</ListItemText>
             </StyledMenuItem>
           )}
-
           <Divider />
-          <StyledMenuItem onClick={handleNavigateToEvidence}>
+          <StyledMenuItem onClick={() => navigate(evidenceURL)}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </ListItemIcon>
             <ListItemText>Navigate to evidence</ListItemText>
           </StyledMenuItem>
           <Divider />
-          <StyledMenuItem onClick={handleNavigateToProfile}>
+          <StyledMenuItem onClick={() => navigate(profileURL)}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </ListItemIcon>
             <ListItemText>Navigate to profile</ListItemText>
           </StyledMenuItem>
-          <StyledMenuItem onClick={handleNavigateToAssociations}>
+          <StyledMenuItem onClick={() => navigate(associationsURL)}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
             </ListItemIcon>

@@ -1,17 +1,28 @@
 import { useEffect, useState } from "react";
+import { ApolloClient, DocumentNode } from "@apollo/client";
 import {
   getAssociationsData,
   getInteractorIds,
   getInitialLoadingData,
   INTERACTORS_SOURCES,
 } from "../../associationsUtils";
+import { columnAdvanceControl } from "../../types";
 
 import InteractionsQuery from "./InteractorsQuery.gql";
 import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 
 const INITIAL_ROW_COUNT = 8;
 
-const INITIAL_USE_ASSOCIATION_STATE = {
+interface RowInteractorsState {
+  loading: boolean;
+  error: boolean;
+  data: any[];
+  initialLoading: boolean;
+  count: number;
+  interactorsMetadata: any;
+}
+
+const INITIAL_USE_ASSOCIATION_STATE: RowInteractorsState = {
   loading: true,
   error: false,
   data: getInitialLoadingData(INITIAL_ROW_COUNT),
@@ -20,9 +31,23 @@ const INITIAL_USE_ASSOCIATION_STATE = {
   interactorsMetadata: [],
 };
 
-/********
- * HOOK *
- ********/
+interface UseRowInteractorsOptions {
+  id?: string;
+  index?: number;
+  size?: number;
+  filter?: string;
+  source?: string;
+  enableIndirect?: boolean;
+  datasources?: columnAdvanceControl[];
+  rowsFilter?: string[];
+  entityInteractors?: string | null;
+  scoreThreshold?: number | null;
+  entity?: string;
+  diseaseId?: string;
+  sortBy?: string;
+  entitySearch?: string;
+}
+
 function useRowInteractors({
   client,
   query = InteractionsQuery,
@@ -43,16 +68,18 @@ function useRowInteractors({
     sortBy,
     entitySearch = "",
   },
-}) {
-  const [state, setState] = useState(INITIAL_USE_ASSOCIATION_STATE);
+}: {
+  client: ApolloClient<any>;
+  query?: DocumentNode;
+  associationsQuery?: DocumentNode;
+  options: UseRowInteractorsOptions;
+}): RowInteractorsState {
+  const [state, setState] = useState<RowInteractorsState>(INITIAL_USE_ASSOCIATION_STATE);
 
   useEffect(() => {
     let isCurrent = true;
     async function getInteractors() {
-      setState({
-        ...state,
-        loading: true,
-      });
+      setState(prev => ({ ...prev, loading: true }));
       const rowInteractorsId = id;
       const rowInteractorsSource = source;
 
@@ -68,13 +95,16 @@ function useRowInteractors({
       });
 
       if (!targetRowInteractorsRequest?.data?.target?.interactions?.rows) {
-        setState({
-          interactorsMetadata: { count: 0 },
-          loading: false,
-          initialLoading: false,
-          count: 0,
-          data: [],
-        });
+        if (isCurrent) {
+          setState({
+            interactorsMetadata: { count: 0 },
+            loading: false,
+            initialLoading: false,
+            count: 0,
+            data: [],
+            error: false,
+          });
+        }
         return;
       }
 
@@ -90,7 +120,7 @@ function useRowInteractors({
           sortBy,
           enableIndirect,
           rowsFilter: interactorsIds,
-          entitySearch: entitySearch,
+          entitySearch,
           datasources: datasources.map(el => ({
             id: el.id,
             weight: el.weight,
@@ -101,7 +131,7 @@ function useRowInteractors({
       });
 
       const interactorsAssociations = getAssociationsData(
-        entity,
+        entity!,
         interactorsAssociationsRequest.data
       );
 
@@ -110,24 +140,29 @@ function useRowInteractors({
         targetRowInteractorsRequest.data.target.interactions.rows
       );
 
-      setState({
-        interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
-        loading: false,
-        initialLoading: false,
-        count: interactorsAssociationsWithScore.length,
-        data: interactorsAssociationsWithScore,
-      });
+      if (isCurrent) {
+        setState({
+          interactorsMetadata: targetRowInteractorsRequest.data.target.interactions,
+          loading: false,
+          initialLoading: false,
+          count: interactorsAssociationsWithScore.length,
+          data: interactorsAssociationsWithScore,
+          error: false,
+        });
+      }
     }
     if (isCurrent) getInteractors();
-    return () => (isCurrent = false);
+    return () => {
+      isCurrent = false;
+    };
   }, [source, sortBy, scoreThreshold]);
 
   return state;
 }
 
-function addInteractorScore(associationsData, interactorsMetaData) {
+function addInteractorScore(associationsData: any[], interactorsMetaData: any[]): any[] {
   return associationsData.map(element => {
-    const foundInteractor = interactorsMetaData.find(x => x.targetB?.id === element.id);
+    const foundInteractor = interactorsMetaData.find((x: any) => x.targetB?.id === element.id);
     if (!foundInteractor) return { ...element, interactorScore: 0 };
     return { ...element, interactorScore: foundInteractor.score };
   });

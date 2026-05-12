@@ -9,24 +9,43 @@ import { useAotfQueryState, useAotfQueryDispatch } from "../../context/Associati
 import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { GridContainer, NaimingHeaderZone, MetricsHeaderZone, TheaderContainer } from "../layout";
 
-function HeaderZone({ id, columnsCount, children, ...props }) {
-  if (id.includes("naiming-cols")) return <NaimingHeaderZone {...props}>{children}</NaimingHeaderZone>;
-  if (id.includes("metrics-cols")) return <MetricsHeaderZone {...props}>{children}</MetricsHeaderZone>;
-  return <GridContainer columnsCount={columnsCount} {...props}>{children}</GridContainer>;
+interface HeaderZoneProps {
+  id: string;
+  columnsCount: number;
+  children: React.ReactNode;
+  [key: string]: any;
 }
 
-const getHeaderClassName = ({ id }) => {
+function HeaderZone({ id, columnsCount, children, ...props }: HeaderZoneProps) {
+  if (id.includes("naiming-cols"))
+    return <NaimingHeaderZone {...props}>{children}</NaimingHeaderZone>;
+  if (id.includes("metrics-cols"))
+    return <MetricsHeaderZone {...props}>{children}</MetricsHeaderZone>;
+  return (
+    <GridContainer columnsCount={columnsCount} {...props}>
+      {children}
+    </GridContainer>
+  );
+}
+
+const getHeaderClassName = ({ id }: { id: string }): string => {
   if (id === "name") return "header-name";
   if (id === "score") return "rotate header-score";
   return "rotate";
 };
 
-function TableHeader({ table, cols }) {
+interface TableHeaderProps {
+  table: any;
+  cols: any[];
+}
+
+function TableHeader({ table, cols }: TableHeaderProps) {
   const { id } = useAotfQueryState();
   const { displayedTable, setActiveHeadersControlls } = useAotfURLState();
   const { handleAggregationClick } = useAotfQueryDispatch();
-  const [activeAggregation, setActiveAggegation] = useState(null);
-  const onEnterHoverHeader = ({ id: elementId, column }) => {
+  const [activeAggregation, setActiveAggegation] = useState<string | null>(null);
+
+  const onEnterHoverHeader = ({ id: elementId, column }: { id: string; column: any }) => {
     if (elementId === "score" || elementId === "name") return;
     const { aggregation } = column.columnDef;
     setActiveAggegation(aggregation);
@@ -42,13 +61,13 @@ function TableHeader({ table, cols }) {
   return (
     <TheaderContainer data-testid="associations-table-header">
       <Grid container direction="row" wrap="nowrap">
-        {highLevelHeaders.map(highLevelHeader => (
+        {highLevelHeaders.map((highLevelHeader: any) => (
           <HeaderZone
             id={highLevelHeader.id}
             columnsCount={cols.length}
             key={highLevelHeader.id}
           >
-            {highLevelHeader.subHeaders.map(header => (
+            {highLevelHeader.subHeaders.map((header: any) => (
               <div className={getHeaderClassName(header)} key={header.id}>
                 {header.isPlaceholder ? null : (
                   <div
@@ -66,7 +85,7 @@ function TableHeader({ table, cols }) {
                       desc: (
                         <FontAwesomeIcon className="header-desc-icon" icon={faArrowDownWideShort} />
                       ),
-                    }[header.column.getIsSorted()] ?? null}
+                    }[header.column.getIsSorted() as string] ?? null}
                     {header.column.columnDef.docsLink && (
                       <a
                         rel="noreferrer"

@@ -8,10 +8,17 @@ import {
 } from "../../context/AssociationsFocusContext";
 import { grey } from "@mui/material/colors";
 
+interface ScoreElementProps {
+  borderColor?: string;
+  backgroundColor?: string;
+  shape?: string;
+  active?: boolean;
+}
+
 const ScoreElement = styled("div", {
   shouldForwardProp: prop =>
     prop !== "borderColor" && prop !== "backgroundColor" && prop !== "shape" && prop !== "active",
-})(
+})<ScoreElementProps>(
   ({
     backgroundColor = "var(--background-color)",
     borderColor = "red",
@@ -48,13 +55,27 @@ const defaultCell = {
   },
 };
 
-function TableCell({ shape = "circular", cell = defaultCell, colorScale, displayedTable, label }) {
+interface TableCellProps {
+  shape?: string;
+  cell?: any;
+  colorScale?: (value: number) => string;
+  displayedTable?: string;
+  label?: string;
+}
+
+function TableCell({
+  shape = "circular",
+  cell = defaultCell,
+  colorScale,
+  displayedTable,
+  label,
+}: TableCellProps) {
   const { prefix, loading, parentTable, parentRow } = cell.table.getState();
   const dispatch = useAssociationsFocusDispatch();
   const cellValue = cell.getValue();
   const hasValue = cellHasValue(cellValue);
-  const borderColor = hasValue ? colorScale(cellValue) : grey[300];
-  let backgroundColor = hasValue ? colorScale(cellValue) : "#fafafa";
+  const borderColor = hasValue ? colorScale!(cellValue) : grey[300];
+  let backgroundColor = hasValue ? colorScale!(cellValue) : "#fafafa";
   if (label) backgroundColor = plainBkg;
 
   const focusState = useAssociationsFocus();
@@ -86,7 +107,7 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
           table: parentTable,
           row: parentRow,
           interactorsRow: cell.row.id,
-          section: getColumAndSection(cell, displayedTable),
+          section: getColumAndSection(cell, displayedTable!),
         },
       });
     return dispatch({
@@ -94,12 +115,12 @@ function TableCell({ shape = "circular", cell = defaultCell, colorScale, display
       focus: {
         table: prefix,
         row: cell.row.id,
-        section: getColumAndSection(cell, displayedTable),
+        section: getColumAndSection(cell, displayedTable!),
       },
     });
   };
 
-  if (loading) return <Skeleton variant={shape} width={25} height={25} />;
+  if (loading) return <Skeleton variant={shape as any} width={25} height={25} />;
 
   if (!hasValue)
     return (
