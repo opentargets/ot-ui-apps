@@ -10,6 +10,8 @@ export interface URLContextState {
   setPinnedEntries: (v: string[]) => void;
   uploadedEntries: string[];
   setUploadedEntries: (v: string[]) => void;
+  activeHeadersControlls: boolean;
+  setActiveHeadersControlls: (open: boolean) => void;
 }
 
 const AssociationsURLContext = createContext<URLContextState | null>(null);
@@ -36,6 +38,13 @@ export function AssociationsURLProvider({ children }: { children: ReactNode }) {
     (str: string) => str.split(",")
   );
 
+  const [activeHeadersControlls, setActiveHeadersControlls] = useStateParams(
+    false,
+    "weights",
+    (v: boolean) => (v ? "1" : ""),
+    (s: string) => s === "1"
+  );
+
   const value = useMemo<URLContextState>(
     () => ({
       displayedTable,
@@ -44,8 +53,19 @@ export function AssociationsURLProvider({ children }: { children: ReactNode }) {
       setPinnedEntries,
       uploadedEntries,
       setUploadedEntries,
+      activeHeadersControlls,
+      setActiveHeadersControlls,
     }),
-    [displayedTable, pinnedEntries, uploadedEntries, setDisplayedTable, setPinnedEntries, setUploadedEntries]
+    [
+      displayedTable,
+      setDisplayedTable,
+      pinnedEntries,
+      setPinnedEntries,
+      uploadedEntries,
+      setUploadedEntries,
+      activeHeadersControlls,
+      setActiveHeadersControlls,
+    ]
   );
 
   return <AssociationsURLContext.Provider value={value}>{children}</AssociationsURLContext.Provider>;

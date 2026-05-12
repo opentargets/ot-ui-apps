@@ -18,10 +18,10 @@ const PopoverContent = styled("div")({
   padding: "15px",
 });
 
-function DataMenu({ activeHeadersControlls, setActiveHeadersControlls }) {
+function DataMenu() {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const { displayedTable } = useAotfURLState();
+  const { displayedTable, activeHeadersControlls, setActiveHeadersControlls } = useAotfURLState();
 
   const isPrioritisation = displayedTable === "prioritisations";
 

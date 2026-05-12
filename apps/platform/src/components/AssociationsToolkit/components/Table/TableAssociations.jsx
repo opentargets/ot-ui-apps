@@ -172,7 +172,7 @@ function getDatasources({ displayedTable, colorScale }) {
   return datasources;
 }
 
-function TableAssociations({ setActiveHeadersControlls }) {
+function TableAssociations() {
   const {
     entity,
     entityToGet,
@@ -366,7 +366,7 @@ function TableAssociations({ setActiveHeadersControlls }) {
     <div className="TAssociations" style={tableCSSVariables} data-testid="associations-table">
       <TableElement>
         {/* HEADER */}
-        <TableHeader table={coreAssociationsTable} cols={entitesHeaders} setActiveHeadersControlls={setActiveHeadersControlls} />
+        <TableHeader table={coreAssociationsTable} cols={entitesHeaders} />
 
         {/* Weights controlls */}
         <HeaderControls cols={entitesHeaders} />

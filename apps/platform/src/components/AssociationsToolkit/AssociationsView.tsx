@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Box } from "@mui/material";
 import type { DocumentNode } from "graphql";
 import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
@@ -22,53 +21,46 @@ interface AssociationsViewProps {
   query: DocumentNode;
 }
 
-const AssociationsView = ({ id, entity, query }: AssociationsViewProps) => {
-  const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
-
-  return (
-    <AssociationsQueryProvider id={id} entity={entity} query={query}>
-      <AssociationsURLProvider>
-        <AssociationsDataProvider>
-          <AssociationsFocusProvider>
+const AssociationsView = ({ id, entity, query }: AssociationsViewProps) => (
+  <AssociationsQueryProvider id={id} entity={entity} query={query}>
+    <AssociationsURLProvider>
+      <AssociationsDataProvider>
+        <AssociationsFocusProvider>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: { xs: 2, lg: 2 },
+              mt: 4,
+              mb: 1,
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: { xs: 2, lg: 2 },
-                mt: 4,
-                mb: 1,
+                gap: 1,
+                flexDirection: { xs: "column", lg: "row" },
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: 1,
-                  flexDirection: { xs: "column", lg: "row" },
-                }}
-              >
-                <Box display="flex" sx={{ ml: -2 }}>
-                  <FacetsSearch />
-                  <ColumnOptionsMenu
-                    activeHeadersControlls={activeHeadersControlls}
-                    setActiveHeadersControlls={setActiveHeadersControlls}
-                  />
-                  <DataUploader />
-                  <ExportMenu />
-                </Box>
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "end" }}>
-                <DisplayModeSwitch />
+              <Box display="flex" sx={{ ml: -2 }}>
+                <FacetsSearch />
+                <ColumnOptionsMenu />
+                <DataUploader />
+                <ExportMenu />
               </Box>
             </Box>
-            <ActiveFiltersPanel />
-            <TableAssociations setActiveHeadersControlls={setActiveHeadersControlls} />
-          </AssociationsFocusProvider>
-        </AssociationsDataProvider>
-      </AssociationsURLProvider>
-    </AssociationsQueryProvider>
-  );
-};
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <DisplayModeSwitch />
+            </Box>
+          </Box>
+          <ActiveFiltersPanel />
+          <TableAssociations />
+        </AssociationsFocusProvider>
+      </AssociationsDataProvider>
+    </AssociationsURLProvider>
+  </AssociationsQueryProvider>
+);
 
 export default AssociationsView;

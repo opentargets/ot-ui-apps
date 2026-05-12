@@ -9,6 +9,7 @@ import Required from "./RequiredControl";
 import { GridContainer, MetricsSpacerCol } from "../layout";
 
 import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { Tooltip } from "ui";
 import { ReactNode } from "react";
 
@@ -67,9 +68,8 @@ function getColumnObject(values: Record<string, unknown>[], id: string) {
 }
 
 function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
+  const { activeHeadersControlls, setActiveHeadersControlls } = useAotfURLState();
   const {
-    activeHeadersControlls,
-    setActiveHeadersControlls,
     displayedTable,
     updateDataSourceControls,
     dataSourcesWeights,
