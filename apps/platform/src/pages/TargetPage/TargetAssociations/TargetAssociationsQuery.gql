@@ -25,6 +25,9 @@ query TargetAssociationsQuery(
     ) {
       count
       rows {
+        # --- row metrics (see AssociationsToolkit/static_datasets/rowMetrics.ts) ---
+        novelty: noveltyDirect
+        # ---------------------------------------------------------------------------
         disease {
           id
           name

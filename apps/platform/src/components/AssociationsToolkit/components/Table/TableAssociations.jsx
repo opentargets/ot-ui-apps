@@ -14,6 +14,7 @@ import {
 import useAotfContext from "../../hooks/useAotfContext";
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
+import { ROW_METRICS } from "../../static_datasets/rowMetrics";
 import HeaderControls from "../HeaderControls";
 import NameFilter from "../NameFilter";
 import AggregationsTooltip from "./AssocTooltip";
@@ -111,6 +112,23 @@ const prioritisationViewColumns = getDatasources({
   displayedTable: "prioritisations",
   colorScale: getScale(false),
 });
+
+const metricsColumns = ROW_METRICS.map(metric =>
+  columnHelper.accessor((row) => row[metric.id], {
+    id: metric.id,
+    enableSorting: metric.sortable,
+    header: (
+      <Typography variant="assoc_header" data-testid={`table-header-${metric.id}`}>
+        {metric.label}
+      </Typography>
+    ),
+    cell: (cell) => (
+      <Box sx={{ px: 1, overflow: "hidden" }}>
+        {metric.format(cell.getValue())}
+      </Box>
+    ),
+  })
+);
 
 /* Build table columns bases on displayed table */
 function getDatasources({ displayedTable, colorScale }) {
@@ -226,6 +244,13 @@ function TableAssociations() {
         id: "entity-cols",
         columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
       }),
+      ...(isAssociations
+        ? [columnHelper.group({
+            header: "metrics",
+            id: "metrics-cols",
+            columns: metricsColumns,
+          })]
+        : []),
     ],
     [displayedTable, entityToGet, rowNameEntity]
   );

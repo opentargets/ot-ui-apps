@@ -211,4 +211,5 @@ export const tableCSSVariables = {
   "--entities-border-color": "var(--grey-light)",
   "--table-footer-border-color": "var(--grey-light)",
   "--colums-controls-color": "var(--grey-lighter)",
+  "--metrics-zone-width": "100px",
 };

@@ -11,14 +11,22 @@ import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
 import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
 import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
-import { RowContainer, RowsContainer, TableBodyContent, GridContainer } from "../layout";
+import {
+  RowContainer,
+  RowsContainer,
+  TableBodyContent,
+  NaimingBodyZone,
+  EntityBodyZone,
+  MetricsBodyZone,
+} from "../layout";
 import { rowNameProperty, TABLE_PREFIX } from "../../associationsUtils";
 
 /* HELPERS */
-const getColContainerClassName = ({ id }) => {
-  if (id === "1_naiming-cols_name") return "group-naiming-cols";
-  return "group-entity-cols";
-};
+function BodyZone({ id, columnsCount, children, ...props }) {
+  if (id.includes("naiming-cols")) return <NaimingBodyZone {...props}>{children}</NaimingBodyZone>;
+  if (id.includes("metrics-cols")) return <MetricsBodyZone {...props}>{children}</MetricsBodyZone>;
+  return <EntityBodyZone columnsCount={columnsCount} {...props}>{children}</EntityBodyZone>;
+}
 
 function getIsRowActive(prefix, row, focusState = [], parentRow, parentTable) {
   if (prefix === TABLE_PREFIX.INTERACTORS) {
@@ -125,9 +133,9 @@ function TableBody({ core, cols, noInteractors }) {
                   }
                 >
                   {highLevelHeaders.map(columnGroup => (
-                    <GridContainer
+                    <BodyZone
+                      id={columnGroup.id}
                       columnsCount={cols.length}
-                      className={getColContainerClassName(columnGroup)}
                       key={columnGroup.id}
                     >
                       {columnGroup.subHeaders.map(column => {
@@ -138,7 +146,7 @@ function TableBody({ core, cols, noInteractors }) {
                           </div>
                         );
                       })}
-                    </GridContainer>
+                    </BodyZone>
                   ))}
                 </RowContainer>
 

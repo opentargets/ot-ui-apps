@@ -6,12 +6,13 @@ import { Grid } from "@mui/material";
 
 import AggregationsRow from "./AggregationsRow";
 import useAotfContext from "../../hooks/useAotfContext";
-import { GridContainer } from "../layout";
+import { GridContainer, NaimingHeaderZone, MetricsHeaderZone, TheaderContainer } from "../layout";
 
-const getHeaderContainerClassName = ({ id }) => {
-  if (id === "1_naiming-cols_name") return "naiming-cols";
-  return "entity-cols";
-};
+function HeaderZone({ id, columnsCount, children, ...props }) {
+  if (id.includes("naiming-cols")) return <NaimingHeaderZone {...props}>{children}</NaimingHeaderZone>;
+  if (id.includes("metrics-cols")) return <MetricsHeaderZone {...props}>{children}</MetricsHeaderZone>;
+  return <GridContainer columnsCount={columnsCount} {...props}>{children}</GridContainer>;
+}
 
 const getHeaderClassName = ({ id }) => {
   if (id === "name") return "header-name";
@@ -24,7 +25,6 @@ function TableHeader({ table, cols }) {
     id,
     displayedTable,
     handleAggregationClick,
-    activeHeadersControlls,
     setActiveHeadersControlls,
   } = useAotfContext();
   const [activeAggregation, setActiveAggegation] = useState(null);
@@ -42,12 +42,12 @@ function TableHeader({ table, cols }) {
   const highLevelHeaders = table.getHeaderGroups()[0].headers;
 
   return (
-    <div className="Theader" data-testid="associations-table-header">
+    <TheaderContainer data-testid="associations-table-header">
       <Grid container direction="row" wrap="nowrap">
         {highLevelHeaders.map(highLevelHeader => (
-          <GridContainer
+          <HeaderZone
+            id={highLevelHeader.id}
             columnsCount={cols.length}
-            className={getHeaderContainerClassName(highLevelHeader)}
             key={highLevelHeader.id}
           >
             {highLevelHeader.subHeaders.map(header => (
@@ -90,7 +90,7 @@ function TableHeader({ table, cols }) {
                 )}
               </div>
             ))}
-          </GridContainer>
+          </HeaderZone>
         ))}
       </Grid>
       <AggregationsRow
@@ -98,10 +98,9 @@ function TableHeader({ table, cols }) {
         columnsCount={cols.length}
         table={displayedTable}
         active={activeAggregation}
-        activeHeadersControlls={activeHeadersControlls}
         setActiveHeadersControlls={setActiveHeadersControlls}
       />
-    </div>
+    </TheaderContainer>
   );
 }
 

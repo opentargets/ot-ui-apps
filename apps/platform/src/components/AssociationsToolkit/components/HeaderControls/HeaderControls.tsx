@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 
 import Slider from "./SliderControl";
 import Required from "./RequiredControl";
-import { GridContainer } from "../layout";
+import { GridContainer, MetricsSpacerCol } from "../layout";
 
 import useAotfContext from "../../hooks/useAotfContext";
 import { Tooltip } from "ui";
@@ -25,6 +25,37 @@ const WeightsControllsContainer = styled("div")({
   position: "relative",
   boxSizing: "content-box",
   padding: "20px 0 15px",
+});
+
+const LabelsColumn = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  textAlign: "right",
+  width: "var(--table-left-column-width)",
+});
+
+const ColumnControl = styled("div")({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+});
+
+const ControlContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  height: "65px",
+  "& span": {
+    fontSize: "11px",
+  },
+});
+
+const RequiredContainer = styled("div")({
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  marginTop: "0.5em",
 });
 
 type HeaderControlsProps = {
@@ -84,18 +115,12 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
 
   return (
     <Collapse in={activeHeadersControlls}>
-      <WeightsControllsContainer className="weights-controlls" data-testid="weights-controls-container">
+      <WeightsControllsContainer data-testid="weights-controls-container">
         <Grid container direction="row" wrap="nowrap">
           <CloseContainer onClick={handleClose} data-testid="close-weights-button">
             <FontAwesomeIcon icon={faXmark} size="lg" />
           </CloseContainer>
-          <Grid
-            item
-            container
-            direction="column"
-            className="header-controls-labels"
-            justifyContent="space-between"
-          >
+          <LabelsColumn>
             <Box>
               <Typography variant="subtitle2">Weight</Typography>
             </Box>
@@ -110,27 +135,28 @@ function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
                 </Tooltip>
               </Typography>
             </Box>
-          </Grid>
-          <GridContainer columnsCount={cols.length} className="controlls-wrapper">
+          </LabelsColumn>
+          <GridContainer columnsCount={cols.length}>
             {cols.map(({ id }) => (
-              <div key={id} className="colum-control">
-                <Grid className="control-container" key={id}>
+              <ColumnControl key={id}>
+                <ControlContainer>
                   <Slider
                     id={id}
                     handleChangeSliderCommitted={handleChangeSliderCommitted}
                     value={getWeightValue(id)}
                   />
-                </Grid>
-                <div className="required-container">
+                </ControlContainer>
+                <RequiredContainer>
                   <Required
                     id={id}
                     handleChangeRequire={handleChangeRequire}
                     checkedValue={getRequiredValue(id)}
                   />
-                </div>
-              </div>
+                </RequiredContainer>
+              </ColumnControl>
             ))}
           </GridContainer>
+          <MetricsSpacerCol />
         </Grid>
       </WeightsControllsContainer>
     </Collapse>

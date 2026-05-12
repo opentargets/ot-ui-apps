@@ -12,6 +12,7 @@ import { ENTITIES, DEFAULT_TABLE_SORTING_STATE, DISPLAY_MODE } from "../associat
 
 import useAssociationsData from "../hooks/useAssociationsData";
 import { aotfReducer, createInitialState } from "./aotfReducer";
+import { METRICS_SORT_FIELD } from "../static_datasets/rowMetrics";
 import {
   aggregationClick,
   facetFilterSelectAction,
@@ -72,6 +73,8 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const entityToGet = rowEntity[entity];
 
+  const resolvedSortBy = METRICS_SORT_FIELD[sorting[0].id] ?? sorting[0].id;
+
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     client,
     query,
@@ -79,7 +82,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       id,
       index: state.pagination.pageIndex,
       size: state.pagination.pageSize,
-      sortBy: sorting[0].id,
+      sortBy: resolvedSortBy,
       enableIndirect,
       datasources: state.dataSourceControls,
       entity,
@@ -102,7 +105,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       entity,
       size: pinnedEntries.length,
-      sortBy: sorting[0].id,
+      sortBy: resolvedSortBy,
       datasources: state.dataSourceControls,
       rowsFilter: pinnedEntries.toSorted(),
       facetFilters: state.facetFiltersIds,
@@ -125,7 +128,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       enableIndirect,
       entity,
       size: uploadedEntries.length,
-      sortBy: sorting[0].id,
+      sortBy: resolvedSortBy,
       datasources: state.dataSourceControls,
       rowsFilter: uploadedEntries.toSorted(),
       facetFilters: state.facetFiltersIds,
