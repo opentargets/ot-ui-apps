@@ -18,9 +18,9 @@ function Body({ id, entity }: BodyProps) {
   const request = useQuery(BROWSER_VIEW_QUERY, { variables });
 
   // select data
-  const chromosome = "1";
-  const start = 11_000_000;
-  const end = 12_000_000;
+  const chromosome = "19";
+  const start = 43_000_000;
+  const end = 46_000_000;
 
   // load local chromosome data
   useEffect(() => {

@@ -19,7 +19,7 @@ const geneLabelStyle = new TextStyle({
   wordWrap: false,
 });
 
-export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap = 0, pixelGapCenterToCenter = 0 }) {
+export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap = 0, pixelGapCenterToCenter = 0, geneToRow }) {
   const genTrackState = useGenTrackState(); 
   const { data, xMin, xMax } = genTrackState ?? { data: null, xMin: 0, xMax: 0 };
 
@@ -32,8 +32,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
 
   const yTop = (rowIndex) => rowIndex * rowHeight;
   const ycenter = (rowIndex) => rowIndex * rowHeight + labelHeight + (rowHeight - labelHeight) / 2;
-  const GeneToRow = packIntervals(data.genes, { bpPerPixel, pixelGap, pixelGapCenterToCenter });
-  const nRows = Math.max(...Object.values(GeneToRow)) + 1;
+  const nRows = Math.max(...Object.values(geneToRow)) + 1;
   const trackHeight = rowHeight * nRows;
 
   return {
@@ -47,7 +46,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
         <Container>
           {data.genes.map(gene => {
             const { target } = gene;
-            const rowIndex = GeneToRow[target.id];
+            const rowIndex = geneToRow[target.id];
             const tint = getValue(geneColor, target);
             return (
               <Fragment key={target.id}>
@@ -79,7 +78,7 @@ export function getGenesTrack({ geneLabel, geneColor, canvasWidth = 0, pixelGap 
                     width={exon.end - exon.start}
                     height={exonHeight}
                     tint={tint}
-                    minPixelWidth={1}
+                    minPixelWidth={2}
                   />
                 ))}
               </Fragment>

@@ -10,6 +10,8 @@ import { useMeasure } from "@uidotdev/usehooks";
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
 import { getGenesTrack } from "./getGenesTrack";
+import { getGeneMinimapTrack } from "./getGeneMinimapTrack";
+import { packIntervals } from "./packIntervals";
 
 function GeneVisInner({
   chromosome,
@@ -30,19 +32,23 @@ function GeneVisInner({
   const [widthRef, { width: totalWidth }] = useMeasure();
   const canvasWidth = (totalWidth ?? 0) - Y_INFO_WIDTH - Y_INFO_GAP;
 
-  const tracks = [];
-  
-  // add gene track
-  if (data.genes &&
+  const bpPerPixel = (canvasWidth > 0 && xMax > xMin) ? (xMax - xMin) / canvasWidth : 1;
+
+  // Compute layout once — shared by minimap (top-level) and detail (zoom-level) so rows align
+  const hasGenes = data.genes &&
     (fixedTracks === true || fixedTracks?.includes("genes") ||
-     zoomableTracks === true || zoomableTracks?.includes("genes"))) {
-    tracks.push(getGenesTrack({
-      geneLabel,
-      geneColor,
-      canvasWidth,
-      pixelGap: 1,
-      pixelGapCenterToCenter: 100,
-    }));
+     zoomableTracks === true || zoomableTracks?.includes("genes"));
+
+  const geneToRow = hasGenes
+    ? packIntervals(data.genes, { bpPerPixel, pixelGap: 1, pixelGapCenterToCenter: 100 })
+    : null;
+
+  const fixedTrackList = [];
+  const innerTrackList = [];
+
+  if (hasGenes) {
+    fixedTrackList.push(getGeneMinimapTrack({ geneColor, geneToRow }));
+    innerTrackList.push(getGenesTrack({ geneLabel, geneColor, geneToRow }));
   }
 
   // add variants track
@@ -57,15 +63,15 @@ function GeneVisInner({
       <GenTrack
         XInfo={XAxis}
         XYInfo={XAxisLabel}
-        tracks={tracks}
-        InnerXInfo={XAxis}
-        innerTracks={tracks}
-        InnerXYInfo={XAxisLabel}
+        tracks={fixedTrackList}
+        // InnerXInfo={XAxis}
+        innerTracks={innerTrackList}
+        // InnerXYInfo={XAxisLabel}
         yInfoGap={8}
         yInfoWidth={40}
         zoomLines
         panZoomTopGap={0}
-        paddingBottom={12}
+        paddingBottom={4}
       />
     </Box>
   );
