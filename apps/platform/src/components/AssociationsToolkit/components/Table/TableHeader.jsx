@@ -5,7 +5,9 @@ import { faArrowDownWideShort, faBook, faLock } from "@fortawesome/free-solid-sv
 import { Grid } from "@mui/material";
 
 import AggregationsRow from "./AggregationsRow";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 import { GridContainer, NaimingHeaderZone, MetricsHeaderZone, TheaderContainer } from "../layout";
 
 function HeaderZone({ id, columnsCount, children, ...props }) {
@@ -20,13 +22,10 @@ const getHeaderClassName = ({ id }) => {
   return "rotate";
 };
 
-function TableHeader({ table, cols }) {
-  const {
-    id,
-    displayedTable,
-    handleAggregationClick,
-    setActiveHeadersControlls,
-  } = useAotfContext();
+function TableHeader({ table, cols, setActiveHeadersControlls }) {
+  const { id } = useAotfQueryState();
+  const { displayedTable } = useAotfURLState();
+  const { handleAggregationClick } = useAotfQueryDispatch();
   const [activeAggregation, setActiveAggegation] = useState(null);
   const onEnterHoverHeader = ({ id: elementId, column }) => {
     if (elementId === "score" || elementId === "name") return;

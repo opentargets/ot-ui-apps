@@ -6,7 +6,7 @@ import {
   INTERACTORS_SOURCES,
   INTERACTORS_SOURCE_THRESHOLD,
 } from "../associationsUtils";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "./AssociationsQueryContext";
 
 // Types
 export type FocusElementTable = "core" | "pinned" | "upload";
@@ -555,7 +555,7 @@ export function useFocusElement(table: FocusElementTable, row: string) {
  */
 export function AssociationsFocusProvider({ children }: { children: ReactElement }): ReactElement {
   const [focusState, dispatch] = useReducer(focusReducer, []);
-  const { id } = useAotfContext();
+  const { id } = useAotfQueryState();
 
   // Reset focus state when ID changes
   useEffect(() => {

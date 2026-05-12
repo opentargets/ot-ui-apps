@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 import { Tooltip } from "ui";
 
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfURLState } from "../context/AssociationsURLContext";
 
 const StyledBotton = styled(Button)({
   border: "none",
@@ -18,10 +18,10 @@ const PopoverContent = styled("div")({
   padding: "15px",
 });
 
-function DataMenu() {
+function DataMenu({ activeHeadersControlls, setActiveHeadersControlls }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const { activeHeadersControlls, setActiveHeadersControlls, displayedTable } = useAotfContext();
+  const { displayedTable } = useAotfURLState();
 
   const isPrioritisation = displayedTable === "prioritisations";
 
