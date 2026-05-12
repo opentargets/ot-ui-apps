@@ -109,7 +109,8 @@ export const EntityBodyZone = styled(GridContainer)({
 });
 
 export const MetricsBodyZone = styled("div")({
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "repeat(var(--metrics-col-count, 1), 1fr)",
   alignItems: "center",
   height: "32px",
   width: "var(--metrics-zone-width)",
@@ -121,7 +122,8 @@ export const NaimingHeaderZone = styled("div")({
 });
 
 export const MetricsHeaderZone = styled("div")({
-  display: "flex",
+  display: "grid",
+  gridTemplateColumns: "repeat(var(--metrics-col-count, 1), 1fr)",
   width: "var(--metrics-zone-width)",
 });
 

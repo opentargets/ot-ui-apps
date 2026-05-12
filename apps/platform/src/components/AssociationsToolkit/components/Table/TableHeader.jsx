@@ -54,17 +54,11 @@ function TableHeader({ table, cols }) {
               <div className={getHeaderClassName(header)} key={header.id}>
                 {header.isPlaceholder ? null : (
                   <div
-                    {...{
-                      className: header.column.getCanSort() ? "cursor-pointer select-none" : "",
-                    }}
+                    className={header.column.getCanSort() ? "cursor-pointer select-none" : ""}
                     onMouseEnter={() => onEnterHoverHeader(header)}
                     onMouseLeave={() => onLeaveHoverHeader()}
                   >
-                    <div
-                      {...{
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
-                    >
+                    <div onClick={header.column.getToggleSortingHandler()}>
                       {flexRender(header.column.columnDef.header, header.getContext())}
                     </div>
                     {header.column.columnDef.isPrivate && (
@@ -75,7 +69,6 @@ function TableHeader({ table, cols }) {
                         <FontAwesomeIcon className="header-desc-icon" icon={faArrowDownWideShort} />
                       ),
                     }[header.column.getIsSorted()] ?? null}
-
                     {header.column.columnDef.docsLink && (
                       <a
                         rel="noreferrer"

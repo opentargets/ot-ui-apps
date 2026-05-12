@@ -227,7 +227,7 @@ export const getAssociationsData = (
     const dataSources = getDataSourcesData(row);
     const { targetSymbol, diseaseName, id } = getDataRowMetadata(data, row, fixedEntity);
     const rowMetrics = Object.fromEntries(
-      ROW_METRICS.map(m => [m.id, (row as any)[m.id] ?? null])
+      ROW_METRICS.map(m => [m.id, (row as any)[m.dataField ?? m.id] ?? null])
     );
     return {
       score: row.score,

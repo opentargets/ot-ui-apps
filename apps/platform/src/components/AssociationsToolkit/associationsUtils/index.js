@@ -1,6 +1,7 @@
 import { scaleQuantize, rgb } from "d3";
 import Legend from "./Legend";
 import dataSources from "../static_datasets/dataSourcesAssoc";
+import { ROW_METRICS } from "../static_datasets/rowMetrics";
 import { getConfig } from "@ot/config";
 
 const config = getConfig();
@@ -211,5 +212,6 @@ export const tableCSSVariables = {
   "--entities-border-color": "var(--grey-light)",
   "--table-footer-border-color": "var(--grey-light)",
   "--colums-controls-color": "var(--grey-lighter)",
-  "--metrics-zone-width": "100px",
+  "--metrics-col-count": String(ROW_METRICS.length),
+  "--metrics-zone-width": `${ROW_METRICS.length * 80}px`,
 };

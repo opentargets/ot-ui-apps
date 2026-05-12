@@ -1,5 +1,6 @@
 export interface RowMetricDef {
   id: string;
+  dataField?: string;   // row data key to read from; defaults to id
   gqlField: string;
   sortField: string;
   label: string;
@@ -10,13 +11,23 @@ export interface RowMetricDef {
 
 export const ROW_METRICS: RowMetricDef[] = [
   {
+    id: "noveltyIcon",
+    dataField: "novelty",
+    gqlField: "noveltyDirect",
+    sortField: "noveltyDirect",
+    label: "Novelty",
+    description: "Click to view novelty details for this association.",
+    sortable: true,
+    format: (v) => (v != null ? v.toFixed(2) : "—"),
+  },
+  {
     id: "novelty",
     gqlField: "noveltyDirect",
     sortField: "noveltyDirect",
-    label: "Novelty Score",
+    label: "Novelty",
     description: "Novelty of the target-disease association based on literature evidence.",
     sortable: true,
-    format: (v) => (v != null ? v.toLocaleString() : "—"),
+    format: (v) => (v != null ? v.toFixed(2) : "—"),
   },
 ];
 

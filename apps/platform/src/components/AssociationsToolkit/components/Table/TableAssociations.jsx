@@ -15,6 +15,7 @@ import useAotfContext from "../../hooks/useAotfContext";
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 import { ROW_METRICS } from "../../static_datasets/rowMetrics";
+import { NoveltyGaugeCell } from "./MetricCells";
 import HeaderControls from "../HeaderControls";
 import NameFilter from "../NameFilter";
 import AggregationsTooltip from "./AssocTooltip";
@@ -113,8 +114,12 @@ const prioritisationViewColumns = getDatasources({
   colorScale: getScale(false),
 });
 
+const CUSTOM_CELL_RENDERERS = {
+  noveltyIcon: cell => <NoveltyGaugeCell value={cell.getValue()} row={cell.row.original} />,
+};
+
 const metricsColumns = ROW_METRICS.map(metric =>
-  columnHelper.accessor((row) => row[metric.id], {
+  columnHelper.accessor(row => row[metric.id], {
     id: metric.id,
     enableSorting: metric.sortable,
     header: (
@@ -122,11 +127,15 @@ const metricsColumns = ROW_METRICS.map(metric =>
         {metric.label}
       </Typography>
     ),
-    cell: (cell) => (
-      <Box sx={{ px: 1, overflow: "hidden" }}>
-        {metric.format(cell.getValue())}
-      </Box>
-    ),
+    cell: cell => {
+      const customRenderer = CUSTOM_CELL_RENDERERS[metric.id];
+      if (customRenderer) return customRenderer(cell);
+      return (
+        <Box sx={{ px: 1, overflow: "hidden" }}>
+          {metric.format(cell.getValue())}
+        </Box>
+      );
+    },
   })
 );
 
