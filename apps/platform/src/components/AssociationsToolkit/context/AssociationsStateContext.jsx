@@ -21,11 +21,12 @@ import {
   resetPagination,
   resetToInitialState,
   setDataSourceControl,
+  setEnableIndirect,
 } from "./aotfActions";
+import { ActionType } from "../types";
 
 const AssociationsStateContext = createContext();
 
-const initialIndirect = entity => entity !== ENTITIES.TARGET;
 const rowEntity = { [ENTITIES.TARGET]: ENTITIES.DISEASE, [ENTITIES.DISEASE]: ENTITIES.TARGET };
 
 /**
@@ -34,7 +35,7 @@ const rowEntity = { [ENTITIES.TARGET]: ENTITIES.DISEASE, [ENTITIES.DISEASE]: ENT
 function AssociationsStateProvider({ children, entity, id, query }) {
   const [state, dispatch] = useReducer(
     aotfReducer,
-    { query, parentEntity: entity, parentId: id },
+    { entity },
     createInitialState
   );
 
@@ -42,14 +43,10 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const client = useApolloClient();
 
-  // Data controls
-  const [enableIndirect, setEnableIndirect] = useState(initialIndirect(entity));
-  const [sorting, setSorting] = useState(DEFAULT_TABLE_SORTING_STATE);
-
-  // Data controls UI
+  // UI-only state — not a query param, will become local state in AssociationsView
   const [activeHeadersControlls, setActiveHeadersControlls] = useState(false);
 
-  // only two posible (associations || prioritisations)
+  // only two possible (associations || prioritisations)
   const [displayedTable, setDisplayedTable] = useStateParams(
     DISPLAY_MODE.ASSOCIATIONS,
     "table",
@@ -73,7 +70,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
 
   const entityToGet = rowEntity[entity];
 
-  const resolvedSortBy = METRICS_SORT_FIELD[sorting[0].id] ?? sorting[0].id;
+  const resolvedSortBy = METRICS_SORT_FIELD[state.sorting[0].id] ?? state.sorting[0].id;
 
   const { data, initialLoading, loading, error, count } = useAssociationsData({
     client,
@@ -83,7 +80,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       index: state.pagination.pageIndex,
       size: state.pagination.pageSize,
       sortBy: resolvedSortBy,
-      enableIndirect,
+      enableIndirect: state.enableIndirect,
       datasources: state.dataSourceControls,
       entity,
       facetFilters: state.facetFiltersIds,
@@ -102,7 +99,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     query,
     options: {
       id,
-      enableIndirect,
+      enableIndirect: state.enableIndirect,
       entity,
       size: pinnedEntries.length,
       sortBy: resolvedSortBy,
@@ -125,7 +122,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
     query,
     options: {
       id,
-      enableIndirect,
+      enableIndirect: state.enableIndirect,
       entity,
       size: uploadedEntries.length,
       sortBy: resolvedSortBy,
@@ -154,24 +151,28 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       const newPagination = updater(state.pagination);
       dispatch(onPaginationChange(newPagination));
     },
-    [state]
+    [state.pagination]
   );
 
   const resetSorting = useCallback(() => {
-    setSorting(DEFAULT_TABLE_SORTING_STATE);
-  }, [setSorting]);
+    dispatch({ type: ActionType.SORTING, sorting: DEFAULT_TABLE_SORTING_STATE });
+  }, []);
 
   const handleSortingChange = useCallback(
     newSortingFunc => {
       const newSorting = newSortingFunc();
-      if (newSorting[0].id === sorting[0].id) {
-        setSorting(DEFAULT_TABLE_SORTING_STATE);
+      if (newSorting[0].id === state.sorting[0].id) {
+        dispatch({ type: ActionType.SORTING, sorting: DEFAULT_TABLE_SORTING_STATE });
         return;
       }
-      setSorting(newSorting);
+      dispatch({ type: ActionType.SORTING, sorting: newSorting });
     },
-    [sorting]
+    [state.sorting]
   );
+
+  const handleSetEnableIndirect = useCallback((value) => {
+    dispatch(setEnableIndirect(value));
+  }, []);
 
   const resetDatasourceControls = () => {
     dispatch(resetDataSourceControl());
@@ -202,12 +203,12 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       initialLoading,
       pagination: state.pagination,
       activeHeadersControlls,
-      enableIndirect,
+      enableIndirect: state.enableIndirect,
       error,
       dataSourcesWeights: state.dataSourceControls,
       displayedTable,
       pinnedData,
-      sorting,
+      sorting: state.sorting,
       modifiedSourcesDataControls: state.modifiedSourcesDataControls,
       entitySearch: state.entitySearch,
       pinnedLoading,
@@ -220,7 +221,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       handleSortingChange,
       setDisplayedTable,
       handlePaginationChange,
-      setEnableIndirect,
+      setEnableIndirect: handleSetEnableIndirect,
       setActiveHeadersControlls,
       handleAggregationClick,
       updateDataSourceControls,
@@ -241,7 +242,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       count,
       data,
       displayedTable,
-      enableIndirect,
       entity,
       entityToGet,
       error,
@@ -258,7 +258,6 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       query,
       setDisplayedTable,
       setPinnedEntries,
-      sorting,
       handlePaginationChange,
       uploadedData,
       uploadedLoading,
@@ -266,6 +265,7 @@ function AssociationsStateProvider({ children, entity, id, query }) {
       uploadedCount,
       uploadedEntries,
       resetSorting,
+      handleSetEnableIndirect,
     ]
   );
 

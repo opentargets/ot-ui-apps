@@ -4,7 +4,7 @@ import { Action, ActionType, Pagination } from "../types";
 export function onPaginationChange(pagination: Pagination): Action {
   return {
     type: ActionType.PAGINATE,
-    pagination: pagination,
+    pagination,
   };
 }
 
@@ -20,18 +20,16 @@ export function setDataSourceControl(
   required: boolean,
   aggregation: string
 ): Action {
-    const sharedWeightConfig = {
-      id, weight, required, aggregation
-    }
-    if(id === "expression_atlas") {
-      return {
-        type: ActionType.DATA_SOURCE_CONTROL,
-        payload: { ...sharedWeightConfig, propagate: false,  },
-      };
-    }
+  const sharedWeightConfig = { id, weight, required, aggregation };
+  if (id === "expression_atlas") {
+    return {
+      type: ActionType.DATA_SOURCE_CONTROL,
+      payload: { ...sharedWeightConfig, propagate: false },
+    };
+  }
   return {
     type: ActionType.DATA_SOURCE_CONTROL,
-    payload: { ...sharedWeightConfig, propagate: true,  },
+    payload: { ...sharedWeightConfig, propagate: true },
   };
 }
 
@@ -49,8 +47,7 @@ export function aggregationClick(aggregation: string): Action {
 }
 
 export function facetFilterSelectAction(facets: Facet[]): Action {
-  let facetFiltersIds: string[] = [];
-  if (facets && facets.length) facetFiltersIds = facets.map(v => v.id);
+  const facetFiltersIds = facets?.length ? facets.map(v => v.id) : [];
   return {
     type: ActionType.FACETS_SEARCH,
     facetFilters: facets,
@@ -75,5 +72,12 @@ export function setIncludeMeasurements(includeMeasurements: boolean): Action {
   return {
     type: ActionType.SET_INCLUDE_MEASUREMENTS,
     includeMeasurements,
+  };
+}
+
+export function setEnableIndirect(enableIndirect: boolean): Action {
+  return {
+    type: ActionType.SET_ENABLE_INDIRECT,
+    enableIndirect,
   };
 }
