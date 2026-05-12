@@ -10,8 +10,8 @@ import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
-import RowInteractorsWrapper from "../RowInteractors/RowInteractorsWrapper";
-import RowInteractorsTable from "../RowInteractors/RowInteractorsTable";
+import RowInteractorsWrapper from "./RowInteractors/RowInteractorsWrapper";
+import RowInteractorsTable from "./RowInteractors/RowInteractorsTable";
 import {
   RowContainer,
   RowsContainer,

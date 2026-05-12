@@ -19,6 +19,12 @@ const TableFooterContainer = styled("div")({
   marginTop: 12,
 });
 
+const LegendContainer = styled("div")({
+  display: "flex",
+  justifyContent: "flex-end",
+  alignItems: "center",
+});
+
 interface TableFooterProps {
   table: any;
   coreOpen: boolean;
@@ -41,7 +47,7 @@ function TableFooter({ table, coreOpen }: TableFooterProps) {
   return (
     <TableFooterContainer data-testid="pagination-container">
       <div style={{ display: "flex", alignItems: " flex-start" }}>
-        <div id="legend" />
+        <LegendContainer id="legend" />
         <div
           style={{
             display: "flex",

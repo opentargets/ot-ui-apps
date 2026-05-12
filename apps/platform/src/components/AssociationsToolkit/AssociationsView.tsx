@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
 import type { DocumentNode } from "graphql";
-import ActiveFiltersPanel from "./components/ActiveFiltersPanel";
-import DataUploader from "./components/DataUploader";
-import ExportMenu from "./components/ExportMenu";
-import FacetsSearch from "./components/FacetsSearch";
+import ActiveFiltersPanel from "./components/controls/ActiveFiltersPanel";
+import DataUploader from "./components/data/DataUploader";
+import ExportMenu from "./components/controls/ExportMenu";
+import FacetsSearch from "./components/controls/FacetsSearch";
 import { AssociationsQueryProvider } from "./context/AssociationsQueryContext";
 import { AssociationsURLProvider } from "./context/AssociationsURLContext";
 import { AssociationsDataProvider } from "./context/AssociationsDataContext";

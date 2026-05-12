@@ -4,7 +4,7 @@ import { faCaretUp, faCaretDown, faGear } from "@fortawesome/free-solid-svg-icon
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { styled } from "@mui/material/styles";
 
-import { useAotfURLState } from "../context/AssociationsURLContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
 
 const StyledBotton = styled(Button)({
   border: "none",

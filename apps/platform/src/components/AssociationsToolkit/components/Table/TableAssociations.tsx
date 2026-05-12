@@ -18,8 +18,8 @@ import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 import { ROW_METRICS } from "../../static_datasets/rowMetrics";
 import { NoveltyGaugeCell } from "./MetricCells";
-import HeaderControls from "../HeaderControls";
-import NameFilter from "../NameFilter";
+import HeaderControls from "../controls/HeaderControls";
+import NameFilter from "../controls/NameFilter";
 import AggregationsTooltip from "./AssocTooltip";
 import CellName from "./CellName";
 import TableBody from "./TableBody";
@@ -180,11 +180,11 @@ function getDatasources({
         </Typography>
       ) : (
         <AggregationsTooltip title={description} placement="right">
-          <div className="cursor-help">
+          <Box sx={{ cursor: "help" }}>
             <Typography variant="assoc_header" data-testid={`table-header-${id}`}>
               {label}
             </Typography>
-          </div>
+          </Box>
         </AggregationsTooltip>
       ),
       cell: (cell: any) => (

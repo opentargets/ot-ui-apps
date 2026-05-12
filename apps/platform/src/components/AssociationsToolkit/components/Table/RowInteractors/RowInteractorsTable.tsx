@@ -6,8 +6,8 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import useRowInteractors from "./useRowInteractors";
-import { useAotfQueryState } from "../../context/AssociationsQueryContext";
-import TableBody from "../Table/TableBody";
+import { useAotfQueryState } from "../../../context/AssociationsQueryContext";
+import TableBody from "../TableBody";
 import {
   Box,
   InputLabel,
@@ -31,13 +31,13 @@ import {
   FocusActionType,
   useAssociationsFocus,
   useAssociationsFocusDispatch,
-} from "../../context/AssociationsFocusContext";
+} from "../../../context/AssociationsFocusContext";
 import {
   ENTITIES,
   INTERACTORS_SOURCES,
   TABLE_PREFIX,
   InteractorsSource,
-} from "../../associationsUtils";
+} from "../../../associationsUtils";
 import { Tooltip, useApolloClient } from "ui";
 
 type ThresholdState = number | null | undefined;

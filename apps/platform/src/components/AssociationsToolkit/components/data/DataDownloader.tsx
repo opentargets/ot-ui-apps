@@ -32,11 +32,11 @@ import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CopyUrlButton, useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import { getConfig } from "@ot/config";
-import { useAotfQueryState } from "../context/AssociationsQueryContext";
-import { useAotfURLState } from "../context/AssociationsURLContext";
-import { useAotfData } from "../context/AssociationsDataContext";
-import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
-import prioritizationCols from "../static_datasets/prioritisationColumns";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfData } from "../../context/AssociationsDataContext";
+import OriginalDataSources from "../../static_datasets/dataSourcesAssoc";
+import prioritizationCols from "../../static_datasets/prioritisationColumns";
 import {
   getRowsQuerySelector,
   getExportedColumns,

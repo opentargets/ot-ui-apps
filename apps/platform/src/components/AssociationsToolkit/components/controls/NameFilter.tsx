@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, InputAdornment, styled, TextField, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDebounce } from "ui";
-import { setEntitySearch } from "../context/aotfActions";
-import { useAotfQueryState, useAotfQueryDispatch } from "../context/AssociationsQueryContext";
+import { setEntitySearch } from "../../context/aotfActions";
+import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 
 const NameFilterInput = styled(TextField)(() => ({
   borderRadius: "2px",

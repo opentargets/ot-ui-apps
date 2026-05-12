@@ -6,10 +6,10 @@ import { styled } from "@mui/material/styles";
 
 import Slider from "./SliderControl";
 import Required from "./RequiredControl";
-import { GridContainer, MetricsSpacerCol } from "../layout";
+import { GridContainer, MetricsSpacerCol } from "../../layout";
 
-import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
-import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../../context/AssociationsURLContext";
 import { Tooltip } from "ui";
 import { ReactNode } from "react";
 

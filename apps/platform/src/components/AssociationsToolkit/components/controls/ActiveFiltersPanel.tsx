@@ -11,10 +11,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Chip,  Typography } from "@mui/material";
 import { Tooltip } from "ui";
 import type { Facet } from "../../Facets/facetsTypes";
-import { setEntitySearch, setIncludeMeasurements } from "../context/aotfActions";
-import { useAotfQueryState, useAotfQueryDispatch } from "../context/AssociationsQueryContext";
-import { useAotfURLState } from "../context/AssociationsURLContext";
-import dataSources from "../static_datasets/dataSourcesAssoc";
+import { setEntitySearch, setIncludeMeasurements } from "../../context/aotfActions";
+import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
+import dataSources from "../../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter((item) => item.id !== idToRemove);

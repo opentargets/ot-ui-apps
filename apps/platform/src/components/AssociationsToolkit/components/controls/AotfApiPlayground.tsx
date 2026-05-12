@@ -1,5 +1,5 @@
 import { ApiPlaygroundDrawer } from "ui";
-import { useAotfQueryState } from "../context/AssociationsQueryContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 
 function AotfApiPlayground() {
   const {

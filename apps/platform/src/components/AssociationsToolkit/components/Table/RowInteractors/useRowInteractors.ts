@@ -5,11 +5,11 @@ import {
   getInteractorIds,
   getInitialLoadingData,
   INTERACTORS_SOURCES,
-} from "../../associationsUtils";
-import { columnAdvanceControl } from "../../types";
+} from "../../../associationsUtils";
+import { columnAdvanceControl } from "../../../types";
 
 import InteractionsQuery from "./InteractorsQuery.gql";
-import DiseaseAssociationsQuery from "../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
+import DiseaseAssociationsQuery from "../../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 
 const INITIAL_ROW_COUNT = 8;
 

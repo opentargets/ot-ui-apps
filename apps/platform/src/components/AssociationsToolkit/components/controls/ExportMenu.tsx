@@ -4,7 +4,7 @@ import type { MouseEvent } from "react";
 import { useState } from "react";
 import { PopoverButton } from "ui";
 import AotfApiPlayground from "./AotfApiPlayground";
-import DataDownloader from "./DataDownloader";
+import DataDownloader from "../data/DataDownloader";
 
 function ExportMenu() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);

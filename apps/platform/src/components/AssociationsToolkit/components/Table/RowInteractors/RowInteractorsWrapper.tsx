@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import { Box } from "@mui/material";
-import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
+import { useAssociationsFocus } from "../../../context/AssociationsFocusContext";
 
 function RowInteractorsWrapper({
   rowId,

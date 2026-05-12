@@ -35,8 +35,8 @@ import { Button, Link, Tooltip, useApolloClient } from "ui";
 import { v1 } from "uuid";
 import * as XLSX from "xlsx";
 
-import { useAotfQueryState } from "../../context/AssociationsQueryContext";
-import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfQueryState } from "../../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../../context/AssociationsURLContext";
 import NestedItem from "./NestedItem";
 import ValidationQuery from "./ValidationQuery.gql";
 
