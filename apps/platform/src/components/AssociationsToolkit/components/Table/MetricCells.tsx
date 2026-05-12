@@ -12,7 +12,7 @@ import AssocTooltip from "./AssocTooltip";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { gql, useQuery } from "@apollo/client";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 
 const NOVELTY_DETAIL_QUERY = gql`
   query NoveltyDetail($targetId: String!, $diseaseId: String!) {
@@ -34,7 +34,7 @@ type NoveltyDetailPanelProps = {
 };
 
 function NoveltyDetailPanel({ row, onClose }: NoveltyDetailPanelProps) {
-  const { id: parentEntityId, entity } = useAotfContext();
+  const { id: parentEntityId, entity } = useAotfQueryState();
   const isTargetPage = entity === "target";
   const targetId = isTargetPage ? parentEntityId : (row.target as any)?.id;
   const diseaseId = isTargetPage ? (row.disease as any)?.id : parentEntityId;

@@ -12,7 +12,8 @@ import { Box, Chip,  Typography } from "@mui/material";
 import { Tooltip } from "ui";
 import type { Facet } from "../../Facets/facetsTypes";
 import { setEntitySearch, setIncludeMeasurements } from "../context/aotfActions";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../context/AssociationsQueryContext";
+import { useAotfURLState } from "../context/AssociationsURLContext";
 import dataSources from "../static_datasets/dataSourcesAssoc";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
@@ -47,21 +48,9 @@ function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150, testId }
 }
 
 function ActiveFiltersPanel() {
-  const {
-    state: { facetFilters, includeMeasurements },
-    facetFilterSelect,
-    pinnedEntries,
-    uploadedEntries,
-    setPinnedEntries,
-    setUploadedEntries,
-    entitySearch,
-    dispatch,
-    modifiedSourcesDataControls,
-    resetDatasourceControls,
-    sorting,
-    resetSorting,
-    entityToGet,
-  } = useAotfContext();
+  const { facetFilters, includeMeasurements, entitySearch, modifiedSourcesDataControls, sorting, entityToGet } = useAotfQueryState();
+  const { facetFilterSelect, dispatch, resetDatasourceControls, resetSorting } = useAotfQueryDispatch();
+  const { pinnedEntries, uploadedEntries, setPinnedEntries, setUploadedEntries } = useAotfURLState();
 
   const somePinned = pinnedEntries.length > 0;
   const someUploaded = uploadedEntries.length > 0;

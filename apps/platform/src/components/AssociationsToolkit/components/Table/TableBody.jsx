@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { grey } from "@mui/material/colors";
 
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
@@ -103,7 +104,8 @@ function EmptyMessage() {
 const borderStyle = `1px solid ${grey[400]}`;
 
 function TableBody({ core, cols, noInteractors }) {
-  const { id, entity, entityToGet, displayedTable } = useAotfContext();
+  const { id, entity, entityToGet } = useAotfQueryState();
+  const { displayedTable } = useAotfURLState();
 
   const focusState = useAssociationsFocus();
 

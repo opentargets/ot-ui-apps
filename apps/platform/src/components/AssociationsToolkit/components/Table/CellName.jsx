@@ -22,7 +22,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { ENTITIES, isPartnerPreview, TABLE_PREFIX } from "../../associationsUtils";
 import { grey } from "@mui/material/colors";
 import {
@@ -87,7 +88,8 @@ const ContextMenuContainer = styled("div", {
 function CellName({ cell, colorScale }) {
   const navigate = useNavigate();
   const contextMenuRef = useRef();
-  const { entityToGet, pinnedEntries, setPinnedEntries, id: currentEntityId } = useAotfContext();
+  const { entityToGet, id: currentEntityId } = useAotfQueryState();
+  const { pinnedEntries, setPinnedEntries } = useAotfURLState();
   const { loading, prefix } = cell.table.getState();
   const name = cell.getValue();
   const { id } = cell.row;

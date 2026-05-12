@@ -6,7 +6,7 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import useRowInteractors from "./useRowInteractors";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 import TableBody from "../Table/TableBody";
 import {
   Box,
@@ -112,9 +112,9 @@ function RowInteractorsTable({ row, columns, nameProperty, parentTable }) {
     id: diseaseId,
     sorting,
     enableIndirect,
-    dataSourcesWeights,
+    dataSourceControls: dataSourcesWeights,
     entityToGet,
-  } = useAotfContext();
+  } = useAotfQueryState();
   const client = useApolloClient();
 
   const label = row.original.targetSymbol;

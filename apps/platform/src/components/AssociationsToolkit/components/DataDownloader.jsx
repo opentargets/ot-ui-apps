@@ -32,7 +32,9 @@ import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CopyUrlButton, useAPIMetadata, useApolloClient, useBatchDownloader } from "ui";
 import { getConfig } from "@ot/config";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "../context/AssociationsQueryContext";
+import { useAotfURLState } from "../context/AssociationsURLContext";
+import { useAotfData } from "../context/AssociationsDataContext";
 import OriginalDataSources from "../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../static_datasets/prioritisationColumns";
 import {
@@ -161,20 +163,9 @@ function DataDownloader() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { version } = useAPIMetadata();
   const classes = styles();
-  const {
-    id,
-    query,
-    searhFilter,
-    sorting,
-    enableIndirect,
-    entity,
-    entityToGet,
-    modifiedSourcesDataControls,
-    pinnedEntries,
-    pinnedData,
-    dataSourcesWeights,
-    entitySearch,
-  } = useAotfContext();
+  const { id, query, sorting, enableIndirect, entity, entityToGet, modifiedSourcesDataControls, dataSourceControls: dataSourcesWeights, entitySearch } = useAotfQueryState();
+  const { pinnedEntries } = useAotfURLState();
+  const { pinnedData } = useAotfData();
   const fileStem = `OT-${id}-associated-${entityToGet}s`;
   const [onlyPinnedCheckBox, setOnlyPinnedCheckBox] = useState(false);
   const [weightControlCheckBox, setWeightControlCheckBox] = useState(modifiedSourcesDataControls);
@@ -211,7 +202,6 @@ function DataDownloader() {
 
   const allAssociationsVariable = {
     id,
-    filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
     entitySearch,

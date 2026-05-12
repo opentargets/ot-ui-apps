@@ -1,27 +1,25 @@
 import { ApiPlaygroundDrawer } from "ui";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "../context/AssociationsQueryContext";
 
 function AotfApiPlayground() {
   const {
     id,
     pagination,
-    searhFilter,
     sorting,
     enableIndirect,
-    dataSourcesWeights,
+    dataSourceControls,
     entity,
     query,
     entitySearch,
-  } = useAotfContext();
+  } = useAotfQueryState();
 
   const variables = {
     id,
     index: pagination.pageIndex,
     size: pagination.pageSize,
-    filter: searhFilter,
     sortBy: sorting[0].id,
     enableIndirect,
-    datasources: dataSourcesWeights.map(el => ({
+    datasources: dataSourceControls.map(el => ({
       id: el.id,
       weight: el.weight,
       propagate: el.propagate,

@@ -6,7 +6,6 @@ export { default as DataUploader } from "./components/DataUploader/DataUploader"
 export { default as AotfApiPlayground } from "./components/AotfApiPlayground";
 export { default as NameFilter } from "./components/NameFilter";
 export { default as AssociationsView } from "./AssociationsView";
-export { default as useAotfContext } from "./hooks/useAotfContext";
 export * from "./components/layout";
 export * from "./context/AssociationsFocusContext";
 export { AssociationsQueryProvider, useAotfQueryState, useAotfQueryDispatch } from "./context/AssociationsQueryContext";

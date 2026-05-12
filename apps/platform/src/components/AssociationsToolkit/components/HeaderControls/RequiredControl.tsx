@@ -1,7 +1,6 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from "react";
 import { Checkbox } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import useAotfContext from "../../hooks/useAotfContext";
 
 const OTCheckbox = styled(Checkbox)`
   padding: 0;

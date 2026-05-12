@@ -4,7 +4,7 @@ import { Box, InputAdornment, styled, TextField, useTheme } from "@mui/material"
 import { useEffect, useState } from "react";
 import { useDebounce } from "ui";
 import { setEntitySearch } from "../context/aotfActions";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../context/AssociationsQueryContext";
 
 const NameFilterInput = styled(TextField)(() => ({
   borderRadius: "2px",
@@ -18,7 +18,8 @@ const NameFilterInput = styled(TextField)(() => ({
 }));
 
 const NameFilter = () => {
-  const { entityToGet, dispatch, entitySearch } = useAotfContext();
+  const { entityToGet, entitySearch } = useAotfQueryState();
+  const { dispatch } = useAotfQueryDispatch();
   const placeHolderEntity = entityToGet === "target" ? "target" : "disease";
 
   const [inputValue, setInputValue] = useState("");

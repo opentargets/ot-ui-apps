@@ -11,7 +11,9 @@ import {
   TABLE_PREFIX,
   tableCSSVariables,
 } from "../../associationsUtils";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfData } from "../../context/AssociationsDataContext";
 import dataSourcesCols from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
 import { ROW_METRICS } from "../../static_datasets/rowMetrics";
@@ -173,26 +175,10 @@ function getDatasources({ displayedTable, colorScale }) {
 }
 
 function TableAssociations() {
-  const {
-    entity,
-    entityToGet,
-    data,
-    count,
-    loading: associationsLoading,
-    pagination,
-    handlePaginationChange,
-    displayedTable,
-    sorting,
-    handleSortingChange,
-    pinnedData,
-    pinnedLoading,
-    uploadedData,
-    uploadedLoading,
-    pinnedEntries,
-    uploadedEntries,
-    setUploadedEntries,
-    setPinnedEntries,
-  } = useAotfContext();
+  const { entity, entityToGet, pagination, sorting } = useAotfQueryState();
+  const { handlePaginationChange, handleSortingChange } = useAotfQueryDispatch();
+  const { displayedTable, pinnedEntries, uploadedEntries, setPinnedEntries, setUploadedEntries } = useAotfURLState();
+  const { data, count, loading: associationsLoading, pinnedData, pinnedLoading, uploadedData, uploadedLoading } = useAotfData();
 
   const rowNameEntity = entity === "target" ? "name" : "approvedSymbol";
   const isAssociations = displayedTable === "associations";

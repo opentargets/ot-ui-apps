@@ -3,17 +3,12 @@ import { Box, Divider, FormControlLabel, Popover, Switch, FormGroup, Typography 
 import { type MouseEvent, type ReactElement, useState } from "react";
 import { FacetsSelect, PopoverButton } from "ui";
 import {  setIncludeMeasurements } from "../context/aotfActions";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../context/AssociationsQueryContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function FacetsSearch(): ReactElement {
-  const {
-    entityToGet,
-    facetFilterSelect,
-    id,
-    state: { facetFilters, includeMeasurements },
-    dispatch
-  } = useAotfContext();
+  const { entityToGet, id, facetFilters, includeMeasurements } = useAotfQueryState();
+  const { facetFilterSelect, dispatch } = useAotfQueryDispatch();
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 

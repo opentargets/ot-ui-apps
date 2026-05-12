@@ -8,7 +8,7 @@ import Slider from "./SliderControl";
 import Required from "./RequiredControl";
 import { GridContainer, MetricsSpacerCol } from "../layout";
 
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { Tooltip } from "ui";
 import { ReactNode } from "react";
@@ -69,11 +69,9 @@ function getColumnObject(values: Record<string, unknown>[], id: string) {
 
 function HeaderControls({ cols = [] }: HeaderControlsProps): ReactNode {
   const { activeHeadersControlls, setActiveHeadersControlls } = useAotfURLState();
-  const {
-    displayedTable,
-    updateDataSourceControls,
-    dataSourcesWeights,
-  } = useAotfContext();
+  const { displayedTable } = useAotfURLState();
+  const { dataSourceControls: dataSourcesWeights } = useAotfQueryState();
+  const { updateDataSourceControls } = useAotfQueryDispatch();
 
   if (displayedTable === "prioritisations") return null;
 

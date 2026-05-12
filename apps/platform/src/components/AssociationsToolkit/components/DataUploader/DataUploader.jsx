@@ -35,7 +35,8 @@ import { Button, Link, Tooltip, useApolloClient } from "ui";
 import { v1 } from "uuid";
 import * as XLSX from "xlsx";
 
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
 import NestedItem from "./NestedItem";
 import ValidationQuery from "./ValidationQuery.gql";
 
@@ -246,7 +247,8 @@ const FileExample = ({ entity = "target", runAction }) => {
 function DataUploader() {
   const [activeStep, setActiveStep] = useState(0);
   const [queryTermsResults, setQueryTermsResults] = useState(null);
-  const { entityToGet, setUploadedEntries, uploadedEntries } = useAotfContext();
+  const { entityToGet } = useAotfQueryState();
+  const { uploadedEntries, setUploadedEntries } = useAotfURLState();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const client = useApolloClient();

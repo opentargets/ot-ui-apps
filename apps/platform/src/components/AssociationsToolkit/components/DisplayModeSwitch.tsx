@@ -1,6 +1,7 @@
 import { MouseEvent } from "react";
 import { ToggleButtonGroup, ToggleButton, styled } from "@mui/material";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "../context/AssociationsQueryContext";
+import { useAotfURLState } from "../context/AssociationsURLContext";
 import { DISPLAY_MODE } from "../associationsUtils"; // Ensure DISPLAY_MODE is properly typed
 
 type DisplayMode = (typeof DISPLAY_MODE)[keyof typeof DISPLAY_MODE];
@@ -16,7 +17,8 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
 
 function DisplayModeSwitch() {
   // Type context return values
-  const { displayedTable, setDisplayedTable, entity } = useAotfContext();
+  const { entity } = useAotfQueryState();
+  const { displayedTable, setDisplayedTable } = useAotfURLState();
 
   // Type the parameters for the event and newAlignment
   const handleChange = (event: MouseEvent<HTMLElement>, newAlignment: DisplayMode | null) => {

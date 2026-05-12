@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { TablePagination } from "@mui/material";
-import useAotfContext from "../../hooks/useAotfContext";
+import { useAotfQueryState } from "../../context/AssociationsQueryContext";
+import { useAotfURLState } from "../../context/AssociationsURLContext";
+import { useAotfData } from "../../context/AssociationsDataContext";
 import TableCell from "./TableCell";
 import { getLegend } from "../../associationsUtils";
 import { styled } from "@mui/styles";
@@ -18,7 +20,9 @@ const TableFooterContainer = styled("div")({
 });
 
 function TableFooter({ table, coreOpen }) {
-  const { count, loading, pagination, displayedTable } = useAotfContext();
+  const { pagination } = useAotfQueryState();
+  const { displayedTable } = useAotfURLState();
+  const { count, loading } = useAotfData();
 
   /**
    * LEGEND EFECT
