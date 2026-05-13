@@ -1,5 +1,3 @@
-import { Facet } from "../Facets/facetsTypes";
-
 export enum ENTITY {
   TARGET = "target",
   DISEASE = "disease",
@@ -45,7 +43,6 @@ export interface QueryState {
   enableIndirect: boolean;
   dataSourceControls: Array<columnAdvanceControl>;
   modifiedSourcesDataControls: boolean;
-  facetFilters: Array<Facet>;
   includeMeasurements: boolean;
 }
 
@@ -57,7 +54,6 @@ export enum ActionType {
   DATA_SOURCE_CONTROL = "DATA_SOURCE_CONTROL",
   RESET_DATA_SOURCE_CONTROL = "RESET_DATA_SOURCE_CONTROL",
   HANDLE_AGGREGATION_CLICK = "HANDLE_AGGREGATION_CLICK",
-  FACETS_SEARCH = "FACETS_SEARCH",
   SET_INITIAL_STATE = "SET_INITIAL_STATE",
   SET_INCLUDE_MEASUREMENTS = "SET_INCLUDE_MEASUREMENTS",
   SET_ENABLE_INDIRECT = "SET_ENABLE_INDIRECT",
@@ -67,7 +63,6 @@ export type Action =
   | { type: ActionType.DATA_SOURCE_CONTROL; payload: columnAdvanceControl }
   | { type: ActionType.RESET_DATA_SOURCE_CONTROL }
   | { type: ActionType.HANDLE_AGGREGATION_CLICK; aggregation: string }
-  | { type: ActionType.FACETS_SEARCH; facetFilters: Facet[] }
   | { type: ActionType.SET_INITIAL_STATE }
   | { type: ActionType.SET_INCLUDE_MEASUREMENTS; includeMeasurements: boolean }
   | { type: ActionType.SET_ENABLE_INDIRECT; enableIndirect: boolean };

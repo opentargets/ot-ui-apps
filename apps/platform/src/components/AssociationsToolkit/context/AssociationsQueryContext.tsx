@@ -1,7 +1,15 @@
-import { createContext, useContext, useReducer, useEffect, useRef, useCallback, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import type { Dispatch, ReactNode } from "react";
 import type { DocumentNode } from "graphql";
-import { useStateParams } from "ui";
+import { useLocation, useNavigate } from "react-router-dom";
 import type { Facet } from "../../Facets/facetsTypes";
 import {
   DEFAULT_TABLE_SORTING_STATE,
@@ -13,19 +21,40 @@ import {
 import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
   aggregationClick,
-  facetFilterSelectAction,
   resetDataSourceControl,
   resetToInitialState,
   setDataSourceControl,
   setEnableIndirect,
 } from "./aotfActions";
 import type { Action, QueryState, Pagination, Sorting } from "../types";
-import { ActionType, ENTITY } from "../types";
+import { ENTITY } from "../types";
 
 const rowEntityMap: Partial<Record<ENTITY, ENTITY>> = {
   [ENTITY.TARGET]: ENTITY.DISEASE,
   [ENTITY.DISEASE]: ENTITY.TARGET,
 };
+
+// Compact facet serialization: "id~label~category" per facet, "|" between facets.
+// ~ is safe — it doesn't appear in EFO IDs, Ensembl IDs, or typical bio entity names.
+function serializeFacets(facets: Facet[]): string {
+  return facets.map(f => [f.id, f.label, f.category].join("~")).join("|");
+}
+
+function deserializeFacets(s: string): Facet[] {
+  if (!s) return [];
+  return s
+    .split("|")
+    .map(part => {
+      const segs = part.split("~");
+      if (!segs[0]) return null;
+      const id = segs[0];
+      const category = segs.length > 2 ? segs[segs.length - 1] : "";
+      const label =
+        segs.length > 1 ? segs.slice(1, segs.length > 2 ? -1 : undefined).join("~") : id;
+      return { id, label, category, highlights: [], score: 0 } as Facet;
+    })
+    .filter((f): f is Facet => f !== null);
+}
 
 // Full shape exposed to consumers — reducer state + URL-backed fields
 export interface QueryContextState extends QueryState {
@@ -36,6 +65,7 @@ export interface QueryContextState extends QueryState {
   pagination: Pagination;
   sorting: Sorting;
   entitySearch: string;
+  facetFilters: Facet[];
   facetFiltersIds: string[];
 }
 
@@ -77,63 +107,77 @@ export function AssociationsQueryProvider({
   const [state, dispatch] = useReducer(aotfReducer, { entity }, createInitialState);
   const hasRendered = useRef(false);
 
-  // --- URL-backed state ---
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const [pageIndex, setPageIndex] = useStateParams(
-    DEFAULT_TABLE_PAGE_INDEX,
-    "page",
-    (v: number) => String(v),
-    (s: string) => {
-      const n = parseInt(s, 10);
-      return isNaN(n) || n < 0 ? DEFAULT_TABLE_PAGE_INDEX : n;
-    }
+  // Always-current location ref — avoids stale closures in callbacks
+  const locationRef = useRef(location);
+  locationRef.current = location;
+
+  // --- URL state (read from location on every render) ---
+
+  // Parse URL params once per location change, then extract raw strings.
+  // Using raw primitive strings as memo deps (not the URLSearchParams object) means
+  // memos that return arrays/objects only recompute when *their* specific param changed —
+  // not when an unrelated param (e.g. `focus`) changes.
+  const sp = new URLSearchParams(location.search);
+  const pageRaw      = sp.get("page")     ?? "";
+  const pageSizeRaw  = sp.get("pageSize") ?? "";
+  const sortRaw      = sp.get("sort")     ?? "";
+  const entitySearch = sp.get("q")        ?? "";
+  const facetsRaw    = sp.get("facets")   ?? "";
+
+  const pageIndex = useMemo(() => {
+    const n = parseInt(pageRaw, 10);
+    return isNaN(n) || n < 0 ? DEFAULT_TABLE_PAGE_INDEX : n;
+  }, [pageRaw]);
+
+  const pageSize = useMemo(() => {
+    const n = parseInt(pageSizeRaw, 10);
+    return isNaN(n) || n <= 0 ? DEFAULT_TABLE_PAGE_SIZE : n;
+  }, [pageSizeRaw]);
+
+  // sortRaw / facetsRaw are primitive strings → React compares by value → stable references
+  const sorting: Sorting = useMemo(
+    () => (sortRaw ? deserializeSorting(sortRaw) : DEFAULT_TABLE_SORTING_STATE),
+    [sortRaw]
   );
 
-  const [pageSize, setPageSize] = useStateParams(
-    DEFAULT_TABLE_PAGE_SIZE,
-    "pageSize",
-    (v: number) => String(v),
-    (s: string) => {
-      const n = parseInt(s, 10);
-      return isNaN(n) || n <= 0 ? DEFAULT_TABLE_PAGE_SIZE : n;
-    }
+  const facetFilters: Facet[] = useMemo(
+    () => (facetsRaw ? deserializeFacets(facetsRaw) : []),
+    [facetsRaw]
   );
 
-  const [sortParam, setSortParam] = useStateParams(
-    serializeSorting(DEFAULT_TABLE_SORTING_STATE),
-    "sort",
-    (v: string) => v,
-    (v: string) => v
-  );
+  const facetFiltersIds = useMemo(() => facetFilters.map(f => f.id), [facetFilters]);
+  const pagination: Pagination = useMemo(() => ({ pageIndex, pageSize }), [pageIndex, pageSize]);
 
-  const [entitySearch, setEntitySearchParam] = useStateParams(
-    "",
-    "q",
-    (v: string) => v,
-    (v: string) => v
-  );
+  // --- Single batched URL writer — always reads from ref, always single navigate call ---
 
-  const [facetFiltersIds, setFacetFiltersIds] = useStateParams<string[]>(
-    [],
-    "facets",
-    (arr: string[]) => arr.join(","),
-    (s: string) => (s ? s.split(",").filter(Boolean) : [])
+  const updateUrlParams = useCallback(
+    (updates: Record<string, string | null>) => {
+      const params = new URLSearchParams(locationRef.current.search);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === null || value === "") {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      });
+      navigate({ pathname: locationRef.current.pathname, search: params.toString() });
+    },
+    [navigate]
   );
-
-  const pagination: Pagination = useMemo(
-    () => ({ pageIndex, pageSize }),
-    [pageIndex, pageSize]
-  );
-  const sorting: Sorting = useMemo(() => deserializeSorting(sortParam), [sortParam]);
 
   // Reset all URL-backed state + reducer when entity ID changes
   useEffect(() => {
     if (hasRendered.current) {
       dispatch(resetToInitialState());
-      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-      setSortParam(serializeSorting(DEFAULT_TABLE_SORTING_STATE));
-      setEntitySearchParam("");
-      setFacetFiltersIds([]);
+      updateUrlParams({
+        page: null,
+        sort: null,
+        q: null,
+        facets: null,
+      });
     }
     hasRendered.current = true;
   }, [id]);
@@ -142,64 +186,92 @@ export function AssociationsQueryProvider({
 
   const handlePaginationChange = useCallback(
     (updater: (prev: Pagination) => Pagination) => {
-      const newPag = updater(pagination);
-      if (newPag.pageIndex !== pageIndex) setPageIndex(newPag.pageIndex);
-      if (newPag.pageSize !== pageSize) setPageSize(newPag.pageSize);
+      const params = new URLSearchParams(locationRef.current.search);
+      const currentPag: Pagination = {
+        pageIndex:
+          parseInt(params.get("page") ?? "", 10) || DEFAULT_TABLE_PAGE_INDEX,
+        pageSize:
+          parseInt(params.get("pageSize") ?? "", 10) || DEFAULT_TABLE_PAGE_SIZE,
+      };
+      const newPag = updater(currentPag);
+      updateUrlParams({
+        page: newPag.pageIndex === DEFAULT_TABLE_PAGE_INDEX ? null : String(newPag.pageIndex),
+        pageSize:
+          newPag.pageSize === DEFAULT_TABLE_PAGE_SIZE ? null : String(newPag.pageSize),
+      });
     },
-    [pageIndex, pageSize, pagination]
+    [updateUrlParams]
   );
 
   const handleSortingChange = useCallback(
     (fn: () => Sorting) => {
       const newSorting = fn();
+      const params = new URLSearchParams(locationRef.current.search);
+      const currentSort = deserializeSorting(
+        params.get("sort") ?? serializeSorting(DEFAULT_TABLE_SORTING_STATE)
+      );
       const resolved =
-        newSorting[0].id === sorting[0].id ? DEFAULT_TABLE_SORTING_STATE : newSorting;
-      setSortParam(serializeSorting(resolved));
-      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
+        newSorting[0].id === currentSort[0].id ? DEFAULT_TABLE_SORTING_STATE : newSorting;
+      updateUrlParams({
+        sort:
+          resolved === DEFAULT_TABLE_SORTING_STATE
+            ? null
+            : serializeSorting(resolved),
+        page: null,
+      });
     },
-    [sorting]
+    [updateUrlParams]
   );
 
   const resetSorting = useCallback(() => {
-    setSortParam(serializeSorting(DEFAULT_TABLE_SORTING_STATE));
-  }, []);
+    updateUrlParams({ sort: null });
+  }, [updateUrlParams]);
 
-  const handleAggregationClick = useCallback((aggregation: string) => {
-    dispatch(aggregationClick(aggregation));
-    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-  }, []);
+  const handleAggregationClick = useCallback(
+    (aggregation: string) => {
+      dispatch(aggregationClick(aggregation));
+      updateUrlParams({ page: null });
+    },
+    [updateUrlParams]
+  );
 
   const resetDatasourceControls = useCallback(() => {
     dispatch(resetDataSourceControl());
-    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-  }, []);
+    updateUrlParams({ page: null });
+  }, [updateUrlParams]);
 
   const resetToInitialPagination = useCallback(() => {
-    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-  }, []);
+    updateUrlParams({ page: null });
+  }, [updateUrlParams]);
 
   const updateDataSourceControls = useCallback(
     (colId: string, weight: number, required: boolean, aggregation: string) => {
       dispatch(setDataSourceControl(colId, weight, required, aggregation));
-      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
+      updateUrlParams({ page: null });
     },
-    []
+    [updateUrlParams]
   );
 
-  const facetFilterSelect = useCallback((facets: Facet[]) => {
-    dispatch(facetFilterSelectAction(facets));
-    setFacetFiltersIds(facets.map(f => f.id));
-    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-  }, []);
+  const facetFilterSelect = useCallback(
+    (facets: Facet[]) => {
+      updateUrlParams({
+        facets: facets.length ? serializeFacets(facets) : null,
+        page: null,
+      });
+    },
+    [updateUrlParams]
+  );
 
   const handleSetEnableIndirect = useCallback((value: boolean) => {
     dispatch(setEnableIndirect(value));
   }, []);
 
-  const handleEntitySearch = useCallback((value: string) => {
-    setEntitySearchParam(value);
-    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
-  }, []);
+  const handleEntitySearch = useCallback(
+    (value: string) => {
+      updateUrlParams({ q: value || null, page: null });
+    },
+    [updateUrlParams]
+  );
 
   // --- Context values ---
 
@@ -213,9 +285,10 @@ export function AssociationsQueryProvider({
       pagination,
       sorting,
       entitySearch,
+      facetFilters,
       facetFiltersIds,
     }),
-    [state, id, entity, query, pagination, sorting, entitySearch, facetFiltersIds]
+    [state, id, entity, query, pagination, sorting, entitySearch, facetFilters, facetFiltersIds]
   );
 
   const queryDispatch = useMemo<QueryContextDispatch>(

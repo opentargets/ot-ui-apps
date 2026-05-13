@@ -1,5 +1,4 @@
-import { Facet } from "../../Facets/facetsTypes";
-import { Action, ActionType, columnAdvanceControl } from "../types";
+import { Action, ActionType } from "../types";
 
 export function setDataSourceControl(
   id: string,
@@ -30,13 +29,6 @@ export function aggregationClick(aggregation: string): Action {
   return {
     type: ActionType.HANDLE_AGGREGATION_CLICK,
     aggregation,
-  };
-}
-
-export function facetFilterSelectAction(facets: Facet[]): Action {
-  return {
-    type: ActionType.FACETS_SEARCH,
-    facetFilters: facets,
   };
 }
 

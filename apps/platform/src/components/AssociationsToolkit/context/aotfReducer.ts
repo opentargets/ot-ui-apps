@@ -6,7 +6,6 @@ export const initialState: QueryState = {
   enableIndirect: false,
   dataSourceControls: defaulDatasourcesWeigths,
   modifiedSourcesDataControls: false,
-  facetFilters: [],
   includeMeasurements: false,
 };
 
@@ -55,9 +54,6 @@ export function aotfReducer(state: QueryState = initialState, action: Action): Q
         dataSourceControls,
         modifiedSourcesDataControls: !isAllActive || isAnyOtherActive,
       };
-    }
-    case ActionType.FACETS_SEARCH: {
-      return { ...state, facetFilters: action.facetFilters };
     }
     case ActionType.SET_INCLUDE_MEASUREMENTS: {
       return { ...state, includeMeasurements: action.includeMeasurements };

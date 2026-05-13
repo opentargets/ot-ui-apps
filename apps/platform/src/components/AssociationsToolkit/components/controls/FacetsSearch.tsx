@@ -1,10 +1,9 @@
-import { faFilter, faScaleBalanced } from "@fortawesome/free-solid-svg-icons";
-import { Box, Divider, FormControlLabel, Popover, Switch, FormGroup, Typography } from "@mui/material";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { Box, Divider, Popover, Switch, Typography } from "@mui/material";
 import { type MouseEvent, type ReactElement, useState } from "react";
 import { FacetsSelect, PopoverButton } from "ui";
 import {  setIncludeMeasurements } from "../../context/aotfActions";
 import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function FacetsSearch(): ReactElement {
   const { entityToGet, id, facetFilters, includeMeasurements } = useAotfQueryState();
