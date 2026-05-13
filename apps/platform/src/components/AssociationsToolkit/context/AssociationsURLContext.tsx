@@ -12,6 +12,8 @@ export interface URLContextState {
   setUploadedEntries: (v: string[]) => void;
   activeHeadersControlls: boolean;
   setActiveHeadersControlls: (open: boolean) => void;
+  focusParam: string;
+  setFocusParam: (v: string) => void;
 }
 
 const AssociationsURLContext = createContext<URLContextState | null>(null);
@@ -45,6 +47,13 @@ export function AssociationsURLProvider({ children }: { children: ReactNode }) {
     (s: string) => s === "1"
   );
 
+  const [focusParam, setFocusParam] = useStateParams(
+    "",
+    "focus",
+    (v: string) => v,
+    (v: string) => v
+  );
+
   const value = useMemo<URLContextState>(
     () => ({
       displayedTable,
@@ -55,6 +64,8 @@ export function AssociationsURLProvider({ children }: { children: ReactNode }) {
       setUploadedEntries,
       activeHeadersControlls,
       setActiveHeadersControlls,
+      focusParam,
+      setFocusParam,
     }),
     [
       displayedTable,
@@ -65,6 +76,8 @@ export function AssociationsURLProvider({ children }: { children: ReactNode }) {
       setUploadedEntries,
       activeHeadersControlls,
       setActiveHeadersControlls,
+      focusParam,
+      setFocusParam,
     ]
   );
 

@@ -1,18 +1,5 @@
 import { Facet } from "../../Facets/facetsTypes";
-import { Action, ActionType, Pagination } from "../types";
-
-export function onPaginationChange(pagination: Pagination): Action {
-  return {
-    type: ActionType.PAGINATE,
-    pagination,
-  };
-}
-
-export function resetPagination(): Action {
-  return {
-    type: ActionType.RESET_PAGINATION,
-  };
-}
+import { Action, ActionType, columnAdvanceControl } from "../types";
 
 export function setDataSourceControl(
   id: string,
@@ -47,24 +34,15 @@ export function aggregationClick(aggregation: string): Action {
 }
 
 export function facetFilterSelectAction(facets: Facet[]): Action {
-  const facetFiltersIds = facets?.length ? facets.map(v => v.id) : [];
   return {
     type: ActionType.FACETS_SEARCH,
     facetFilters: facets,
-    facetFiltersIds,
   };
 }
 
 export function resetToInitialState(): Action {
   return {
     type: ActionType.SET_INITIAL_STATE,
-  };
-}
-
-export function setEntitySearch(entitySearch: string): Action {
-  return {
-    type: ActionType.ENTITY_SEARCH,
-    entitySearch,
   };
 }
 

@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Chip,  Typography } from "@mui/material";
 import { Tooltip } from "ui";
 import type { Facet } from "../../Facets/facetsTypes";
-import { setEntitySearch, setIncludeMeasurements } from "../../context/aotfActions";
+import { setIncludeMeasurements } from "../../context/aotfActions";
 import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 import { useAotfURLState } from "../../context/AssociationsURLContext";
 import dataSources from "../../static_datasets/dataSourcesAssoc";
@@ -49,7 +49,7 @@ function FilterChip({ onDelete, label, tootltipContent, maxWidth = 150, testId }
 
 function ActiveFiltersPanel() {
   const { facetFilters, includeMeasurements, entitySearch, modifiedSourcesDataControls, sorting, entityToGet } = useAotfQueryState();
-  const { facetFilterSelect, dispatch, resetDatasourceControls, resetSorting } = useAotfQueryDispatch();
+  const { facetFilterSelect, dispatch, resetDatasourceControls, resetSorting, handleEntitySearch } = useAotfQueryDispatch();
   const { pinnedEntries, uploadedEntries, setPinnedEntries, setUploadedEntries } = useAotfURLState();
 
   const somePinned = pinnedEntries.length > 0;
@@ -80,7 +80,7 @@ function ActiveFiltersPanel() {
   const setAllFilters = () => {
     if (somePinned) setPinnedEntries([]);
     if (someUploaded) setUploadedEntries([]);
-    if (entitySearch) dispatch(setEntitySearch(""));
+    if (entitySearch) handleEntitySearch("");
     if (modifiedSourcesDataControls) resetDatasourceControls();
     if (facetFilters.length > 0) facetFilterSelect([]);
     if (tableSorted) resetSorting();
@@ -118,7 +118,7 @@ function ActiveFiltersPanel() {
           tootltipContent="Name entity"
           label={`"${entitySearch}"`}
           onDelete={() => {
-            dispatch(setEntitySearch(""));
+            handleEntitySearch("");
           }}
         />
       )}

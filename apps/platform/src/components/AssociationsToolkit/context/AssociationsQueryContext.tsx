@@ -1,15 +1,20 @@
 import { createContext, useContext, useReducer, useEffect, useRef, useCallback, useMemo } from "react";
 import type { Dispatch, ReactNode } from "react";
 import type { DocumentNode } from "graphql";
+import { useStateParams } from "ui";
 import type { Facet } from "../../Facets/facetsTypes";
-import { DEFAULT_TABLE_SORTING_STATE } from "../associationsUtils";
+import {
+  DEFAULT_TABLE_SORTING_STATE,
+  DEFAULT_TABLE_PAGE_INDEX,
+  DEFAULT_TABLE_PAGE_SIZE,
+  serializeSorting,
+  deserializeSorting,
+} from "../associationsUtils";
 import { aotfReducer, createInitialState } from "./aotfReducer";
 import {
   aggregationClick,
   facetFilterSelectAction,
-  onPaginationChange,
   resetDataSourceControl,
-  resetPagination,
   resetToInitialState,
   setDataSourceControl,
   setEnableIndirect,
@@ -22,11 +27,16 @@ const rowEntityMap: Partial<Record<ENTITY, ENTITY>> = {
   [ENTITY.DISEASE]: ENTITY.TARGET,
 };
 
+// Full shape exposed to consumers — reducer state + URL-backed fields
 export interface QueryContextState extends QueryState {
   id: string;
   entity: ENTITY;
   entityToGet: ENTITY;
   query: DocumentNode;
+  pagination: Pagination;
+  sorting: Sorting;
+  entitySearch: string;
+  facetFiltersIds: string[];
 }
 
 export interface QueryContextDispatch {
@@ -45,6 +55,7 @@ export interface QueryContextDispatch {
   ) => void;
   facetFilterSelect: (facets: Facet[]) => void;
   setEnableIndirect: (value: boolean) => void;
+  handleEntitySearch: (value: string) => void;
 }
 
 const AssociationsQueryStateContext = createContext<QueryContextState | null>(null);
@@ -66,60 +77,131 @@ export function AssociationsQueryProvider({
   const [state, dispatch] = useReducer(aotfReducer, { entity }, createInitialState);
   const hasRendered = useRef(false);
 
+  // --- URL-backed state ---
+
+  const [pageIndex, setPageIndex] = useStateParams(
+    DEFAULT_TABLE_PAGE_INDEX,
+    "page",
+    (v: number) => String(v),
+    (s: string) => {
+      const n = parseInt(s, 10);
+      return isNaN(n) || n < 0 ? DEFAULT_TABLE_PAGE_INDEX : n;
+    }
+  );
+
+  const [pageSize, setPageSize] = useStateParams(
+    DEFAULT_TABLE_PAGE_SIZE,
+    "pageSize",
+    (v: number) => String(v),
+    (s: string) => {
+      const n = parseInt(s, 10);
+      return isNaN(n) || n <= 0 ? DEFAULT_TABLE_PAGE_SIZE : n;
+    }
+  );
+
+  const [sortParam, setSortParam] = useStateParams(
+    serializeSorting(DEFAULT_TABLE_SORTING_STATE),
+    "sort",
+    (v: string) => v,
+    (v: string) => v
+  );
+
+  const [entitySearch, setEntitySearchParam] = useStateParams(
+    "",
+    "q",
+    (v: string) => v,
+    (v: string) => v
+  );
+
+  const [facetFiltersIds, setFacetFiltersIds] = useStateParams<string[]>(
+    [],
+    "facets",
+    (arr: string[]) => arr.join(","),
+    (s: string) => (s ? s.split(",").filter(Boolean) : [])
+  );
+
+  const pagination: Pagination = useMemo(
+    () => ({ pageIndex, pageSize }),
+    [pageIndex, pageSize]
+  );
+  const sorting: Sorting = useMemo(() => deserializeSorting(sortParam), [sortParam]);
+
+  // Reset all URL-backed state + reducer when entity ID changes
   useEffect(() => {
-    if (hasRendered.current) dispatch(resetToInitialState());
+    if (hasRendered.current) {
+      dispatch(resetToInitialState());
+      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
+      setSortParam(serializeSorting(DEFAULT_TABLE_SORTING_STATE));
+      setEntitySearchParam("");
+      setFacetFiltersIds([]);
+    }
     hasRendered.current = true;
   }, [id]);
 
+  // --- Dispatch callbacks ---
+
   const handlePaginationChange = useCallback(
     (updater: (prev: Pagination) => Pagination) => {
-      dispatch(onPaginationChange(updater(state.pagination)));
+      const newPag = updater(pagination);
+      if (newPag.pageIndex !== pageIndex) setPageIndex(newPag.pageIndex);
+      if (newPag.pageSize !== pageSize) setPageSize(newPag.pageSize);
     },
-    [state.pagination]
+    [pageIndex, pageSize, pagination]
   );
 
   const handleSortingChange = useCallback(
     (fn: () => Sorting) => {
       const newSorting = fn();
-      dispatch({
-        type: ActionType.SORTING,
-        sorting:
-          newSorting[0].id === state.sorting[0].id ? DEFAULT_TABLE_SORTING_STATE : newSorting,
-      });
+      const resolved =
+        newSorting[0].id === sorting[0].id ? DEFAULT_TABLE_SORTING_STATE : newSorting;
+      setSortParam(serializeSorting(resolved));
+      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
     },
-    [state.sorting]
+    [sorting]
   );
 
   const resetSorting = useCallback(() => {
-    dispatch({ type: ActionType.SORTING, sorting: DEFAULT_TABLE_SORTING_STATE });
+    setSortParam(serializeSorting(DEFAULT_TABLE_SORTING_STATE));
   }, []);
 
   const handleAggregationClick = useCallback((aggregation: string) => {
     dispatch(aggregationClick(aggregation));
+    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
   }, []);
 
   const resetDatasourceControls = useCallback(() => {
     dispatch(resetDataSourceControl());
+    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
   }, []);
 
   const resetToInitialPagination = useCallback(() => {
-    dispatch(resetPagination());
+    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
   }, []);
 
   const updateDataSourceControls = useCallback(
     (colId: string, weight: number, required: boolean, aggregation: string) => {
       dispatch(setDataSourceControl(colId, weight, required, aggregation));
+      setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
     },
     []
   );
 
   const facetFilterSelect = useCallback((facets: Facet[]) => {
     dispatch(facetFilterSelectAction(facets));
+    setFacetFiltersIds(facets.map(f => f.id));
+    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
   }, []);
 
   const handleSetEnableIndirect = useCallback((value: boolean) => {
     dispatch(setEnableIndirect(value));
   }, []);
+
+  const handleEntitySearch = useCallback((value: string) => {
+    setEntitySearchParam(value);
+    setPageIndex(DEFAULT_TABLE_PAGE_INDEX);
+  }, []);
+
+  // --- Context values ---
 
   const queryState = useMemo<QueryContextState>(
     () => ({
@@ -128,8 +210,12 @@ export function AssociationsQueryProvider({
       entity,
       entityToGet: rowEntityMap[entity] ?? ENTITY.TARGET,
       query,
+      pagination,
+      sorting,
+      entitySearch,
+      facetFiltersIds,
     }),
-    [state, id, entity, query]
+    [state, id, entity, query, pagination, sorting, entitySearch, facetFiltersIds]
   );
 
   const queryDispatch = useMemo<QueryContextDispatch>(
@@ -144,6 +230,7 @@ export function AssociationsQueryProvider({
       updateDataSourceControls,
       facetFilterSelect,
       setEnableIndirect: handleSetEnableIndirect,
+      handleEntitySearch,
     }),
     [
       handlePaginationChange,
@@ -155,6 +242,7 @@ export function AssociationsQueryProvider({
       updateDataSourceControls,
       facetFilterSelect,
       handleSetEnableIndirect,
+      handleEntitySearch,
     ]
   );
 

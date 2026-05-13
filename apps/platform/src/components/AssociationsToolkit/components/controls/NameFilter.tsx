@@ -1,9 +1,8 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, InputAdornment, styled, TextField, useTheme } from "@mui/material";
+import { Box, InputAdornment, styled, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDebounce } from "ui";
-import { setEntitySearch } from "../../context/aotfActions";
 import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 
 const NameFilterInput = styled(TextField)(() => ({
@@ -19,14 +18,16 @@ const NameFilterInput = styled(TextField)(() => ({
 
 const NameFilter = () => {
   const { entityToGet, entitySearch } = useAotfQueryState();
-  const { dispatch } = useAotfQueryDispatch();
+  const { handleEntitySearch } = useAotfQueryDispatch();
   const placeHolderEntity = entityToGet === "target" ? "target" : "disease";
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(entitySearch);
   const debouncedInputValue = useDebounce(inputValue, 300);
 
   useEffect(() => {
-    dispatch(setEntitySearch(debouncedInputValue));
+    if (debouncedInputValue !== entitySearch) {
+      handleEntitySearch(debouncedInputValue);
+    }
   }, [debouncedInputValue]);
 
   useEffect(() => {

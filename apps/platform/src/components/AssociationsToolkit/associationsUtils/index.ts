@@ -200,6 +200,21 @@ export const getLegend = (isAssoc: boolean): SVGSVGElement | null => {
 /* --- GLOBAL HELPERS --- */
 export const getScale = (isAssoc: boolean) => (isAssoc ? assocScale : prioritizationScale);
 
+/* --- SORTING URL HELPERS --- */
+export function serializeSorting(sorting: { id: string; desc: boolean }[]): string {
+  const { id, desc } = sorting[0] ?? DEFAULT_TABLE_SORTING_STATE[0];
+  return `${id}:${desc ? "desc" : "asc"}`;
+}
+
+export function deserializeSorting(param: string): { id: string; desc: boolean }[] {
+  const colonIdx = param.lastIndexOf(":");
+  if (colonIdx === -1) return DEFAULT_TABLE_SORTING_STATE;
+  const id = param.slice(0, colonIdx);
+  const dir = param.slice(colonIdx + 1);
+  if (!id) return DEFAULT_TABLE_SORTING_STATE;
+  return [{ id, desc: dir !== "asc" }];
+}
+
 /* --- CSS VARIABLES --- */
 export const tableCSSVariables: Record<string, string> = {
   "--primary-color": primaryColor,

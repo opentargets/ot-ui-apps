@@ -1,5 +1,5 @@
 import type { ReactElement, Dispatch } from "react";
-import { createContext, useContext, useReducer, useEffect, useMemo } from "react";
+import { createContext, useContext, useReducer, useEffect, useMemo, useRef } from "react";
 import {
   TABLE_PREFIX,
   InteractorsSource,
@@ -7,6 +7,7 @@ import {
   INTERACTORS_SOURCE_THRESHOLD,
 } from "../associationsUtils";
 import { useAotfQueryState } from "./AssociationsQueryContext";
+import { useAotfURLState } from "./AssociationsURLContext";
 
 // Types
 export type FocusElementTable = "core" | "pinned" | "upload";
@@ -550,17 +551,48 @@ export function useFocusElement(table: FocusElementTable, row: string) {
   }, [focusState, table, row]);
 }
 
+// Focus URL param helpers
+// Format: "table|rowId|section0|section1"
+function parseFocusParam(param: string): FocusState {
+  if (!param) return [];
+  const parts = param.split("|");
+  if (parts.length < 4) return [];
+  const [table, row, section0, section1] = parts;
+  if (!table || !row || !section0 || !section1) return [];
+  return [createFocusElement({ table: table as FocusElementTable, row, section: [section0, section1] })];
+}
+
+function serializeActiveFocus(state: FocusState): string {
+  const active = state.find(el => el.section !== null);
+  if (!active || !active.section) return "";
+  return `${active.table}|${active.row}|${active.section[0]}|${active.section[1]}`;
+}
+
 /**
  * Provider component for focus state
  */
 export function AssociationsFocusProvider({ children }: { children: ReactElement }): ReactElement {
-  const [focusState, dispatch] = useReducer(focusReducer, []);
+  const { focusParam, setFocusParam } = useAotfURLState();
   const { id } = useAotfQueryState();
+  const hasRendered = useRef(false);
 
-  // Reset focus state when ID changes
+  const [focusState, dispatch] = useReducer(focusReducer, focusParam, parseFocusParam);
+
+  // Reset focus state when ID changes — skip on initial mount so URL-restored state survives
   useEffect(() => {
-    dispatch({ type: FocusActionType.RESET });
+    if (hasRendered.current) {
+      dispatch({ type: FocusActionType.RESET });
+    }
+    hasRendered.current = true;
   }, [id]);
+
+  // Sync active section to URL whenever focus state changes
+  useEffect(() => {
+    const newParam = serializeActiveFocus(focusState);
+    if (newParam !== focusParam) {
+      setFocusParam(newParam);
+    }
+  }, [focusState]);
 
   return (
     <AssociationsFocusContext.Provider value={focusState}>
