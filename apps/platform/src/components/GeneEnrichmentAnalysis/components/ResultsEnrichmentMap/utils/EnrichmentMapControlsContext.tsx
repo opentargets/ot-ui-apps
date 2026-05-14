@@ -7,6 +7,7 @@ export interface EnrichmentMapControlsState {
   similarityThreshold: number;
   sizeBy: "significance" | "pathwaySize" | "geneCount";
   fdrThreshold: number;
+  pValueThreshold: number;
   searchGene: string;
   nesRange: [number, number];
   nesDataRange: { min: number; max: number };
@@ -20,6 +21,7 @@ export type EnrichmentMapControlsAction =
   | { type: "SET_SIMILARITY_THRESHOLD"; payload: number }
   | { type: "SET_SIZE_BY"; payload: "significance" | "pathwaySize" | "geneCount" }
   | { type: "SET_FDR_THRESHOLD"; payload: number }
+  | { type: "SET_P_VALUE_THRESHOLD"; payload: number }
   | { type: "SET_SEARCH_GENE"; payload: string }
   | { type: "SET_NES_RANGE"; payload: [number, number] }
   | { type: "INITIALIZE_NES_RANGE"; payload: { min: number; max: number } }
@@ -43,6 +45,9 @@ export function enrichmentMapControlsReducer(
     case "SET_FDR_THRESHOLD":
       return { ...state, fdrThreshold: action.payload };
 
+    case "SET_P_VALUE_THRESHOLD":
+      return { ...state, pValueThreshold: action.payload };
+
     case "SET_SEARCH_GENE":
       return { ...state, searchGene: action.payload };
 
@@ -63,7 +68,8 @@ export function enrichmentMapControlsReducer(
       return {
         ...state,
         similarityThreshold: 1,
-        fdrThreshold: 0.25,
+        fdrThreshold: 1.0,
+        pValueThreshold: 1.0,
         searchGene: "",
         nesRange: [state.nesDataRange.min, state.nesDataRange.max],
         useGeneCentricPaths: false,
@@ -88,7 +94,8 @@ export const EnrichmentMapControlsContext = createContext<{
 export const createInitialState = (): EnrichmentMapControlsState => ({
   similarityThreshold: 1,
   sizeBy: "geneCount",
-  fdrThreshold: 0.25,
+  fdrThreshold: 1.0,
+  pValueThreshold: 1.0,
   searchGene: "",
   nesRange: [-3, 3],
   nesDataRange: { min: -3, max: 3 },

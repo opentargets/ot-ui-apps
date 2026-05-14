@@ -19,7 +19,7 @@ import {
   useShortestPathComputation,
   useCytoscapeInstance,
 } from "./hooks";
-import { ElementDefinition } from "cytoscape";
+import { GseaResult } from "../../api/gseaApi";
 
 /**
  * Enrichment Map visualization for GSEA pathway results using Cytoscape.js
@@ -68,11 +68,12 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
 
   // Element computation
   const { computedElements, computedStats, nesRange, isLoading } = useElementComputation(
-    results as Array<ElementDefinition>,
+    results as Array<GseaResult>,
     genes,
     controls.similarityThreshold,
     controls.sizeBy,
     controls.fdrThreshold,
+    controls.pValueThreshold,
     controls.nesRange
   );
 
@@ -80,7 +81,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   const { cyRef } = useCytoscapeInstance(
     containerRef,
     computedElements,
-    results as Array<ElementDefinition>,
+    results as Array<GseaResult>,
     genes,
     isLoading,
     (data) => {

@@ -33,7 +33,6 @@ export {
   createPathwayNode,
   filterAndSortGenes,
   getBorderColor,
-  getSignificanceColor,
 } from "./nodeBuilder";
 export { createStylesheet } from "./stylesheet";
 // Tooltip utilities

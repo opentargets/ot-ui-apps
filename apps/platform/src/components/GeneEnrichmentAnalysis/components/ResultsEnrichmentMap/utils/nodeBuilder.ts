@@ -22,18 +22,6 @@ export interface PathwayNodeMetadata {
 }
 
 
-
-/**
- * Determines significance color based on FDR value
- */
-export function getSignificanceColor(fdr: number): string {
-  if (fdr < 0.01) return "#4caf50";
-  if (fdr < 0.05) return "#8bc34a";
-  if (fdr < 0.1) return "#ff9800";
-  if (fdr < 0.25) return "#ffcc80";
-  return "#e0e0e0";
-}
-
 /**
  * Gets border color that matches the node color
  */
@@ -129,6 +117,7 @@ export function filterAndSortGenes(
 
 /**
  * Creates a pathway node element for Cytoscape
+ * Color is set to neutral default and overridden by NES-based coloring in useElementComputation
  */
 export function createPathwayNode(
   result: Record<string, unknown>,
@@ -136,7 +125,6 @@ export function createPathwayNode(
   sizeBy: "significance" | "pathwaySize" | "geneCount"
 ): ElementDefinition {
   const fdr = result.FDR as number;
-  const color = getSignificanceColor(fdr);
   const nodeSize = calculateNodeSize(
     sizeBy,
     sizeBy === "pathwaySize" ? (result["Pathway size"] as number) : fdr,
@@ -145,6 +133,7 @@ export function createPathwayNode(
 
   const nodeId = (result.ID as string) || (result.Pathway as string);
   const nodePathway = result.Pathway as string;
+  const defaultColor = "#e0e0e0"; // Neutral grey - will be overridden by NES coloring
 
   return {
     data: {
@@ -160,8 +149,8 @@ export function createPathwayNode(
       inputGenes: result["Number of input genes"],
       geneCount: geneList.length,
       leadingGenes: result["Leading edge genes"],
-      color: color,
-      borderColor: getBorderColor(color),
+      color: defaultColor,
+      borderColor: getBorderColor(defaultColor),
       size: nodeSize,
       displayLabel: nodePathway.length > 25 ? `${nodePathway.substring(0, 22)}...` : nodePathway,
     },

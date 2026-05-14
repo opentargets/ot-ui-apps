@@ -1,6 +1,6 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, IconButton, Button, Chip } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, Button, Chip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faXmark, faChevronUp, faChevronDown, faRoute } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faXmark, faChevronUp, faChevronDown, faRoute, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState } from "react";
 import { EnrichmentMapControlsContext } from "../utils/EnrichmentMapControlsContext";
 
@@ -11,7 +11,6 @@ interface EnrichmentMapControlsProps {
 
 export function EnrichmentMapControls({
   onOpenPathwaySelection,
-  isGoData = false,
 }: EnrichmentMapControlsProps) {
   const controlsContext = useContext(EnrichmentMapControlsContext);
   if (!controlsContext) {
@@ -21,120 +20,142 @@ export function EnrichmentMapControls({
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <Box
-      sx={{
-        position: "absolute",
-        top: 16,
-        right: 16,
-        zIndex: 1000,
-        backgroundColor: "white",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        padding: 2,
-        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-        maxWidth: 500,
-        transition: "all 0.3s ease",
-      }}
-    >
-      {/* Header with collapse button */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: isCollapsed ? 0 : 2 }}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-          Controls
-        </Typography>
-        <IconButton
-          size="small"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          sx={{ padding: 0 }}
-        >
-          <FontAwesomeIcon
-            icon={isCollapsed ? faChevronDown : faChevronUp}
-            style={{ fontSize: "14px", color: "#666" }}
-          />
-        </IconButton>
+    <Box sx={{ borderBottom: "1px solid", borderColor: "divider", backgroundColor: "white" }}>
+      {/* Filter header - always visible */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          px: 2,
+          py: 1,
+          cursor: "pointer",
+          "&:hover": { backgroundColor: "action.hover" },
+        }}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <FontAwesomeIcon icon={faFilter} />
+          <Typography variant="body2" fontWeight={500}>
+            Filters
+          </Typography>
+        </Box>
+        <FontAwesomeIcon icon={isCollapsed ? faChevronDown : faChevronUp} />
       </Box>
 
-      {/* Collapsible content */}
+      {/* Collapsible filter content */}
       {!isCollapsed && (
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: "2fr 1.5fr",
-            gap: 2,
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 3,
+            px: 2,
+            py: 2,
+            backgroundColor: "grey.50",
           }}
         >
-          {/* Left column: Sliders */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                FDR: {state.fdrThreshold.toFixed(4)}
-              </Typography>
-              {isGoData ? (
-                <Slider
-                  value={0.05}
-                  min={0.05}
-                  max={0.05}
-                  size="small"
-                  disabled
-                  marks={[
-                    { value: 0.05, label: "0.05 (Fixed for GO)" },
-                  ]}
-                />
-              ) : (
-                <Slider
-                  value={state.fdrThreshold}
-                  onChange={(_, value) => dispatch({ type: "SET_FDR_THRESHOLD", payload: value as number })}
-                  min={0.01}
-                  max={1}
-                  step={0.01}
-                  size="small"
-                  marks={[
-                    { value: 0.01, label: "0.01" },
-                    { value: 0.25, label: "0.25" },
-                    { value: 1, label: "1" },
-                  ]}
-                />
-              )}
-              
+          {/* Left column: P-value, FDR, NES, Jaccard, Node Size */}
+          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 2, flex: 1 }}>
+            {/* P-value threshold */}
+            <Box sx={{ width: 120 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel>P-value</InputLabel>
+                <Select
+                  value={state.pValueThreshold || 1.0}
+                  onChange={(e) => dispatch({ type: "SET_P_VALUE_THRESHOLD", payload: e.target.value as number })}
+                  label="P-value"
+                >
+                  <MenuItem value={0.001}>≤ 0.001</MenuItem>
+                  <MenuItem value={0.01}>≤ 0.01</MenuItem>
+                  <MenuItem value={0.05}>≤ 0.05</MenuItem>
+                  <MenuItem value={0.1}>≤ 0.1</MenuItem>
+                  <MenuItem value={1.0}>All</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
 
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                NES: {state.nesRange[0].toFixed(1)} - {state.nesRange[1].toFixed(1)}
+            {/* FDR threshold */}
+            <Box sx={{ width: 120 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel>FDR</InputLabel>
+                <Select
+                  value={state.fdrThreshold}
+                  onChange={(e) => dispatch({ type: "SET_FDR_THRESHOLD", payload: e.target.value as number })}
+                  label="FDR"
+                >
+                  <MenuItem value={0.001}>≤ 0.001</MenuItem>
+                  <MenuItem value={0.01}>≤ 0.01</MenuItem>
+                  <MenuItem value={0.05}>≤ 0.05</MenuItem>
+                  <MenuItem value={0.1}>≤ 0.1</MenuItem>
+                  <MenuItem value={1.0}>All</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {/* NES Range */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 240 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                NES
+              </Typography>
+              <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
+                {state.nesRange[0].toFixed(1)}
               </Typography>
               <Slider
+                size="small"
                 value={state.nesRange}
-                onChange={(_, value) => {
-                  dispatch({ type: "SET_NES_RANGE", payload: value as [number, number] });
-                }}
+                onChange={(_, value) => dispatch({ type: "SET_NES_RANGE", payload: value as [number, number] })}
+                valueLabelDisplay="auto"
                 min={state.nesDataRange.min}
                 max={state.nesDataRange.max}
                 step={0.1}
-                size="small"
               />
+              <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
+                {state.nesRange[1].toFixed(1)}
+              </Typography>
             </Box>
 
-            <Box>
-              <Typography variant="caption" color="text.secondary">
-                Jaccard: {(state.similarityThreshold / 10).toFixed(2)}
+            {/* Jaccard/Similarity */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 220 }}>
+              <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                Jaccard
+              </Typography>
+              <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
+                {(state.similarityThreshold / 10).toFixed(2)}
               </Typography>
               <Slider
+                size="small"
                 value={state.similarityThreshold}
                 onChange={(_, value) => dispatch({ type: "SET_SIMILARITY_THRESHOLD", payload: value as number })}
+                valueLabelDisplay="auto"
                 min={1}
                 max={10}
                 step={1}
-                size="small"
               />
+            </Box>
+
+            {/* Node Size */}
+            <Box sx={{ width: 140 }}>
+              <FormControl size="small" fullWidth>
+                <InputLabel>Node Size</InputLabel>
+                <Select 
+                  value={state.sizeBy} 
+                  label="Node Size" 
+                  onChange={(e) => dispatch({ type: "SET_SIZE_BY", payload: e.target.value as typeof state.sizeBy })}
+                >
+                  <MenuItem value="pathwaySize">Pathway Size</MenuItem>
+                  <MenuItem value="geneCount">Gene Count</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           </Box>
 
-          {/* Right column: Gene Search, Node Size, Pathway Path */}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-            <Box>
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
-                Gene Search
-              </Typography>
+          {/* Right column: Gene Search and Pathway Path Button */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: "auto" }}>
+            {/* Gene Search */}
+            <Box sx={{ width: 180 }}>
               <TextField
+                fullWidth
                 size="small"
                 placeholder="Search gene..."
                 value={state.searchGene}
@@ -161,7 +182,6 @@ export function EnrichmentMapControls({
                     </InputAdornment>
                   ),
                 }}
-                sx={{ width: "100%" }}
               />
 
               {state.searchGene && (
@@ -178,29 +198,17 @@ export function EnrichmentMapControls({
               )}
             </Box>
 
-            <Box>
-              <FormControl size="small" fullWidth>
-                <InputLabel>Node Size</InputLabel>
-                <Select 
-                  value={state.sizeBy} 
-                  label="Node Size" 
-                  onChange={(e) => dispatch({ type: "SET_SIZE_BY", payload: e.target.value as typeof state.sizeBy })}
-                >
-                  <MenuItem value="pathwaySize">Pathway Size</MenuItem>
-                  <MenuItem value="geneCount">Gene Count</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-
+            {/* Pathway Path Button */}
             <Button
               variant="outlined"
               size="small"
               startIcon={<FontAwesomeIcon icon={faRoute} style={{ fontSize: "11px" }} />}
               onClick={onOpenPathwaySelection}
-              fullWidth
               sx={{
                 textTransform: "none",
                 fontSize: "11px",
+                whiteSpace: "nowrap",
+                height: "40px",
               }}
             >
               Pathway Path

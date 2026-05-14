@@ -37,7 +37,6 @@ export function createStylesheet(): cytoscape.StylesheetCSS[] {
         width: "data(edgeWidth)",
         opacity: "data(edgeOpacity)",
         "curve-style": "straight",
-        "target-arrow-shape": "triangle",
         "target-arrow-color": "#90caf9",
         "target-arrow-fill": "filled",
       },

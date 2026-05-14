@@ -20,6 +20,7 @@ export function useElementComputation(
   similarityThreshold: number,
   sizeBy: "significance" | "pathwaySize" | "geneCount",
   fdrThreshold: number,
+  pValueThreshold: number,
   nesRange: [number, number]
 ) {
   const [computedElements, setComputedElements] = useState<ElementDefinition[]>([]);
@@ -43,23 +44,26 @@ export function useElementComputation(
   const debouncedSimilarityThreshold = useDebounce(similarityThreshold, 300);
   const debouncedSizeBy = useDebounce(sizeBy, 300);
   const debouncedFdrThreshold = useDebounce(fdrThreshold, 300);
+  const debouncedPValueThreshold = useDebounce(pValueThreshold, 300);
   const debouncedNesRange = useDebounce(nesRange, 300);
 
   // Show loader when inputs change
   useEffect(() => {
     setIsLoading(true);
-  }, [debouncedSimilarityThreshold, debouncedSizeBy, debouncedFdrThreshold, debouncedNesRange]);
+  }, [debouncedSimilarityThreshold, debouncedSizeBy, debouncedFdrThreshold, debouncedPValueThreshold, debouncedNesRange]);
 
-  // FDR and NES filtered results
+  // FDR, p-value, and NES filtered results
   const fdrFilteredResults = useMemo(() => {
     return results.filter((r) => {
       const fdr = r.FDR as number;
+      const pValue = r["p-value"] as number;
       const nes = r.NES as number;
       const fdrPass = fdr < debouncedFdrThreshold;
+      const pValuePass = pValue < debouncedPValueThreshold;
       const nesPass = nes >= debouncedNesRange[0] && nes <= debouncedNesRange[1];
-      return fdrPass || nesPass;
+      return fdrPass || pValuePass || nesPass;
     });
-  }, [results, debouncedFdrThreshold, debouncedNesRange]);
+  }, [results, debouncedFdrThreshold, debouncedPValueThreshold, debouncedNesRange]);
 
   // Memoized NES range for color scaling
   const displayNesRange = useMemo(() => {
