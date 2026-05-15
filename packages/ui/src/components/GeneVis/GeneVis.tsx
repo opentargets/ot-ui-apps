@@ -9,7 +9,6 @@ function GeneVis({
   geneAxisLabel = "Genes",
   variantAxisLabel = "Varants",
   geneLabel = (gene => gene.approvedSymbol),
-  geneColor,
   variantColor,
   fixedTracks = true,
   zoomableTracks = true,
@@ -21,9 +20,8 @@ function GeneVis({
         <GeneVisInner
           chromosome={chromosome}
           geneAxisLabel={geneAxisLabel}
-          variantsLabel={variantAxisLabel}
+          variantAxisLabel={variantAxisLabel}
           geneLabel={geneLabel}
-          geneColor={geneColor}
           variantColor={variantColor}
           fixedTracks={fixedTracks}
           zoomableTracks={zoomableTracks}

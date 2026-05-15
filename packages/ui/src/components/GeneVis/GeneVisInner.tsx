@@ -5,7 +5,7 @@ import {
   useGenTrackTooltipDispatch,
   useGenTrackTooltipState
 } from "ui";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
@@ -13,12 +13,45 @@ import { getGenesTrack } from "./getGenesTrack";
 import { getGeneMinimapTrack } from "./getGeneMinimapTrack";
 import { packIntervals } from "./packIntervals";
 
+const BIOTYPE_COLORS = {
+  protein_coding: "#2e5943",
+  processed_transcript: "#ff7f0e",
+  pseudogene: "#1f77b4",
+  rna: "#9467bd",
+  other: "#d62728",
+};
+
+const BIOTYPE_DIM_COLORS = {
+  protein_coding: "#709a88",
+  processed_transcript: "#e49a50",  // !! MAKE ALL NON-CODING QUITE BOLD FOR NOW !!
+  pseudogene: "#6d9ccb",
+  rna: "#946ece",
+  other: "#c84a4a",
+};
+
+const BIOTYPE_DISPLAY_NAMES = {
+  protein_coding: "Protein coding",
+  processed_transcript: "Processed transcript",
+  pseudogene: "Pseudogene",
+  rna: "RNA",
+  other: "Other",
+};
+
+const BIOTYPE_ORDER = ["protein_coding", "rna", "pseudogene", "processed_transcript", "other"];
+
+function groupTargetsByBiotype(targets) {
+  return Object.groupBy(targets, gene => {
+    const b = gene.target.biotype.toLowerCase();
+    if (b === "protein_coding") return "protein_coding";
+    if (b === "processed_transcript") return "processed_transcript";
+    if (b.includes("pseudogene")) return "pseudogene";
+    if (b.includes("rna")) return "rna";
+    return "other";
+  });
+}
+
 function GeneVisInner({
-  chromosome,
-  geneAxisLabel,
-  variantAxisLabel,
   geneLabel,
-  geneColor,
   variantColor,
   fixedTracks,
   zoomableTracks,
@@ -27,28 +60,189 @@ function GeneVisInner({
   const genTrackState = useGenTrackState();
   const { data, xMin, xMax } = genTrackState;
 
-  const Y_INFO_WIDTH = 180;
+  // Extract L2G prediction gene IDs for priority packing
+  const l2gGeneIds = new Set(
+    data?.l2GPredictions?.rows?.map(row => row.target.id) || []
+  );
+
+  // Per-biotype track configuration
+  const getBiotypeConfig = (hasLabels: boolean) => {
+    return {
+      pixelGapCenterToCenter: hasLabels ? 100 : 0,
+      detailRowHeight: hasLabels ? 32 : 16, // 32 with labels, 16 without
+    };
+  };
+
+  const Y_INFO_WIDTH = 120;
   const Y_INFO_GAP = 8;
   const [widthRef, { width: totalWidth }] = useMeasure();
   const canvasWidth = (totalWidth ?? 0) - Y_INFO_WIDTH - Y_INFO_GAP;
 
   const bpPerPixel = (canvasWidth > 0 && xMax > xMin) ? (xMax - xMin) / canvasWidth : 1;
 
-  // Compute layout once — shared by minimap (top-level) and detail (zoom-level) so rows align
-  const hasGenes = data.genes &&
+  // Check if we have gene data
+  const hasGenes = data?.region?.targets?.length &&
     (fixedTracks === true || fixedTracks?.includes("genes") ||
      zoomableTracks === true || zoomableTracks?.includes("genes"));
-
-  const geneToRow = hasGenes
-    ? packIntervals(data.genes, { bpPerPixel, pixelGap: 1, pixelGapCenterToCenter: 100 })
-    : null;
 
   const fixedTrackList = [];
   const innerTrackList = [];
 
   if (hasGenes) {
-    fixedTrackList.push(getGeneMinimapTrack({ geneColor, geneToRow }));
-    innerTrackList.push(getGenesTrack({ geneLabel, geneColor, geneToRow }));
+    // Group genes by biotype
+    const groupedTargets = groupTargetsByBiotype(data.region.targets);
+
+    // Create tracks for each biotype that has genes
+    for (const biotype of BIOTYPE_ORDER) {
+      const targets = groupedTargets[biotype];
+      if (!targets || targets.length === 0) continue;
+
+      const color = (BIOTYPE_COLORS as Record<string,string>)[biotype];
+      const dimColor = (BIOTYPE_DIM_COLORS as Record<string,string>)[biotype] ?? color;
+
+      // Create YInfo component for this biotype
+      const TrackYInfo = () => (
+        <Typography
+          variant="caption"
+          sx={{
+            height: "100%",
+            display: "flex",
+            alignItems: "top",
+            justifyContent: "flex-end",
+            pr: 1,
+            fontWeight: 500,
+            color: "text.secondary",
+          }}
+        >
+          {BIOTYPE_DISPLAY_NAMES[biotype]}
+        </Typography>
+      );
+
+      // ===== MINIMAP TRACK (top level) =====
+      // Only L2G genes get labels in minimap
+      const minimapLabeledIds = new Set(
+        targets.filter(g => l2gGeneIds.has(g.target.id)).map(g => g.target.id)
+      );
+      const minimapConfig = getBiotypeConfig(minimapLabeledIds.size > 0);
+      const minimapPriorityIds = Array.from(minimapLabeledIds) as string[];
+
+      // Compute packing for minimap
+      const minimapGeneToRow = packIntervals(targets, {
+        bpPerPixel,
+        pixelGap: 1,
+        pixelGapCenterToCenter: minimapConfig.pixelGapCenterToCenter,
+        priorityIds: minimapPriorityIds,
+        labeledIds: Array.from(minimapLabeledIds),
+      });
+
+      // Build minimap row heights
+      const minimapRowsWithLabels = new Set<number>();
+      for (const gene of targets) {
+        const row = minimapGeneToRow[gene.target.id];
+        if (row !== undefined && minimapLabeledIds.has(gene.target.id)) {
+          minimapRowsWithLabels.add(row);
+        }
+      }
+
+      const minimapNRows = Math.max(...Object.values(minimapGeneToRow).map((v: unknown) => Number(v))) + 1;
+      const minimapRowHeightMap: number[] = [];
+      const minimapRowYOffsets: number[] = [];
+      let minimapCurrentYOffset = 0;
+      const minimapTallHeight = 24; // Taller rows for labeled genes (label + bigger bar)
+      const minimapShortHeight = 14; // Larger gaps between genes
+
+      for (let r = 0; r < minimapNRows; r++) {
+        const rowHasLabels = minimapRowsWithLabels.has(r);
+        const rowHeight = rowHasLabels ? minimapTallHeight : minimapShortHeight;
+        minimapRowHeightMap[r] = rowHeight;
+        minimapRowYOffsets[r] = minimapCurrentYOffset;
+        minimapCurrentYOffset += rowHeight;
+      }
+      const minimapTrackHeight = minimapCurrentYOffset;
+      // Add extra padding above first row so label doesn't touch x-axis
+      const minimapTopPadding = 6; // Extra space above first row
+      const minimapFinalTrackHeight = Math.max(minimapTrackHeight + minimapTopPadding, 24);
+      const minimapPadding = Math.max(minimapTopPadding, (24 - minimapTrackHeight) / 2);
+
+      // Add minimap track with variable row heights
+      fixedTrackList.push(getGeneMinimapTrack({
+        geneToRow: minimapGeneToRow,
+        color,
+        biotype,
+        id: `genes-minimap-${biotype}`,
+        YInfo: TrackYInfo,
+        rowHeightMap: minimapRowHeightMap,
+        rowYOffsets: minimapRowYOffsets,
+        trackHeight: minimapFinalTrackHeight,
+        paddingTop: minimapPadding,
+        labeledIds: minimapLabeledIds,
+        dimColor,
+        highlightIds: new Set(l2gGeneIds),
+      }));
+
+      // ===== ZOOMABLE TRACK (detail level) =====
+      // Only protein-coding genes get labels in zoomable view
+      const zoomableLabeledIds = biotype === "protein_coding"
+        ? new Set<string>(targets.map((g: { target: { id: string } }) => g.target.id))
+        : new Set<string>();
+      const zoomableConfig = getBiotypeConfig(true); // Always has labels
+      const zoomablePriorityIds = Array.from(
+        targets.filter((g: { target: { id: string } }) => l2gGeneIds.has(g.target.id)).map((g: { target: { id: string } }) => g.target.id)
+      ) as string[];
+
+      // Compute packing for zoomable track
+      const zoomableGeneToRow = packIntervals(targets, {
+        bpPerPixel,
+        pixelGap: 1,
+        pixelGapCenterToCenter: zoomableConfig.pixelGapCenterToCenter,
+        priorityIds: zoomablePriorityIds,
+        labeledIds: Array.from(zoomableLabeledIds),
+      });
+
+      // Build zoomable row heights
+      const zoomableRowsWithLabels = new Set<number>();
+      for (const gene of targets) {
+        const row = zoomableGeneToRow[gene.target.id];
+        if (row !== undefined && zoomableLabeledIds.has(gene.target.id)) {
+          zoomableRowsWithLabels.add(row);
+        }
+      }
+
+      const zoomableNRows = Math.max(...Object.values(zoomableGeneToRow).map((v: unknown) => Number(v))) + 1;
+      const zoomableRowHeightMap: number[] = [];
+      const zoomableRowYOffsets: number[] = [];
+      let zoomableCurrentYOffset = 0;
+      const zoomableTallHeight = zoomableConfig.detailRowHeight;
+      const zoomableShortHeight = Math.max(16, zoomableTallHeight / 2 + 2);
+
+      for (let r = 0; r < zoomableNRows; r++) {
+        const rowHasLabels = zoomableRowsWithLabels.has(r);
+        const rowHeight = rowHasLabels ? zoomableTallHeight : zoomableShortHeight;
+        zoomableRowHeightMap[r] = rowHeight;
+        zoomableRowYOffsets[r] = zoomableCurrentYOffset;
+        zoomableCurrentYOffset += rowHeight;
+      }
+      const zoomableTrackHeight = zoomableCurrentYOffset;
+      const zoomableFinalTrackHeight = Math.max(zoomableTrackHeight, 28);
+      const zoomablePadding = Math.max(0, (28 - zoomableTrackHeight) / 2);
+
+      // Add zoomable detail track
+      innerTrackList.push(getGenesTrack({
+        geneLabel,
+        geneToRow: zoomableGeneToRow,
+        color,
+        biotype,
+        id: `genes-${biotype}`,
+        YInfo: TrackYInfo,
+        rowHeightMap: zoomableRowHeightMap,
+        rowYOffsets: zoomableRowYOffsets,
+        trackHeight: zoomableFinalTrackHeight,
+        paddingTop: zoomablePadding,
+        labeledIds: zoomableLabeledIds,
+        dimColor,
+        highlightIds: new Set(l2gGeneIds),
+      }));
+    }
   }
 
   // add variants track
@@ -67,11 +261,12 @@ function GeneVisInner({
         // InnerXInfo={XAxis}
         innerTracks={innerTrackList}
         // InnerXYInfo={XAxisLabel}
-        yInfoGap={8}
-        yInfoWidth={40}
+        yInfoGap={Y_INFO_GAP}
+        yInfoWidth={Y_INFO_WIDTH}
         zoomLines
         panZoomTopGap={0}
-        paddingBottom={4}
+        panZoomBottomGap={4} // Reduced gap between zoom bar and canvas
+        paddingBottom={8} // Consistent spacing for centered labels
       />
     </Box>
   );

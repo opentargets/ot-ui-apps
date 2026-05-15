@@ -111,13 +111,13 @@ function Body({ id, entity }: BodyProps) {
             })
           : [];
 
-        // !! FILTER ON BIOTYPE HERE FOR NOW !!
-        filtered = filtered.filter(o => (
-          o.biotype.includes("protein_coding")
-          // !o.biotype.includes("pseudogene") && 
-          // !o.biotype.includes("RNA")
-          // true
-        ));
+        // // !! FILTER ON BIOTYPE HERE FOR NOW !!
+        // filtered = filtered.filter(o => (
+        //   // o.biotype.includes("protein_coding")
+        //   // !o.biotype.includes("pseudogene") && 
+        //   // !o.biotype.includes("RNA")
+        //   // true
+        // ));
         
         // rewrite data into format returned by API
         if (!cancelled) {
@@ -135,7 +135,18 @@ function Body({ id, entity }: BodyProps) {
               }
             }
           }));
-          setCombinedData({ ...data, region: { targets: formatted } });
+
+          // group targets
+          const groupedTargets = Object.groupBy(formatted, obj => {
+            const biotype = obj.target.biotype.toLowerCase();
+            if (biotype === "protein_coding") return "protein_coding";
+            else if (biotype === "processed_transcript") return "processed_transcript";
+            else if (biotype.includes("pseudogene")) return "pseudogene";
+            else if (biotype.includes("rna")) return "rna";
+            else return "other";
+          });
+
+          setCombinedData({ ...data, region: { targets: formatted, groupedTargets } });
         }
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -168,7 +179,6 @@ function Body({ id, entity }: BodyProps) {
             chromosome={chromosome}
             xMin={start}
             xMax={end}
-            geneColor={target => `${target.biotype === "protein_coding" ? "steelblue" : "firebrick"}`}
             geneLabel={target => `${target.genomicLocation.strand === -1 ? "← " : ""}${
               target.approvedSymbol ?? target.id}${
               target.genomicLocation.strand === 1 ? " →" : ""}`
