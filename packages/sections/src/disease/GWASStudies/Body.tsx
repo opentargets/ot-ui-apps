@@ -93,7 +93,7 @@ const columns = [
   },
   {
     id: "credibleSets",
-    label: "Credible sets counts",
+    label: "Credible sets count",
     renderCell: ({ credibleSets }: { credibleSets: { count: number } }) => {
       return credibleSets?.count ?? naLabel;
     },
