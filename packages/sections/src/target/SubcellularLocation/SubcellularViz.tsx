@@ -146,30 +146,13 @@ interface SubcellularTabPanelProps {
   index: number;
 }
 
-// Extract targetModifier and cleaned location from location string
-// Pattern: [XXXX]: Location text => targetModifier: "XXXX", location: "Location text"
-const extractTargetModifier = (location: string): { targetModifier: string | null; cleanedLocation: string } => {
-  const match = location.match(/^\[([^\]]+)\]:\s*(.*)$/);
-  if (match) {
-    return {
-      targetModifier: match[1],
-      cleanedLocation: match[2]
-    };
-  }
-  return {
-    targetModifier: null,
-    cleanedLocation: location
-  };
-};
+
   
 function SubcellularTabPanel({ target, source, sourcesLocations, uniprotId, value, index }: SubcellularTabPanelProps) {
   const [hoveredCellPart, setHoveredCellPart] = useState<string | null>(null);
 
   const tempSls = useMemo(() => 
-    sourcesLocations[source.id].map(sl => {
-      const { targetModifier, cleanedLocation } = extractTargetModifier(sl.location);
-      return { ...sl, location: cleanedLocation, targetModifier };
-    }),
+    sourcesLocations[source.id],
     [sourcesLocations, source.id]
   );
 
