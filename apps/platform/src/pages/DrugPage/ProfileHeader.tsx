@@ -6,15 +6,15 @@ import {
   Field,
   ProfileHeader as BaseProfileHeader,
 } from "ui";
-import { Fragment } from "react";
+import { Paper } from "@mui/material";
+import { Fragment, useState } from "react";
 import { clinicalStageCategories } from "@ot/constants";
-
-import Smiles from "./Smiles";
 
 import DRUG_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
 
 function ProfileHeader({ chemblId }: { chemblId: string }) {
   const { loading, error, data } = usePlatformApi();
+  const [imgState, setImgState] = useState<'loading' | 'loaded' | 'error'>('loading');
 
   // TODO: Errors!
   if (error) return null;
@@ -61,7 +61,24 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
           {tradeNames}
         </ProfileChipList>
       </>
-      <Smiles chemblId={chemblId} />
+      <Paper
+        variant="outlined"
+        elevation={0}
+        sx={{
+          width: '340px',
+          height: '340px',
+          marginLeft: 'auto',
+          visibility: imgState === 'loaded' ? 'visible' : 'hidden',
+          display: imgState === 'error' ? 'none' : 'block',
+        }}
+      >
+        <img 
+          src={`https://www.ebi.ac.uk/chembl/api/data/image/${chemblId}.svg`}
+          style={{width: "100%", height: "100%" }}
+          onLoad={() => setImgState('loaded')}
+          onError={() => setImgState('error')}
+        />
+      </Paper>
     </BaseProfileHeader>
   );
 }
