@@ -18,7 +18,7 @@ const DEFAULT_ROW_HEIGHT = 10;
 const BAR_HEIGHT = 8;
 const LABEL_HEIGHT = 10;
 
-export function getGeneMinimapTrack({ geneToRow, color, dimColor, highlightIds = new Set(), biotype, id, YInfo, background = undefined, rowHeight = DEFAULT_ROW_HEIGHT, rowHeightMap, rowYOffsets, trackHeight: explicitTrackHeight, paddingTop: explicitPaddingTop, labeledIds = new Set() }) {
+export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds = new Set(), biotype, id, YInfo, background = undefined, rowHeight = DEFAULT_ROW_HEIGHT, rowHeightMap, rowYOffsets, trackHeight: explicitTrackHeight, paddingTop: explicitPaddingTop, labeledIds = new Set() }) {
   const genTrackState = useGenTrackState();
   const { data } = genTrackState ?? { data: null };
 

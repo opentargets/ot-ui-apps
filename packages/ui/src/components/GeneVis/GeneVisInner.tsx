@@ -7,11 +7,14 @@ import {
 } from "ui";
 import { Box, Typography } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
+import { Container, Graphics } from '@pixi/react';
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
-import { getGenesTrack } from "./getGenesTrack";
-import { getGeneMinimapTrack } from "./getGeneMinimapTrack";
+import { getGenesTracks } from "./getGenesTracks";
+import { getGeneMinimapTracks } from "./getGeneMinimapTracks";
+import { getVariantTrack } from "./getVariantTrack";
 import { packIntervals } from "./packIntervals";
+
 
 const BIOTYPE_COLORS = {
   protein_coding: "#2e5943",
@@ -88,6 +91,31 @@ function GeneVisInner({
   const fixedTrackList = [];
   const innerTrackList = [];
 
+  // variant track
+  const variantTrack = getVariantTrack({ data });
+  fixedTrackList.push(variantTrack);
+  innerTrackList.push(variantTrack);
+ 
+        // scale circles and text to stop stretched/squished appearance
+        // onTick: tickScaleFactory([
+        //   {
+        //     filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
+        //     actionFn: (obj, wrapper) => {
+        //       obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
+        //       obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
+        //     }
+        //   },
+        //   {
+        //     filterFn: obj => obj instanceof PixiSprite,
+        //     actionFn: (obj, wrapper) => {
+        //       obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
+        //     }
+        //   },
+        // ])
+
+
+
+  // gene tracks
   if (hasGenes) {
     // Group genes by biotype
     const groupedTargets = groupTargetsByBiotype(data.region.targets);
@@ -165,7 +193,7 @@ function GeneVisInner({
       const minimapPadding = Math.max(minimapTopPadding, (24 - minimapTrackHeight) / 2);
 
       // Add minimap track with variable row heights
-      fixedTrackList.push(getGeneMinimapTrack({
+      fixedTrackList.push(getGeneMinimapTracks({
         geneToRow: minimapGeneToRow,
         color,
         biotype,
@@ -227,7 +255,7 @@ function GeneVisInner({
       const zoomablePadding = Math.max(0, (28 - zoomableTrackHeight) / 2);
 
       // Add zoomable detail track
-      innerTrackList.push(getGenesTrack({
+      innerTrackList.push(getGenesTracks({
         geneLabel,
         geneToRow: zoomableGeneToRow,
         color,

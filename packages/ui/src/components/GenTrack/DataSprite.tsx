@@ -18,25 +18,77 @@ function getOrCreateRectTexture(app: PixiApplication): Texture {
   return _rectTextureCache.get(app)!;
 }
 
+const CIRCLE_TEX_SIZE = 64;
+
+const _circleTextureCache = new WeakMap<PixiApplication, Texture>();
+
+function getOrCreateCircleTexture(app: PixiApplication): Texture {
+  if (!_circleTextureCache.has(app)) {
+    const r = CIRCLE_TEX_SIZE / 2;
+    const g = new PixiGraphics();
+    g.beginFill(0xffffff);
+    g.drawCircle(r, r, r);
+    g.endFill();
+    _circleTextureCache.set(app, app.renderer.generateTexture(g));
+    g.destroy(true);
+  }
+  return _circleTextureCache.get(app)!;
+}
+
+const RING_DEFAULT_STROKE_PIXELS = 2;
+
+const _ringTextureCache = new WeakMap<PixiApplication, Map<string, Texture>>();
+
+function getOrCreateRingTexture(app: PixiApplication, strokePixels: number, radiusPixels: number): Texture {
+  let map = _ringTextureCache.get(app);
+  if (!map) { map = new Map(); _ringTextureCache.set(app, map); }
+  const key = `${strokePixels}:${radiusPixels}`;
+  if (!map.has(key)) {
+    const dpr = window.devicePixelRatio || 1;
+    const displayDiameter = radiusPixels * 2;
+    const size = Math.ceil(displayDiameter * dpr);
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d')!;
+    const sw = strokePixels * dpr;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = sw;
+    ctx.beginPath();
+    ctx.arc(size / 2, size / 2, size / 2 - sw / 2, 0, Math.PI * 2);
+    ctx.stroke();
+    map.set(key, Texture.from(canvas));
+  }
+  return map.get(key)!;
+}
+
 interface DataSpriteProps {
+  // — common (all shapes) —
   scalesRef: RefObject<ScalesRef>;
   x: number;
   y?: number;
+  trackId?: string;
+  texture?: any;
+  shape?: 'rect' | 'circle' | 'ring';
+  tint?: number;
+  alpha?: number;
+  anchor?: [number, number]; // default [0,0] for rect, [0.5,0.5] for circle/ring
+  eventMode?: 'static' | 'dynamic' | 'none';
+  pointerover?: (e: any) => void;
+  pointerout?: (e: any) => void;
+  pointerdown?: (e: any) => void;
+  // — rect only —
   width?: number;
   height?: number;
   minPixelWidth?: number;
   minPixelHeight?: number;
   snapWidth?: boolean;
   snapHeight?: boolean;
-  trackId?: string;
-  texture?: any;
-  tint?: number;
-  alpha?: number;
-  anchor?: [number, number];
-  eventMode?: 'static' | 'dynamic' | 'none';
-  pointerover?: (e: any) => void;
-  pointerout?: (e: any) => void;
-  pointerdown?: (e: any) => void;
+  // — circle / ring only —
+  radius?: number;        // data-space radius (scales with xScale)
+  radiusPixels?: number;  // fixed pixel radius (overrides radius)
+  // — ring only —
+  strokePixels?: number;
 }
 
 export function DataSprite({
@@ -51,11 +103,24 @@ export function DataSprite({
   snapHeight = false,
   trackId,
   texture,
+  shape = 'rect',
+  radius,
+  radiusPixels,
+  strokePixels = RING_DEFAULT_STROKE_PIXELS,
+  anchor: anchorProp,
   ...spriteProps
 }: DataSpriteProps) {
   const app = useApp();
-  const resolvedTexture = texture ?? getOrCreateRectTexture(app);
+  const isCircular = shape === 'circle' || shape === 'ring';
+
+  const resolvedTexture = texture ?? (
+    shape === 'circle' ? getOrCreateCircleTexture(app)
+    : shape === 'ring' ? getOrCreateRingTexture(app, strokePixels, radiusPixels ?? 8)
+    : getOrCreateRectTexture(app)
+  );
+
   const spriteRef = useRef<PixiSprite | null>(null);
+  const resolvedAnchor = anchorProp ?? (isCircular ? [0.5, 0.5] : undefined);
 
   // Update position imperatively every tick — reads latest scalesRef without React re-render
   useTick(() => {
@@ -69,22 +134,33 @@ export function DataSprite({
       ? dataY * yScaleInfo.yScale + yScaleInfo.yOffset
       : dataY;
 
-    let screenWidth = dataWidth !== undefined ? dataWidth * scales.xScale : sprite.texture.width;
-    let screenHeight = dataHeight !== undefined
-      ? dataHeight * (yScaleInfo?.yScale ?? 1)
-      : sprite.texture.height;
+    if (isCircular) {
+      const screenDiameter = radiusPixels !== undefined
+        ? radiusPixels * 2
+        : (radius ?? 0) * 2 * scales.xScale;
 
-    if (minPixelWidth > 0) screenWidth = Math.max(screenWidth, minPixelWidth);
-    if (minPixelHeight > 0) screenHeight = Math.max(screenHeight, minPixelHeight);
+      sprite.width = screenDiameter;
+      sprite.height = screenDiameter;
+      sprite.visible = screenX + screenDiameter > 0 && screenX < scales.canvasWidth;
+    } else {
+      let screenWidth = dataWidth !== undefined ? dataWidth * scales.xScale : sprite.texture.width;
+      let screenHeight = dataHeight !== undefined
+        ? dataHeight * (yScaleInfo?.yScale ?? 1)
+        : sprite.texture.height;
 
-    const finalW = snapWidth ? Math.max(1, Math.round(screenWidth)) : screenWidth;
-    const finalH = snapHeight ? Math.max(1, Math.round(screenHeight)) : screenHeight;
+      if (minPixelWidth > 0) screenWidth = Math.max(screenWidth, minPixelWidth);
+      if (minPixelHeight > 0) screenHeight = Math.max(screenHeight, minPixelHeight);
 
-    sprite.visible = screenX + finalW > 0 && screenX < scales.canvasWidth;
+      const finalW = snapWidth ? Math.max(1, Math.round(screenWidth)) : screenWidth;
+      const finalH = snapHeight ? Math.max(1, Math.round(screenHeight)) : screenHeight;
+
+      sprite.visible = screenX + finalW > 0 && screenX < scales.canvasWidth;
+      sprite.width = finalW;
+      sprite.height = finalH;
+    }
+
     sprite.x = screenX;
     sprite.y = screenY;
-    sprite.width = finalW;
-    sprite.height = finalH;
   });
 
   return (
@@ -92,6 +168,7 @@ export function DataSprite({
       ref={spriteRef}
       texture={resolvedTexture}
       {...spriteProps}
+      {...(resolvedAnchor !== undefined && { anchor: resolvedAnchor })}
     />
   );
 }

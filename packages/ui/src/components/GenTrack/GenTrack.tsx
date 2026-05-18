@@ -460,7 +460,7 @@ function GenTrackInner({
                 <Stage
                   width={canvasWidth}
                   height={canvasHeight}
-                  options={{ background: 0xffffff, autoStart: false }}
+                  options={{ background: 0xffffff, autoStart: false, antialias: true }}
                 >
                   <Container ref={_isInner ? _innerTracksContainerRef : null}>
                     <Tracks

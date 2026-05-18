@@ -17,7 +17,7 @@ const geneLabelStyle = new TextStyle({
 const DEFAULT_ROW_HEIGHT = 28;
 const DEFAULT_EXON_HEIGHT = 10;
 
-export function getGenesTrack({
+export function getGenesTracks({
     geneLabel,
     geneToRow,
     color,

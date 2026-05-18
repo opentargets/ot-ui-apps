@@ -61,3 +61,45 @@ export function DataRect({
 
   return <Graphics ref={gRef} />;
 }
+
+interface DataHLineProps {
+  scalesRef: RefObject<ScalesRef>;
+  trackId?: string;
+  y: number;
+  color?: number;
+  alpha?: number;
+  strokePixels?: number;
+}
+
+/**
+ * A full-width horizontal line at a given data-space y value.
+ * Redraws imperatively on each tick so it stays correct during pan/zoom.
+ */
+export function DataHLine({
+  scalesRef,
+  trackId,
+  y: dataY,
+  color = 0x000000,
+  alpha = 1,
+  strokePixels = 1,
+}: DataHLineProps) {
+  const gRef = useRef<PixiGraphics | null>(null);
+
+  useTick(() => {
+    const g = gRef.current;
+    const scales = scalesRef.current;
+    if (!g || !scales) return;
+
+    const yScaleInfo = trackId ? scales.yScales.get(trackId) : undefined;
+    const screenY = yScaleInfo
+      ? dataY * yScaleInfo.yScale + yScaleInfo.yOffset
+      : dataY;
+
+    g.clear();
+    g.lineStyle(strokePixels, color, alpha);
+    g.moveTo(0, screenY);
+    g.lineTo(scales.canvasWidth, screenY);
+  });
+
+  return <Graphics ref={gRef} />;
+}
