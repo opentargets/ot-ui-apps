@@ -1,56 +1,67 @@
-import { useState, useEffect } from "react";
-import { faXmark, faSearchPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Modal, Paper } from "@mui/material";
+import { useState, useEffect } from 'react';
+import { faXmark, faSearchPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Modal, Paper } from '@mui/material';
 import { makeStyles } from "@mui/styles";
-import SmilesDrawer from "smiles-drawer";
+import SmilesDrawer from 'smiles-drawer';
 
 const useStyles = makeStyles(theme => ({
   container: {
-    cursor: "pointer",
-    height: "240px",
-    marginLeft: "auto",
-    width: "fit-content",
-    "& .seeDetailsIcon": {
-      visibility: "hidden",
+    cursor: 'pointer',
+    height: '240px',
+    marginLeft: 'auto',
+    width: 'fit-content',
+    '& .seeDetailsIcon': {
+      visibility: 'hidden',
       color: theme.palette.secondary.main,
     },
-    "&:hover .seeDetailsIcon": {
-      visibility: "visible",
+    '&:hover .seeDetailsIcon': {
+      visibility: 'visible',
     },
   },
   modal: {
-    width: "800px",
-    margin: "130px auto 0 auto",
+    width: '800px',
+    margin: '130px auto 0 auto',
   },
   modalCanvas: {
-    display: "block",
-    margin: "0 auto",
+    display: 'block',
+    margin: '0 auto',
   },
   close: {
-    cursor: "pointer",
-    float: "right",
+    cursor: 'pointer',
+    float: 'right',
     fill: theme.palette.grey[800],
   },
 }));
 
-const drawSmiles = (smiles, chemblId, config) => {
+interface SmilesHelperProps {
+  smiles: string;
+  chemblId: string;
+}
+
+interface DrawConfig {
+  width: number;
+  height: number;
+}
+
+const drawSmiles = (smiles: string, chemblId: string, config: DrawConfig): void => {
   const smilesDrawer = new SmilesDrawer.Drawer(config);
   SmilesDrawer.parse(
     smiles,
-    tree => {
+    (tree: unknown) => {
       smilesDrawer.draw(tree, chemblId);
     },
     () => {
-      console.error("error parsing smiles");
+      console.error('error parsing smiles');
     }
   );
 };
 
-function SmilesHelper({ smiles, chemblId }) {
+function SmilesHelper({ smiles, chemblId }: SmilesHelperProps): JSX.Element {
   const classes = useStyles();
   const [isOpen, setIsOpen] = useState(false);
-  const toggleModal = () => {
+
+  const toggleModal = (): void => {
     setIsOpen(!isOpen);
   };
 
@@ -60,11 +71,12 @@ function SmilesHelper({ smiles, chemblId }) {
         width: 750,
         height: 440,
       });
-    } else
+    } else {
       drawSmiles(smiles, chemblId, {
         width: 450,
         height: 240,
       });
+    }
   });
 
   return (
