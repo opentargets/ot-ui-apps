@@ -10,26 +10,27 @@ The AOTF (Associations on the Fly) table component for Open Targets Platform. Re
 AssociationsToolkit/
 ├── AssociationsView.tsx          # Top-level entry point — composes all providers + UI
 ├── index.ts                      # Public exports
-├── types.ts                      # Shared TypeScript types (ENTITY, etc.)
+├── types.ts                      # Shared TypeScript types (ENTITY, QueryState, etc.)
 │
 ├── associationsUtils/            # Pure utilities and constants
-│   ├── index.ts                  # getScale, getCellId, getLegend, TABLE_PREFIX, tableCSSVariables, …
-│   ├── associations.ts           # Score / data-source helper functions
+│   ├── index.ts                  # getScale, getCellId, getLegend, TABLE_PREFIX,
+│   │                             # tableCSSVariables, serializeSorting, deserializeSorting, …
+│   ├── associations.ts           # GQL response parsers + data-source score helpers
 │   ├── interactors.ts            # Interactors-specific helpers
 │   └── Legend.ts                 # D3 colour-scale SVG legend builder
 │
 ├── static_datasets/              # Static column / metric definitions
 │   ├── dataSourcesAssoc.ts       # DataSourceDef[] — evidence data sources
 │   ├── prioritisationColumns.ts  # Prioritisation column defs
-│   └── rowMetrics.ts             # ROW_METRICS — novelty, novelty icon, etc.
+│   └── rowMetrics.ts             # ROW_METRICS — novelty gauge, METRICS_SORT_FIELD resolver
 │
 ├── context/                      # React context providers (one concern each)
-│   ├── AssociationsQueryContext.tsx   # Query state: entity, id, pagination, sorting, filters
-│   ├── AssociationsURLContext.tsx     # URL-persisted state: displayedTable, pins, uploads
+│   ├── AssociationsQueryContext.tsx   # Reducer state + URL-backed query params
+│   ├── AssociationsURLContext.tsx     # UI URL params: display mode, pins, uploads, focus
 │   ├── AssociationsDataContext.tsx    # Fetched data for core / pinned / uploaded rows
-│   ├── AssociationsFocusContext.tsx   # Which row/section is expanded (drawer focus)
-│   ├── aotfActions.ts            # Action type constants
-│   └── aotfReducer.ts            # Query state reducer
+│   ├── AssociationsFocusContext.tsx   # Active row/section state + URL focus sync
+│   ├── aotfActions.ts            # Action creators
+│   └── aotfReducer.ts            # Query state reducer (4 fields)
 │
 ├── hooks/
 │   └── useAssociationsData.ts    # Apollo-backed pagination hook used by AssociationsDataContext
@@ -92,18 +93,35 @@ import TARGET_ASSOCIATIONS_QUERY from "./TargetAssociationsQuery.gql";
 />
 ```
 
-`AssociationsView` mounts all four context providers in the correct order and renders the toolbar + table. There is no configuration object — behaviour is controlled through the URL state (handled by `AssociationsURLContext`).
+`AssociationsView` mounts all four context providers in the correct order and renders the toolbar + table. Behaviour is controlled through URL state — all user-navigable state is URL-backed and survives page reload.
 
 ---
 
 ## Context providers
 
-| Provider | Hook | What it owns |
+| Provider | Hook(s) | What it owns |
 |---|---|---|
-| `AssociationsQueryProvider` | `useAotfQueryState` / `useAotfQueryDispatch` | Entity id/type, pagination, sorting, active data-source filters |
-| `AssociationsURLProvider` | `useAotfURLState` | Display mode (associations / prioritisations), pinned and uploaded entity lists |
+| `AssociationsQueryProvider` | `useAotfQueryState` / `useAotfQueryDispatch` | Reducer: dataSourceControls, enableIndirect. URL-backed: pagination, sorting, facets, entity search |
+| `AssociationsURLProvider` | `useAotfURLState` | Display mode, pinned entities, uploaded entities, column-weight panel open state, raw focus param |
 | `AssociationsDataProvider` | `useAotfData` | Fetched rows for core, pinned, and uploaded tables; loading/error state |
-| `AssociationsFocusProvider` | `useAssociationsFocus` | Which row + section is currently expanded in the evidence drawer |
+| `AssociationsFocusProvider` | `useAssociationsFocus` / `useFocusElementState` | Active row + section drawer state; initialised from URL and synced back |
+
+---
+
+## URL params
+
+| Param | Owner | Format | Default |
+|---|---|---|---|
+| `page` | QueryContext | integer | 0 (omitted) |
+| `pageSize` | QueryContext | integer | 25 (omitted) |
+| `sort` | QueryContext | `columnId:asc\|desc` | score:desc (omitted) |
+| `q` | QueryContext | plain string | omitted |
+| `facets` | QueryContext | `id~label~category\|…` | omitted |
+| `table` | URLContext | `associations\|prioritisations` | `associations` |
+| `pinned` | URLContext | comma-separated IDs | omitted |
+| `uploaded` | URLContext | comma-separated IDs | omitted |
+| `weights` | URLContext | `1` when open | omitted |
+| `focus` | URLContext / FocusContext | `table\|rowId\|section0\|section1` | omitted |
 
 ---
 
@@ -135,6 +153,8 @@ Pinned and uploaded sections are shown above the core table inside collapsible p
 ## Row expansion
 
 Clicking a cell opens the evidence section drawer. `AssociationsFocusContext` stores an array of focus entries (`{ row, table, section, interactors }`). `TableBody` reads this state to show/hide the `SectionRender` and `RowInteractors` sub-panels below each row.
+
+The active section is serialised to the `focus` URL param (`table|rowId|section0|section1`) so deep links open the correct drawer directly.
 
 ---
 
