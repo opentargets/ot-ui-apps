@@ -9,10 +9,8 @@ export { filterNodesWithoutEdges, getPathwayGenesList as getGeneList, jaccardSim
 export { buildGeneToTargetIdMapping, getGeneTargetUrl } from "./geneMapping";
 // Gene search
 export {
-  findGeneCentricShortestPaths,
   findNodesAndEdgesWithGene,
   updateElementHighlight,
-  updateGeneCentricHighlight,
 } from "./geneSearch";
 // Shortest path algorithms
 export {

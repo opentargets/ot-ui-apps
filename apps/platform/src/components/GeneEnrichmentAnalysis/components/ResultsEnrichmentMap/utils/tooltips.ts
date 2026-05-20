@@ -9,26 +9,10 @@ export function createNodeTooltipHTML(
     console.log("Creating tooltip for gene node:", data);
     const pathwayList = (data.pathways as string[])?.slice(0, 5).join("<br/>");
     
-    // Add regulation status information
-    const regulationStatus = data.regulationStatus as string;
-    const upCount = data.upRegulatedCount as number;
-    const downCount = data.downRegulatedCount as number;
-    
-    let regulationInfo = "";
-    if (regulationStatus === "upregulated") {
-      regulationInfo = `<br/><span style="color: #e91e63;"><strong>↑ Upregulated in ${upCount} pathway(s)</strong></span>`;
-    } else if (regulationStatus === "downregulated") {
-      regulationInfo = `<br/><span style="color: #2196f3;"><strong>↓ Downregulated in ${downCount} pathway(s)</strong></span>`;
-    } else if (regulationStatus === "conflicting") {
-      regulationInfo = `<br/><span style="color: #9c27b0;"><strong>⚠ Conflicting: Up in ${upCount}, Down in ${downCount}</strong></span>`;
-    } else if (regulationStatus === "non-leading-edge") {
-      regulationInfo = `<br/><span style="color: #bdbdbd;"><em>(Not a leading edge gene)</em></span>`;
-    }
-    
     return `
       <strong>${data.gene}</strong><br/>
       Pathways: ${data.pathwayCount}<br/>
-      Best FDR: ${(data.bestFDR as number)?.toExponential(2)}${regulationInfo}<br/>
+      Best FDR: ${(data.bestFDR as number)?.toExponential(2)}<br/>
       <small>${pathwayList}${(data.pathways as string[])?.length > 5 ? `<br/>... and ${(data.pathways as string[]).length - 5} more` : ""}</small>
     `;
   } else {

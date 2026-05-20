@@ -77,10 +77,9 @@ export async function computePathwayViewElements(
 
   console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms`);
 
-  // For GO data, use async chunked processing to allow UI responsiveness
-  // After FDR filtering, this should be manageable in size
-  if (isGoData && pathwayIds.length > 50) {
-    console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} GO terms asynchronously...`);
+  // For larger datasets, use async chunked processing to allow UI responsiveness
+  if (nodes.length > 1200) {
+    console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} terms asynchronously...`);
     return await computePathwayEdgesAsync(
       pathwayIds,
       pathwayGenes,
@@ -93,7 +92,7 @@ export async function computePathwayViewElements(
     );
   }
 
-  // For smaller datasets or non-GO data, use synchronous computation
+  // For smaller datasets, use synchronous computation
   return computePathwayEdgesSync(
     pathwayIds,
     pathwayGenes,
@@ -141,9 +140,7 @@ async function computePathwayEdgesAsync(
 
       if (genesA.length === 0 || genesB.length === 0) continue;
 
-      const similarity = isGoData
-        ? overlapSimilarity(genesA, genesB)
-        : jaccardSimilarity(genesA, genesB);
+      const similarity = overlapSimilarity(genesA, genesB)
 
       const minGoThreshold = 0.01;
       const minPathwayThreshold = 0.05;

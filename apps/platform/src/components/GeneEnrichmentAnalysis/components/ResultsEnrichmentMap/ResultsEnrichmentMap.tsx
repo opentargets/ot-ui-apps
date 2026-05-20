@@ -1,12 +1,11 @@
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
-import { useContext, useRef, useMemo } from "react";
+import { useContext, useRef, useMemo, useEffect, useState } from "react";
 import {
   EnrichmentMapContainer,
   EnrichmentMapControls,
   EnrichmentMapDetailsModal,
   EnrichmentMapHeader,
   EnrichmentMapLegend,
-  PathwaySelectionModal,
 } from "./components";
 import type { ResultsEnrichmentMapProps } from "./utils";
 import {
@@ -16,7 +15,6 @@ import {
   useEnrichmentMapState,
   useElementComputation,
   useGeneSearch,
-  useShortestPathComputation,
   useCytoscapeInstance,
 } from "./hooks";
 import { GseaResult } from "../../api/gseaApi";
@@ -47,6 +45,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   }, [results]);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const [filterToggled, setFilterToggled] = useState(false);
 
   // State management
   const {
@@ -56,14 +55,6 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
     setModalType,
     modalData,
     setModalData,
-    pathwaySelectionOpen,
-    setPathwaySelectionOpen,
-    selectedPathways,
-    setSelectedPathways,
-    foundShortestPath,
-    setFoundShortestPath,
-    isComputingPath,
-    setIsComputingPath,
   } = useEnrichmentMapState();
 
   // Element computation
@@ -81,32 +72,43 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   const { cyRef } = useCytoscapeInstance(
     containerRef,
     computedElements,
-    results as Array<GseaResult>,
+    results as unknown as Array<GseaResult>,
     genes,
     isLoading,
     (data) => {
       console.log("Node clicked with data:", data);
+      // Hide tooltips when opening modal
+      if (cyRef.current && (cyRef.current as any)._hideTooltips) {
+        (cyRef.current as any)._hideTooltips();
+      }
       setModalType("node");
       setModalData(data);
       setModalOpen(true);
     },
     (data) => {
+      // Hide tooltips when opening modal
+      if (cyRef.current && (cyRef.current as any)._hideTooltips) {
+        (cyRef.current as any)._hideTooltips();
+      }
       setModalType("edge");
       setModalData(data);
       setModalOpen(true);
     }
   );
 
-  // Gene search highlighting
-  useGeneSearch(cyRef, computedElements, controls.searchGene, controls.useGeneCentricPaths);
+  // Gene/pathway search highlighting
+  useGeneSearch(cyRef, computedElements, controls.searchQuery);
 
-  // Shortest path computation
-  useShortestPathComputation(
-    cyRef,
-    selectedPathways,
-    setFoundShortestPath,
-    setIsComputingPath
-  );
+  // Recalculate Cytoscape coordinates when filter panel is toggled
+  useEffect(() => {
+    if (cyRef.current) {
+      // Use a small timeout to allow DOM layout to complete
+      const timeoutId = setTimeout(() => {
+        cyRef.current?.resize();
+      }, 50);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [filterToggled]);
 
   // Available pathways for autocomplete
   const availablePathways = useMemo(() => {
@@ -117,15 +119,16 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
       .sort();
   }, [computedElements]);
 
-  // Helper to convert pathway label to node ID
-  const getNodeIdFromLabel = (label: string): string | null => {
-    const node = computedElements.find(
-      (el) =>
-        !el.data?.source &&
-        ((el.data?.displayLabel as string) === label || (el.data?.id as string) === label)
-    );
-    return node?.data?.id as string | null;
-  };
+  // Extract unique gene names from computed elements
+  const uniqueGenes = useMemo(() => {
+    const geneSet = new Set<string>();
+    computedElements.forEach((el) => {
+      if (el.data?.sharedGenes && Array.isArray(el.data.sharedGenes)) {
+        el.data.sharedGenes.forEach((gene: string) => geneSet.add(gene));
+      }
+    });
+    return Array.from(geneSet).sort();
+  }, [computedElements]);
 
   if (results.length === 0) {
     return (
@@ -141,7 +144,6 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
         <EnrichmentMapHeader stats={computedStats} />
       </Box>
 
-      <EnrichmentMapLegend nesRange={nesRange} />
 
       <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
         Tip: Click to select nodes, Ctrl+Click (Cmd+Click on Mac) for multi-select, click background to
@@ -150,7 +152,12 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
       </Typography>
 
       <Box sx={{ position: "relative" }}>
-        <EnrichmentMapControls onOpenPathwaySelection={() => setPathwaySelectionOpen(true)} isGoData={isGoData} />
+        <EnrichmentMapControls
+          isGoData={isGoData}
+          pathwayNames={availablePathways}
+          geneNames={uniqueGenes}
+          onToggleCollapsed={() => setFilterToggled(prev => !prev)}
+        />
         <EnrichmentMapContainer ref={containerRef} />
         {isLoading && (
           <Box
@@ -177,6 +184,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
           </Box>
         )}
       </Box>
+      <EnrichmentMapLegend nesRange={nesRange} />
 
       <EnrichmentMapDetailsModal
         open={modalOpen}
@@ -184,26 +192,6 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
         data={modalData}
         onClose={() => setModalOpen(false)}
         diseaseId={diseaseId}
-      />
-
-      <PathwaySelectionModal
-        open={pathwaySelectionOpen}
-        onClose={() => {
-          setPathwaySelectionOpen(false);
-          setSelectedPathways({ source: null, target: null });
-          setFoundShortestPath(null);
-        }}
-        onPathwaysSelected={(source, target) => {
-          const sourceId = getNodeIdFromLabel(source);
-          const targetId = getNodeIdFromLabel(target);
-          if (sourceId && targetId) {
-            setSelectedPathways({ source: sourceId, target: targetId });
-          }
-        }}
-        selectedPathways={selectedPathways}
-        foundPath={foundShortestPath}
-        isLoading={isComputingPath}
-        availablePathways={availablePathways}
       />
     </Paper>
   );

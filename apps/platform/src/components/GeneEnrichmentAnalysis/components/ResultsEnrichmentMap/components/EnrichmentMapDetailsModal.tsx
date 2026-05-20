@@ -139,6 +139,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
   };
 
     const handleViewInAOTF = () => {
+      console.log("Viewing genes in AOTF with diseaseId:", diseaseId, "and genes:", genes, geneToTargetIdMapping);
         const targetIds = getTargetIdsFromMapping(genes || [], geneToTargetIdMapping || new Map());
         const aotfLink = buildAOTFLink(diseaseId || "", targetIds);
         window.open(aotfLink, "_blank");
@@ -240,7 +241,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
           variant="outlined"
           sx={{ mt: 1 }}
         >
-          View genes in AOTF page
+          View genes in Associations On The Fly page
         </Button>
       )}
     </Box>
@@ -324,7 +325,7 @@ export function EnrichmentMapDetailsModal({
 
   // Lazy-load gene mapping when modal opens with edge data
   useEffect(() => {
-    if (!open  || !data || !(data as EdgeData).sharedGenes) {
+    if (!open  || !data || (!(data as EdgeData).sharedGenes && !(data as NodeData).leadingGenes)) {
       return;
     }
 
@@ -334,7 +335,7 @@ export function EnrichmentMapDetailsModal({
       if( type === "edge") {
         sharedGenes = (data as EdgeData).sharedGenes || [];
       } else if (type === "node") {
-        sharedGenes = (data as NodeData).leadingGenes || [];
+        sharedGenes = (data as NodeData).leadingGenes?.split(",") || [];
       } else {
         sharedGenes = [];
       }

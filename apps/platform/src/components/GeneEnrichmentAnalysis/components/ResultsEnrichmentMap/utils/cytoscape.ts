@@ -45,31 +45,22 @@ export function initializeCytoscapeInstance(
     tooltip.innerHTML = tooltipHTML;
     styleAndAppendTooltip(tooltip);
 
-    const updatePosition = () => {
+    const updatePosition = (clientX: number, clientY: number) => {
       try {
-        const pos = node.renderedPosition();
-        tooltip.style.left = `${pos.x + 2}px`;
-        tooltip.style.top = `${pos.y - 2}px`;
+        // Position tooltip near mouse with small offset
+        tooltip.style.left = `${clientX + 10}px`;
+        tooltip.style.top = `${clientY + 10}px`;
       } catch (err) {
         console.warn("[NODE_HOVER] Failed to update position:", err);
       }
     };
-    updatePosition();
 
-    const moveListener = () => updatePosition();
-    try {
-      cy.on("pan zoom", moveListener);
-    } catch (err) {
-      console.error("[NODE_HOVER] Failed to attach pan zoom listener:", err);
-    }
+    // Update position on mouse move
+    const mouseMoveListener = (e: MouseEvent) => updatePosition(e.clientX, e.clientY);
+    container.addEventListener("mousemove", mouseMoveListener);
 
     node.on("mouseout", () => {
-      try {
-        cy.off("pan zoom", moveListener);
-      } catch (err) {
-        console.warn("[NODE_MOUSEOUT] Failed to detach pan zoom listener:", err);
-      }
-
+      container.removeEventListener("mousemove", mouseMoveListener);
       removeTooltip(tooltip, tooltipsRef, "NODE_MOUSEOUT");
     });
   });
@@ -86,31 +77,22 @@ export function initializeCytoscapeInstance(
     tooltip.innerHTML = tooltipHTML;
     styleAndAppendTooltip(tooltip);
 
-    const updatePosition = () => {
+    const updatePosition = (clientX: number, clientY: number) => {
       try {
-        const pos = edge.renderedMidpoint();
-        tooltip.style.left = `${pos.x + 300}px`;
-        tooltip.style.top = `${pos.y - 2}px`;
+        // Position tooltip near mouse with small offset
+        tooltip.style.left = `${clientX + 10}px`;
+        tooltip.style.top = `${clientY + 10}px`;
       } catch (err) {
         console.warn("[EDGE_HOVER] Failed to update position:", err);
       }
     };
-    updatePosition();
 
-    const moveListener = () => updatePosition();
-    try {
-      cy.on("pan zoom", moveListener);
-    } catch (err) {
-      console.error("[EDGE_HOVER] Failed to attach pan zoom listener:", err);
-    }
+    // Update position on mouse move
+    const mouseMoveListener = (e: MouseEvent) => updatePosition(e.clientX, e.clientY);
+    container.addEventListener("mousemove", mouseMoveListener);
 
     edge.on("mouseout", () => {
-      try {
-        cy.off("pan zoom", moveListener);
-      } catch (err) {
-        console.warn("[EDGE_MOUSEOUT] Failed to detach pan zoom listener:", err);
-      }
-
+      container.removeEventListener("mousemove", mouseMoveListener);
       removeTooltip(tooltip, tooltipsRef, "EDGE_MOUSEOUT");
     });
   });
@@ -176,8 +158,12 @@ export function initializeCytoscapeInstance(
 
   container.addEventListener("keydown", keydownHandler);
 
-  // Store handler reference on cy for cleanup
-  (cy as any)._selectionKeydownHandler = { container, handler: keydownHandler };
+  // Store cleanup reference for hiding tooltips when modal is clicked
+  (cy as any)._hideTooltips = () => {
+    tooltipsRef.current.forEach((tooltip) => {
+      removeTooltip(tooltip, tooltipsRef, "MODAL_CLICK");
+    });
+  };
 
   return cy;
 
@@ -198,6 +184,9 @@ export function cleanupCytoscapeInstance(
     selectionHandler.container.removeEventListener("keydown", selectionHandler.handler);
     delete (cy as any)._selectionKeydownHandler;
   }
+
+  // Remove hideTooltips reference
+  delete (cy as any)._hideTooltips;
 
   console.log("[CLEANUP] Starting tooltip cleanup, count:", tooltipsRef.current.size);
   let cleanupIndex = 0;

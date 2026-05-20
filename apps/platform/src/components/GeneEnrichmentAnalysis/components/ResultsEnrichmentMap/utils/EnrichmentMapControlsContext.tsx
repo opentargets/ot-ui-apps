@@ -8,10 +8,9 @@ export interface EnrichmentMapControlsState {
   sizeBy: "significance" | "pathwaySize" | "geneCount";
   fdrThreshold: number;
   pValueThreshold: number;
-  searchGene: string;
+  searchQuery: string;
   nesRange: [number, number];
   nesDataRange: { min: number; max: number };
-  useGeneCentricPaths: boolean;
 }
 
 /**
@@ -22,10 +21,9 @@ export type EnrichmentMapControlsAction =
   | { type: "SET_SIZE_BY"; payload: "significance" | "pathwaySize" | "geneCount" }
   | { type: "SET_FDR_THRESHOLD"; payload: number }
   | { type: "SET_P_VALUE_THRESHOLD"; payload: number }
-  | { type: "SET_SEARCH_GENE"; payload: string }
+  | { type: "SET_SEARCH_QUERY"; payload: string }
   | { type: "SET_NES_RANGE"; payload: [number, number] }
   | { type: "INITIALIZE_NES_RANGE"; payload: { min: number; max: number } }
-  | { type: "TOGGLE_GENE_CENTRIC_PATHS" }
   | { type: "RESET_FILTERS" };
 
 /**
@@ -48,8 +46,8 @@ export function enrichmentMapControlsReducer(
     case "SET_P_VALUE_THRESHOLD":
       return { ...state, pValueThreshold: action.payload };
 
-    case "SET_SEARCH_GENE":
-      return { ...state, searchGene: action.payload };
+    case "SET_SEARCH_QUERY":
+      return { ...state, searchQuery: action.payload };
 
     case "SET_NES_RANGE":
       return { ...state, nesRange: action.payload };
@@ -61,18 +59,14 @@ export function enrichmentMapControlsReducer(
         nesRange: [action.payload.min, action.payload.max],
       };
 
-    case "TOGGLE_GENE_CENTRIC_PATHS":
-      return { ...state, useGeneCentricPaths: !state.useGeneCentricPaths };
-
     case "RESET_FILTERS":
       return {
         ...state,
         similarityThreshold: 1,
         fdrThreshold: 1.0,
         pValueThreshold: 1.0,
-        searchGene: "",
+        searchQuery: "",
         nesRange: [state.nesDataRange.min, state.nesDataRange.max],
-        useGeneCentricPaths: false,
       };
 
     default:
@@ -96,10 +90,9 @@ export const createInitialState = (): EnrichmentMapControlsState => ({
   sizeBy: "geneCount",
   fdrThreshold: 1.0,
   pValueThreshold: 1.0,
-  searchGene: "",
+  searchQuery: "",
   nesRange: [-3, 3],
   nesDataRange: { min: -3, max: 3 },
-  useGeneCentricPaths: false,
 });
 
 /**

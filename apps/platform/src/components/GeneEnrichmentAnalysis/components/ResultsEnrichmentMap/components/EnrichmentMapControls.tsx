@@ -1,16 +1,20 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, Button, Chip } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, Autocomplete } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faXmark, faChevronUp, faChevronDown, faRoute, faFilter } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState } from "react";
+import { faSearch, faXmark, faChevronUp, faChevronDown, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { useContext, useState, useMemo } from "react";
 import { EnrichmentMapControlsContext } from "../utils/EnrichmentMapControlsContext";
 
 interface EnrichmentMapControlsProps {
-  onOpenPathwaySelection?: () => void;
   isGoData?: boolean;
+  pathwayNames?: string[];
+  geneNames?: string[];
+  onToggleCollapsed?: (isCollapsed: boolean) => void;
 }
 
 export function EnrichmentMapControls({
-  onOpenPathwaySelection,
+  pathwayNames = [],
+  geneNames = [],
+  onToggleCollapsed,
 }: EnrichmentMapControlsProps) {
   const controlsContext = useContext(EnrichmentMapControlsContext);
   if (!controlsContext) {
@@ -18,6 +22,12 @@ export function EnrichmentMapControls({
   }
   const { state, dispatch } = controlsContext;
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  // Combine and deduplicate pathway and gene names for autocomplete
+  const searchOptions = useMemo(() => {
+    const allNames = [...new Set([...geneNames, ...pathwayNames])].sort();
+    return allNames;
+  }, [geneNames, pathwayNames]);
 
   return (
     <Box sx={{ borderBottom: "1px solid", borderColor: "divider", backgroundColor: "white" }}>
@@ -32,7 +42,11 @@ export function EnrichmentMapControls({
           cursor: "pointer",
           "&:hover": { backgroundColor: "action.hover" },
         }}
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={() => {
+          const newCollapsedState = !isCollapsed;
+          setIsCollapsed(newCollapsedState);
+          onToggleCollapsed?.(newCollapsedState);
+        }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <FontAwesomeIcon icon={faFilter} />
@@ -115,10 +129,10 @@ export function EnrichmentMapControls({
               </Typography>
             </Box>
 
-            {/* Jaccard/Similarity */}
+            {/* Similarity */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 220 }}>
               <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
-                Jaccard
+                Similarity
               </Typography>
               <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
                 {(state.similarityThreshold / 10).toFixed(2)}
@@ -150,69 +164,52 @@ export function EnrichmentMapControls({
             </Box>
           </Box>
 
-          {/* Right column: Gene Search and Pathway Path Button */}
+          {/* Right column: Gene Search */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: "auto" }}>
-            {/* Gene Search */}
-            <Box sx={{ width: 180 }}>
-              <TextField
-                fullWidth
+            {/* Gene/Pathway Search with Autocomplete */}
+            <Box sx={{ width: 240 }}>
+              <Autocomplete
+                options={searchOptions}
+                value={state.searchQuery}
+                onChange={(_, newValue) => dispatch({ type: "SET_SEARCH_QUERY", payload: newValue?.toUpperCase() || "" })}
+                inputValue={state.searchQuery}
+                onInputChange={(_, newInputValue) => dispatch({ type: "SET_SEARCH_QUERY", payload: newInputValue.toUpperCase() })}
+                freeSolo
                 size="small"
-                placeholder="Search gene..."
-                value={state.searchGene}
-                onChange={(e) => dispatch({ type: "SET_SEARCH_GENE", payload: e.target.value.toUpperCase() })}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faSearch} style={{ color: "#999", fontSize: "13px" }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: state.searchGene && (
-                    <InputAdornment position="end">
-                      <FontAwesomeIcon
-                        icon={faXmark}
-                        style={{
-                          cursor: "pointer",
-                          color: "#999",
-                          fontSize: "13px",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
-                        onClick={() => dispatch({ type: "SET_SEARCH_GENE", payload: "" })}
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              {state.searchGene && (
-                <Box sx={{ mt: 0.75 }}>
-                  <Chip
-                    label={state.useGeneCentricPaths ? "🎯 Gene-Centric" : "🔍 Direct"}
-                    onClick={() => dispatch({ type: "TOGGLE_GENE_CENTRIC_PATHS" })}
-                    color={state.useGeneCentricPaths ? "primary" : "default"}
-                    variant={state.useGeneCentricPaths ? "filled" : "outlined"}
-                    size="small"
-                    sx={{ width: "100%", fontSize: "9px" }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="Search gene or pathway..."
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <>
+                          <InputAdornment position="start">
+                            <FontAwesomeIcon icon={faSearch} style={{ color: "#999", fontSize: "13px" }} />
+                          </InputAdornment>
+                          {params.InputProps.startAdornment}
+                        </>
+                      ),
+                      endAdornment: state.searchQuery && (
+                        <InputAdornment position="end">
+                          <FontAwesomeIcon
+                            icon={faXmark}
+                            style={{
+                              cursor: "pointer",
+                              color: "#999",
+                              fontSize: "13px",
+                            }}
+                            onMouseEnter={(e) => (e.currentTarget.style.color = "#000")}
+                            onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
+                            onClick={() => dispatch({ type: "SET_SEARCH_QUERY", payload: "" })}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-                </Box>
-              )}
+                )}
+              />
             </Box>
-
-            {/* Pathway Path Button */}
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<FontAwesomeIcon icon={faRoute} style={{ fontSize: "11px" }} />}
-              onClick={onOpenPathwaySelection}
-              sx={{
-                textTransform: "none",
-                fontSize: "11px",
-                whiteSpace: "nowrap",
-                height: "40px",
-              }}
-            >
-              Pathway Path
-            </Button>
           </Box>
         </Box>
       )}

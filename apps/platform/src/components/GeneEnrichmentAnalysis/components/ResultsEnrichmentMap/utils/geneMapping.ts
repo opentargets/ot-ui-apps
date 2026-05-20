@@ -87,7 +87,7 @@ export function buildAOTFLink(diseaseId: string, targetIds: string[]): string {
     return `/disease/${diseaseId}/associations`;
   }
   const pinnedQuery = targetIds.join(",");
-  return `/disease/${diseaseId}/associations?pinned=${encodeURIComponent(pinnedQuery)}&table=prioritisations`;
+  return `/disease/${diseaseId}/associations?pinned=${encodeURIComponent(pinnedQuery)}`;
 }
 
 /**

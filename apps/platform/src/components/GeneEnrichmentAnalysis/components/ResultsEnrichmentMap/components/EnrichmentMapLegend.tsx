@@ -34,7 +34,7 @@ export function EnrichmentMapLegend({ nesRange }: EnrichmentMapLegendProps) {
       </Box>
       <Box>
         <Typography variant="caption" sx={{ fontWeight: 600, mb: 0.5, display: "block" }}>
-          Edge Thickness = Jaccard Similarity
+          Edge Thickness = Similarity (Overlap Coefficient)
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.8, ml: 0.5 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

@@ -72,32 +72,7 @@ export function calculateNodeSize(
 }
 
 
-/**
- * Builds gene-to-pathways mapping from results
- */
-export function buildGeneToPathwaysMap(
-  results: Array<Record<string, unknown>> | GseaResult[]
-): Map<string, Array<{ pathway: string; fdr: number; nes: number }>> {
-  const geneToPathways = new Map<string, Array<{ pathway: string; fdr: number; nes: number }>>();
-  for (const r of results) {
-    const geneList_ = getGeneList(r as GseaResult);
-    for (const gene of geneList_) {
-      if (!geneToPathways.has(gene)) {
-        geneToPathways.set(gene, []);
-      }
-      const pathwaysForGene = geneToPathways.get(gene);
-      if (pathwaysForGene) {
-        pathwaysForGene.push({
-          pathway: r.Pathway as string,
-          fdr: r.FDR as number,
-          nes: r.NES as number,
-        });
-      }
-    }
-  }
-  console.log("[buildGeneToPathwaysMap] Built gene-to-pathways map with", geneToPathways, "genes");
-  return geneToPathways;
-}
+
 
 /**
  * Filters and sorts genes by pathway count

@@ -9,7 +9,7 @@ export function EnrichmentMapHeader({ stats }: EnrichmentMapHeaderProps) {
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Pathway Network
+        Pathway Network (Hierarchy not visualized)
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {`${stats.displayedPathways || stats.totalPathways} of ${stats.totalPathways} gene-sets organized into clusters | ${stats.totalGenes} unique genes | ${stats.significantCount} significant (FDR < 0.05) | ${stats.edges} functional theme connections`}
