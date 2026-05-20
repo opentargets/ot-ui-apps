@@ -28,6 +28,9 @@ interface MenuItem {
   showOnlyPartner?: boolean;
 }
 
+export const PPP_API_URL = "https://api.partner-platform.opentargets.org/api/v4/graphql";
+export const PPP_WEB_URL = "https://partner-platform.opentargets.org";
+
 export const PHARM_GKB_COLOR = {
   green: "#52a237",
   yellow: "#f0c584",
@@ -254,7 +257,7 @@ export const stopReasonMap = (category: string): string =>
 
 export const clinicalReportsSourcesInfo = {
   AACT: {
-    name: "Aggregate Content of Clinical Trials",
+    name: "Aggregate Content of ClinicalTrials.gov",
     url: "https://aact.ctti-clinicaltrials.org/",
   },
   TTD: {
@@ -444,6 +447,12 @@ export const getGenomicLocation = (genomicLocation: IGeneomicLocation | null | u
     console.error("Error formatting gene location", e);
     return "";
   }
+};
+
+export const baselineUnits = {
+  "scrna-seq": "CPM",
+  "bulk rna-seq": "TPM",
+  "mass-spectrometry proteomics": "PPB",
 };
 
 export * from "./alphaFold";

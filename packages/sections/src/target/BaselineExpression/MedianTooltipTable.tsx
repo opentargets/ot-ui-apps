@@ -1,11 +1,5 @@
 import { Box } from "@mui/material";
-import { naLabel } from "@ot/constants";
 import { TooltipRow, TooltipTable } from "ui";
-
-function formatZeroToOne(v) {
-  if (v === 0 || v === 1) return v;
-  return v?.toFixed?.(3);
-}
 
 function formatExpression(v) {
   if (v === 0) return 0;
@@ -13,7 +7,7 @@ function formatExpression(v) {
   return v?.toFixed?.(3);
 }
 
-function BaselineTooltipTable({ data, show, showName, showSource }) {
+function MedianTooltipTable({ data, show, showName, showSource }) {
   return (
     <TooltipTable>
       {showName && data[`${show}Biosample`] && (
@@ -26,14 +20,6 @@ function BaselineTooltipTable({ data, show, showName, showSource }) {
           {formatExpression(data.median)} {data.unit}
         </Box>
       </TooltipRow>
-      <TooltipRow label="Specificity score">
-        <Box display="flex">
-          {data.specificity_score == null ? naLabel : formatZeroToOne(data.specificity_score)}
-        </Box>
-      </TooltipRow>
-      <TooltipRow label="Distribution score">
-        <Box display="flex">{formatZeroToOne(data.distribution_score)}</Box>
-      </TooltipRow>
       {showSource && data?.[`${show}BiosampleFromSource`] && (
         <TooltipRow label="Reported annotation">
           <Box display="flex">{data?.[`${show}BiosampleFromSource`]}</Box>
@@ -43,4 +29,4 @@ function BaselineTooltipTable({ data, show, showName, showSource }) {
   );
 }
 
-export default BaselineTooltipTable;
+export default MedianTooltipTable;

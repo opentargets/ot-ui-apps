@@ -77,6 +77,13 @@ function detailsReducer(detailsState: DetailsStateType, action: DetailsActionTyp
       }
       return newObj;
     }
+    case "setToTimedOut": {
+      const newObj = { ...detailsState };
+      for (const id of action.value) {
+        if (newObj[id] === "loading") newObj[id] = "timedOut";
+      }
+      return newObj;
+    }
   }
 }
 
