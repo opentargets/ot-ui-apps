@@ -1,0 +1,75 @@
+import { useGenTrackTooltipState } from "../../providers/GenTrackTooltipProvider";
+import { Box } from "@mui/material";
+
+function GenTrackTooltip({
+  width,  
+  height,
+  canvasType,
+  
+  // following props can be a function: (datum, otherData) => value
+  xAnchor = "right",   // "left" | "right" | "center" | "adapt" | "plotLeft" | "plotRight";
+  yAnchor = "bottom",  // "top" | "bottom" | "center" | "adapt" | "plotTop" | "plotBottom";
+  dx = 0,
+  dy = 0,
+  children
+}) {
+
+  const genTrackTooltipState = useGenTrackTooltipState();
+  if (!genTrackTooltipState) return null 
+  const { datum, otherData, globalXY, activeCanvas } = genTrackTooltipState;
+  if (!datum && !otherData) return null;
+  if (activeCanvas !== canvasType) return null;
+
+  if (typeof xAnchor === "function") xAnchor = xAnchor(datum);
+  if (typeof yAnchor === "function") yAnchor = yAnchor(datum);
+  if (typeof dx === "function") dx = xAnchor(datum);
+  if (typeof dy === "function") dy = xAnchor(datum);
+
+  const { x, y } = globalXY;
+
+  let left, right, transformX;
+  if (xAnchor === "plotLeft") {
+    left = 0;
+  } else if (xAnchor === "plotRight") {
+    right = 0;
+  } else if (xAnchor === "center") {
+    left = x;
+    transformX = "-50%";
+  } else if (xAnchor === "left" || (xAnchor === "adapt" && x < width / 2)) {
+    left = x + dx;
+  } else {
+    right = width - x + dx;
+  }
+
+  let top, bottom, transformY;
+  if (yAnchor === "plotTop") {
+    top = 0;
+  } else if (yAnchor === "plotBottom") {
+    bottom = 0;
+  } else if (yAnchor === "center") {
+    top = y;
+    transformY = "-50%";
+  } else if (yAnchor === "bottom" || (yAnchor === "adapt" && y > height / 2)) {
+    bottom = height - y + dy;
+  } else {
+    top = y + dy;
+  }
+
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        left,
+        right,
+        top,
+        bottom,
+        transform: `translate(${transformX ?? 0}, ${transformY ?? 0})`,
+        pointerEvents: "auto",
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+export default GenTrackTooltip;
