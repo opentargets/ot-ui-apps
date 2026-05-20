@@ -175,7 +175,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: "2px 0",
   },
   failed: {
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.grey[300],
     fontSize: "8.5px",
   },
   bar: {
