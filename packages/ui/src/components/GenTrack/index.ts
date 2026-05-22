@@ -1,6 +1,6 @@
 export { default as GenTrack } from './GenTrack';
 export { DataSprite } from './DataSprite';
-export { DataRect, DataHLine } from './DataGraphics';
+export { DataRect, DataHLine, DataBackground } from './DataGraphics';
 export { DataText } from './DataText';
 export { 
   useScalesRef,

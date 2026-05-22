@@ -70,7 +70,7 @@ interface DataSpriteProps {
   trackId?: string;
   texture?: any;
   shape?: 'rect' | 'circle' | 'ring';
-  tint?: number;
+  tint?: number | string;
   alpha?: number;
   anchor?: [number, number]; // default [0,0] for rect, [0.5,0.5] for circle/ring
   eventMode?: 'static' | 'dynamic' | 'none';

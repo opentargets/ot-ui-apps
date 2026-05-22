@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { scaleLinear, axisTop, select } from "d3";
+import { grey } from "@mui/material/colors";
 
 function XAxis({ start, end, canvasWidth }) {
   const axisRef = useRef(null);
@@ -20,12 +21,10 @@ function XAxis({ start, end, canvasWidth }) {
       .style("font-family", "'Inter', sans-serif");
     
     axisSelection.select(".domain")
-      .style("stroke", "#000")
-      .style("opacity", 0.5);
+      .style("stroke", grey[600])
     
     axisSelection.selectAll(".tick line")
-      .style("stroke", "#000")
-      .style("opacity", 0.5);
+      .style("stroke", grey[600])
   }, [start, end, canvasWidth]);
 
   return (

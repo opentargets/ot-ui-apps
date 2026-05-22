@@ -1,22 +1,22 @@
 import { useEffect, useRef } from "react";
 import { scaleLinear, axisLeft, select } from "d3";
-import { Box, Typography } from "@mui/material";
-import { DataSprite, DataHLine } from "../GenTrack";
+import { Box, Typography, useTheme } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { DataSprite, DataText, DataHLine, DataBackground } from "../GenTrack";
 import { Container } from '@pixi/react';
+import { TextStyle } from 'pixi.js';
+import YDetails from "./YDetails";
 
-const VARIANT_TRACK_HEIGHT = 60;
+const VARIANT_TRACK_HEIGHT = 67;
 const H_LINE_COLOR = 0xdddddd;
 
-const VARIANT_TRACK_PADDING_TOP = 24;
-const VARIANT_AXIS_HEIGHT = VARIANT_TRACK_HEIGHT - VARIANT_TRACK_PADDING_TOP;
-
-function VariantsYInfo() {
+function VariantsAxis() {
   const axisRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
     const scale = scaleLinear()
       .domain([1, 0])
-      .range([0, VARIANT_AXIS_HEIGHT]);
+      .range([0, VARIANT_TRACK_HEIGHT]);
 
     const axis = axisLeft(scale)
       .tickValues([0, 1])
@@ -27,30 +27,48 @@ function VariantsYInfo() {
     const axisSelection = select(axisRef.current as SVGGElement).call(axis);
 
     axisSelection.selectAll("text")
-      .style("font-size", "9px")
+      .style("font-size", "11px")
       .style("font-family", "'Inter', sans-serif");
 
     axisSelection.select(".domain")
-      .style("stroke", "#000")
-      .style("opacity", 0.3);
+      .style("stroke", grey[600])
+      .style("stroke-width", "0")
 
     axisSelection.selectAll(".tick line")
-      .style("stroke", "#000")
-      .style("opacity", 0.3);
+      .style("stroke", grey[600])
   }, []);
 
   return (
-    <Box sx={{ width: "100%", height: "100%", display: "flex", alignItems: "flex-start", pt: `${VARIANT_TRACK_PADDING_TOP}px` }}>
-      <Typography
-        variant="caption"
-        sx={{ fontSize: "9px", color: "text.secondary", fontWeight: 500, lineHeight: 1.3, flex: 1, textAlign: "right", pr: 0.5 }}
-      >
-        Variants<br />(posterior<br />probability)
-      </Typography>
-      <svg width={24} height={VARIANT_AXIS_HEIGHT} style={{ overflow: "visible", flexShrink: 0 }}>
-        <g ref={axisRef} transform="translate(24, 0)" />
-      </svg>
-    </Box>
+    <svg width={24} height={VARIANT_TRACK_HEIGHT} style={{ overflow: "visible", flexShrink: 0 }}>
+      <g ref={axisRef} transform="translate(24, 0)" />
+    </svg>
+  );
+}
+
+function VariantsYInfo() {
+  return (
+    <YDetails
+      SubLabel={() => (
+        <Box sx={{
+          height: "100%",
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          justifyContent: 'center',
+          gap: 0,
+          mr: -3,
+        }}>
+          <Typography variant="caption" sx={{ textAlign: 'right' }}>
+            Variants
+          </Typography>
+          <Typography variant="caption" sx={{ textAlign: 'right', fontSize: '11px' }}>
+            posterior probability
+          </Typography>
+        </Box>
+      )}
+      Axis={VariantsAxis}
+    />
   );
 }
 
@@ -59,15 +77,20 @@ export function getVariantTrack({ data }: { data: any }) {
   return {
     id: `variants`,
     height: VARIANT_TRACK_HEIGHT,
-    paddingTop: 24,
+    paddingTop: 14,
     yMin: 0,
     yMax: 1,
     YInfo: VariantsYInfo,
     Track: ({ trackId, scalesRef }) => {  
+      const theme = useTheme();
+      const primaryColor = theme.palette.primary.main;
 
       return (
         <Container>
-          <DataHLine scalesRef={scalesRef} trackId={trackId} y={1} color={H_LINE_COLOR} />
+          <DataBackground scalesRef={scalesRef} trackId={trackId} color="#e8f0fe" alpha={1} />
+          {/* <DataHLine scalesRef={scalesRef} trackId={trackId} y={1} color={H_LINE_COLOR} /> */}
+          {/* <DataHLine scalesRef={scalesRef} trackId={trackId} y={0.5} color={H_LINE_COLOR} /> */}
+          {/* <DataHLine scalesRef={scalesRef} trackId={trackId} y={0} color={H_LINE_COLOR} /> */}
           
           {/* all variants */}
           {data?.locus.rows.map(({ variant, posteriorProbability }, i) => {
@@ -75,46 +98,36 @@ export function getVariantTrack({ data }: { data: any }) {
             return (
               <DataSprite
                 key={variant.id}
-                shape="ring"
+                shape={isLead ? "circle" : "ring"}
                 strokePixels={1.5}
                 scalesRef={scalesRef}
                 trackId="variants"
                 x={variant.position}
                 y={1 - posteriorProbability}
-                radiusPixels={5}
-                tint={0x000000}
+                radiusPixels={4}
+                tint={primaryColor}
               />
-
-
-              // <Sprite
-              //   key={i}
-              //   texture={isLead ? circleTexture : ringTexture}
-              //   x={variant.position}
-              //   y={50}
-              //   anchor={[0.5, 0.5]}
-              //   height={variantWidth / variantTrackHeight * 100}
-              //   tint={0x000000}
-              //   alpha={isLead ? 1 : 0.6}
-              // />
             );
           })}
 
           {/* lead variant label */}
-          {/* <Text
-            text="Lead"
-            x={data.variant.position}
-            y={25}
-            anchor={[0.5, 1]}
-            style={
-              new TextStyle({
+          {data?.variant && (
+            <DataText
+              scalesRef={scalesRef}
+              trackId="variants"
+              x={data.variant.position}
+              y={1 - (data.locus.rows.find((r: any) => r.variant.position === data.variant.position)?.posteriorProbability ?? 0)}
+              text="Lead"
+              anchor={[0.5, 1.3]}
+              style={new TextStyle({
                 align: 'center',
-                fill: labelColor,
-                fontSize: 11,
+                fill: "#000",
+                fontSize: 10.5,
                 fontWeight: '100',
                 wordWrap: false,
-              })
-            }
-          /> */}
+              })}
+            />
+          )}
         </Container>
       );
     }

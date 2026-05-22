@@ -62,6 +62,44 @@ export function DataRect({
   return <Graphics ref={gRef} />;
 }
 
+interface DataBackgroundProps {
+  scalesRef: RefObject<ScalesRef>;
+  trackId: string;
+  color?: number | string;
+  alpha?: number;
+}
+
+/**
+ * A full-width filled rectangle covering the entire track height in screen space.
+ */
+export function DataBackground({
+  scalesRef,
+  trackId,
+  color = 0xf5f5f5,
+  alpha = 1,
+}: DataBackgroundProps) {
+  const gRef = useRef<PixiGraphics | null>(null);
+
+  useTick(() => {
+    const g = gRef.current;
+    const scales = scalesRef.current;
+    if (!g || !scales) return;
+
+    const yScaleInfo = scales.yScales.get(trackId);
+    if (!yScaleInfo) return;
+
+    const screenY = yScaleInfo.yOffset;
+    const screenH = yScaleInfo.height;
+
+    g.clear();
+    g.beginFill(color, alpha);
+    g.drawRect(0, screenY, scales.canvasWidth, screenH);
+    g.endFill();
+  });
+
+  return <Graphics ref={gRef} />;
+}
+
 interface DataHLineProps {
   scalesRef: RefObject<ScalesRef>;
   trackId?: string;

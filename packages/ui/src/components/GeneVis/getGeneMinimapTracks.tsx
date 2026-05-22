@@ -1,10 +1,11 @@
 import { Fragment } from "react";
 import { Container } from '@pixi/react';
-import { DataSprite, DataText } from "../GenTrack";
+import { DataSprite, DataText, DataBackground } from "../GenTrack";
 import { useGenTrackState } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
 import { TextStyle } from 'pixi.js';
+import { grey } from "@mui/material/colors";
 
 const geneLabelStyle = new TextStyle({
   align: 'center',
@@ -71,6 +72,7 @@ export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds 
     Track: ({ trackId, scalesRef }: { trackId: string; isInner: boolean; scalesRef: RefObject<ScalesRef> }) => {
       return (
         <Container>
+          <DataBackground scalesRef={scalesRef} trackId={trackId} color={grey[100]} alpha={1} />
           {targets.map(gene => {
             const { target } = gene;
             const rowIndex = geneToRow[target.id];

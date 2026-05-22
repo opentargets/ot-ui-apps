@@ -1,18 +1,11 @@
 import { Fragment } from "react";
 import { Container } from '@pixi/react';
 import { TextStyle } from "pixi.js";
-import { DataSprite, DataText } from "../GenTrack";
+import { DataSprite, DataText, DataBackground } from "../GenTrack";
 import { useGenTrackState } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
-
-const geneLabelStyle = new TextStyle({
-  align: 'center',
-  fill: "#000",
-  fontSize: 10.5,
-  fontWeight: '100',
-  wordWrap: false,
-});
+import { grey } from "@mui/material/colors";
 
 const DEFAULT_ROW_HEIGHT = 28;
 const DEFAULT_EXON_HEIGHT = 10;
@@ -97,6 +90,7 @@ export function getGenesTracks({
     Track: ({ trackId, scalesRef }: { trackId: string; isInner: boolean; scalesRef: RefObject<ScalesRef> }) => {
       return (
         <Container>
+          <DataBackground scalesRef={scalesRef} trackId={trackId} color={grey[100]} alpha={1} />
           {targets.map(gene => {
             const { target } = gene;
             const rowIndex = geneToRow[target.id];
@@ -116,7 +110,13 @@ export function getGenesTracks({
                     y={yTop(rowIndex) + labelHeight}
                     text={geneLabel(target)}
                     anchor={[0.5, 1]}
-                    style={geneLabelStyle}
+                    style={new TextStyle({
+                      align: 'center',
+                      fill: "#000",
+                      fontSize: 10.5,
+                      fontWeight: '100',
+                      wordWrap: false,
+                    })}
                   />
                 )}
                 <DataSprite

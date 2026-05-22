@@ -5,16 +5,15 @@ import {
   useGenTrackTooltipDispatch,
   useGenTrackTooltipState
 } from "ui";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
-import { Container, Graphics } from '@pixi/react';
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
+import YDetails from "./YDetails";
 import { getGenesTracks } from "./getGenesTracks";
 import { getGeneMinimapTracks } from "./getGeneMinimapTracks";
 import { getVariantTrack } from "./getVariantTrack";
 import { packIntervals } from "./packIntervals";
-
 
 const BIOTYPE_COLORS = {
   protein_coding: "#2e5943",
@@ -55,7 +54,6 @@ function groupTargetsByBiotype(targets) {
 
 function GeneVisInner({
   geneLabel,
-  variantColor,
   fixedTracks,
   zoomableTracks,
 }) {
@@ -76,8 +74,8 @@ function GeneVisInner({
     };
   };
 
-  const Y_INFO_WIDTH = 120;
-  const Y_INFO_GAP = 8;
+  const Y_INFO_WIDTH = 150;
+  const Y_INFO_GAP = 0;
   const [widthRef, { width: totalWidth }] = useMeasure();
   const canvasWidth = (totalWidth ?? 0) - Y_INFO_WIDTH - Y_INFO_GAP;
 
@@ -96,25 +94,6 @@ function GeneVisInner({
   fixedTrackList.push(variantTrack);
   innerTrackList.push(variantTrack);
  
-        // scale circles and text to stop stretched/squished appearance
-        // onTick: tickScaleFactory([
-        //   {
-        //     filterFn: obj => obj instanceof PixiText,  // look for text first as is also a sprite
-        //     actionFn: (obj, wrapper) => {
-        //       obj.scale.x = 1 / (wrapper.scale.x * wrapper.parent.scale.x);
-        //       obj.scale.y = 1 / (wrapper.scale.y * wrapper.parent.scale.y);
-        //     }
-        //   },
-        //   {
-        //     filterFn: obj => obj instanceof PixiSprite,
-        //     actionFn: (obj, wrapper) => {
-        //       obj.width = variantWidth / (wrapper.scale.x * wrapper.parent.scale.x);
-        //     }
-        //   },
-        // ])
-
-
-
   // gene tracks
   if (hasGenes) {
     // Group genes by biotype
@@ -128,22 +107,12 @@ function GeneVisInner({
       const color = (BIOTYPE_COLORS as Record<string,string>)[biotype];
       const dimColor = (BIOTYPE_DIM_COLORS as Record<string,string>)[biotype] ?? color;
 
-      // Create YInfo component for this biotype
+      // YInfo component for this biotype
       const TrackYInfo = () => (
-        <Typography
-          variant="caption"
-          sx={{
-            height: "100%",
-            display: "flex",
-            alignItems: "top",
-            justifyContent: "flex-end",
-            pr: 1,
-            fontWeight: 500,
-            color: "text.secondary",
-          }}
-        >
-          {BIOTYPE_DISPLAY_NAMES[biotype]}
-        </Typography>
+        <YDetails
+          SubLabel={BIOTYPE_DISPLAY_NAMES[biotype]}
+          Axis={null}
+        />
       );
 
       // ===== MINIMAP TRACK (top level) =====
@@ -175,9 +144,9 @@ function GeneVisInner({
       const minimapNRows = Math.max(...Object.values(minimapGeneToRow).map((v: unknown) => Number(v))) + 1;
       const minimapRowHeightMap: number[] = [];
       const minimapRowYOffsets: number[] = [];
-      let minimapCurrentYOffset = 0;
-      const minimapTallHeight = 24; // Taller rows for labeled genes (label + bigger bar)
-      const minimapShortHeight = 14; // Larger gaps between genes
+      let minimapCurrentYOffset = biotype === "protein_coding" ? 5 : 0;
+      const minimapTallHeight = 22; // Taller rows for labeled genes (label + bigger bar)
+      const minimapShortHeight = 12; // Shorter rows for unlabeled genes
 
       for (let r = 0; r < minimapNRows; r++) {
         const rowHasLabels = minimapRowsWithLabels.has(r);
@@ -187,10 +156,8 @@ function GeneVisInner({
         minimapCurrentYOffset += rowHeight;
       }
       const minimapTrackHeight = minimapCurrentYOffset;
-      // Add extra padding above first row so label doesn't touch x-axis
-      const minimapTopPadding = 6; // Extra space above first row
-      const minimapFinalTrackHeight = Math.max(minimapTrackHeight + minimapTopPadding, 24);
-      const minimapPadding = Math.max(minimapTopPadding, (24 - minimapTrackHeight) / 2);
+      const minimapFinalTrackHeight = Math.max(minimapTrackHeight, 20);
+      const minimapPadding = biotype === "protein_coding" ? 16 : 8; // Larger gap after variant track
 
       // Add minimap track with variable row heights
       fixedTrackList.push(getGeneMinimapTracks({
@@ -251,8 +218,8 @@ function GeneVisInner({
         zoomableCurrentYOffset += rowHeight;
       }
       const zoomableTrackHeight = zoomableCurrentYOffset;
-      const zoomableFinalTrackHeight = Math.max(zoomableTrackHeight, 28);
-      const zoomablePadding = Math.max(0, (28 - zoomableTrackHeight) / 2);
+      const zoomableFinalTrackHeight = Math.max(zoomableTrackHeight, 20);
+      const zoomablePadding = biotype === "protein_coding" ? 16 : Math.max(8, (20 - zoomableTrackHeight) / 2);
 
       // Add zoomable detail track
       innerTrackList.push(getGenesTracks({
@@ -273,13 +240,6 @@ function GeneVisInner({
     }
   }
 
-  // add variants track
-  // if (data.variants &&
-  //   (fixedTracks === true || fixedTracks?.includes("variants") ||
-  //    zoomableTracks === true || zoomableTracks?.includes("variants"))) {
-  //   tracks.push(getVariantsTrack({ variantLabel, variantColor }));
-  // }
-
   return (
     <Box ref={widthRef} sx={{mr: 3}}>
       <GenTrack
@@ -293,8 +253,8 @@ function GeneVisInner({
         yInfoWidth={Y_INFO_WIDTH}
         zoomLines
         panZoomTopGap={0}
-        panZoomBottomGap={4} // Reduced gap between zoom bar and canvas
-        paddingBottom={8} // Consistent spacing for centered labels
+        panZoomBottomGap={4}
+        paddingBottom={8}
       />
     </Box>
   );
