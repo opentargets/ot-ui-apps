@@ -5,6 +5,16 @@ import {
   TOTAL_ENTITIES,
 } from "../components/GlobalSearch/utils/searchUtils";
 
+const navigatetoBuiltPath = (navigate, path) => {
+  // Defer navigation to the next frame to allow React to complete state updates
+  // and dialog unmounting before the route transition happens. This prevents
+  // batching conflicts that cause the page to freeze when transitioning from
+  // a heavy page (e.g., disease page with GWAS widget) to another.
+  requestAnimationFrame(() => {
+    navigate(path);
+  });
+};
+
 function useListOption() {
   const navigate = useNavigate();
 
@@ -22,11 +32,9 @@ function useListOption() {
     if (newOption.entity === "search") {
       navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities });
     } else {
-      navigate(
-        `/${newOption.entity}/${newOption.id}${
-          entitiesWitAssociations.indexOf(newOption.entity) > -1 ? "/associations" : ""
-        }`
-      );
+      navigatetoBuiltPath(navigate, `/${newOption.entity}/${newOption.id}${
+        entitiesWitAssociations.indexOf(newOption.entity) > -1 ? "/associations" : ""
+      }`);
     }
   };
 
@@ -34,9 +42,14 @@ function useListOption() {
 }
 
 function navigateToSearchResultsPage({ navigate, newOption, activeSearchEntities = [] }) {
-  if (activeSearchEntities.length === TOTAL_ENTITIES || activeSearchEntities.length === 0)
-    navigate(`/search?q=${newOption.name}&page=1`);
-  else navigate(`/search?q=${newOption.name}&page=1&entities=${activeSearchEntities.join()}`);
+  // Use requestAnimationFrame same as navigatetoBuiltPath to prevent freeze
+  const path = activeSearchEntities.length === TOTAL_ENTITIES || activeSearchEntities.length === 0
+    ? `/search?q=${newOption.name}&page=1`
+    : `/search?q=${newOption.name}&page=1&entities=${activeSearchEntities.join()}`;
+  
+  requestAnimationFrame(() => {
+    navigate(path);
+  });
 }
 
 export default useListOption;

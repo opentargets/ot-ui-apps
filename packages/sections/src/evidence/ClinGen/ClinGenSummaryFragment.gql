@@ -3,7 +3,7 @@ fragment ClinGenSummaryFragment on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["clingen"]
-    size: 0
+    size: 1
   ) {
     count
   }

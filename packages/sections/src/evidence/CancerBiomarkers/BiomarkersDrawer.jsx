@@ -97,7 +97,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
             ))}
           </Paper>
         ) : null}
-        {biomarkers.geneExpression ? (
+        {biomarkers.geneExpression && biomarkers.geneExpression.length > 0 ? (
           <Paper className={classes.paper} variant="outlined">
             <Typography variant="subtitle2" paragraph>
               Gene expression:
@@ -106,7 +106,7 @@ function BiomarkersDrawer({ biomarkerName, biomarkers }) {
               <div key={expression.name} className={classes.biomarkerItem}>
                 <div>{expression.name}</div>
                 <Link external to={`https://identifiers.org/${expression.id.id}`}>
-                  {expression.id.name}
+                  {expression.id.label}
                 </Link>
               </div>
             ))}

@@ -8,4 +8,4 @@ EOF
 
 cat "/usr/share/nginx/html/profiles/${WEBAPP_FLAVOR:-platform}.js" >> /usr/share/nginx/html/config.js
 
-exec nginx -g 'daemon off;'
+exec "$@"

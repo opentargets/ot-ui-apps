@@ -95,7 +95,7 @@ export type RowType = {
 };
 
 export type DetailsStateType = {
-  [index: string]: undefined | "loading" | RowType;
+  [index: string]: undefined | "loading" | "timedOut" | RowType;
 };
 
 export type LiteratureActionType =
@@ -123,5 +123,9 @@ export type DetailsActionType =
     }
   | {
       type: "setToLoading";
+      value: string[];
+    }
+  | {
+      type: "setToTimedOut";
       value: string[];
     };

@@ -3,7 +3,7 @@ fragment OrphanetSummaryFragment on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["orphanet"]
-    size: 0
+    size: 1
   ) {
     count
   }

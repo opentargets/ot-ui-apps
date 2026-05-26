@@ -3,7 +3,7 @@ fragment crisprSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["crispr"]
-    size: 0
+    size: 1
   ) {
     count
   }
