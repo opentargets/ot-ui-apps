@@ -43,6 +43,14 @@ export {
 export type { ComputedStats, ResultsEnrichmentMapProps } from "./types";
 // Hooks
 export { useDebounce } from "./useDebounce";
+// Export utilities
+export {
+  exportAsJPEG,
+  exportAsCytoscapeJSON,
+  exportAsPNG,
+  copyNetworkToClipboard,
+  type CytoscapeJSONExport,
+} from "./exportUtils";
 // Context
 export {
   EnrichmentMapControlsContext,

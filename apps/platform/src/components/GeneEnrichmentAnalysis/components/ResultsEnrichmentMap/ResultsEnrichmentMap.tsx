@@ -140,8 +140,8 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2, flexWrap: "wrap", gap: 2 }}>
-        <EnrichmentMapHeader stats={computedStats} />
+      <Box sx={{ mb: 2 }}>
+        <EnrichmentMapHeader stats={computedStats} cyRef={cyRef} />
       </Box>
 
 
