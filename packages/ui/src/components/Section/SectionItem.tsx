@@ -27,14 +27,14 @@ type SectionItemProps = {
   renderChart?: () => ReactNode;
   renderBody: () => ReactNode;
   // check tags
-  tags: string[];
-  chipText: string;
+  tags?: string[];
+  chipText?: string;
   entity: string;
-  showEmptySection: boolean;
+  showEmptySection?: boolean;
   // check use
-  showContentLoading: boolean;
-  loadingMessage: string;
-  defaultView: string;
+  showContentLoading?: boolean;
+  loadingMessage?: string;
+  defaultView?: string;
 };
 
 function SectionItem({
