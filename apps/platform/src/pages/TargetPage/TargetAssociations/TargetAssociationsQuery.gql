@@ -4,6 +4,7 @@ query TargetAssociationsQuery(
   $size: Int!
   $sortBy: String!
   $enableIndirect: Boolean!
+  $isDirect: Boolean!
   $datasources: [DatasourceSettingsInput!]
   $rowsFilter: [String!]
   $facetFilters: [String!]
@@ -29,6 +30,12 @@ query TargetAssociationsQuery(
         disease {
           id
           name
+          associationTimeSeries(ensemblId: $id, aggregationTypes: [overall], isDirect: $isDirect) {
+            rows {
+              novelty
+              year
+            }
+          }
         }
         score
         datasourceScores {

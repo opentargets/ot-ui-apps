@@ -76,6 +76,7 @@ function useAssociationsData({
           filter,
           sortBy,
           enableIndirect,
+          isDirect: !enableIndirect,
           datasources: datasources.map(el => ({
             id: el.id,
             weight: el.weight,

@@ -130,7 +130,14 @@ const prioritisationViewColumns = getDatasources({
 });
 
 const CUSTOM_CELL_RENDERERS: Record<string, (cell: any) => React.ReactNode> = {
-  noveltyIcon: cell => <NoveltyGaugeCell value={cell.getValue()} row={cell.row.original} />,
+  noveltyIcon: cell => (
+    <NoveltyGaugeCell
+      value={cell.getValue()}
+      row={cell.row.original}
+      loading={cell.table.getState().loading}
+      table={cell.table.getState().prefix}
+    />
+  ),
 };
 
 const metricsColumns = ROW_METRICS.map(metric =>
@@ -138,7 +145,10 @@ const metricsColumns = ROW_METRICS.map(metric =>
     id: metric.id,
     enableSorting: metric.sortable,
     header: (
-      <Typography variant="assoc_header" data-testid={`table-header-${metric.id}`}>
+      <Typography
+        variant="assoc_header"
+        data-testid={`table-header-${metric.id}`}
+      >
         {metric.label}
       </Typography>
     ),

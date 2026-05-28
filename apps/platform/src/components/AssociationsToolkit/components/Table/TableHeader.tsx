@@ -106,6 +106,7 @@ function HeaderCell({ header, onEnter, onLeave }: HeaderCellProps) {
 
   if (header.id === "name") return <NameHeaderCell>{inner}</NameHeaderCell>;
   if (header.id === "score") return <RotateHeaderCell isScore>{inner}</RotateHeaderCell>;
+  if (header.id === "noveltyIcon") return <RotateHeaderCell sx={{ ml: 2 }}>{inner}</RotateHeaderCell>;
   return <RotateHeaderCell>{inner}</RotateHeaderCell>;
 }
 

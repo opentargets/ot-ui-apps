@@ -21,6 +21,7 @@ export type FocusElement = {
   section: null | [string, string];
   interactorsSection: null | [string, string];
   interactorsThreshold: number | null;
+  noveltyPanelOpen: boolean;
 };
 
 export type FocusState = FocusElement[];
@@ -36,10 +37,12 @@ export enum FocusActionType {
   CLEAR_FOCUS_CONTEXT_MENU = "CLEAR_FOCUS_CONTEXT_MENU",
   SET_FOCUS_CONTEXT_MENU = "SET_FOCUS_CONTEXT_MENU",
   SET_INTERACTORS_SOURCE = "SET_INTERACTORS_SOURCE",
+  TOGGLE_NOVELTY_PANEL = "TOGGLE_NOVELTY_PANEL",
 }
 
 export type FocusAction =
   | { type: FocusActionType.RESET }
+  | { type: FocusActionType.TOGGLE_NOVELTY_PANEL; focus: { row: string; table: FocusElementTable } }
   | {
       type: FocusActionType.SET_FOCUS_CONTEXT_MENU;
       focus: { row: string; table: FocusElementTable };
@@ -86,6 +89,7 @@ const defaultFocusElement: FocusElement = {
   interactorsSection: null,
   interactorsSource: INTERACTORS_SOURCES.INTACT,
   interactorsThreshold: INTERACTORS_SOURCE_THRESHOLD[INTERACTORS_SOURCES.INTACT],
+  noveltyPanelOpen: false,
 };
 
 const AssociationsFocusContext = createContext<FocusState>([]);
@@ -181,11 +185,12 @@ function updateExistingElementSection(
     return removeElementAtIndex(state, elementIndex);
   }
 
-  // Update to new section
+  // Update to new section, close novelty panel (replace behaviour)
   return updateElementAtIndex(state, elementIndex, {
     section,
     interactorsRow: null,
     interactorsSection: null,
+    noveltyPanelOpen: false,
   });
 }
 
@@ -486,6 +491,43 @@ function handleClearFocusContextMenu(focusState: FocusState, action: FocusAction
   return focusState.filter(element => element.row !== row || element.table !== table);
 }
 
+function handleToggleNoveltyPanel(focusState: FocusState, action: FocusAction): FocusState {
+  if (action.type !== FocusActionType.TOGGLE_NOVELTY_PANEL) return focusState;
+  const { table, row } = action.focus;
+  const elementIndex = findElementIndex(focusState, table, row);
+  const isOpen = elementIndex !== -1 && focusState[elementIndex].noveltyPanelOpen;
+
+  if (isOpen) {
+    // Toggle off — remove element if nothing else keeps it alive
+    const el = focusState[elementIndex];
+    if (!el.section && !el.interactors) return removeElementAtIndex(focusState, elementIndex);
+    return updateElementAtIndex(focusState, elementIndex, { noveltyPanelOpen: false });
+  }
+
+  // Toggle on — close novelty panel in any other row of same table, clear this row's section.
+  // Remove the element entirely if nothing else (section, interactors) keeps it alive.
+  const withOthersClosed = focusState.reduce<FocusState>((acc, el) => {
+    if (el.table === table && el.row !== row && el.noveltyPanelOpen) {
+      if (el.section || el.interactors) {
+        acc.push({ ...el, noveltyPanelOpen: false });
+      }
+      // else: drop — nothing left to keep this element alive
+    } else {
+      acc.push(el);
+    }
+    return acc;
+  }, []);
+
+  if (elementIndex !== -1) {
+    return withOthersClosed.map(el =>
+      el.table === table && el.row === row
+        ? { ...el, noveltyPanelOpen: true, section: null }
+        : el
+    );
+  }
+  return [...withOthersClosed, createFocusElement({ table, row, noveltyPanelOpen: true })];
+}
+
 /**
  * Main reducer function for focus state
  * Delegates to specialized handlers for complex state transformations
@@ -515,6 +557,9 @@ function focusReducer(focusState: FocusState, action: FocusAction): FocusState {
 
     case FocusActionType.SET_INTERACTORS_THRESHOLD:
       return handleSetInteractorsThreshold(focusState, action);
+
+    case FocusActionType.TOGGLE_NOVELTY_PANEL:
+      return handleToggleNoveltyPanel(focusState, action);
 
     case FocusActionType.RESET:
       return [];

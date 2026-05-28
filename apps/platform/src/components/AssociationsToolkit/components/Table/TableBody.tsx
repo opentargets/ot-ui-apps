@@ -10,6 +10,7 @@ import { useAotfURLState } from "../../context/AssociationsURLContext";
 import { useAssociationsFocus } from "../../context/AssociationsFocusContext";
 
 import { SectionRender, SectionRendererWrapper } from "./SectionRender";
+import { NoveltyInlinePanel } from "./NoveltyInlinePanel";
 import RowInteractorsWrapper from "./RowInteractors/RowInteractorsWrapper";
 import RowInteractorsTable from "./RowInteractors/RowInteractorsTable";
 import {
@@ -180,47 +181,62 @@ function TableBody({ core, cols, noInteractors }: TableBodyProps) {
                   ))}
                 </RowContainer>
 
-                <Box
-                  sx={{
-                    position: "relative",
-                    overflow: "hidden",
-                    borderBottom: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                    borderLeft: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                    borderRight: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
-                    marginBottom: 1,
-                    display: getIsRowActive(prefix, row, focusState, parentRow, parentTable)
-                      ? "block"
-                      : "none",
-                  }}
-                >
-                  <SectionRendererWrapper
-                    section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
-                  >
-                    <section>
-                      <SectionRender
-                        id={id}
-                        entity={entity}
-                        table={prefix}
-                        row={row}
-                        entityToGet={entityToGet}
-                        nameProperty={nameProperty}
-                        displayedTable={displayedTable}
-                        cols={cols}
-                        section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
-                      />
-                    </section>
-                  </SectionRendererWrapper>
-                  {!noInteractors && (
-                    <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
-                      <RowInteractorsTable
-                        row={row}
-                        columns={core._getColumnDefs()}
-                        nameProperty={nameProperty}
-                        parentTable={prefix}
-                      />
-                    </RowInteractorsWrapper>
-                  )}
-                </Box>
+                {(() => {
+                  const noveltyEntry = focusState.find(
+                    (e: any) => e.row === row.id && e.table === prefix && e.noveltyPanelOpen
+                  );
+                  const isNoveltyOpen = !!noveltyEntry;
+                  const isSectionActive = getIsRowActive(prefix, row, focusState, parentRow, parentTable);
+                  const showExpansion = isNoveltyOpen || isSectionActive;
+
+                  return (
+                    <Box
+                      sx={{
+                        position: "relative",
+                        overflow: "hidden",
+                        borderBottom: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                        borderLeft: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                        borderRight: prefix === TABLE_PREFIX.INTERACTORS ? null : borderStyle,
+                        marginBottom: 1,
+                        display: showExpansion ? "block" : "none",
+                      }}
+                    >
+                      {isNoveltyOpen ? (
+                        <NoveltyInlinePanel rowId={row.id} />
+                      ) : (
+                        <>
+                          <SectionRendererWrapper
+                            section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+                          >
+                            <section>
+                              <SectionRender
+                                id={id}
+                                entity={entity}
+                                table={prefix}
+                                row={row}
+                                entityToGet={entityToGet}
+                                nameProperty={nameProperty}
+                                displayedTable={displayedTable}
+                                cols={cols}
+                                section={getFocusSection(prefix, row, focusState, parentRow, parentTable)}
+                              />
+                            </section>
+                          </SectionRendererWrapper>
+                          {!noInteractors && (
+                            <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                              <RowInteractorsTable
+                                row={row}
+                                columns={core._getColumnDefs()}
+                                nameProperty={nameProperty}
+                                parentTable={prefix}
+                              />
+                            </RowInteractorsWrapper>
+                          )}
+                        </>
+                      )}
+                    </Box>
+                  );
+                })()}
               </Fragment>
             ))}
           </RowsContainer>
