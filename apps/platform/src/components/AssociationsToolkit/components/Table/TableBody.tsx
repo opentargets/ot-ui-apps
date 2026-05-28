@@ -202,7 +202,19 @@ function TableBody({ core, cols, noInteractors }: TableBodyProps) {
                       }}
                     >
                       {isNoveltyOpen ? (
-                        <NoveltyInlinePanel rowId={row.id} />
+                        <>
+                          <NoveltyInlinePanel rowId={row.id} />
+                          {!noInteractors && (
+                            <RowInteractorsWrapper rowId={row.id} parentTable={prefix}>
+                              <RowInteractorsTable
+                                row={row}
+                                columns={core._getColumnDefs()}
+                                nameProperty={nameProperty}
+                                parentTable={prefix}
+                              />
+                            </RowInteractorsWrapper>
+                          )}
+                        </>
                       ) : (
                         <>
                           <SectionRendererWrapper

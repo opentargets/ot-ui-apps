@@ -119,6 +119,7 @@ function useRowInteractors({
           filter,
           sortBy,
           enableIndirect,
+          isDirect: !enableIndirect,
           rowsFilter: interactorsIds,
           entitySearch,
           datasources: datasources.map(el => ({

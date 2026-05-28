@@ -19,6 +19,7 @@ function AotfApiPlayground() {
     size: pagination.pageSize,
     sortBy: sorting[0].id,
     enableIndirect,
+    isDirect: !enableIndirect,
     datasources: dataSourceControls.map(el => ({
       id: el.id,
       weight: el.weight,

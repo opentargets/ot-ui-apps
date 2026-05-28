@@ -468,13 +468,9 @@ function shouldKeepContextMenuElement(
   table: FocusElementTable,
   row: string
 ): boolean {
-  const { rowActive, hasSectionActive, interactorsActive } = getFocusElementState(state, {
-    table,
-    row,
-    section: null,
-  });
-
-  return rowActive && (hasSectionActive || interactorsActive);
+  const element = state.find(el => el.table === table && el.row === row);
+  if (!element) return false;
+  return !!(element.section || element.interactors || element.noveltyPanelOpen);
 }
 
 function handleClearFocusContextMenu(focusState: FocusState, action: FocusAction): FocusState {
@@ -504,14 +500,14 @@ function handleToggleNoveltyPanel(focusState: FocusState, action: FocusAction): 
     return updateElementAtIndex(focusState, elementIndex, { noveltyPanelOpen: false });
   }
 
-  // Toggle on — close novelty panel in any other row of same table, clear this row's section.
-  // Remove the element entirely if nothing else (section, interactors) keeps it alive.
+  // Toggle on — deactivate all other rows in same table (same as section click behaviour).
+  // Keep rows that have interactors but reset their section/novelty; drop the rest.
   const withOthersClosed = focusState.reduce<FocusState>((acc, el) => {
-    if (el.table === table && el.row !== row && el.noveltyPanelOpen) {
-      if (el.section || el.interactors) {
-        acc.push({ ...el, noveltyPanelOpen: false });
+    if (el.table === table && el.row !== row) {
+      if (el.interactors) {
+        acc.push({ ...el, section: null, interactorsSection: null, interactorsRow: null, noveltyPanelOpen: false });
       }
-      // else: drop — nothing left to keep this element alive
+      // else: drop entirely
     } else {
       acc.push(el);
     }
@@ -597,20 +593,43 @@ export function useFocusElement(table: FocusElementTable, row: string) {
 }
 
 // Focus URL param helpers
-// Format: "table|rowId|section0|section1"
+// Format: "table|rowId|flag1,flag2,..."
+// Flags: "novelty", "interactors", "sectionId+SectionComponent"
+// e.g. "core|ENSG123|novelty,interactors"
+//      "core|ENSG123|clinicalTrials+ClinicalTrials,interactors"
 function parseFocusParam(param: string): FocusState {
   if (!param) return [];
   const parts = param.split("|");
-  if (parts.length < 4) return [];
-  const [table, row, section0, section1] = parts;
-  if (!table || !row || !section0 || !section1) return [];
-  return [createFocusElement({ table: table as FocusElementTable, row, section: [section0, section1] })];
+  if (parts.length < 3) return [];
+  const [table, row, flagsStr] = parts;
+  if (!table || !row || !flagsStr) return [];
+
+  const flags = flagsStr.split(",");
+  const noveltyPanelOpen = flags.includes("novelty");
+  const interactors = flags.includes("interactors");
+  const sectionFlag = flags.find(f => f.includes("+"));
+  let section: [string, string] | null = null;
+  if (sectionFlag) {
+    const [s0, s1] = sectionFlag.split("+");
+    if (s0 && s1) section = [s0, s1];
+  }
+
+  if (!noveltyPanelOpen && !interactors && !section) return [];
+  return [createFocusElement({ table: table as FocusElementTable, row, noveltyPanelOpen, interactors, section })];
 }
 
 function serializeActiveFocus(state: FocusState): string {
-  const active = state.find(el => el.section !== null);
-  if (!active || !active.section) return "";
-  return `${active.table}|${active.row}|${active.section[0]}|${active.section[1]}`;
+  const active = state.filter(el => el.table !== TABLE_PREFIX.INTERACTORS)
+    .find(el => el.noveltyPanelOpen || el.interactors || el.section);
+  if (!active) return "";
+
+  const flags: string[] = [];
+  if (active.noveltyPanelOpen) flags.push("novelty");
+  if (active.interactors) flags.push("interactors");
+  if (active.section) flags.push(`${active.section[0]}+${active.section[1]}`);
+
+  if (!flags.length) return "";
+  return `${active.table}|${active.row}|${flags.join(",")}`;
 }
 
 /**

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Box, Chip, CircularProgress, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { grey } from "@mui/material/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 import { OverallChart, SourcesChart, useNoveltyTimeSeries } from "./NoveltyCharts";
 
@@ -38,22 +40,38 @@ export function NoveltyInlinePanel({ rowId }: NoveltyInlinePanelProps) {
   const filteredDsRows = dsRows.filter(r => selectedLabels.has(r.label));
 
   return (
-    <Box sx={{ background: grey[100], px: 3, py: 5 }}>
-      {/* Title + help text */}
-      <Box sx={{ mb: 1.5 }}>
-        <Typography variant="subtitle2">
-          Novelty Trend
+    <Box sx={{ background: grey[100], px: 3, pt: 2, pb: 2 }}>
+      {/* Title */}
+      <Box
+        sx={{
+          boxSizing: "border-box",
+          alignItems: "center",
+          display: "flex",
+          position: "relative",
+          mb: 2,
+        }}
+      >
+        <Box
+          sx={{
+            height: "45px",
+            width: "35px",
+            padding: "2px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mr: 1,
+          }}
+        >
+          <FontAwesomeIcon icon={faChartLine} />
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+          <Typography variant="controlHeader">Novelty Trend</Typography>
           {targetName && diseaseName && (
-            <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+            <Typography variant="body2" color="text.secondary">
               {targetName} · {diseaseName}
             </Typography>
           )}
-        </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.25 }}>
-          Novelty scores how recently discovered the evidence is — 0 (well-established) to 1
-          (newly emerging). Overall aggregates all sources; the right panel breaks it down by
-          data source.
-        </Typography>
+        </Box>
       </Box>
 
       {loading && (

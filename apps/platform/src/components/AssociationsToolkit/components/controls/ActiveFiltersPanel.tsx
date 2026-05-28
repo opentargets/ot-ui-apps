@@ -15,6 +15,7 @@ import { setIncludeMeasurements } from "../../context/aotfActions";
 import { useAotfQueryState, useAotfQueryDispatch } from "../../context/AssociationsQueryContext";
 import { useAotfURLState } from "../../context/AssociationsURLContext";
 import dataSources from "../../static_datasets/dataSourcesAssoc";
+import { ROW_METRICS } from "../../static_datasets/rowMetrics";
 
 function removeFacet(items: Facet[], idToRemove: string): Facet[] {
   return items.filter((item) => item.id !== idToRemove);
@@ -165,7 +166,8 @@ function ActiveFiltersPanel() {
           label={
             <Box sx={{ gap: 1 }}>
               <FontAwesomeIcon icon={faArrowDownWideShort} />{" "}
-              {dataSources.find((d) => d.id === sorting[0].id)?.label}
+              {dataSources.find((d) => d.id === sorting[0].id)?.label ??
+                ROW_METRICS.find((m) => m.id === sorting[0].id)?.label}
             </Box>
           }
         />
