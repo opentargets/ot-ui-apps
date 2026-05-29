@@ -7,7 +7,7 @@ function XAxisLabel() {
   const { chromosome } = genTrackState;
 
   return (
-    <Box sx={{ ...infoStyle, alignItems: "end"}}>
+    <Box sx={{ ...infoStyle, alignItems: "end", pr: 0.75 }}>
       <Typography component="div" variant="caption" sx={{ height: "12px", fontSize: "11px" }}>
         Chr {chromosome}
       </Typography>

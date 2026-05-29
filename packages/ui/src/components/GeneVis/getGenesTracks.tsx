@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { Container } from '@pixi/react';
 import { TextStyle } from "pixi.js";
 import { DataSprite, DataText, DataBackground } from "../GenTrack";
-import { useGenTrackState } from "ui";
+import { useGenTrackState, useGenTrackTooltipDispatch } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
 import { grey } from "@mui/material/colors";
@@ -11,7 +11,6 @@ const DEFAULT_ROW_HEIGHT = 28;
 const DEFAULT_EXON_HEIGHT = 10;
 
 export function getGenesTracks({
-    geneLabel,
     geneToRow,
     color,
     biotype,
@@ -28,6 +27,7 @@ export function getGenesTracks({
   }) {
   const genTrackState = useGenTrackState();
   const { data } = genTrackState ?? { data: null };
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value: any }) => void;
 
   // Look up targets from pre-grouped data in context
   const targets = data?.region?.groupedTargets?.[biotype] ?? [];
@@ -100,33 +100,59 @@ export function getGenesTracks({
 
             const isDimmed = dimColor && highlightIds.size > 0 && !highlightIds.has(target.id);
             const geneColor = isDimmed ? dimColor : color;
+
+            // Compute exon span for intron line and label positioning
+            const exons = target.canonicalExons ?? [];
+            const exonStarts = exons.map((e: { start: number }) => e.start);
+            const exonEnds = exons.map((e: { end: number }) => e.end);
+            const intronStart = exonStarts.length > 0 ? Math.min(...exonStarts) : target.genomicLocation.start;
+            const intronEnd = exonEnds.length > 0 ? Math.max(...exonEnds) : target.genomicLocation.end;
+
             return (
               <Fragment key={target.id}>
-                {showGeneLabel && (
-                  <DataText
-                    scalesRef={scalesRef}
-                    trackId={trackId}
-                    x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
-                    y={yTop(rowIndex) + labelHeight}
-                    text={geneLabel(target)}
-                    anchor={[0.5, 1]}
-                    style={new TextStyle({
-                      align: 'center',
-                      fill: "#000",
-                      fontSize: 10.5,
-                      fontWeight: '100',
-                      wordWrap: false,
-                    })}
-                  />
-                )}
+                {showGeneLabel && (() => {
+                  const score = data?.l2GPredictions?.rows.find((r: any) => r.target.id === target.id)?.score;
+                  const leftArrow = target.genomicLocation.strand === -1 ? "← " : "";
+                  const rightArrow = target.genomicLocation.strand === 1 ? " →" : "";
+                  const labelText = score !== undefined
+                    ? `${leftArrow}${target.approvedSymbol || target.id}: ${score.toFixed(3)}${rightArrow}`
+                    : `${leftArrow}${target.approvedSymbol || target.id}${rightArrow}`;
+                  return (
+                    <DataText
+                      scalesRef={scalesRef}
+                      trackId={trackId}
+                      x={(intronStart + intronEnd) / 2}
+                      y={yTop(rowIndex) + labelHeight}
+                      text={labelText}
+                      anchor={[0.5, 1]}
+                      style={new TextStyle({
+                        align: 'center',
+                        fill: "#000",
+                        fontSize: 10.5,
+                        fontWeight: '100',
+                        wordWrap: false,
+                      })}
+                    />
+                  );
+                })()}
+                {/* Intron line spans from first exon to last exon */}
                 <DataSprite
                   scalesRef={scalesRef}
                   trackId={trackId}
-                  x={target.genomicLocation.start}
+                  x={intronStart}
                   y={ycenter(rowIndex) - intronHeight / 2}
-                  width={target.genomicLocation.end - target.genomicLocation.start}
+                  width={intronEnd - intronStart}
                   height={intronHeight}
                   tint={geneColor}
+                  eventMode="static"
+                  pointerover={(e: any) => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: target });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                  }}
+                  pointerout={() => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: null });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                  }}
                 />
                 {target.canonicalExons?.map(exon => (
                   <DataSprite
@@ -139,6 +165,15 @@ export function getGenesTracks({
                     height={exonHeight}
                     tint={geneColor}
                     minPixelWidth={2}
+                    eventMode="static"
+                    pointerover={(e: any) => {
+                      genTrackTooltipDispatch({ type: "setDatum", value: target });
+                      genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                    }}
+                    pointerout={() => {
+                      genTrackTooltipDispatch({ type: "setDatum", value: null });
+                      genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                    }}
                   />
                 ))}
               </Fragment>

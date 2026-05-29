@@ -14,6 +14,7 @@ import { getGenesTracks } from "./getGenesTracks";
 import { getGeneMinimapTracks } from "./getGeneMinimapTracks";
 import { getVariantTrack } from "./getVariantTrack";
 import { packIntervals } from "./packIntervals";
+import UnifiedTooltip from "./UnifiedTooltip";
 
 const BIOTYPE_COLORS = {
   protein_coding: "#2e5943",
@@ -245,7 +246,7 @@ function GeneVisInner({
       <GenTrack
         XInfo={XAxis}
         XYInfo={XAxisLabel}
-        tracks={fixedTrackList}
+        // tracks={fixedTrackList}
         // InnerXInfo={XAxis}
         innerTracks={innerTrackList}
         // InnerXYInfo={XAxisLabel}
@@ -255,6 +256,8 @@ function GeneVisInner({
         panZoomTopGap={0}
         panZoomBottomGap={4}
         paddingBottom={8}
+        Tooltip={UnifiedTooltip}
+        InnerTooltip={UnifiedTooltip}
       />
     </Box>
   );

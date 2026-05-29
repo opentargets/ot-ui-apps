@@ -6,6 +6,7 @@ import { DataSprite, DataText, DataHLine, DataBackground } from "../GenTrack";
 import { Container } from '@pixi/react';
 import { TextStyle } from 'pixi.js';
 import YDetails from "./YDetails";
+import { useGenTrackTooltipDispatch } from "ui";
 
 const VARIANT_TRACK_HEIGHT = 67;
 const H_LINE_COLOR = 0xdddddd;
@@ -73,6 +74,7 @@ function VariantsYInfo() {
 }
 
 export function getVariantTrack({ data }: { data: any }) {
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value: any }) => void;
 
   return {
     id: `variants`,
@@ -81,7 +83,7 @@ export function getVariantTrack({ data }: { data: any }) {
     yMin: 0,
     yMax: 1,
     YInfo: VariantsYInfo,
-    Track: ({ trackId, scalesRef }) => {  
+    Track: ({ trackId, scalesRef }: { trackId: string; scalesRef: any }) => {  
       const theme = useTheme();
       const primaryColor = theme.palette.primary.main;
 
@@ -93,7 +95,7 @@ export function getVariantTrack({ data }: { data: any }) {
           {/* <DataHLine scalesRef={scalesRef} trackId={trackId} y={0} color={H_LINE_COLOR} /> */}
           
           {/* all variants */}
-          {data?.locus.rows.map(({ variant, posteriorProbability }, i) => {
+          {data?.locus.rows.map(({ variant, posteriorProbability }: { variant: any; posteriorProbability: number }) => {
             const isLead = variant.position === data.variant.position;
             return (
               <DataSprite
@@ -106,6 +108,15 @@ export function getVariantTrack({ data }: { data: any }) {
                 y={1 - posteriorProbability}
                 radiusPixels={4}
                 tint={primaryColor}
+                eventMode="static"
+                pointerover={(e: any) => {
+                  genTrackTooltipDispatch({ type: "setDatum", value: variant });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                }}
+                pointerout={() => {
+                  genTrackTooltipDispatch({ type: "setDatum", value: null });
+                  genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                }}
               />
             );
           })}

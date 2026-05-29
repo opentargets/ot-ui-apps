@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Container } from '@pixi/react';
 import { DataSprite, DataText, DataBackground } from "../GenTrack";
-import { useGenTrackState } from "ui";
+import { useGenTrackState, useGenTrackTooltipDispatch } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
 import { TextStyle } from 'pixi.js';
@@ -22,6 +22,7 @@ const LABEL_HEIGHT = 10;
 export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds = new Set(), biotype, id, YInfo, background = undefined, rowHeight = DEFAULT_ROW_HEIGHT, rowHeightMap, rowYOffsets, trackHeight: explicitTrackHeight, paddingTop: explicitPaddingTop, labeledIds = new Set() }) {
   const genTrackState = useGenTrackState();
   const { data } = genTrackState ?? { data: null };
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value: any }) => void;
 
   // Look up targets from pre-grouped data in context
   const targets = data?.region?.groupedTargets?.[biotype] ?? [];
@@ -82,19 +83,25 @@ export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds 
             const geneColor = isDimmed ? dimColor : color;
             return (
               <Fragment key={target.id}>
-                {hasLabel && (
-                  <DataText
-                    scalesRef={scalesRef}
-                    trackId={trackId}
-                    x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
-                    y={yTop(rowIndex) + LABEL_HEIGHT}
-                    text={`${target.genomicLocation.strand === -1 ? "← " : ""}${
-                      target.approvedSymbol || target.id}${
-                      target.genomicLocation.strand === 1 ? " →" : ""}`}
-                    anchor={[0.5, 1]}
-                    style={geneLabelStyle}
-                  />
-                )}
+                {hasLabel && (() => {
+                  const score = data?.l2GPredictions?.rows.find((r: any) => r.target.id === target.id)?.score;
+                  const leftArrow = target.genomicLocation.strand === -1 ? "← " : "";
+                  const rightArrow = target.genomicLocation.strand === 1 ? " →" : "";
+                  const labelText = score !== undefined
+                    ? `${leftArrow}${target.approvedSymbol || target.id}: ${score.toFixed(3)}${rightArrow}`
+                    : `${leftArrow}${target.approvedSymbol || target.id}${rightArrow}`;
+                  return (
+                    <DataText
+                      scalesRef={scalesRef}
+                      trackId={trackId}
+                      x={(target.genomicLocation.start + target.genomicLocation.end) / 2}
+                      y={yTop(rowIndex) + LABEL_HEIGHT}
+                      text={labelText}
+                      anchor={[0.5, 1]}
+                      style={geneLabelStyle}
+                    />
+                  );
+                })()}
                 <DataSprite
                   scalesRef={scalesRef}
                   trackId={trackId}
@@ -104,6 +111,15 @@ export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds 
                   height={BAR_HEIGHT}
                   tint={geneColor}
                   minPixelWidth={2}
+                  eventMode="static"
+                  pointerover={(e: any) => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: target });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                  }}
+                  pointerout={() => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: null });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                  }}
                 />
               </Fragment>
             );

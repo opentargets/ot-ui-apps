@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Sprite, useTick, useApp } from '@pixi/react';
 import { Sprite as PixiSprite, Graphics as PixiGraphics, Application as PixiApplication, Texture } from 'pixi.js';
 import type { RefObject } from 'react';
@@ -120,7 +120,17 @@ export function DataSprite({
   );
 
   const spriteRef = useRef<PixiSprite | null>(null);
+  const [isPositioned, setIsPositioned] = useState(false);
   const resolvedAnchor = anchorProp ?? (isCircular ? [0.5, 0.5] : undefined);
+
+  // Compute initial screen position (will be updated by useTick)
+  const scales = scalesRef.current;
+  const hasScales = scales !== null;
+  const initialScreenX = scales ? dataX * scales.xScale + scales.xOffset : 0;
+  const yScaleInfo = trackId && scales ? scales.yScales.get(trackId) : undefined;
+  const initialScreenY = yScaleInfo
+    ? dataY * yScaleInfo.yScale + yScaleInfo.yOffset
+    : 0;
 
   // Update position imperatively every tick — reads latest scalesRef without React re-render
   useTick(() => {
@@ -161,12 +171,20 @@ export function DataSprite({
 
     sprite.x = screenX;
     sprite.y = screenY;
+    
+    // After first positioning with eventMode, trigger re-render to make sprite visible
+    if (!isPositioned && scales && spriteProps.eventMode) {
+      setIsPositioned(true);
+    }
   });
 
   return (
     <Sprite
       ref={spriteRef}
       texture={resolvedTexture}
+      x={initialScreenX}
+      y={initialScreenY}
+      visible={isPositioned}
       {...spriteProps}
       {...(resolvedAnchor !== undefined && { anchor: resolvedAnchor })}
     />

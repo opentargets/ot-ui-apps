@@ -119,6 +119,10 @@ function Tracks({
       app.ticker.update();
       // Reveal canvas imperatively — no React re-render, no flash
       if (canvasBoxRef?.current) canvasBoxRef.current.style.visibility = "visible";
+      // Render one more tick after canvas becomes visible to ensure hit areas are calculated
+      requestAnimationFrame(() => {
+        app.ticker.update();
+      });
       onReady?.();
     }, 0);
     return () => clearTimeout(id);
@@ -461,6 +465,7 @@ function GenTrackInner({
                   width={canvasWidth}
                   height={canvasHeight}
                   options={{ background: 0xffffff, autoStart: false, antialias: true }}
+                  onMount={app => { app.stage.eventMode = "static"; }}
                 >
                   <Container ref={_isInner ? _innerTracksContainerRef : null}>
                     <Tracks

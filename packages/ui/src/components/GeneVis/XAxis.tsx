@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { scaleLinear, axisTop, select } from "d3";
+import { scaleLinear, axisTop, select, format } from "d3";
 import { grey } from "@mui/material/colors";
 
 function XAxis({ start, end, canvasWidth }) {
@@ -10,9 +10,11 @@ function XAxis({ start, end, canvasWidth }) {
       .domain([start, end])
       .range([0, canvasWidth]);
 
+    const kbFormat = format(",");
     const axis = axisTop(scale)
       .ticks(8)
-      .tickSizeOuter(0);
+      .tickSizeOuter(0)
+      .tickFormat(d => `${kbFormat(+d / 1_000_000)} mb`);
 
     const axisSelection = select(axisRef.current).call(axis);
 
