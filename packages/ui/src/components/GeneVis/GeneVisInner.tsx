@@ -1,18 +1,20 @@
 // import { useState, Fragment} from "react";
+import { useRef } from "react";
 import {
   GenTrack,
   useGenTrackState,
   useGenTrackTooltipDispatch,
-  useGenTrackTooltipState
+  useGenTrackTooltipState,
 } from "ui";
-import { Box } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
 import XAxis from "./XAxis";
 import XAxisLabel from "./XAxisLabel";
 import YDetails from "./YDetails";
 import { getGenesTracks } from "./getGenesTracks";
 import { getGeneMinimapTracks } from "./getGeneMinimapTracks";
-import { getVariantTrack } from "./getVariantTrack";
+import { getVariantTrack, DataVLineOverlay } from "./getVariantTrack";
+import { getVariantMinimapTrack } from "./getVariantMinimapTrack";
 import { packIntervals } from "./packIntervals";
 import UnifiedTooltip from "./UnifiedTooltip";
 
@@ -91,8 +93,9 @@ function GeneVisInner({
   const innerTrackList = [];
 
   // variant track
+  const variantMinimapTrack = getVariantMinimapTrack({ data });
   const variantTrack = getVariantTrack({ data });
-  fixedTrackList.push(variantTrack);
+  fixedTrackList.push(variantMinimapTrack);
   innerTrackList.push(variantTrack);
  
   // gene tracks
@@ -241,23 +244,30 @@ function GeneVisInner({
     }
   }
 
+  const innerScalesRef = useRef<any>(null);
+  const theme = useTheme();
+  const primaryColor = parseInt(theme.palette.primary.main.replace('#', ''), 16);
+
   return (
     <Box ref={widthRef} sx={{mr: 3}}>
       <GenTrack
-        XInfo={XAxis}
-        XYInfo={XAxisLabel}
-        // tracks={fixedTrackList}
-        // InnerXInfo={XAxis}
+        // XInfo={XAxis}
+        // XYInfo={XAxisLabel}
+        tracks={fixedTrackList.slice(0, 1)}
+        InnerXInfo={XAxis}
         innerTracks={innerTrackList}
-        // InnerXYInfo={XAxisLabel}
+        InnerXYInfo={XAxisLabel}
+        innerXYInfoHeight={42}
+        overlayZoombar={fixedTrackList?.length > 0}
         yInfoGap={Y_INFO_GAP}
         yInfoWidth={Y_INFO_WIDTH}
-        zoomLines
         panZoomTopGap={0}
         panZoomBottomGap={4}
-        paddingBottom={8}
+        paddingBottom={0}
         Tooltip={UnifiedTooltip}
         InnerTooltip={UnifiedTooltip}
+        onInnerScalesReady={(ref) => { innerScalesRef.current = ref.current; }}
+        innerOverlayGraphics={data?.variant ? <DataVLineOverlay position={data.variant.position} scalesRef={innerScalesRef} color={primaryColor} /> : null}
       />
     </Box>
   );

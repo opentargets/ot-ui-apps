@@ -12,6 +12,9 @@ interface PanZoomPanelProps {
   canvasWidth: number;
   xMin: number;
   xMax: number;
+  height?: number;
+  windowHeight?: number;
+  backgroundColor?: string;
 }
 
 interface DragState {
@@ -24,12 +27,14 @@ interface DragState {
   end: number;
 }
 
-function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMax }: PanZoomPanelProps) {
+function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMax, height = 20, windowHeight, backgroundColor = 'transparent' }: PanZoomPanelProps) {
   const dragState = useRef<DragState | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
   const leftHandleRef = useRef<HTMLDivElement | null>(null);
   const rightHandleRef = useRef<HTMLDivElement | null>(null);
+  const leftCurtainRef = useRef<HTMLDivElement | null>(null);
+  const rightCurtainRef = useRef<HTMLDivElement | null>(null);
   const pendingViewRef = useRef<{ start: number; end: number } | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -38,9 +43,11 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
   const internalViewRef = useRef({ start: viewStart, end: viewEnd });
 
   const HANDLE_WIDTH = 8;
-  const PANEL_HEIGHT = 20;
+  const PANEL_HEIGHT = height;
+  const WINDOW_HEIGHT = windowHeight ?? height;
+  const BORDER_WIDTH = 1;
   const MIN_WINDOW_WIDTH_DATA = 10 * (xMax - xMin) / canvasWidth;
-  const HANDLE_COLOR = '#00aaff';
+  const HANDLE_COLOR = '#444';
 
   const updateDOM = useCallback((start: number, end: number) => {
     const x = (start - xMin) / (xMax - xMin) * canvasWidth;
@@ -51,6 +58,11 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
     }
     if (leftHandleRef.current) leftHandleRef.current.style.left = `${x - HANDLE_WIDTH}px`;
     if (rightHandleRef.current) rightHandleRef.current.style.left = `${x + width}px`;
+    if (leftCurtainRef.current) leftCurtainRef.current.style.width = `${Math.max(0, x)}px`;
+    if (rightCurtainRef.current) {
+      rightCurtainRef.current.style.left = `${x + width}px`;
+      rightCurtainRef.current.style.width = `${Math.max(0, canvasWidth - (x + width))}px`;
+    }
   }, [xMin, xMax, canvasWidth, HANDLE_WIDTH]);
 
   // Sync DOM when canvasWidth changes (resize)
@@ -115,7 +127,11 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
     }
     if (leftHandleRef.current) leftHandleRef.current.style.left = `${newX - HANDLE_WIDTH}px`;
     if (rightHandleRef.current) rightHandleRef.current.style.left = `${newX + newWidth}px`;
-
+    if (leftCurtainRef.current) leftCurtainRef.current.style.width = `${Math.max(0, newX)}px`;
+    if (rightCurtainRef.current) {
+      rightCurtainRef.current.style.left = `${newX + newWidth}px`;
+      rightCurtainRef.current.style.width = `${Math.max(0, canvasWidth - (newX + newWidth))}px`;
+    }
     // Keep internalViewRef current so next mousedown starts from here
     internalViewRef.current = { start: newStart, end: newEnd };
 
@@ -190,54 +206,105 @@ function PanZoomPanel({ viewStart, viewEnd, onViewChange, canvasWidth, xMin, xMa
         position: 'relative',
         width: canvasWidth,
         height: `${PANEL_HEIGHT}px`,
-        backgroundColor: '#ddd',
-        cursor: dragState.current ? 'grabbing' : 'default',
+        backgroundColor,
+        cursor: 'default',
       }}
     >
-      {/* main window */}
+      {/* main window — border + blue fill, captures drag events */}
       <Box
         ref={windowRef}
         sx={{
           position: 'absolute',
           left: 0,
-          top: 0,
+          top: `${(PANEL_HEIGHT - WINDOW_HEIGHT) / 2}px`,
           width: `${windowWidth}px`,
-          height: `${PANEL_HEIGHT}px`,
-          backgroundColor: `${HANDLE_COLOR}26`,
-          borderColor: `${HANDLE_COLOR}e6`,
-          borderStyle: "solid",
-          borderWidth: "2px 0",
+          height: `${WINDOW_HEIGHT}px`,
+          transform: `translateX(${windowX}px)`,
+          borderTop: `${BORDER_WIDTH}px solid ${HANDLE_COLOR}`,
+          borderBottom: `${BORDER_WIDTH}px solid ${HANDLE_COLOR}`,
+          borderLeft: 'none',
+          borderRight: 'none',
+          boxSizing: 'border-box',
           cursor: 'move',
+          zIndex: 2,
         }}
         onMouseDown={(e) => handleMouseDown('move', e)}
       />
 
-      {/* left handle */}
+      {/* left curtain — fades out-of-window variants */}
+      <Box
+        ref={leftCurtainRef}
+        sx={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: `${Math.max(0, windowX)}px`,
+          height: `${PANEL_HEIGHT}px`,
+          backgroundColor: 'rgba(255,255,255,0.55)',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      />
+
+      {/* right curtain — fades out-of-window variants */}
+      <Box
+        ref={rightCurtainRef}
+        sx={{
+          position: 'absolute',
+          left: `${windowX + windowWidth}px`,
+          top: 0,
+          width: `${Math.max(0, canvasWidth - (windowX + windowWidth))}px`,
+          height: `${PANEL_HEIGHT}px`,
+          backgroundColor: 'rgba(255,255,255,0.55)',
+          pointerEvents: 'none',
+          zIndex: 3,
+        }}
+      />
+
+
+      {/* border around full panel */}
+      <Box
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          border: '1.5px solid #bbb',
+          borderRadius: '3px',
+          pointerEvents: 'none',
+          zIndex: 1,
+          boxSizing: 'border-box',
+        }}
+      />
+
+      {/* left handle — semicircle cap (left half of circle) */}
       <Box
         ref={leftHandleRef}
         sx={{
           position: 'absolute',
           left: `${windowX - HANDLE_WIDTH}px`,
-          top: 0,
+          top: `${(PANEL_HEIGHT - WINDOW_HEIGHT) / 2}px`,
           width: `${HANDLE_WIDTH}px`,
-          height: `${PANEL_HEIGHT}px`,
-          backgroundColor: HANDLE_COLOR,
+          height: `${WINDOW_HEIGHT}px`,
           cursor: 'ew-resize',
+          zIndex: 4,
+          backgroundColor: HANDLE_COLOR,
+          borderRadius: `${WINDOW_HEIGHT}px 0 0 ${WINDOW_HEIGHT}px`,
         }}
         onMouseDown={(e) => handleMouseDown('left', e)}
       />
 
-      {/* right handle */}
+      {/* right handle — semicircle cap (right half of circle) */}
       <Box
         ref={rightHandleRef}
         sx={{
           position: 'absolute',
           left: `${windowX + windowWidth}px`,
-          top: 0,
+          top: `${(PANEL_HEIGHT - WINDOW_HEIGHT) / 2}px`,
           width: `${HANDLE_WIDTH}px`,
-          height: `${PANEL_HEIGHT}px`,
-          backgroundColor: HANDLE_COLOR,
+          height: `${WINDOW_HEIGHT}px`,
           cursor: 'ew-resize',
+          zIndex: 4,
+          backgroundColor: HANDLE_COLOR,
+          borderRadius: `0 ${WINDOW_HEIGHT}px ${WINDOW_HEIGHT}px 0`,
         }}
         onMouseDown={(e) => handleMouseDown('right', e)}
       />

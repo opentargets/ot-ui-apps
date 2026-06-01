@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { scaleLinear, axisLeft, select } from "d3";
 import { Box, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { DataSprite, DataText, DataHLine, DataBackground } from "../GenTrack";
+import { DataSprite, DataText, DataHLine, DataBackground, DataVLine } from "../GenTrack";
 import { Container } from '@pixi/react';
 import { TextStyle } from 'pixi.js';
 import YDetails from "./YDetails";
@@ -71,6 +71,10 @@ function VariantsYInfo() {
       Axis={VariantsAxis}
     />
   );
+}
+
+export function DataVLineOverlay({ position, scalesRef, color }: { position: number; scalesRef: any; color: number }) {
+  return <DataVLine scalesRef={scalesRef} x={position} color={color} alpha={0.75} lineWidth={1} />;
 }
 
 export function getVariantTrack({ data }: { data: any }) {

@@ -7,6 +7,7 @@ export interface YScaleInfo {
   yMin: number;
   yMax: number;
   height: number;
+  containerY: number;
 }
 
 export interface ScalesRef {
@@ -24,6 +25,7 @@ export interface ScalesRef {
   // Canvas dimensions
   canvasWidth: number;
   canvasHeight: number;
+  tracksHeight?: number;
 
   // Track transform registry (stored here to avoid cross-Stage context issues)
   trackRegistry: Map<string, TrackTransform>;

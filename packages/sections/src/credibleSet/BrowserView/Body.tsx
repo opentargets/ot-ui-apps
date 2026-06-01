@@ -1,5 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { GeneVis, SectionItem, useBatchQuery } from "ui";
+import { Box } from "@mui/material";
 import { definition } from ".";
 import Description from "./Description";
 import { useEffect, useState } from "react";
@@ -174,17 +175,19 @@ function Body({ id, entity }: BodyProps) {
 			loadingMessage="Loading data. This may take some time..."
 			renderDescription={() => <Description />}
       renderBody={() => (data && chromosome && start !== undefined && end !== undefined)
-        ? <GeneVis
-            data={combinedData}
-            chromosome={chromosome}
-            xMin={start}
-            xMax={end}
-            geneLabel={target => `${target.genomicLocation.strand === -1 ? "← " : ""}${
-              target.approvedSymbol ?? target.id}${
-              target.genomicLocation.strand === 1 ? " →" : ""}`
-            }
-            variantColor={() => "grey"}
-          />
+        ? <Box sx={{ pt: 1 }}>
+          <GeneVis
+              data={combinedData}
+              chromosome={chromosome}
+              xMin={start}
+              xMax={end}
+              geneLabel={target => `${target.genomicLocation.strand === -1 ? "← " : ""}${
+                target.approvedSymbol ?? target.id}${
+                target.genomicLocation.strand === 1 ? " →" : ""}`
+              }
+              variantColor={() => "grey"}
+            />
+          </Box>
         : <h2>Loading...</h2>
       }
 		/>

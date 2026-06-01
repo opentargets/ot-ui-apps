@@ -8,7 +8,7 @@ function XAxisLabel() {
 
   return (
     <Box sx={{ ...infoStyle, alignItems: "end", pr: 0.75 }}>
-      <Typography component="div" variant="caption" sx={{ height: "12px", fontSize: "11px" }}>
+      <Typography component="div" variant="caption" sx={{ height: "10px", fontSize: "11px" }}>
         Chr {chromosome}
       </Typography>
     </Box>

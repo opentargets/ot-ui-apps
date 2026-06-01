@@ -4,6 +4,7 @@ import { useMeasure } from "@uidotdev/usehooks";
 import { useRef, useEffect, memo, useCallback, useState } from "react";
 import PanZoomPanel from "./PanZoomPanel";
 import NestedXInfo from "./NestedXInfo";
+import type { XAxisHandle } from "../GeneVis/XAxis";
 import { useGenTrackState } from "../../providers/GenTrackProvider";
 import GenTrackTooltip from "./GenTrackTooltip";
 import { useGenTrackTooltipDispatch } from "../../providers/GenTrackTooltipProvider";
@@ -145,6 +146,7 @@ function Tracks({
           yMin,
           yMax,
           height,
+          containerY: yTrackStarts[index],
         });
       }
       
@@ -265,12 +267,18 @@ interface GenTrackInnerProps {
   paddingBottom?: number;
   panZoomTopGap?: number;
   panZoomBottomGap?: number;
+  overlayZoombar?: boolean;
   initialZoom?: [number | null, number | null];
   zoomLines?: boolean;
+  overlayGraphics?: React.ReactNode;
+  innerOverlayGraphics?: React.ReactNode;
+  onInnerScalesReady?: (scalesRef: React.RefObject<ScalesRef>) => void;
   _isInner?: boolean;
+  _suppressTooltip?: boolean;
   _scalesRef?: React.RefObject<ScalesRef> | null;
   _innerTracksContainerRef?: React.RefObject<any>;
   _onScalesRefReady?: (ref: React.RefObject<ScalesRef>) => void;
+  _onXAxisHandleReady?: (handle: XAxisHandle) => void;
 }
 
 function GenTrackInner({
@@ -291,15 +299,25 @@ function GenTrackInner({
   paddingBottom = 16,
   panZoomTopGap = 16,
   panZoomBottomGap = 16,
+  overlayZoombar = false,
   initialZoom = [null, null],
-  zoomLines, 
+  zoomLines,
+  overlayGraphics,
+  innerOverlayGraphics,
+  onInnerScalesReady,
   _isInner = false,
+  _suppressTooltip = false,
   _scalesRef: parentScalesRef = null,
   _innerTracksContainerRef,
   _onScalesRefReady,
+  _onXAxisHandleReady,
 }: GenTrackInnerProps) {
 
   const ZOOM_LINE_WIDTH = 2;
+
+  if (overlayZoombar && (!tracks || tracks.length === 0)) {
+    throw new Error("GenTrack: overlayZoombar requires at least one top-level track");
+  }
 
   const { data, xMin, xMax } = useGenTrackState();
 
@@ -360,17 +378,30 @@ function GenTrackInner({
     if (scalesRef.current) {
       scalesRef.current.canvasWidth = canvasWidth;
       scalesRef.current.canvasHeight = canvasHeight;
+      scalesRef.current.tracksHeight = canvasHeight - paddingBottom;
     }
-  }, [canvasWidth, canvasHeight, scalesRef]);
+  }, [canvasWidth, canvasHeight, paddingBottom, scalesRef]);
 
   // refs
   const innerTracksContainerRef = useRef(null);
   const zoomLinesRef = useRef<HTMLElement | null>(null);
+  const windowUnderlayRef = useRef<HTMLDivElement | null>(null);
   // Holds a reference to the inner GenTrackInner's own scalesRef so we can push viewStart/viewEnd to it
   const innerScalesRefHolder = useRef<ScalesRef | null>(null);
+  // Holds a reference to the inner XAxis imperative handle for direct D3 updates
+  const innerXAxisHandleRef = useRef<XAxisHandle | null>(null);
   // Hide canvas until first tick fires to avoid flash of black/default-positioned sprites
   const canvasBoxRef = useRef<HTMLDivElement | null>(null);
   const onTracksReady = useCallback(() => {/* canvas revealed imperatively via canvasBoxRef */}, []);
+
+  const updateWindowUnderlay = useCallback((start: number, end: number, width: number) => {
+    const u = windowUnderlayRef.current;
+    if (!u || width <= 0) return;
+    const left = (start - xMin) / (xMax - xMin) * width;
+    const right = (end - xMin) / (xMax - xMin) * width;
+    u.style.left = `${left}px`;
+    u.style.width = `${right - left}px`;
+  }, [xMin, xMax]);
 
   // Helper to imperatively update zoom line DOM positions
   const updateZoomLines = useCallback((start: number, end: number, width: number) => {
@@ -384,13 +415,14 @@ function GenTrackInner({
     z.style.borderRightStyle = right <= 0 ? "none" : "solid";
   }, [xMin, xMax]);
 
-  // Resync zoom lines whenever canvasWidth changes
+  // Resync zoom lines and underlay whenever canvasWidth changes
   useEffect(() => {
     const inner = innerScalesRefHolder.current;
     if (inner && canvasWidth > 0) {
       updateZoomLines(inner.viewStart ?? xMin, inner.viewEnd ?? xMax, canvasWidth);
+      updateWindowUnderlay(inner.viewStart ?? xMin, inner.viewEnd ?? xMax, canvasWidth);
     }
-  }, [canvasWidth, xMin, xMax, updateZoomLines]);
+  }, [canvasWidth, xMin, xMax, updateZoomLines, updateWindowUnderlay]);
 
   // Callback to update view window (used by PanZoomPanel) — no React state, purely imperative
   const updateViewWindow = useCallback((start: number, end: number) => {
@@ -402,7 +434,9 @@ function GenTrackInner({
       inner.tickerUpdate?.();
     }
     updateZoomLines(start, end, canvasWidth);
-  }, [canvasWidth, updateZoomLines]);
+    updateWindowUnderlay(start, end, canvasWidth);
+    innerXAxisHandleRef.current?.update(start, end);
+  }, [canvasWidth, updateZoomLines, updateWindowUnderlay]);
 
 
   return (
@@ -427,6 +461,7 @@ function GenTrackInner({
                       isInner={_isInner}
                       XInfo={XInfo}
                       canvasWidth={canvasWidth}
+                      onHandleReady={_onXAxisHandleReady}
                     />
                   : <XInfo
                       data={data}
@@ -461,10 +496,26 @@ function GenTrackInner({
 
               {/* Pixi canvas — hidden until first tick positions all sprites */}
               <Box ref={canvasBoxRef} sx={{ width: canvasWidth, height: canvasHeight, position: "relative", visibility: "hidden" }}>
+                {overlayZoombar && innerTracks && innerTracks.length > 0 && (
+                  <Box
+                    ref={windowUnderlayRef}
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      height: "100%",
+                      left: `${((scalesRef.current?.viewStart ?? xMin) - xMin) / (xMax - xMin) * canvasWidth}px`,
+                      width: `${((scalesRef.current?.viewEnd ?? xMax) - (scalesRef.current?.viewStart ?? xMin)) / (xMax - xMin) * canvasWidth}px`,
+                      backgroundColor: "#e8f0fe",
+                      pointerEvents: "none",
+                      zIndex: 0,
+                    }}
+                  />
+                )}
+                <Box sx={{ position: "relative", zIndex: 1 }}>
                 <Stage
                   width={canvasWidth}
                   height={canvasHeight}
-                  options={{ background: 0xffffff, autoStart: false, antialias: true }}
+                  options={{ backgroundAlpha: 0, autoStart: false, antialias: true }}
                   onMount={app => { app.stage.eventMode = "static"; }}
                 >
                   <Container ref={_isInner ? _innerTracksContainerRef : null}>
@@ -481,8 +532,13 @@ function GenTrackInner({
                       canvasBoxRef={canvasBoxRef}
                     />
                   </Container>
+                  {overlayGraphics && (
+                    <Container>
+                      {overlayGraphics}
+                    </Container>
+                  )}
                 </Stage>
-                {Tooltip && (
+                {Tooltip && !_suppressTooltip && (
                   <TooltipLayer
                     width={canvasWidth}
                     height={canvasHeight}
@@ -492,6 +548,7 @@ function GenTrackInner({
                     <Tooltip />   
                   </TooltipLayer>
                 )}
+                </Box>
                 
                 {/* zoom lines overlay */}
                 {zoomLines && innerTracks && innerTracks.length > 0 && (
@@ -514,6 +571,33 @@ function GenTrackInner({
                     }}
                   />
                 )}
+
+                {/* zoombar overlay — sits over top tracks, blocks pointer events to tracks beneath */}
+                {overlayZoombar && innerTracks && innerTracks.length > 0 && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: canvasWidth,
+                      height: canvasHeight,
+                      zIndex: 10,
+                      pointerEvents: "none",
+                    }}
+                  >
+                    <Box sx={{ pointerEvents: "auto" }}>
+                      <PanZoomPanel
+                        viewStart={scalesRef.current?.viewStart ?? xMin}
+                        viewEnd={scalesRef.current?.viewEnd ?? xMax}
+                        onViewChange={updateViewWindow}
+                        canvasWidth={canvasWidth}
+                        xMin={xMin}
+                        xMax={xMax}
+                        height={canvasHeight}
+                      />
+                    </Box>
+                  </Box>
+                )}
               </Box>
             </Box>
           )}
@@ -521,20 +605,22 @@ function GenTrackInner({
           {/* inner tracks */}
           {innerTracks && innerTracks.length > 0 && (
             <>   
-              <Box sx={{
-                pt: px(panZoomTopGap),
-                pb: px(panZoomBottomGap),
-                pl: px(yInfoWidth + yInfoGap),
-              }}>
-                <PanZoomPanel
-                  viewStart={scalesRef.current?.viewStart ?? xMin}
-                  viewEnd={scalesRef.current?.viewEnd ?? xMax}
-                  onViewChange={updateViewWindow}
-                  canvasWidth={canvasWidth}
-                  xMin={xMin}
-                  xMax={xMax}
-                />
-              </Box>
+              {!overlayZoombar && (
+                <Box sx={{
+                  pt: px(panZoomTopGap),
+                  pb: px(panZoomBottomGap),
+                  pl: px(yInfoWidth + yInfoGap),
+                }}>
+                  <PanZoomPanel
+                    viewStart={scalesRef.current?.viewStart ?? xMin}
+                    viewEnd={scalesRef.current?.viewEnd ?? xMax}
+                    onViewChange={updateViewWindow}
+                    canvasWidth={canvasWidth}
+                    xMin={xMin}
+                    xMax={xMax}
+                  />
+                </Box>
+              )}
 
               <Box 
                 sx={{ 
@@ -552,11 +638,35 @@ function GenTrackInner({
                   panZoomBottomGap={panZoomBottomGap}
                   Tooltip={InnerTooltip}
                   tooltipProps={innerTooltipProps}
+                  overlayGraphics={innerOverlayGraphics}
                   _isInner={true}
                   _scalesRef={scalesRef}
                   _innerTracksContainerRef={innerTracksContainerRef}
-                  _onScalesRefReady={(ref) => { innerScalesRefHolder.current = ref.current; }}
+                  _onScalesRefReady={(ref) => { innerScalesRefHolder.current = ref.current; onInnerScalesReady?.(ref); }}
+                  _onXAxisHandleReady={(handle) => { innerXAxisHandleRef.current = handle; }}
+                  _suppressTooltip={!!InnerTooltip}
                 />
+                {/* Inner tooltip rendered here — outside the outer canvas stacking context — so it paints above the zoombar */}
+                {InnerTooltip && canvasWidth > 0 && (
+                  <Box sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: px(yInfoWidth + yInfoGap),
+                    width: px(canvasWidth),
+                    height: "100%",
+                    zIndex: 20,
+                    pointerEvents: "none",
+                  }}>
+                    <TooltipLayer
+                      width={canvasWidth}
+                      height={innerScalesRefHolder.current?.canvasHeight ?? canvasHeight}
+                      canvasType="inner"
+                      tooltipProps={innerTooltipProps}
+                    >
+                      <InnerTooltip />
+                    </TooltipLayer>
+                  </Box>
+                )}
               </Box>
             </>
           )}
