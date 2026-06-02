@@ -29,7 +29,7 @@ query DiseaseAssociationsQuery(
           id
           approvedSymbol
           approvedName
-          associationTimeSeries(efoId: $id, aggregationTypes: [overall], isDirect: $isDirect) {
+          associationTimeSeries(efoId: $id, aggregationTypes: [overall], isDirect: $isDirect, page: { index: 0, size: 500 }) {
             rows {
               novelty
               year

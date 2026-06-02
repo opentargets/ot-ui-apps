@@ -26,7 +26,7 @@ export function NoveltyDrawer() {
   const targetId = entity === "target" ? parentId : rowId;
   const diseaseId = entity === "target" ? rowId : parentId;
 
-  const { overallRows, dsRows, dsLabels, xDomain, loading, error, targetName, diseaseName } =
+  const { overallRows, dsRows, dsLabels, loading, error, targetName, diseaseName } =
     useNoveltyTimeSeries({ targetId, diseaseId, isDirect: !enableIndirect, skip: !open });
 
   const [selectedLabels, setSelectedLabels] = useState<Set<string>>(new Set());
@@ -99,7 +99,7 @@ export function NoveltyDrawer() {
             <Typography variant="subtitle2" sx={{ mb: 0.5 }}>Overall</Typography>
             <OverallChart
               rows={overallRows}
-              xDomain={xDomain}
+
               color={theme.palette.primary.main}
               height={140}
             />
@@ -127,7 +127,7 @@ export function NoveltyDrawer() {
             <SourcesChart
               rows={filteredDsRows}
               dsLabels={dsLabels}
-              xDomain={xDomain}
+
               height={300}
             />
           </Box>

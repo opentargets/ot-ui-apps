@@ -20,7 +20,7 @@ export function NoveltyInlinePanel({ rowId }: NoveltyInlinePanelProps) {
   const targetId = entity === "target" ? parentId : rowId;
   const diseaseId = entity === "target" ? rowId : parentId;
 
-  const { overallRows, dsRows, dsLabels, xDomain, loading, error, targetName, diseaseName } =
+  const { overallRows, dsRows, dsLabels, loading, error, targetName, diseaseName } =
     useNoveltyTimeSeries({ targetId, diseaseId, isDirect: !enableIndirect, skip: false });
 
   const [selectedLabels, setSelectedLabels] = useState<Set<string>>(new Set());
@@ -96,7 +96,7 @@ export function NoveltyInlinePanel({ rowId }: NoveltyInlinePanelProps) {
             <Box sx={{ mt: "auto" }}>
               <OverallChart
                 rows={overallRows}
-                xDomain={xDomain}
+  
                 color={theme.palette.primary.main}
                 height={CHART_HEIGHT}
                 plotWidth={500}
@@ -135,7 +135,7 @@ export function NoveltyInlinePanel({ rowId }: NoveltyInlinePanelProps) {
               <SourcesChart
                 rows={filteredDsRows}
                 dsLabels={dsLabels}
-                xDomain={xDomain}
+  
                 height={CHART_HEIGHT}
                 plotWidth={500}
                 showLegend={false}

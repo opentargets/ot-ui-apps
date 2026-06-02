@@ -10,7 +10,7 @@ export const NOVELTY_TIME_SERIES_QUERY = gql`
     }
     disease(efoId: $efoId) {
       name
-      associationTimeSeries(ensemblId: $ensemblId, isDirect: $isDirect) {
+      associationTimeSeries(ensemblId: $ensemblId, isDirect: $isDirect, page: { index: 0, size: 2000 }) {
         rows {
           novelty
           year
@@ -58,9 +58,9 @@ export function injectGradient(plot: SVGSVGElement, id: string, color: string) {
   plot.prepend(defs);
 }
 
-function sharedAxis(xDomain: [number, number]) {
+function sharedAxis() {
   return {
-    x: { label: "Year", domain: xDomain, tickFormat: (d: number) => String(d), line: true },
+    x: { label: "Year", tickFormat: (d: number) => String(d), line: true },
     y: { label: "Novelty", domain: [0, 1] as [number, number], tickFormat: ".1f" },
     style: { width: "100%", background: "none" } as React.CSSProperties,
     marginLeft: CHART_MARGIN.left,
@@ -72,14 +72,12 @@ function sharedAxis(xDomain: [number, number]) {
 
 export function OverallChart({
   rows,
-  xDomain,
   color,
   height = 180,
   plotWidth = 500,
   showArea = true,
 }: {
   rows: LabeledRow[];
-  xDomain: [number, number];
   color: string;
   height?: number;
   plotWidth?: number;
@@ -94,7 +92,7 @@ export function OverallChart({
     const plot = Plot.plot({
       width: plotWidth,
       height,
-      ...sharedAxis(xDomain),
+      ...sharedAxis(),
       marks: [
         Plot.ruleY([0], { stroke: "#e0e0e0" }),
         ...(showArea
@@ -108,7 +106,7 @@ export function OverallChart({
     if (showArea) injectGradient(plot, gradientId, color);
     ref.current.appendChild(plot);
     return () => plot.remove();
-  }, [rows, xDomain, color, height, plotWidth, showArea]);
+  }, [rows, color, height, plotWidth, showArea]);
 
   return <div ref={ref} style={{ width: "100%" }} />;
 }
@@ -116,14 +114,12 @@ export function OverallChart({
 export function SourcesChart({
   rows,
   dsLabels,
-  xDomain,
   height = 200,
   plotWidth = 500,
   showLegend = true,
 }: {
   rows: LabeledRow[];
   dsLabels: string[];
-  xDomain: [number, number];
   height?: number;
   plotWidth?: number;
   showLegend?: boolean;
@@ -136,7 +132,7 @@ export function SourcesChart({
     const plot = Plot.plot({
       width: plotWidth,
       height,
-      ...sharedAxis(xDomain),
+      ...sharedAxis(),
       color: {
         legend: showLegend,
         domain: dsLabels,
@@ -152,7 +148,7 @@ export function SourcesChart({
     (plot as HTMLElement).style.margin = "0";
     ref.current.appendChild(plot);
     return () => plot.remove();
-  }, [rows, dsLabels, xDomain, height, plotWidth, showLegend]);
+  }, [rows, dsLabels, height, plotWidth, showLegend]);
 
   return <div ref={ref} style={{ width: "100%" }} />;
 }
@@ -189,18 +185,11 @@ export function useNoveltyTimeSeries({
   const dsRows = useMemo(() => rows.filter(r => r.aggregationType === "datasourceId"), [rows]);
   const dsLabels = useMemo(() => [...new Set(dsRows.map(r => r.label))].sort(), [dsRows]);
 
-  const xDomain = useMemo((): [number, number] => {
-    if (!rows.length) return [2014, new Date().getFullYear()];
-    const years = rows.map(r => r.year);
-    return [Math.min(...years), Math.max(...years)];
-  }, [rows]);
-
   return {
     rows,
     overallRows,
     dsRows,
     dsLabels,
-    xDomain,
     loading,
     error,
     targetName: data?.target?.approvedSymbol as string | undefined,

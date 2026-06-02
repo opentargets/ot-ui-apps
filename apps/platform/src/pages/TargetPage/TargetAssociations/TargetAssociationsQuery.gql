@@ -30,7 +30,7 @@ query TargetAssociationsQuery(
         disease {
           id
           name
-          associationTimeSeries(ensemblId: $id, aggregationTypes: [overall], isDirect: $isDirect) {
+          associationTimeSeries(ensemblId: $id, aggregationTypes: [overall], isDirect: $isDirect, page: { index: 0, size: 500 }) {
             rows {
               novelty
               year
