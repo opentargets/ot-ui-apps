@@ -56,7 +56,6 @@ function groupTargetsByBiotype(targets) {
 }
 
 function GeneVisInner({
-  geneLabel,
   fixedTracks,
   zoomableTracks,
 }) {
@@ -70,10 +69,25 @@ function GeneVisInner({
   );
 
   // Per-biotype track configuration
-  const getBiotypeConfig = (hasLabels: boolean) => {
+  const getBiotypeConfig = (hasLabels: boolean, biotype?: string) => {
+    // Different row heights for different biotypes when zoomed
+    if (hasLabels) {
+      if (biotype === 'protein_coding') {
+        return {
+          pixelGapCenterToCenter: 95, // Adjusted back from 90 - less tight
+          detailRowHeight: 26, // Adjusted back from 24 - less tight
+        };
+      } else {
+        return {
+          pixelGapCenterToCenter: 80, // Reduced from 100 for tighter spacing
+          detailRowHeight: 20, // Further reduced from 24 for other biotypes
+        };
+      }
+    }
+    // Unlabeled rows (minimap)
     return {
-      pixelGapCenterToCenter: hasLabels ? 100 : 0,
-      detailRowHeight: hasLabels ? 32 : 16, // 32 with labels, 16 without
+      pixelGapCenterToCenter: 0,
+      detailRowHeight: 16,
     };
   };
 
@@ -124,7 +138,7 @@ function GeneVisInner({
       const minimapLabeledIds = new Set(
         targets.filter(g => l2gGeneIds.has(g.target.id)).map(g => g.target.id)
       );
-      const minimapConfig = getBiotypeConfig(minimapLabeledIds.size > 0);
+      const minimapConfig = getBiotypeConfig(minimapLabeledIds.size > 0, biotype);
       const minimapPriorityIds = Array.from(minimapLabeledIds) as string[];
 
       // Compute packing for minimap
@@ -184,7 +198,7 @@ function GeneVisInner({
       const zoomableLabeledIds = biotype === "protein_coding"
         ? new Set<string>(targets.map((g: { target: { id: string } }) => g.target.id))
         : new Set<string>();
-      const zoomableConfig = getBiotypeConfig(true); // Always has labels
+      const zoomableConfig = getBiotypeConfig(true, biotype); // Always has labels
       const zoomablePriorityIds = Array.from(
         targets.filter((g: { target: { id: string } }) => l2gGeneIds.has(g.target.id)).map((g: { target: { id: string } }) => g.target.id)
       ) as string[];
@@ -223,11 +237,10 @@ function GeneVisInner({
       }
       const zoomableTrackHeight = zoomableCurrentYOffset;
       const zoomableFinalTrackHeight = Math.max(zoomableTrackHeight, 20);
-      const zoomablePadding = biotype === "protein_coding" ? 16 : Math.max(8, (20 - zoomableTrackHeight) / 2);
+      const zoomablePadding = biotype === "protein_coding" ? 10 : Math.max(6, (20 - zoomableTrackHeight) / 2); // Adjusted back from 8 to 10 for protein coding
 
       // Add zoomable detail track
       innerTrackList.push(getGenesTracks({
-        geneLabel,
         geneToRow: zoomableGeneToRow,
         color,
         biotype,
