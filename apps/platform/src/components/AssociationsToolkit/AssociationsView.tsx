@@ -14,6 +14,7 @@ import {
   TableAssociations,
 } from "./index";
 import type { ENTITY } from "./types";
+import AnalysisMenu from "./components/AnalysisMenu";
 
 interface AssociationsViewProps {
   id: string;
@@ -49,6 +50,7 @@ const AssociationsView = ({ id, entity, query }: AssociationsViewProps) => (
                 <ColumnOptionsMenu />
                 <DataUploader />
                 <ExportMenu />
+                <AnalysisMenu />
               </Box>
             </Box>
             <Box sx={{ display: "flex", justifyContent: "end" }}>
