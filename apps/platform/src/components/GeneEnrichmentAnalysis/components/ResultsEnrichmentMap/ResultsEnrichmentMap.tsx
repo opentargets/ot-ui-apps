@@ -37,7 +37,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   if (!controlsContext) {
     throw new Error("ResultsEnrichmentMapContent must be used within EnrichmentMapControlsProvider");
   }
-  const { state: controls } = controlsContext;
+  const { state: controls, dispatch } = controlsContext;
 
   // Detect if this is GO data
   const isGoData = useMemo(() => {
@@ -58,7 +58,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   } = useEnrichmentMapState();
 
   // Element computation
-  const { computedElements, computedStats, nesRange, isLoading } = useElementComputation(
+  const { computedElements, computedStats, nesDataRange, nesRange, isLoading } = useElementComputation(
     results as Array<GseaResult>,
     genes,
     controls.similarityThreshold,
@@ -67,6 +67,14 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
     controls.pValueThreshold,
     controls.nesRange
   );
+
+  // Initialize NES range from actual results data
+  useEffect(() => {
+    dispatch({
+      type: "INITIALIZE_NES_RANGE",
+      payload: { min: nesDataRange.min, max: nesDataRange.max },
+    });
+  }, [nesDataRange, dispatch]);
 
   // Cytoscape instance
   const { cyRef } = useCytoscapeInstance(
