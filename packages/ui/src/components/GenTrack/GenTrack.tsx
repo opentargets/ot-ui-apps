@@ -431,6 +431,9 @@ function GenTrackInner({
     if (inner) {
       inner.viewStart = start;
       inner.viewEnd = end;
+      // Recompute xScale/xOffset synchronously so children read fresh values in useTick
+      inner.xScale = canvasWidth / (end - start);
+      inner.xOffset = -start * inner.xScale;
       inner.tickerUpdate?.();
     }
     updateZoomLines(start, end, canvasWidth);
