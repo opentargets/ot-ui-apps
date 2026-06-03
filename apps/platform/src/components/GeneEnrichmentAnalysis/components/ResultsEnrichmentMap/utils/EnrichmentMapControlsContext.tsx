@@ -1,4 +1,4 @@
-import { createContext, useReducer, ReactNode } from "react";
+import { createContext, useReducer, ReactNode, useMemo } from "react";
 
 /**
  * State for enrichment map controls
@@ -104,8 +104,12 @@ export function EnrichmentMapControlsProvider({ children }: { children: ReactNod
     createInitialState()
   );
 
+  // Memoize context value so it only changes when state actually changes
+  // This prevents unnecessary re-renders of subscribed components when parent re-renders
+  const value = useMemo(() => ({ state, dispatch }), [state]);
+
   return (
-    <EnrichmentMapControlsContext.Provider value={{ state, dispatch }}>
+    <EnrichmentMapControlsContext.Provider value={value}>
       {children}
     </EnrichmentMapControlsContext.Provider>
   );

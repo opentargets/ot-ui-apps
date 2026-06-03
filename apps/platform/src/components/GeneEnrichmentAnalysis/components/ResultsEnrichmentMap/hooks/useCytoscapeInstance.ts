@@ -4,6 +4,7 @@ import {
   cleanupCytoscapeInstance,
   getLayoutConfig,
   initializeCytoscapeInstance,
+  filterNodesWithoutEdges,
 } from "../utils";
 
 /**
@@ -52,12 +53,15 @@ export function useCytoscapeInstance(
         cleanupCytoscapeInstance(cyRef.current, tooltipsRef);
       }
 
-      const nodeCount = computedElements.filter((el) => !el.data?.source).length;
+      // Filter nodes without edges right before rendering
+      const { elements: elementsToRender } = filterNodesWithoutEdges(computedElements);
+
+      const nodeCount = elementsToRender.filter((el) => !el.data?.source).length;
       const layoutConfig = getLayoutConfig("pathways", nodeCount);
 
       cyRef.current = initializeCytoscapeInstance(
         containerRef.current,
-        computedElements,
+        elementsToRender,
         layoutConfig,
         "pathways",
         tooltipsRef,

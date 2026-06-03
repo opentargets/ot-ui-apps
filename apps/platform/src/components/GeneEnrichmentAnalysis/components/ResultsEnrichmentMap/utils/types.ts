@@ -13,4 +13,5 @@ export interface ComputedStats {
   displayedPathways?: number;
   edges: number;
   significantCount?: number;
+  droppedNodes?: number;
 }

@@ -1,6 +1,6 @@
 import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
-import { getGeneList, jaccardSimilarity, overlapSimilarity } from "./index";
+import { getGeneList, overlapSimilarity } from "./index";
 import type { ComputedStats } from "./types";
 import { yieldToBrowser } from "./browser";
 
@@ -25,21 +25,14 @@ export async function computePathwayViewElements(
     );
   }
 
-  const tempPathwayIds = Array.from(tempPathwayGenes.keys());
 
-  // Detect if this is GO data by checking if any pathway ID follows GO format (GO:0000000)
-  const isGoData = tempPathwayIds.some((id) => /^GO:\d+$/.test(id));
 
-  // Apply stricter FDR threshold for GO data to reduce computational load
-  const fdrThreshold = isGoData ? 0.01 : 0.25;
+
+  const fdrThreshold =  0.1
   const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold);
   const displayResults =
     significantResults.length > 0 ? significantResults : results.slice(0, 50);
 
-  console.log(
-    `[ENRICHMENT_MAP] Detected ${isGoData ? "GO (Gene Ontology)" : "Pathway"} data - ` +
-    `${results.length} total terms, ${displayResults.length} significant (FDR < ${fdrThreshold})`
-  );
 
   const geneToPathways = new Map<string, string[]>();
 
@@ -85,7 +78,6 @@ export async function computePathwayViewElements(
       pathwayGenes,
       pathwayNameMap,
       pathwayLinkMap,
-      isGoData,
       nodes,
       similarityThreshold,
       results
@@ -98,7 +90,6 @@ export async function computePathwayViewElements(
     pathwayGenes,
     pathwayNameMap,
     pathwayLinkMap,
-    isGoData,
     nodes,
     similarityThreshold,
     results
@@ -114,7 +105,6 @@ async function computePathwayEdgesAsync(
   pathwayGenes: Map<string, string[]>,
   pathwayNameMap: Map<string, string>,
   pathwayLinkMap: Map<string, string | undefined>,
-  isGoData: boolean,
   nodes: ElementDefinition[],
   similarityThreshold: number,
   results: Array<GseaResult>
@@ -142,9 +132,7 @@ async function computePathwayEdgesAsync(
 
       const similarity = overlapSimilarity(genesA, genesB)
 
-      const minGoThreshold = 0.01;
-      const minPathwayThreshold = 0.05;
-      const minThreshold = isGoData ? minGoThreshold : minPathwayThreshold;
+      const minThreshold = 0.01;
       const threshold = Math.max(minThreshold, similarityThreshold / 10);
 
       if (similarity >= threshold) {
@@ -166,7 +154,7 @@ async function computePathwayEdgesAsync(
               targetLink: pathwayLinkMap.get(idB),
               sharedGenes,
               sharedCount: sharedGenes.length,
-              jaccardCoefficient: similarity,
+              similarityIndex: similarity,
               edgeWidth: Math.max(1.5, similarity * 5),
               edgeOpacity: Math.min(1, Math.max(0.5, similarity * 1.5)),
             },
@@ -177,8 +165,7 @@ async function computePathwayEdgesAsync(
     }
   }
 
-  console.log(`[ENRICHMENT_MAP] Completed async edge computation: ${edgeCount} edges from ${pathwayIds.length} terms (${comparisonCount} comparisons)`);
-
+console.log(nodes.length, results.length, 'computed nodes and results async')
   return {
     elements: [...nodes, ...edges],
     stats: {
@@ -199,7 +186,6 @@ function computePathwayEdgesSync(
   pathwayGenes: Map<string, string[]>,
   pathwayNameMap: Map<string, string>,
   pathwayLinkMap: Map<string, string | undefined>,
-  isGoData: boolean,
   nodes: ElementDefinition[],
   similarityThreshold: number,
   results: Array<GseaResult>
@@ -217,13 +203,9 @@ function computePathwayEdgesSync(
 
       if (genesA.length === 0 || genesB.length === 0) continue;
 
-      const similarity = isGoData
-        ? overlapSimilarity(genesA, genesB)
-        : jaccardSimilarity(genesA, genesB);
+      const similarity = overlapSimilarity(genesA, genesB)
 
-      const minGoThreshold = 0.01;
-      const minPathwayThreshold = 0.05;
-      const minThreshold = isGoData ? minGoThreshold : minPathwayThreshold;
+      const minThreshold = 0.01;
       const threshold = Math.max(minThreshold, similarityThreshold / 10);
 
       if (similarity >= threshold) {
@@ -245,7 +227,7 @@ function computePathwayEdgesSync(
               targetLink: pathwayLinkMap.get(idB),
               sharedGenes,
               sharedCount: sharedGenes.length,
-              jaccardCoefficient: similarity,
+              similarityIndex: similarity,
               edgeWidth: Math.max(1.5, similarity * 5),
               edgeOpacity: Math.min(1, Math.max(0.5, similarity * 1.5)),
             },
@@ -255,7 +237,7 @@ function computePathwayEdgesSync(
       }
     }
   }
-
+  console.log(nodes.length, results.length, 'computed nodes and results synchronously')
   return {
     elements: [...nodes, ...edges],
     stats: {

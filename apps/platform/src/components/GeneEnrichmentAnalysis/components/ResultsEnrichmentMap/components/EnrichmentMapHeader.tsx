@@ -16,7 +16,7 @@ export function EnrichmentMapHeader({ stats, cyRef }: EnrichmentMapHeaderProps) 
           Pathway Network (Hierarchy not visualized)
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {`${stats.displayedPathways || stats.totalPathways} of ${stats.totalPathways} gene-sets organized into clusters | ${stats.totalGenes} unique genes | ${stats.significantCount} significant (FDR < 0.05) | ${stats.edges} functional theme connections`}
+          {`${stats.displayedPathways || stats.totalPathways} of ${stats.totalPathways} gene-sets organized into clusters | ${stats.totalGenes} unique genes  | ${stats.edges} functional theme connections`}
         </Typography>
         <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
           Gene-sets are organized in a network where edges represent gene overlap. Related gene-sets automatically cluster together, enabling quick identification of enriched functional themes.

@@ -42,7 +42,7 @@ interface EdgeData {
   targetLink?: string;
   sharedCount?: number;
   sharedGenes?: string[];
-  jaccardCoefficient?: number;
+  similarityIndex?: number;
 }
 
 interface EnrichmentMapDetailsModalProps {
@@ -298,10 +298,10 @@ function EdgeDetailsContent({
 
       <Box>
         <Typography variant="caption" color="text.secondary">
-          Jaccard Similarity
+          Similarity score
         </Typography>
         <Typography variant="body2" fontWeight={500}>
-          {(data.jaccardCoefficient as number)?.toFixed(3)}
+          {(data.similarityIndex as number)?.toFixed(3)}
         </Typography>
       </Box>
     </>

@@ -68,34 +68,55 @@ export function overlapSimilarity(setA: string[], setB: string[]): number {
  */
 export function filterNodesWithoutEdges(
   elements: Array<ElementDefinition>
-): Array<ElementDefinition> {
-  // Identify all nodes that are referenced by edges
-  const nodesWithEdges = new Set<string>();
+): {
+  elements: Array<ElementDefinition>;
+  droppedNodesCount: number;
+} {
+  // Build a set of all node IDs that exist in the input
+  const existingNodeIds = new Set<string>();
+  let totalNodes = 0;
+  for (const el of elements) {
+    const data = el.data as Record<string, unknown> | undefined;
+    if (!data?.source && !data?.target) {
+      // This is a node
+      existingNodeIds.add(data?.id as string);
+      totalNodes++;
+    }
+  }
+
+  // Identify edges and the nodes they connect
+  const validEdges = new Set<string>();
+  const nodesWithValidEdges = new Set<string>();
 
   for (const el of elements) {
     const data = el.data as Record<string, unknown> | undefined;
     if (data?.source && data?.target) {
-      // This is an edge
-      nodesWithEdges.add(data.source as string);
-      nodesWithEdges.add(data.target as string);
+      const source = data.source as string;
+      const target = data.target as string;
+      // Only keep edges where BOTH nodes exist
+      if (existingNodeIds.has(source) && existingNodeIds.has(target)) {
+        validEdges.add(el.data?.id as string);
+        nodesWithValidEdges.add(source);
+        nodesWithValidEdges.add(target);
+      }
     }
   }
 
-  // Filter: keep all edges and only nodes that have connections
-  const filtered = elements.filter((el) => {
+  // Filter: keep nodes that have valid edges and edges that are valid
+  const filteredElements = elements.filter((el) => {
     const data = el.data as Record<string, unknown> | undefined;
-    // Keep edges, and nodes that have edges
     if (data?.source && data?.target) {
-      // This is an edge, keep it
-      return true;
+      // This is an edge, keep only if both nodes exist
+      return validEdges.has(el.data?.id as string);
     }
-    // This is a node, keep only if it has edges
-    return nodesWithEdges.has(data?.id as string);
+    // This is a node, keep only if it has valid edges
+    return nodesWithValidEdges.has(data?.id as string);
   });
 
-  console.log(
-    `[FILTER_NODES] Removed ${elements.length - filtered.length} isolated node(s), kept ${filtered.length} elements`
-  );
+  const droppedNodesCount = totalNodes - nodesWithValidEdges.size;
 
-  return filtered;
+  return {
+    elements: filteredElements,
+    droppedNodesCount,
+  };
 }
