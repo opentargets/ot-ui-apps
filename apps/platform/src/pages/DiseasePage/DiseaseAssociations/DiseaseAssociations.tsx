@@ -16,6 +16,7 @@ function DiseaseAssociations(pros: DiseaseAssociationsProps): ReactElement {
     <GeneEnrichmentProvider>
       <GeneEnrichmentAnalysisModal />
       <AssociationsView
+        key={pros.efoId}
         id={pros.efoId}
         entity={ENTITY.DISEASE}
         query={DISEASE_ASSOCIATIONS_QUERY}
