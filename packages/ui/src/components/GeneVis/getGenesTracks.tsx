@@ -6,6 +6,7 @@ import { useGenTrackState, useGenTrackTooltipDispatch } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
 import { grey } from "@mui/material/colors";
+import { GENE_COLORS } from "./helpers";
 
 const DEFAULT_ROW_HEIGHT = 28;
 const DEFAULT_EXON_HEIGHT = 10;
@@ -22,7 +23,7 @@ export function getGenesTracks({
     trackHeight: explicitTrackHeight,
     paddingTop: explicitPaddingTop,
     labeledIds = new Set(),
-    dimColor,
+    nonL2GColor,
     highlightIds = new Set(),
   }) {
   const genTrackState = useGenTrackState();
@@ -63,7 +64,7 @@ export function getGenesTracks({
       if (rowHasLabels) {
         // Label takes space at top, center gene in remaining space below
         // But shift slightly up to visually balance with label text above
-        return rowStart + labelHeight + (currentRowHeight - labelHeight) / 2 - 1;
+        return rowStart + labelHeight + (currentRowHeight - labelHeight) / 2;
       }
     }
     // For non-labeled rows, center in the row but shift up slightly for visual balance
@@ -98,8 +99,8 @@ export function getGenesTracks({
             // Only show label if this specific gene is in the labeledIds set
             const showGeneLabel = labeledIds.has(target.id);
 
-            const isDimmed = dimColor && highlightIds.size > 0 && !highlightIds.has(target.id);
-            const geneColor = isDimmed ? dimColor : color;
+            const isL2G = highlightIds.has(target.id);
+            const geneColor = (nonL2GColor && !isL2G) ? nonL2GColor : color;
 
             // Compute exon span for intron line and label positioning
             const exons = target.canonicalExons ?? [];
@@ -121,8 +122,6 @@ export function getGenesTracks({
             const CHAR_WIDTH_FACTOR = 0.6;
             const labelWidthPixels = showGeneLabel ? labelText.length * LABEL_FONT_SIZE * CHAR_WIDTH_FACTOR : 0;
             const labelCenter = (intronStart + intronEnd) / 2;
-
-            const isL2G = highlightIds.has(target.id);
 
             // Box Y position: for labeled genes, start at top; for unlabeled, center with gene
             const rowHasLabels = showGeneLabel;
@@ -195,6 +194,11 @@ export function getGenesTracks({
                       fontWeight: '100',
                       wordWrap: false,
                     })}
+                    {...(isL2G ? {
+                      backgroundColor: GENE_COLORS.protein_coding.hoverBox,
+                      backgroundPaddingX: 3,
+                      backgroundPaddingY: 0,
+                    } : {})}
                   />
                 )}
               </Fragment>

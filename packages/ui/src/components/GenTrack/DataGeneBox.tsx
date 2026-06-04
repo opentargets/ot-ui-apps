@@ -55,8 +55,7 @@ export function DataGeneBox({
   const texture = getOrCreateRectTexture(app);
 
   // Get pale hover color from centralized palette
-  const hoverTint = getHoverBoxColor(biotype);
-  const l2gTint = 0xC8E6C9; // Pale green for L2G genes (always visible)
+  const hoverTint = getHoverBoxColor(biotype, isL2G);
 
   const handlePointerOver = useCallback((e: any) => {
     const sprite = spriteRef.current;
@@ -71,17 +70,12 @@ export function DataGeneBox({
   const handlePointerOut = useCallback((e: any) => {
     const sprite = spriteRef.current;
     if (sprite) {
-      if (isL2G) {
-        sprite.tint = l2gTint; // Back to L2G pale green
-        sprite.alpha = 1.0;
-      } else {
-        sprite.tint = hoverTint; // Keep hover color
-        sprite.alpha = 0; // But make invisible
-      }
+      sprite.tint = hoverTint;
+      sprite.alpha = 0; // Hide box on mouse out
       app.render(); // Trigger Pixi re-render
     }
     pointerout?.(e);
-  }, [pointerout, app, isL2G, hoverTint]);
+  }, [pointerout, app, hoverTint]);
 
   // Imperative update on every tick - recalculates bounds based on current zoom
   useTick(() => {
@@ -133,8 +127,8 @@ export function DataGeneBox({
       y={initialY}
       width={100}
       height={height}
-      tint={l2gTint}  
-      alpha={isL2G ? 1.0 : 0}
+      tint={hoverTint}
+      alpha={0}
       eventMode="static"
       pointerover={handlePointerOver}
       pointerout={handlePointerOut}

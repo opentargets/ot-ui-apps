@@ -19,7 +19,7 @@ const DEFAULT_ROW_HEIGHT = 10;
 const BAR_HEIGHT = 8;
 const LABEL_HEIGHT = 10;
 
-export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds = new Set(), biotype, id, YInfo, background = undefined, rowHeight = DEFAULT_ROW_HEIGHT, rowHeightMap, rowYOffsets, trackHeight: explicitTrackHeight, paddingTop: explicitPaddingTop, labeledIds = new Set() }) {
+export function getGeneMinimapTracks({ geneToRow, color, nonL2GColor, highlightIds = new Set(), biotype, id, YInfo, background = undefined, rowHeight = DEFAULT_ROW_HEIGHT, rowHeightMap, rowYOffsets, trackHeight: explicitTrackHeight, paddingTop: explicitPaddingTop, labeledIds = new Set() }) {
   const genTrackState = useGenTrackState();
   const { data } = genTrackState ?? { data: null };
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value: any }) => void;
@@ -79,8 +79,8 @@ export function getGeneMinimapTracks({ geneToRow, color, dimColor, highlightIds 
             const rowIndex = geneToRow[target.id];
             if (rowIndex === undefined) return null;
             const hasLabel = labeledIds.has(target.id);
-            const isDimmed = dimColor && highlightIds.size > 0 && !highlightIds.has(target.id);
-            const geneColor = isDimmed ? dimColor : color;
+            const isL2G = highlightIds.has(target.id);
+            const geneColor = (nonL2GColor && !isL2G) ? nonL2GColor : color;
             return (
               <Fragment key={target.id}>
                 {hasLabel && (() => {

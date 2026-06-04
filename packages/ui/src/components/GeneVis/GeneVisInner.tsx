@@ -118,7 +118,7 @@ function GeneVisInner({
 
       const biotypeKey = getBiotypeKey(biotype);
       const color = GENE_COLORS[biotypeKey].main;
-      const dimColor = GENE_COLORS[biotypeKey].dim;
+      const nonL2GColor = biotypeKey === 'protein_coding' ? GENE_COLORS.protein_coding.nonL2G : undefined;
 
       // YInfo component for this biotype
       const TrackYInfo = () => (
@@ -184,7 +184,7 @@ function GeneVisInner({
         trackHeight: minimapFinalTrackHeight,
         paddingTop: minimapPadding,
         labeledIds: minimapLabeledIds,
-        dimColor,
+        nonL2GColor,
         highlightIds: new Set(l2gGeneIds),
       }));
 
@@ -246,7 +246,7 @@ function GeneVisInner({
         trackHeight: zoomableFinalTrackHeight,
         paddingTop: zoomablePadding,
         labeledIds: zoomableLabeledIds,
-        dimColor,
+        nonL2GColor,
         highlightIds: new Set(l2gGeneIds),
       }));
     }

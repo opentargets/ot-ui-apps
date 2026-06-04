@@ -100,7 +100,7 @@ export function getVariantTrack({ data }: { data: any }) {
   return {
     id: `variants`,
     height: VARIANT_TRACK_HEIGHT,
-    paddingTop: 14,
+    paddingTop: 20,
     yMin: 0,
     yMax: dynamicYMax,
     YInfo: () => <VariantsYInfo yMax={dynamicYMax} />,

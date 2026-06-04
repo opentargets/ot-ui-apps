@@ -12,28 +12,25 @@ export const infoStyle = {
 // Centralized gene color definitions
 export const GENE_COLORS = {
   protein_coding: {
-    main: "#2e5943",          // Dark green
-    dim: "#709a88",           // Lighter green for dimmed
-    hoverBox: 0xC8E6C9,       // Pale green for hover box
+    main: "#2e5943",          // Dark green (L2G genes)
+    nonL2G: "#bc3a19",        // Burnt orange (non-L2G protein coding)
+    hoverBox: 0xC8E6C9,       // Pale green for L2G hover box
+    nonL2GHoverBox: 0xF5C6B8, // Pale burnt orange for non-L2G hover box
   },
   processed_transcript: {
     main: "#ff7f0e",          // Orange
-    dim: "#e49a50",           // Lighter orange for dimmed
     hoverBox: 0xFFE0B2,       // Pale orange for hover box
   },
   pseudogene: {
     main: "#1f77b4",          // Blue
-    dim: "#6d9ccb",           // Lighter blue for dimmed
     hoverBox: 0xBBDEFB,       // Pale blue for hover box
   },
   rna: {
     main: "#9467bd",          // Purple
-    dim: "#946ece",           // Lighter purple for dimmed
     hoverBox: 0xE1BEE7,       // Pale purple for hover box
   },
   other: {
     main: "#d62728",          // Red
-    dim: "#c84a4a",           // Lighter red for dimmed
     hoverBox: 0xFFCDD2,       // Pale red for hover box
   },
 } as const;
@@ -48,12 +45,12 @@ export const RNA_SUBTYPE_COLORS: Record<string, number> = {
   tRNA: 0xE1BEE7,
 };
 
-// Get hover box color by biotype
-export function getHoverBoxColor(biotype: string): number {
+// Get hover box color by biotype and L2G status
+export function getHoverBoxColor(biotype: string, isL2G: boolean = false): number {
   const biotypeLower = biotype.toLowerCase();
   
   if (biotypeLower === 'protein_coding') {
-    return GENE_COLORS.protein_coding.hoverBox;
+    return isL2G ? GENE_COLORS.protein_coding.hoverBox : GENE_COLORS.protein_coding.nonL2GHoverBox;
   }
   if (biotypeLower === 'pseudogene') {
     return GENE_COLORS.pseudogene.hoverBox;
