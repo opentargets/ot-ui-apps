@@ -41,7 +41,7 @@ const chromosomeInfo = [
   { chromosome: "Y", length: 57227415 },
 ];
 
-const REGION_WIDTH = 1_000_000;
+const REGION_WIDTH = 2_000_000;
 
 function Body({ id, entity }: BodyProps) {
   const [combinedData, setCombinedData] = useState<any[] | null>(null);

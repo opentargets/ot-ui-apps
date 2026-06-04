@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Container } from '@pixi/react';
 import { TextStyle } from "pixi.js";
-import { DataSprite, DataText, DataBackground } from "../GenTrack";
+import { DataSprite, DataText, DataBackground, DataGeneBox } from "../GenTrack";
 import { useGenTrackState, useGenTrackTooltipDispatch } from "ui";
 import type { RefObject } from "react";
 import type { ScalesRef } from "../GenTrack/ScalesContext";
@@ -23,7 +23,7 @@ export function getGenesTracks({
     paddingTop: explicitPaddingTop,
     labeledIds = new Set(),
     dimColor,
-    highlightIds = new Set()
+    highlightIds = new Set(),
   }) {
   const genTrackState = useGenTrackState();
   const { data } = genTrackState ?? { data: null };
@@ -108,33 +108,54 @@ export function getGenesTracks({
             const intronStart = exonStarts.length > 0 ? Math.min(...exonStarts) : target.genomicLocation.start;
             const intronEnd = exonEnds.length > 0 ? Math.max(...exonEnds) : target.genomicLocation.end;
 
+            // Compute label text and width for gene box
+            const score = data?.l2GPredictions?.rows.find((r: any) => r.target.id === target.id)?.score;
+            const leftArrow = target.genomicLocation.strand === -1 ? "← " : "";
+            const rightArrow = target.genomicLocation.strand === 1 ? " →" : "";
+            const labelText = score !== undefined
+              ? `${leftArrow}${target.approvedSymbol || target.id}: ${score.toFixed(3)}${rightArrow}`
+              : `${leftArrow}${target.approvedSymbol || target.id}${rightArrow}`;
+
+            // Estimate label width in pixels (constant, doesn't change with zoom)
+            const LABEL_FONT_SIZE = 10.5;
+            const CHAR_WIDTH_FACTOR = 0.6;
+            const labelWidthPixels = showGeneLabel ? labelText.length * LABEL_FONT_SIZE * CHAR_WIDTH_FACTOR : 0;
+            const labelCenter = (intronStart + intronEnd) / 2;
+
+            const isL2G = highlightIds.has(target.id);
+
+            // Box Y position: for labeled genes, start at top; for unlabeled, center with gene
+            const rowHasLabels = showGeneLabel;
+            const boxY = rowHasLabels
+              ? yTop(rowIndex)
+              : ycenter(rowIndex) - exonHeight / 2 - 2; // Center with gene, small padding
+            const boxHeight = rowHasLabels
+              ? labelHeight + exonHeight + 4  // Include label + gene + padding
+              : exonHeight + 4; // Just gene + padding
+
             return (
               <Fragment key={target.id}>
-                {showGeneLabel && (() => {
-                  const score = data?.l2GPredictions?.rows.find((r: any) => r.target.id === target.id)?.score;
-                  const leftArrow = target.genomicLocation.strand === -1 ? "← " : "";
-                  const rightArrow = target.genomicLocation.strand === 1 ? " →" : "";
-                  const labelText = score !== undefined
-                    ? `${leftArrow}${target.approvedSymbol || target.id}: ${score.toFixed(3)}${rightArrow}`
-                    : `${leftArrow}${target.approvedSymbol || target.id}${rightArrow}`;
-                  return (
-                    <DataText
-                      scalesRef={scalesRef}
-                      trackId={trackId}
-                      x={(intronStart + intronEnd) / 2}
-                      y={yTop(rowIndex) + labelHeight}
-                      text={labelText}
-                      anchor={[0.5, 1]}
-                      style={new TextStyle({
-                        align: 'center',
-                        fill: "#000",
-                        fontSize: 10.5,
-                        fontWeight: '100',
-                        wordWrap: false,
-                      })}
-                    />
-                  );
-                })()}
+                {/* Gene box: hit area + highlight - RENDERED FIRST (behind gene) */}
+                <DataGeneBox
+                  scalesRef={scalesRef}
+                  trackId={trackId}
+                  intronStart={intronStart}
+                  intronEnd={intronEnd}
+                  labelWidthPixels={labelWidthPixels}
+                  labelCenter={labelCenter}
+                  y={boxY}
+                  height={boxHeight}
+                  biotype={target.biotype || 'other'}
+                  isL2G={isL2G}
+                  pointerover={(e: any) => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: target });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                  }}
+                  pointerout={() => {
+                    genTrackTooltipDispatch({ type: "setDatum", value: null });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                  }}
+                />
                 {/* Intron line spans from first exon to last exon */}
                 <DataSprite
                   scalesRef={scalesRef}
@@ -144,15 +165,7 @@ export function getGenesTracks({
                   width={intronEnd - intronStart}
                   height={intronHeight}
                   tint={geneColor}
-                  eventMode="static"
-                  pointerover={(e: any) => {
-                    genTrackTooltipDispatch({ type: "setDatum", value: target });
-                    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
-                  }}
-                  pointerout={() => {
-                    genTrackTooltipDispatch({ type: "setDatum", value: null });
-                    genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
-                  }}
+                  minPixelWidth={1}
                 />
                 {target.canonicalExons?.map(exon => (
                   <DataSprite
@@ -164,18 +177,26 @@ export function getGenesTracks({
                     width={exon.end - exon.start}
                     height={exonHeight}
                     tint={geneColor}
-                    minPixelWidth={2}
-                    eventMode="static"
-                    pointerover={(e: any) => {
-                      genTrackTooltipDispatch({ type: "setDatum", value: target });
-                      genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
-                    }}
-                    pointerout={() => {
-                      genTrackTooltipDispatch({ type: "setDatum", value: null });
-                      genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
-                    }}
+                    minPixelWidth={1}
                   />
                 ))}
+                {showGeneLabel && (
+                  <DataText
+                    scalesRef={scalesRef}
+                    trackId={trackId}
+                    x={labelCenter}
+                    y={yTop(rowIndex) + labelHeight}
+                    text={labelText}
+                    anchor={[0.5, 1]}
+                    style={new TextStyle({
+                      align: 'center',
+                      fill: "#000",
+                      fontSize: 10.5,
+                      fontWeight: '100',
+                      wordWrap: false,
+                    })}
+                  />
+                )}
               </Fragment>
             );
           })}

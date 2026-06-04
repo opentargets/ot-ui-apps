@@ -17,21 +17,15 @@ import { getVariantTrack, DataVLineOverlay } from "./getVariantTrack";
 import { getVariantMinimapTrack } from "./getVariantMinimapTrack";
 import { packIntervals } from "./packIntervals";
 import UnifiedTooltip from "./UnifiedTooltip";
+import { GENE_COLORS } from "./helpers";
 
-const BIOTYPE_COLORS = {
-  protein_coding: "#2e5943",
-  processed_transcript: "#ff7f0e",
-  pseudogene: "#1f77b4",
-  rna: "#9467bd",
-  other: "#d62728",
-};
-
-const BIOTYPE_DIM_COLORS = {
-  protein_coding: "#709a88",
-  processed_transcript: "#e49a50",  // !! MAKE ALL NON-CODING QUITE BOLD FOR NOW !!
-  pseudogene: "#6d9ccb",
-  rna: "#946ece",
-  other: "#c84a4a",
+// Map biotype to color keys
+const getBiotypeKey = (biotype: string): keyof typeof GENE_COLORS => {
+  if (biotype === "protein_coding") return "protein_coding";
+  if (biotype === "processed_transcript") return "processed_transcript";
+  if (biotype === "pseudogene") return "pseudogene";
+  if (biotype === "rna") return "rna";
+  return "other";
 };
 
 const BIOTYPE_DISPLAY_NAMES = {
@@ -122,8 +116,9 @@ function GeneVisInner({
       const targets = groupedTargets[biotype];
       if (!targets || targets.length === 0) continue;
 
-      const color = (BIOTYPE_COLORS as Record<string,string>)[biotype];
-      const dimColor = (BIOTYPE_DIM_COLORS as Record<string,string>)[biotype] ?? color;
+      const biotypeKey = getBiotypeKey(biotype);
+      const color = GENE_COLORS[biotypeKey].main;
+      const dimColor = GENE_COLORS[biotypeKey].dim;
 
       // YInfo component for this biotype
       const TrackYInfo = () => (
@@ -144,7 +139,7 @@ function GeneVisInner({
       // Compute packing for minimap
       const minimapGeneToRow = packIntervals(targets, {
         bpPerPixel,
-        pixelGap: 1,
+        pixelGap: 2,
         pixelGapCenterToCenter: minimapConfig.pixelGapCenterToCenter,
         priorityIds: minimapPriorityIds,
         labeledIds: Array.from(minimapLabeledIds),
@@ -237,7 +232,7 @@ function GeneVisInner({
       }
       const zoomableTrackHeight = zoomableCurrentYOffset;
       const zoomableFinalTrackHeight = Math.max(zoomableTrackHeight, 20);
-      const zoomablePadding = biotype === "protein_coding" ? 10 : Math.max(6, (20 - zoomableTrackHeight) / 2); // Adjusted back from 8 to 10 for protein coding
+      const zoomablePadding = biotype === "protein_coding" ? 10 : Math.max(6, (20 - zoomableTrackHeight) / 2);
 
       // Add zoomable detail track
       innerTrackList.push(getGenesTracks({

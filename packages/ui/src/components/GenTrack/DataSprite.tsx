@@ -125,7 +125,6 @@ export function DataSprite({
 
   // Compute initial screen position (will be updated by useTick)
   const scales = scalesRef.current;
-  const hasScales = scales !== null;
   const initialScreenX = scales ? dataX * scales.xScale + scales.xOffset : 0;
   const yScaleInfo = trackId && scales ? scales.yScales.get(trackId) : undefined;
   const initialScreenY = yScaleInfo
