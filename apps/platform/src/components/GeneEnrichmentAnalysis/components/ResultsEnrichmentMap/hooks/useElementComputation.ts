@@ -165,7 +165,7 @@ export function useElementComputation(
         const significantDisplayed = fdrFilteredResults.filter((r) => {
           const fdr = r.FDR as number | undefined;
           const nodeId = (r.ID as string) || (r.Pathway as string);
-          return fdr !== undefined  && displayedNodeIds.has(nodeId);
+          return fdr !== undefined && fdr < 0.2 && displayedNodeIds.has(nodeId);
         }).length;
         
         setComputedStats({
