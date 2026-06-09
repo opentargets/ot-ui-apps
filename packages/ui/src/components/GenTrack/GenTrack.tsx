@@ -7,7 +7,7 @@ import NestedXInfo from "./NestedXInfo";
 import type { XAxisHandle } from "../GeneVis/XAxis";
 import { useGenTrackState } from "../../providers/GenTrackProvider";
 import GenTrackTooltip from "./GenTrackTooltip";
-import { useGenTrackTooltipDispatch } from "../../providers/GenTrackTooltipProvider";
+import { useGenTrackTooltipDispatch, useGenTrackTooltipState } from "../../providers/GenTrackTooltipProvider";
 import { ScalesProvider, type ScalesRef } from "./ScalesContext";
 import { TrackRegistryProvider, type TrackTransform } from "./TrackRegistry";
 
@@ -24,8 +24,9 @@ interface TooltipLayerProps {
 }
 
 const TooltipLayer = memo(function TooltipLayer({ children, width, height, canvasType, tooltipProps }: TooltipLayerProps) {
-  const genTrackTooltipDispatch = useGenTrackTooltipDispatch();
-  
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value?: any }) => void;
+  const genTrackTooltipState = useGenTrackTooltipState() as any;
+
   const handleMouseEnter = () => {
     genTrackTooltipDispatch({ type: "setActiveCanvas", value: canvasType });
   };
@@ -33,7 +34,26 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
   const handleMouseLeave = () => {
     genTrackTooltipDispatch({ type: "setActiveCanvas", value: null });
   };
-  
+
+  const handleClick = () => {
+    const hover = genTrackTooltipState?.hover;
+    if (canvasType === "inner" && hover?.datum && hover?.globalXY) {
+      genTrackTooltipDispatch({
+        type: "setSticky",
+        value: {
+          sticky: true,
+          genomicX: hover.globalXY.genomicX ?? null,
+          labelCenter: hover.labelCenter ?? null,
+          datum: hover.datum,
+          activeCanvas: canvasType,
+          globalXY: hover.globalXY,
+        },
+      });
+    } else if (genTrackTooltipState?.sticky) {
+      genTrackTooltipDispatch({ type: "clearSticky" });
+    }
+  };
+
   if (!children) return null;
   
   return (
@@ -42,9 +62,11 @@ const TooltipLayer = memo(function TooltipLayer({ children, width, height, canva
         position: "absolute", 
         inset: 0, 
         pointerEvents: "auto",
+        cursor: canvasType === "inner" && genTrackTooltipState?.hover?.datum ? "pointer" : "default",
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
     >
       <GenTrackTooltip width={width} height={height} canvasType={canvasType} {...tooltipProps}>
         {children}

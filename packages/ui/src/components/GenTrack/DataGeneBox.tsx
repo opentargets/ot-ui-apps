@@ -1,4 +1,5 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useLayoutEffect } from 'react';
+import { useGenTrackTooltipState } from '../../providers/GenTrackTooltipProvider';
 import { Sprite, useTick, useApp } from '@pixi/react';
 import { Sprite as PixiSprite, Graphics as PixiGraphics, Texture } from 'pixi.js';
 import type { RefObject } from 'react';
@@ -57,25 +58,43 @@ export function DataGeneBox({
   // Get pale hover color from centralized palette
   const hoverTint = getHoverBoxColor(biotype, isL2G);
 
+  const tooltipState = useGenTrackTooltipState() as any;
+  const isMyGeneSticky = tooltipState?.stickyLabelCenter !== null &&
+    tooltipState?.stickyLabelCenter !== undefined &&
+    tooltipState?.stickyLabelCenter === labelCenter;
+
+  // Ref written every render so event handlers always read the current value (no stale closures)
+  const isMyGeneStickyRef = useRef(false);
+  isMyGeneStickyRef.current = isMyGeneSticky;
+
   const handlePointerOver = useCallback((e: any) => {
     const sprite = spriteRef.current;
     if (sprite) {
-      sprite.tint = hoverTint; // Show pale color by biotype
-      sprite.alpha = 1.0; // Full opacity, pale color provides subtlety
-      app.render(); // Trigger Pixi re-render
+      sprite.tint = hoverTint;
+      sprite.alpha = 1.0;
+      app.render();
     }
     pointerover?.(e);
-  }, [pointerover, app]);
+  }, [pointerover, app, hoverTint]);
 
   const handlePointerOut = useCallback((e: any) => {
     const sprite = spriteRef.current;
-    if (sprite) {
+    if (sprite && !isMyGeneStickyRef.current) {
       sprite.tint = hoverTint;
-      sprite.alpha = 0; // Hide box on mouse out
-      app.render(); // Trigger Pixi re-render
+      sprite.alpha = 0;
+      app.render();
     }
     pointerout?.(e);
   }, [pointerout, app, hoverTint]);
+
+  // Safety-net: sync sprite alpha when isMyGeneSticky transitions
+  // (covers the narrow race where pointerout fired before the first post-click render)
+  useLayoutEffect(() => {
+    const sprite = spriteRef.current;
+    if (!sprite) return;
+    sprite.alpha = isMyGeneSticky ? 1.0 : 0;
+    app.render();
+  }, [isMyGeneSticky, app]);
 
   // Imperative update on every tick - recalculates bounds based on current zoom
   useTick(() => {

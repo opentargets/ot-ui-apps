@@ -27,8 +27,8 @@ export function getGenesTracks({
     highlightIds = new Set(),
   }) {
   const genTrackState = useGenTrackState();
-  const { data } = genTrackState ?? { data: null };
-  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value: any }) => void;
+  const { data, xMin, xMax } = genTrackState ?? { data: null, xMin: 0, xMax: 1 };
+  const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value?: any }) => void;
 
   // Look up targets from pre-grouped data in context
   const targets = data?.region?.groupedTargets?.[biotype] ?? [];
@@ -147,12 +147,25 @@ export function getGenesTracks({
                   biotype={target.biotype || 'other'}
                   isL2G={isL2G}
                   pointerover={(e: any) => {
+                    const scales = scalesRef.current;
+                    const ysi = trackId ? scales?.yScales.get(trackId) : undefined;
+                    const boxScreenY = ysi ? boxY * ysi.yScale + ysi.yOffset + (ysi.containerY ?? 0) : e.global.y;
+                    const nativeEvent = e.nativeEvent ?? e.data?.originalEvent;
+                    const cursorPageY = (nativeEvent?.clientY ?? 0) + window.scrollY;
+                    const canvasPageY = cursorPageY - e.global.y;
+                    const boxTopPageY = canvasPageY + boxScreenY;
+                    // genomicX from cursor position (not labelCenter) so sticky tooltip has no jump on click
+                    const genomicX = scales ? (e.global.x - scales.xOffset) / scales.xScale : labelCenter;
+                    const hoverXY = { x: e.global.x, y: e.global.y, boxTopPageY, genomicX };
                     genTrackTooltipDispatch({ type: "setDatum", value: target });
-                    genTrackTooltipDispatch({ type: "setGlobalXY", value: { x: e.global.x, y: e.global.y } });
+                    genTrackTooltipDispatch({ type: "setGlobalXY", value: hoverXY });
+                    genTrackTooltipDispatch({ type: "setActiveCanvas", value: "inner" });
+                    genTrackTooltipDispatch({ type: "setHover", value: { datum: target, globalXY: hoverXY, labelCenter } });
                   }}
                   pointerout={() => {
                     genTrackTooltipDispatch({ type: "setDatum", value: null });
                     genTrackTooltipDispatch({ type: "setGlobalXY", value: null });
+                    genTrackTooltipDispatch({ type: "setHover", value: null });
                   }}
                 />
                 {/* Intron line spans from first exon to last exon */}

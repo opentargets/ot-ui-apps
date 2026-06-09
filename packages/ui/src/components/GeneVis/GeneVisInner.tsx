@@ -4,7 +4,6 @@ import {
   GenTrack,
   useGenTrackState,
   useGenTrackTooltipDispatch,
-  useGenTrackTooltipState,
 } from "ui";
 import { Box, useTheme } from "@mui/material";
 import { useMeasure } from "@uidotdev/usehooks";
@@ -16,7 +15,7 @@ import { getGeneMinimapTracks } from "./getGeneMinimapTracks";
 import { getVariantTrack, DataVLineOverlay } from "./getVariantTrack";
 import { getVariantMinimapTrack } from "./getVariantMinimapTrack";
 import { packIntervals } from "./packIntervals";
-import UnifiedTooltip from "./UnifiedTooltip";
+import UnifiedTooltip, { TOOLTIP_WIDTH } from "./UnifiedTooltip";
 import { GENE_COLORS } from "./helpers";
 
 // Map biotype to color keys
@@ -273,7 +272,9 @@ function GeneVisInner({
         panZoomBottomGap={4}
         paddingBottom={0}
         Tooltip={UnifiedTooltip}
+        tooltipProps={{ xAnchor: "adapt", yAnchor: "boxTop", tooltipWidth: TOOLTIP_WIDTH }}
         InnerTooltip={UnifiedTooltip}
+        innerTooltipProps={{ xAnchor: "adapt", yAnchor: "boxTop", tooltipWidth: TOOLTIP_WIDTH, scalesRef: innerScalesRef }}
         onInnerScalesReady={(ref) => { innerScalesRef.current = ref.current; }}
         innerOverlayGraphics={data?.variant ? <DataVLineOverlay position={data.variant.position} scalesRef={innerScalesRef} color={primaryColor} /> : null}
       />

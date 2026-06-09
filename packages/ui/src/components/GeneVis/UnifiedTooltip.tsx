@@ -9,6 +9,8 @@ import { naLabel } from "@ot/constants";
 import { OtGenomicLocation } from "../..";
 import { GenomicLocationPresentationType } from "@ot/constants";
 
+export const TOOLTIP_WIDTH = 400;
+
 function UnifiedTooltip() {
   const { datum } = (useGenTrackTooltipState() ?? {}) as { datum?: any };
   const [getTargetData, targetQuery] = useLazyQuery(TARGET_TOOLTIP_QUERY);
@@ -47,7 +49,7 @@ function UnifiedTooltip() {
   // Loading state
   if (loading || !data) {
     return (
-      <Box sx={{ width: 300, p: 1, backgroundColor: "#fff", border: "1px solid #ccc", borderRadius: 1, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+      <Box sx={{ width: TOOLTIP_WIDTH, p: 1, backgroundColor: "#fff", border: "1px solid #ccc", borderRadius: 1, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
         <Box>
           <Skeleton />
           <Skeleton />
@@ -61,6 +63,7 @@ function UnifiedTooltip() {
   // Render rich async tooltip content
   return (
     <Box sx={{
+      width: TOOLTIP_WIDTH,
       p: 1,
       backgroundColor: "#fff",
       border: "1px solid #ccc",
