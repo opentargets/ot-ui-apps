@@ -73,7 +73,7 @@ export async function computePathwayViewElements(
   // For larger datasets, use async chunked processing to allow UI responsiveness
   if (nodes.length > 1200) {
     console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} terms asynchronously...`);
-    return await computePathwayEdgesAsync(
+    return  computePathwayEdgesSync(
       pathwayIds,
       pathwayGenes,
       pathwayNameMap,
