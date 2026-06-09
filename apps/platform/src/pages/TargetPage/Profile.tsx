@@ -13,7 +13,9 @@ import ProfileHeader from "./ProfileHeader";
 
 import { getConfig } from "@ot/config";
 
-const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
+// !! JUST FOR PREVIEW !!
+// const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
+const baselineName = "BaselineExpression";
 
 const targetProfileWidgets = new Map<string, any>([
   [Target.Drugs.definition.id, Target.Drugs],

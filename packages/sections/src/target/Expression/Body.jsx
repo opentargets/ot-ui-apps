@@ -1,6 +1,11 @@
+import { faInfo } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { Tab, Tabs } from "@mui/material";
-import { SectionItem, useApolloClient } from "ui";
+import { Alert, Collapse, Tab, Tabs, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { SectionItem, useApolloClient, Link } from "ui";
+import { testPPPaccess } from "@ot/utils";
+import { PPP_WEB_URL } from "@ot/constants";
 
 import { definition } from ".";
 import AtlasTab from "./AtlasTab";
@@ -10,6 +15,8 @@ import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
 function Section({ id: ensgId, label: symbol, entity }) {
   const defaultTab = "summary";
+  const [showAlert, setShowAlert] = useState(true);
+  const [showPPPMessage, setShowPPPMessage] = useState(false);
   const [tab, setTab] = useState(defaultTab);
   const [requestSummary, setRequestSummary] = useState({ loading: true });
   const [requestGtex, setRequestGtex] = useState({ loading: true });
@@ -35,6 +42,15 @@ function Section({ id: ensgId, label: symbol, entity }) {
   const handleChangeTab = (_, tabChange) => {
     setTab(tabChange);
   };
+
+  useEffect(() => {
+    const checkPPP = async () => {
+      const canAccessPPP = await testPPPaccess();
+      if (canAccessPPP) setShowPPPMessage(true);
+    };
+
+    checkPPP();
+  }, []);
 
   useEffect(() => {
     let isCurrent = true;
@@ -63,6 +79,28 @@ function Section({ id: ensgId, label: symbol, entity }) {
       renderDescription={() => <Description symbol={symbol} />}
       renderBody={() => (
         <>
+          <Collapse in={showAlert} timeout={500}>
+            <Alert
+              sx={{
+                bgcolor: grey[100],
+                color: "text.primary",
+                my: 1.5,
+                "& .MuiAlert-icon": { color: grey[800] },
+              }}
+              severity="info"
+              onClose={() => setShowAlert(false)}
+            >
+              <Typography variant="body2">
+                This widget and the accompanying data will be deprecated in favour of new data in the June 2026 release.
+              </Typography>
+              {showPPPMessage && (
+                <Typography variant="body2" component="div" sx={{ pt: 1 }}>
+                  A beta version is available for testing and feedback on the{" "}
+                  <Link external to={PPP_WEB_URL}>Partner Preview Platform.</Link>
+                </Typography>
+              )}
+            </Alert>
+          </Collapse>
           <Tabs data-testid="expression-tabs" value={tab} onChange={handleChangeTab} style={{ marginBottom: "1rem" }}>
             <Tab data-testid="expression-tab-summary" value="summary" label="Summary" />
             {/* <Tab value="atlas" label="Experiments (Expression Atlas)" /> */}

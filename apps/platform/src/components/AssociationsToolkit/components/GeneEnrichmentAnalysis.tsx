@@ -6,7 +6,8 @@ import {
   setModalOpen,
   useGeneEnrichment,
 } from "../../GeneEnrichmentAnalysis";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "../context/AssociationsQueryContext";
+import { useAotfURLState } from "../context/AssociationsURLContext";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -17,14 +18,13 @@ const StyledMenuItem = styled(MenuItem)({
 function GeneEnrichmentAnalysis() {
   const {
     id,
-    searhFilter,
+    entitySearch,
     sorting,
     enableIndirect,
-    dataSourcesWeights,
-    pinnedEntries,
-    uploadedEntries,
-    state,
-  } = useAotfContext();
+    dataSourceControls,
+    facetFiltersIds,
+  } = useAotfQueryState();
+  const { pinnedEntries, uploadedEntries } = useAotfURLState();
 
   const [, dispatch] = useGeneEnrichment();
 
@@ -33,20 +33,20 @@ function GeneEnrichmentAnalysis() {
     dispatch(
       setAssociationsState({
         efoId: id,
-        filter: searhFilter,
+        filter: entitySearch,
         sortBy: sorting[0].id,
         enableIndirect,
         pinnedEntities: pinnedEntries,
         uploadedEntities: uploadedEntries,
-        datasources: dataSourcesWeights.map((el: any) => ({
+        datasources: dataSourceControls.map((el: any) => ({
           id: el.id,
           weight: el.weight,
           propagate: el.propagate,
           required: el.required,
         })),
         rowsFilter: pinnedEntries.toSorted(),
-        facetFilters: state.facetFiltersIds,
-        entitySearch: state.entitySearch,
+        facetFilters: facetFiltersIds,
+        entitySearch,
       })
     );
   };

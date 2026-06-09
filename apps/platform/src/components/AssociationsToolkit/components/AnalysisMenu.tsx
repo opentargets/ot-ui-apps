@@ -4,12 +4,12 @@ import type { MouseEvent } from "react";
 import { useState } from "react";
 import { PopoverButton } from "ui";
 import { ENTITIES } from "../associationsUtils";
-import useAotfContext from "../hooks/useAotfContext";
+import { useAotfQueryState } from "../context/AssociationsQueryContext";
 import GeneEnrichmentAnalysis from "./GeneEnrichmentAnalysis";
 
 function AnalysisMenu() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const { entityToGet } = useAotfContext();
+  const { entityToGet } = useAotfQueryState();
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
