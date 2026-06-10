@@ -34,7 +34,14 @@ function App(): ReactElement {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/api" element={<APIPage />} />
-            <Route path="/analysis" element={<AnalysisPage />} />
+            <Route
+              path="/analysis"
+              element={
+                <PrivateRoute>
+                  <AnalysisPage />
+                </PrivateRoute>
+              }
+            />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/downloads/*" element={<DownloadsPage />} />
             <Route path="/target/:ensgId/*" element={<TargetPage />} />
