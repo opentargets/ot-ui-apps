@@ -15,6 +15,7 @@ export enum ActionType {
   UPDATE_RUN = "UPDATE_RUN",
   SET_ACTIVE_RUN = "SET_ACTIVE_RUN",
   DELETE_RUN = "DELETE_RUN",
+  SET_STANDALONE_GENES = "SET_STANDALONE_GENES",
 }
 
 /***************
@@ -82,6 +83,9 @@ export interface State {
   analysisInputs: AnalysisInputs;
   runs: AnalysisRun[];
   activeRunId: string | null;
+  // null = AOTF modal mode (genes come from GQL)
+  // Gene[] = standalone mode (genes provided directly by user or via AOTF handoff)
+  standaloneGenes: Gene[] | null;
 }
 
 /*****************
@@ -98,4 +102,5 @@ export type Action =
   | { type: ActionType.ADD_RUN; payload: AnalysisRun }
   | { type: ActionType.UPDATE_RUN; payload: { id: string } & Partial<Omit<AnalysisRun, "id">> }
   | { type: ActionType.SET_ACTIVE_RUN; payload: string | null }
-  | { type: ActionType.DELETE_RUN; payload: string };
+  | { type: ActionType.DELETE_RUN; payload: string }
+  | { type: ActionType.SET_STANDALONE_GENES; payload: Gene[] | null };

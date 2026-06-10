@@ -8,12 +8,43 @@ import {
 } from "../../GeneEnrichmentAnalysis";
 import { useAotfQueryState } from "../context/AssociationsQueryContext";
 import { useAotfURLState } from "../context/AssociationsURLContext";
+import type { AssociationsState } from "../../GeneEnrichmentAnalysis/types";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
     fontSize: "1rem",
   },
 });
+
+function buildAssociationsState(params: {
+  id: string;
+  entitySearch: string;
+  sorting: Array<{ id: string }>;
+  enableIndirect: boolean;
+  dataSourceControls: Array<{ id: string; weight: number; propagate: boolean; required: boolean }>;
+  pinnedEntries: string[];
+  uploadedEntries: string[];
+  facetFiltersIds: string[];
+}): AssociationsState {
+  return {
+    efoId: params.id,
+    efoName: "",
+    filter: params.entitySearch,
+    sortBy: params.sorting[0].id,
+    enableIndirect: params.enableIndirect,
+    pinnedEntities: params.pinnedEntries,
+    uploadedEntities: params.uploadedEntries,
+    datasources: params.dataSourceControls.map(el => ({
+      id: el.id,
+      weight: el.weight,
+      propagate: el.propagate,
+      required: el.required,
+    })),
+    rowsFilter: params.pinnedEntries.toSorted(),
+    facetFilters: params.facetFiltersIds,
+    entitySearch: params.entitySearch,
+  };
+}
 
 function GeneEnrichmentAnalysis() {
   const {
@@ -28,31 +59,24 @@ function GeneEnrichmentAnalysis() {
 
   const [, dispatch] = useGeneEnrichment();
 
-  const handleClick = () => {
+  const associationsState = buildAssociationsState({
+    id,
+    entitySearch,
+    sorting,
+    enableIndirect,
+    dataSourceControls,
+    pinnedEntries,
+    uploadedEntries,
+    facetFiltersIds,
+  });
+
+  const handleOpenModal = () => {
     dispatch(setModalOpen(true));
-    dispatch(
-      setAssociationsState({
-        efoId: id,
-        filter: entitySearch,
-        sortBy: sorting[0].id,
-        enableIndirect,
-        pinnedEntities: pinnedEntries,
-        uploadedEntities: uploadedEntries,
-        datasources: dataSourceControls.map((el: any) => ({
-          id: el.id,
-          weight: el.weight,
-          propagate: el.propagate,
-          required: el.required,
-        })),
-        rowsFilter: pinnedEntries.toSorted(),
-        facetFilters: facetFiltersIds,
-        entitySearch,
-      })
-    );
+    dispatch(setAssociationsState(associationsState));
   };
 
   return (
-    <StyledMenuItem onClick={handleClick}>
+    <StyledMenuItem onClick={handleOpenModal}>
       <ListItemIcon>
         <FontAwesomeIcon icon={faChartPie} />
       </ListItemIcon>
@@ -60,4 +84,5 @@ function GeneEnrichmentAnalysis() {
     </StyledMenuItem>
   );
 }
+
 export default GeneEnrichmentAnalysis;

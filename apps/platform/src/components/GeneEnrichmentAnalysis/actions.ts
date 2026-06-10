@@ -4,6 +4,7 @@ import {
   type AnalysisInputs,
   type AnalysisRun,
   type AssociationsState,
+  type Gene,
 } from "./types";
 
 export function setModalOpen(modalOpen: boolean): Action {
@@ -81,5 +82,12 @@ export function deleteRun(id: string): Action {
   return {
     type: ActionType.DELETE_RUN,
     payload: id,
+  };
+}
+
+export function setStandaloneGenes(genes: Gene[] | null): Action {
+  return {
+    type: ActionType.SET_STANDALONE_GENES,
+    payload: genes,
   };
 }
