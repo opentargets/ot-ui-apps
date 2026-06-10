@@ -1,7 +1,7 @@
 import { Box, Skeleton, Divider } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLazyQuery } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useGenTrackTooltipState } from "../../providers/GenTrackTooltipProvider";
 import { TARGET_TOOLTIP_QUERY, VARIANT_TOOLTIP_QUERY } from "../OtAsyncTooltip/utils/asyncTooltipUtil";
 import { getEntityIcon, getEntityDescription } from "../OtAsyncTooltip/utils/asyncTooltipUtil";
@@ -15,7 +15,6 @@ function UnifiedTooltip() {
   const { datum } = (useGenTrackTooltipState() ?? {}) as { datum?: any };
   const [getTargetData, targetQuery] = useLazyQuery(TARGET_TOOLTIP_QUERY);
   const [getVariantData, variantQuery] = useLazyQuery(VARIANT_TOOLTIP_QUERY);
-  const [aborterRef] = useState(new AbortController());
 
   // Determine entity type from datum
   const entityType = datum?.approvedSymbol ? "target" : datum?.chromosome ? "variant" : null;
@@ -25,20 +24,10 @@ function UnifiedTooltip() {
     if (!datum?.id) return;
     
     if (entityType === "target") {
-      getTargetData({
-        variables: { ensgId: datum.id },
-        context: { fetchOptions: { signal: aborterRef.signal } },
-      });
+      getTargetData({ variables: { ensgId: datum.id } });
     } else if (entityType === "variant") {
-      getVariantData({
-        variables: { variantId: datum.id },
-        context: { fetchOptions: { signal: aborterRef.signal } },
-      });
+      getVariantData({ variables: { variantId: datum.id } });
     }
-    
-    return () => {
-      aborterRef.abort();
-    };
   }, [datum?.id, entityType]);
 
   if (!datum) return null;
