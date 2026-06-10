@@ -24,7 +24,7 @@ function GenTrackTooltip({
   const genTrackTooltipDispatch = useGenTrackTooltipDispatch() as unknown as (action: { type: string; value?: any }) => void;
 
   const genTrackTooltipState = useGenTrackTooltipState();
-  const { datum, otherData, globalXY, activeCanvas, sticky, stickyGenomicX } = (genTrackTooltipState as any) ?? {};
+  const { datum, otherData, globalXY, activeCanvas, sticky, stickyGenomicX, stickyLabelCenter } = (genTrackTooltipState as any) ?? {};
 
   // rAF loop: while sticky, track gene X (pan/zoom) + Y (scroll) imperatively, and auto-dismiss when needed
   // MUST be before any conditional returns (Rules of Hooks)
@@ -35,9 +35,13 @@ function GenTrackTooltip({
     const initialCanvasWidth = initialScales?.canvasWidth ?? 0;
     const initialXOffset = initialScales?.xOffset ?? 0;
     const initialXScale  = initialScales?.xScale  ?? 1;
-    // Gene genomic extent for the 10px visible-width threshold check
+    // Classify gene by pixel size at click time to pick dismissal strategy.
+    // Tiny genes (sub-pixel wide at current zoom) use label-center visibility;
+    // normal/large genes use the 10px pixel-visibility check.
     const genStart: number = (datum as any)?.genomicLocation?.start ?? 0;
     const genEnd: number = (datum as any)?.genomicLocation?.end ?? 0;
+    const initialGenePixels = genEnd > genStart ? (genEnd - genStart) * initialXScale : 0;
+    const isTinyGene = initialGenePixels < 10;
     let rafId: number;
     const update = () => {
       const box = tooltipBoxRef.current;
@@ -49,16 +53,26 @@ function GenTrackTooltip({
           genTrackTooltipDispatch({ type: "clearSticky" });
           return;
         }
-        // Dismiss when < 10px of gene visible — but ONLY after a pan/zoom has occurred.
-        // Without this guard, genes already < 10px wide at current zoom dismiss immediately on click.
+        // Dismiss when gene is no longer meaningfully in view — but ONLY after a real pan/zoom.
         const hasViewChanged = scales.xOffset !== initialXOffset || scales.xScale !== initialXScale;
-        const viewStart = -scales.xOffset / scales.xScale;
-        const viewEnd = (scales.canvasWidth - scales.xOffset) / scales.xScale;
-        const visibleGenomic = Math.max(0, Math.min(genEnd, viewEnd) - Math.max(genStart, viewStart));
-        const visiblePixels = visibleGenomic * scales.xScale;
-        if (hasViewChanged && genEnd > genStart && visiblePixels < 10) {
-          genTrackTooltipDispatch({ type: "clearSticky" });
-          return;
+        if (hasViewChanged) {
+          const viewStart = -scales.xOffset / scales.xScale;
+          const viewEnd = (scales.canvasWidth - scales.xOffset) / scales.xScale;
+          if (!isTinyGene) {
+            // Gene was large at click time: dismiss when < 10px of genomic extent is visible
+            const visibleGenomic = Math.max(0, Math.min(genEnd, viewEnd) - Math.max(genStart, viewStart));
+            const visiblePixels = visibleGenomic * scales.xScale;
+            if (visiblePixels < 10) {
+              genTrackTooltipDispatch({ type: "clearSticky" });
+              return;
+            }
+          } else if (stickyLabelCenter != null) {
+            // Tiny gene (< 10px at click time): dismiss when label center goes out of view
+            if (stickyLabelCenter < viewStart || stickyLabelCenter > viewEnd) {
+              genTrackTooltipDispatch({ type: "clearSticky" });
+              return;
+            }
+          }
         }
         // X: track gene genomic position through pan/zoom
         const anchorRect = anchor.getBoundingClientRect();
@@ -83,7 +97,7 @@ function GenTrackTooltip({
     };
     rafId = requestAnimationFrame(update);
     return () => cancelAnimationFrame(rafId);
-  }, [sticky, scalesRef, stickyGenomicX, datum, globalXY, xAnchor, tooltipWidth, dx, dy, width, genTrackTooltipDispatch]);
+  }, [sticky, scalesRef, stickyGenomicX, stickyLabelCenter, datum, globalXY, xAnchor, tooltipWidth, dx, dy, width, genTrackTooltipDispatch]);
 
   if (!genTrackTooltipState) return <div ref={anchorRef} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />;
   if (!datum && !otherData) return <div ref={anchorRef} style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />;
