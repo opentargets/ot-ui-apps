@@ -2,7 +2,7 @@ import { faChartPie } from "@fortawesome/free-solid-svg-icons";
 import { MenuList, Popover } from "@mui/material";
 import type { MouseEvent } from "react";
 import { useState } from "react";
-import { PopoverButton } from "ui";
+import { PopoverButton, usePermissions } from "ui";
 import { ENTITIES } from "../associationsUtils";
 import { useAotfQueryState } from "../context/AssociationsQueryContext";
 import GeneEnrichmentAnalysis from "./GeneEnrichmentAnalysis";
@@ -10,6 +10,7 @@ import GeneEnrichmentAnalysis from "./GeneEnrichmentAnalysis";
 function AnalysisMenu() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const { entityToGet } = useAotfQueryState();
+  const { isPartnerPreview } = usePermissions();
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -23,6 +24,10 @@ function AnalysisMenu() {
   const id = open ? "simple-popover" : undefined;
 
   if (entityToGet === ENTITIES.DISEASE) {
+    return null;
+  }
+
+  if(!isPartnerPreview) {
     return null;
   }
 
