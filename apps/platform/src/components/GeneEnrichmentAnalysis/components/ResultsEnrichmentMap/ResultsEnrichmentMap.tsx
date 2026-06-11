@@ -146,26 +146,29 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
     );
   }
 
+  // Calculate filtered pathway count (nodes only, not edges)
+  const filteredPathwayCount = useMemo(() => {
+    return computedElements.filter((el) => !el.data?.source).length;
+  }, [computedElements]);
+
   return (
     <Paper sx={{ p: 2 }}>
-      <Box sx={{ mb: 2 }}>
-        <EnrichmentMapHeader stats={computedStats} cyRef={cyRef} />
-      </Box>
-
-
-      <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
-        Tip: Click to select nodes, Ctrl+Click (Cmd+Click on Mac) for multi-select, click background to
-        deselect. Hover over nodes to see pathway details. Related gene-sets cluster together to reveal
-        enriched functional themes. Hover over edges to see shared genes. Drag to pan, scroll to zoom.
-      </Typography>
-
-      <Box sx={{ position: "relative" }}>
-        <EnrichmentMapControls
+      <EnrichmentMapControls
           isGoData={isGoData}
           pathwayNames={availablePathways}
           geneNames={uniqueGenes}
           onToggleCollapsed={() => setFilterToggled(prev => !prev)}
+          filteredPathwayCount={filteredPathwayCount}
+          totalPathwayCount={results.length}
         />
+      <Box sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <EnrichmentMapLegend nesRange={nesRange} />
+        <EnrichmentMapHeader stats={computedStats} cyRef={cyRef} />
+      </Box>
+      
+
+      <Box sx={{ position: "relative" }}>
+        
         <EnrichmentMapContainer ref={containerRef} />
         {isLoading && (
           <Box
@@ -192,7 +195,6 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
           </Box>
         )}
       </Box>
-      <EnrichmentMapLegend nesRange={nesRange} />
 
       <EnrichmentMapDetailsModal
         open={modalOpen}

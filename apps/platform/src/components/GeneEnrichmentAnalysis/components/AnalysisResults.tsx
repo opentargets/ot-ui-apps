@@ -76,7 +76,7 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseI
         </Box>
 
         {/* Scrollable content */}
-        <Box sx={{ flex: 1, overflow: "auto", p: viewMode === "plotly" ? 0 : 2 }}>
+        <Box sx={{ flex: 1, overflow: "auto", p: ['plotly', 'network'].includes(viewMode)  ? 0 : 2 }}>
           {viewMode === "table" && <ResultsTable results={results} />}
           {viewMode === "tree" && <ResultsTreeView results={results} />}
           {/* {viewMode === "plotly" && <ResultsSunburst results={results} />} */}

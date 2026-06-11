@@ -1,6 +1,6 @@
-import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, Autocomplete } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Slider, Typography, TextField, InputAdornment, Autocomplete, Chip, Button, Tooltip } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faXmark, faChevronUp, faChevronDown, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faXmark, faChevronUp, faChevronDown, faFilter, faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { useContext, useState, useMemo } from "react";
 import { EnrichmentMapControlsContext } from "../utils/EnrichmentMapControlsContext";
 
@@ -9,12 +9,16 @@ interface EnrichmentMapControlsProps {
   pathwayNames?: string[];
   geneNames?: string[];
   onToggleCollapsed?: (isCollapsed: boolean) => void;
+  filteredPathwayCount?: number;
+  totalPathwayCount?: number;
 }
 
 export function EnrichmentMapControls({
   pathwayNames = [],
   geneNames = [],
   onToggleCollapsed,
+  filteredPathwayCount = 0,
+  totalPathwayCount = 0,
 }: EnrichmentMapControlsProps) {
   const controlsContext = useContext(EnrichmentMapControlsContext);
   if (!controlsContext) {
@@ -28,6 +32,18 @@ export function EnrichmentMapControls({
     const allNames = [...new Set([...geneNames, ...pathwayNames])].sort();
     return allNames;
   }, [geneNames, pathwayNames]);
+
+  // Determine if there are active filters
+  const hasActiveFilters = useMemo(() => {
+    return (
+      state.similarityThreshold > 1 ||
+      state.fdrThreshold < 1.0 ||
+      state.pValueThreshold < 1.0 ||
+      state.searchQuery !== "" ||
+      state.nesRange[0] > state.nesDataRange.min ||
+      state.nesRange[1] < state.nesDataRange.max
+    );
+  }, [state]);
 
   return (
     <Box sx={{ borderBottom: "1px solid", borderColor: "divider", backgroundColor: "white" }}>
@@ -53,6 +69,29 @@ export function EnrichmentMapControls({
           <Typography variant="body2" fontWeight={500}>
             Filters
           </Typography>
+          {totalPathwayCount > 0 && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Chip
+                label={`${filteredPathwayCount} of ${totalPathwayCount} pathways`}
+                size="small"
+                color={hasActiveFilters ? "primary" : "default"}
+                variant={hasActiveFilters ? "filled" : "outlined"}
+              />
+              {hasActiveFilters && (
+                <Button
+                  size="small"
+                  variant="text"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch({ type: "RESET_FILTERS" });
+                  }}
+                  sx={{ textTransform: "none", fontSize: "0.875rem" }}
+                >
+                  Reset
+                </Button>
+              )}
+            </Box>
+          )}
         </Box>
         <FontAwesomeIcon icon={isCollapsed ? faChevronDown : faChevronUp} />
       </Box>
@@ -131,9 +170,14 @@ export function EnrichmentMapControls({
 
             {/* Similarity */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 220 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
-                Similarity
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                  Similarity
+                </Typography>
+                <Tooltip title="Overlap Coefficient" arrow>
+                  <FontAwesomeIcon icon={faCircleInfo} style={{ fontSize: "12px", color: "#999", cursor: "pointer" }} />
+                </Tooltip>
+              </Box>
               <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
                 {(state.similarityThreshold / 10).toFixed(2)}
               </Typography>
@@ -148,20 +192,6 @@ export function EnrichmentMapControls({
               />
             </Box>
 
-            {/* Node Size */}
-            <Box sx={{ width: 140 }}>
-              <FormControl size="small" fullWidth>
-                <InputLabel>Node Size</InputLabel>
-                <Select 
-                  value={state.sizeBy} 
-                  label="Node Size" 
-                  onChange={(e) => dispatch({ type: "SET_SIZE_BY", payload: e.target.value as typeof state.sizeBy })}
-                >
-                  <MenuItem value="pathwaySize">Pathway Size</MenuItem>
-                  <MenuItem value="geneCount">Gene Count</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
           </Box>
 
           {/* Right column: Gene Search */}

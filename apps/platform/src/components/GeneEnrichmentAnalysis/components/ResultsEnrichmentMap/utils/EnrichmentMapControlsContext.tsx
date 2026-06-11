@@ -87,7 +87,7 @@ export const EnrichmentMapControlsContext = createContext<{
  */
 export const createInitialState = (): EnrichmentMapControlsState => ({
   similarityThreshold: 1,
-  sizeBy: "geneCount",
+  sizeBy: "pathwaySize",
   fdrThreshold: 1.0,
   pValueThreshold: 1.0,
   searchQuery: "",

@@ -146,7 +146,7 @@ function SunburstFilters({
           />
           {hasActiveFilters && (
             <Button
-              size="small"
+              size="small"  
               onClick={(e) => {
                 e.stopPropagation();
                 handleResetFilters();
