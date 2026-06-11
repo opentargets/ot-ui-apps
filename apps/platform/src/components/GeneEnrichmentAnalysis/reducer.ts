@@ -29,6 +29,7 @@ export const initialState: State = {
   },
   runs: [],
   activeRunId: null,
+  standaloneGenes: null,
 };
 
 /*****************
@@ -116,6 +117,9 @@ export function geneEnrichmentReducer(state: State = initialState, action: Actio
         // Clear activeRunId if the deleted run was active
         activeRunId: state.activeRunId === action.payload ? null : state.activeRunId,
       };
+    }
+    case ActionType.SET_STANDALONE_GENES: {
+      return { ...state, standaloneGenes: action.payload };
     }
     default: {
       return state;

@@ -140,10 +140,13 @@ const CUSTOM_CELL_RENDERERS: Record<string, (cell: any) => React.ReactNode> = {
   ),
 };
 
-const metricsColumns = ROW_METRICS.map(metric =>
+const metricsColumns = ROW_METRICS.filter(
+  metric => !(metric.isPrivate && metric.isPrivate !== isPartnerPreview)
+).map(metric =>
   columnHelper.accessor((row: any) => row[metric.id], {
     id: metric.id,
     enableSorting: metric.sortable,
+    isPrivate: metric.isPrivate,
     header: (
       <Typography
         variant="assoc_header"
@@ -287,10 +290,10 @@ function TableAssociations() {
         id: "entity-cols",
         columns: isAssociations ? evidenceViewColumns : prioritisationViewColumns,
       }),
-      ...(isAssociations
+      ...(isAssociations && metricsColumns.length > 0
         ? [
             columnHelper.group({
-              header: "metrics",
+              header: "",
               id: "metrics-cols",
               columns: metricsColumns,
             }),

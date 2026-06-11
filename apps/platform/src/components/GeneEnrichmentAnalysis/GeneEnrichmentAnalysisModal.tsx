@@ -46,11 +46,10 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
       // scroll="paper"
       sx={{
         ".MuiDialog-paper": {
-          width: "99vw",
+           width: "99vw",
           maxWidth: "99vw",
           height: "100vh",
-          margin: 0,
-          borderRadius: 0,
+          borderRadius: (theme) => `${theme.spacing(1)} !important`,
         },
       }}
     >

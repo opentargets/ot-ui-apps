@@ -234,6 +234,6 @@ export const tableCSSVariables: Record<string, string> = {
   "--entities-border-color": "var(--grey-light)",
   "--table-footer-border-color": "var(--grey-light)",
   "--colums-controls-color": "var(--grey-lighter)",
-  "--metrics-col-count": String(ROW_METRICS.length),
-  "--metrics-zone-width": `${ROW_METRICS.length * 80}px`,
+  "--metrics-col-count": String(ROW_METRICS.filter(m => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length),
+  "--metrics-zone-width": `${ROW_METRICS.filter(m => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length * 80}px`,
 };

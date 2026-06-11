@@ -6,6 +6,7 @@ export interface RowMetricDef {
   label: string;
   description: string;
   sortable: boolean;
+  isPrivate?: boolean;
   format: (v: number | null | undefined) => string;
 }
 
@@ -19,6 +20,7 @@ export const ROW_METRICS: RowMetricDef[] = [
     description: "Click to view novelty details for this association.",
     sortable: true,
     format: (v) => (v != null ? v.toFixed(2) : "—"),
+    isPrivate: true,
   },
 ];
 
