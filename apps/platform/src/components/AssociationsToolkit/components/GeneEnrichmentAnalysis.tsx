@@ -84,5 +84,4 @@ function GeneEnrichmentAnalysis() {
     </StyledMenuItem>
   );
 }
-
 export default GeneEnrichmentAnalysis;

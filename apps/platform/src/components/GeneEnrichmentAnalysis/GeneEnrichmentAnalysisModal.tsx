@@ -14,7 +14,10 @@ interface GeneEnrichmentAnalysisModalProps {
 function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalProps) {
   const [state, dispatch] = useGeneEnrichment();
 
-  const handleClose = () => {
+  const handleClose = (event: {}, reason: "backdropClick" | "escapeKeyDown") => {
+    if (reason === "backdropClick") {
+      return; // Don't close on backdrop click
+    }
     dispatch(setModalOpen(false));
   };
 
@@ -43,9 +46,9 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
       // scroll="paper"
       sx={{
         ".MuiDialog-paper": {
-          width: "85vw",
-          maxWidth: "95vw",
-          height: "90vh",
+           width: "99vw",
+          maxWidth: "99vw",
+          height: "100vh",
           borderRadius: (theme) => `${theme.spacing(1)} !important`,
         },
       }}

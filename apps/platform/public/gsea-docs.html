@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GSEA Documentation — Open Targets Platform</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --primary-blue: #3489ca;
+        --primary-dark: #1f5279;
+        --primary-light: #e8f4fb;
+        --background: #fafafa;
+        --surface: #ffffff;
+        --font-grey: #5a5f5f;
+        --font-dark: #2e2e2e;
+        --grey-200: #eeeeee;
+        --grey-300: #e0e0e0;
+        --grey-500: #9e9e9e;
+        --success: #2e7d32;
+        --success-light: #e8f5e9;
+        --sidebar-width: 260px;
+        --navbar-height: 52px;
+        --content-max: 820px;
+      }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background);
+        color: var(--font-dark);
+        font-size: 0.9375rem;
+        line-height: 1.65;
+      }
+
+      /* ── Navbar ── */
+      .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: var(--primary-dark);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: var(--navbar-height);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      }
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        text-decoration: none;
+        color: white;
+      }
+      .brand-name { font-weight: 600; font-size: 1rem; letter-spacing: 0.02em; }
+      .app-name   { font-weight: 300; font-size: 1rem; }
+      .navbar-badge {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 2px 8px;
+        border-radius: 12px;
+        letter-spacing: 0.03em;
+      }
+
+      /* ── Layout ── */
+      .page {
+        display: flex;
+        min-height: calc(100vh - var(--navbar-height));
+      }
+
+      /* ── Sidebar ── */
+      .sidebar {
+        width: var(--sidebar-width);
+        flex-shrink: 0;
+        position: sticky;
+        top: var(--navbar-height);
+        height: calc(100vh - var(--navbar-height));
+        overflow-y: auto;
+        padding: 2rem 0 2rem 1.5rem;
+        border-right: 1px solid var(--grey-300);
+        background: var(--surface);
+      }
+      .toc-title {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--grey-500);
+        margin-bottom: 0.75rem;
+      }
+      .toc-list { list-style: none; }
+      .toc-list li + li { margin-top: 0.1rem; }
+      .toc-list a {
+        display: block;
+        padding: 0.3rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.845rem;
+        color: var(--font-grey);
+        text-decoration: none;
+        transition: background 0.15s, color 0.15s;
+        border-left: 2px solid transparent;
+      }
+      .toc-list a:hover {
+        background: var(--primary-light);
+        color: var(--primary-blue);
+        border-left-color: var(--primary-blue);
+      }
+      .toc-list .toc-sub a {
+        padding-left: 1.5rem;
+        font-size: 0.8rem;
+      }
+
+      /* ── Main content ── */
+      .content {
+        flex: 1;
+        min-width: 0;
+        padding: 2.5rem 3rem 4rem;
+      }
+      .content-inner { max-width: var(--content-max); }
+
+      /* ── Typography ── */
+      h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-bottom: 0.4rem;
+      }
+      .subtitle {
+        color: var(--grey-500);
+        font-size: 0.875rem;
+        margin-bottom: 2.5rem;
+      }
+      h2 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-top: 2.5rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--primary-light);
+      }
+      h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--font-dark);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+      }
+      p { margin-bottom: 0.85rem; color: var(--font-grey); }
+      em { font-style: italic; }
+      strong { font-weight: 600; color: var(--font-dark); }
+
+      a { color: var(--primary-blue); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      sup a {
+        font-size: 0.65rem;
+        color: var(--primary-blue);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      sup a:hover { text-decoration: underline; }
+
+      /* ── Lists ── */
+      ul, ol {
+        padding-left: 1.4rem;
+        margin-bottom: 0.85rem;
+        color: var(--font-grey);
+      }
+      li { margin-bottom: 0.35rem; }
+      li strong { color: var(--font-dark); }
+
+      /* ── Tables ── */
+      .table-wrap { overflow-x: auto; margin: 1rem 0 1.25rem; border-radius: 6px; border: 1px solid var(--grey-300); }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.875rem;
+      }
+      thead tr { background-color: var(--primary-dark); color: white; }
+      thead th {
+        padding: 0.65rem 1rem;
+        text-align: left;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+      tbody tr { border-bottom: 1px solid var(--grey-200); }
+      tbody tr:last-child { border-bottom: none; }
+      tbody tr:nth-child(even) { background-color: #f5f8fc; }
+      tbody td {
+        padding: 0.6rem 1rem;
+        color: var(--font-grey);
+        vertical-align: top;
+      }
+      tbody td:first-child { color: var(--font-dark); font-weight: 500; white-space: nowrap; }
+
+      /* ── Callout boxes ── */
+      .callout {
+        border-radius: 6px;
+        padding: 0.9rem 1.1rem;
+        margin: 1rem 0 1.25rem;
+        font-size: 0.875rem;
+        border-left: 4px solid;
+      }
+      .callout-blue {
+        background: var(--primary-light);
+        border-color: var(--primary-blue);
+        color: var(--primary-dark);
+      }
+      .callout-green {
+        background: var(--success-light);
+        border-color: var(--success);
+        color: var(--success);
+      }
+      .callout p { color: inherit; margin: 0; }
+      .callout strong { color: inherit; }
+
+      /* ── Definition list for Key Terms ── */
+      .term-list {
+        margin: 0.75rem 0 1.25rem;
+      }
+      .term-list dt {
+        font-weight: 600;
+        color: var(--primary-dark);
+        margin-top: 0.9rem;
+        font-size: 0.9375rem;
+      }
+      .term-list dt:first-child { margin-top: 0; }
+      .term-list dd {
+        margin-left: 0;
+        padding-left: 1rem;
+        border-left: 2px solid var(--grey-300);
+        color: var(--font-grey);
+        font-size: 0.875rem;
+        margin-top: 0.2rem;
+        line-height: 1.55;
+      }
+
+      /* ── Divider ── */
+      .section-divider {
+        border: none;
+        border-top: 1px solid var(--grey-200);
+        margin: 2.5rem 0;
+      }
+
+      /* ── References ── */
+      .references-list { list-style: none; padding: 0; }
+      .references-list li {
+        font-size: 0.83rem;
+        color: var(--font-grey);
+        padding: 0.55rem 0;
+        border-bottom: 1px solid var(--grey-200);
+        display: flex;
+        gap: 0.6rem;
+      }
+      .references-list li:last-child { border-bottom: none; }
+      .ref-num {
+        flex-shrink: 0;
+        font-weight: 600;
+        color: var(--primary-blue);
+        min-width: 1.4rem;
+      }
+
+      /* ── Footer ── */
+      footer {
+        text-align: center;
+        font-size: 0.78rem;
+        color: var(--grey-500);
+        padding: 1.5rem;
+        border-top: 1px solid var(--grey-300);
+        background: var(--surface);
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .content { padding: 1.5rem 1.25rem 3rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+      <a class="navbar-brand" href="/">
+        <span class="brand-name">Open Targets</span>
+        <span class="app-name">Platform</span>
+      </a>
+      <span class="navbar-badge">GSEA Documentation</span>
+    </nav>
+
+    <div class="page">
+
+      <!-- Sidebar TOC -->
+      <aside class="sidebar">
+        <p class="toc-title">On this page</p>
+        <ul class="toc-list">
+          <li><a href="#what-is-gsea">What is GSEA?</a></li>
+          <li><a href="#key-terms">Key Terms</a></li>
+          <li><a href="#input-gene-lists">Input Gene Lists</a></li>
+          <li><a href="#implementation">GSEA Implementation</a></li>
+          <li><a href="#libraries">Gene Set Libraries</a></li>
+          <li><a href="#interpreting">Interpreting Results</a>
+            <ul class="toc-list">
+              <li class="toc-sub"><a href="#how-gsea-works">How GSEA Works</a></li>
+              <li class="toc-sub"><a href="#key-metrics">Key Metrics</a></li>
+              <li class="toc-sub"><a href="#quick-guide">Quick Guide</a></li>
+            </ul>
+          </li>
+          <li><a href="#result-views">Result Views</a></li>
+          <li><a href="#references">References</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main content -->
+      <main class="content">
+        <div class="content-inner">
+
+          <h1>Gene Set Enrichment Analysis (GSEA)</h1>
+          <p class="subtitle">Open Targets Platform · Methodology &amp; User Guide</p>
+
+          <!-- What is GSEA -->
+          <section id="what-is-gsea">
+            <h2>What is GSEA?</h2>
+            <p>
+              Gene Set Enrichment Analysis (GSEA) is a computational method that determines whether a
+              predefined group of genes — representing a biological pathway or function — shows a
+              statistically significant, coordinated pattern within a ranked list of genes. Rather than
+              looking at individual genes in isolation, GSEA asks: <em>do the genes involved in a
+              particular biological process cluster near the top of my disease association list more
+              than expected by chance?</em>
+            </p>
+            <p>
+              The Platform implements GSEA to reveal biological themes underlying disease associations
+              and support target identification and validation.
+            </p>
+          </section>
+
+          <!-- Key Terms -->
+          <section id="key-terms">
+            <h2>Key Terms</h2>
+            <dl class="term-list">
+              <dt>GSEA — Gene Set Enrichment Analysis</dt>
+              <dd>A method to identify whether predefined groups of genes are overrepresented in a ranked gene list.</dd>
+
+              <dt>Gene set</dt>
+              <dd>A predefined collection of genes grouped by shared biological function, pathway membership, or other annotation.</dd>
+
+              <dt>ES — Enrichment Score</dt>
+              <dd>A running-sum statistic reflecting how much a gene set is concentrated at the top or bottom of a ranked list.</dd>
+
+              <dt>NES — Normalised Enrichment Score</dt>
+              <dd>The ES adjusted for gene set size, allowing fair comparison across gene sets of different sizes.</dd>
+
+              <dt>FDR — False Discovery Rate</dt>
+              <dd>A multiple testing correction that estimates the proportion of results that are false positives.</dd>
+
+              <dt>Leading edge genes</dt>
+              <dd>The subset of genes within a gene set that contribute most to the enrichment signal and are the strongest candidates for follow-up.</dd>
+            </dl>
+          </section>
+
+          <!-- Input Gene Lists -->
+          <section id="input-gene-lists">
+            <h2>Input Gene Lists</h2>
+            <p>Gene lists for GSEA can be derived from the disease association page using different evidence types:</p>
+            <ul>
+              <li><strong>All disease associations</strong> — comprehensive ranked list across all evidence types</li>
+              <li><strong>Specific data type or source</strong> — subset based on individual data types or sources</li>
+              <li><strong>Custom gene list</strong> — user-provided genes with disease associations</li>
+            </ul>
+            <div class="callout callout-blue">
+              <p>
+                <strong>Recommended gene list size:</strong> The Platform recommends using gene lists
+                of <strong>&gt;500 genes</strong> to achieve statistically significant results, though
+                the optimal size depends on the gene set library being tested. Larger gene lists
+                generally provide better statistical power and increase the likelihood of detecting
+                meaningful enrichments.
+              </p>
+            </div>
+          </section>
+
+          <!-- Implementation -->
+          <section id="implementation">
+            <h2>GSEA Implementation</h2>
+            <p>
+              The Platform uses <strong>blitzGSEA</strong> to perform enrichment analysis. This
+              implementation estimates p-values by fitting enrichment score null distributions to
+              gamma models<sup><a href="#ref-1">[1]</a></sup>, enabling efficient computation across large gene set
+              collections.
+            </p>
+            <p>
+              Since all genes from the Platform have positive ranking scores, the analysis is
+              performed <strong>one-sided</strong> by default. Results are filtered by NES to show
+              only gene sets enriched at the top of the ranked list (NES&nbsp;&gt;&nbsp;0).
+            </p>
+            <p>
+              By default, the analysis uses all gene sets from the selected library as the background
+              for enrichment testing. This approach ensures consistent statistical evaluation across
+              all pathways and functional categories within each gene set collection.
+            </p>
+          </section>
+
+          <!-- Libraries -->
+          <section id="libraries">
+            <h2>Available Gene Set Libraries</h2>
+            <p>The Platform provides curated gene set libraries from multiple sources (February 2026):</p>
+
+            <div class="callout callout-green">
+              <p>
+                <strong>Tip:</strong> Running multiple libraries is recommended — each provides a
+                different lens on the same biology, and results that converge across libraries are
+                typically more robust<sup><a href="#ref-3">[3]</a></sup>. Start with Reactome for mechanistic detail, add GO
+                for broader functional context, and include ChEMBL when prioritising druggable targets.
+              </p>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Library</th>
+                    <th>Description</th>
+                    <th>Best used for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a href="https://reactome.org/" target="_blank" rel="noopener">Reactome 2025</a></td>
+                    <td>Curated biological pathways: signalling, metabolism, disease<sup><a href="#ref-2">[2]</a></sup></td>
+                    <td><strong>Recommended starting point.</strong> Manually curated with evidence tracking, best balance of specificity and interpretability.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://geneontology.org/" target="_blank" rel="noopener">GO Biological Process</a></td>
+                    <td>Broad functional programmes (e.g. "inflammatory response", "apoptotic process")<sup><a href="#ref-5">[5]</a></sup></td>
+                    <td>Higher-level functional context; complements Reactome.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://geneontology.org/" target="_blank" rel="noopener">GO Molecular Function</a></td>
+                    <td>Molecular-level activities (e.g. "kinase activity", "DNA binding")</td>
+                    <td>Identifying druggable biochemical functions.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://geneontology.org/" target="_blank" rel="noopener">GO Cellular Component</a></td>
+                    <td>Subcellular locations (e.g. "nucleus", "plasma membrane")</td>
+                    <td>Understanding subcellular localisation of disease associations.</td>
+                  </tr>
+                  <tr>
+                    <td><a href="https://www.ebi.ac.uk/chembl/" target="_blank" rel="noopener">ChEMBL Target Class</a></td>
+                    <td>Drug target classifications<sup><a href="#ref-6">[6]</a></sup></td>
+                    <td>Therapeutic target identification and drug repurposing.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>
+              All gene sets are sourced from their original resources and unified in a standardised
+              gene_sets parquet file, which will be available for download from the Platform.
+            </p>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- Interpreting -->
+          <section id="interpreting">
+            <h2>Interpreting Enrichment Results</h2>
+
+            <h3 id="how-gsea-works">How GSEA Works (Conceptually)</h3>
+            <p>
+              GSEA walks down your ranked gene list from top to bottom. For each gene set, it keeps a
+              running tally: the score increases each time a gene belonging to the set is encountered,
+              and decreases when a gene outside the set is encountered. The maximum deviation of this
+              running sum from zero is the <strong>Enrichment Score (ES)</strong>. If genes in the set
+              cluster near the top of the list, the ES will be high.
+            </p>
+
+            <h3 id="key-metrics">Key Metrics</h3>
+
+            <h3>Normalised Enrichment Score (NES)</h3>
+            <p>
+              The NES is the primary metric for interpreting results. It is the ES adjusted for gene
+              set size, which allows you to compare results across gene sets of different sizes.
+            </p>
+            <ul>
+              <li><strong>NES &gt; 0</strong>: the gene set is enriched at the top of the ranked list (i.e. among the most strongly disease-associated genes)</li>
+              <li><strong>Higher NES values</strong> indicate stronger enrichment signals</li>
+              <li><strong>NES &gt; 1.5</strong> is a commonly used threshold for meaningful enrichment, though context matters<sup><a href="#ref-4">[4]</a></sup></li>
+            </ul>
+
+            <h3>p-value</h3>
+            <p>
+              The p-value indicates the statistical significance of the enrichment score, estimated
+              through blitzGSEA's gamma distribution approximation. A low p-value (typically &lt; 0.05)
+              suggests the observed enrichment is unlikely to have occurred by chance.
+            </p>
+
+            <h3>FDR (False Discovery Rate)</h3>
+            <p>
+              When many gene sets are tested simultaneously, some will appear enriched by chance alone.
+              The FDR corrects for this multiple testing problem. An <strong>FDR &lt; 0.25</strong> is
+              the conventional threshold recommended for GSEA results, which is more lenient than the
+              typical 0.05 threshold used in single-hypothesis testing because GSEA is often used as a
+              hypothesis-generating tool<sup><a href="#ref-4">[4]</a></sup>.
+            </p>
+
+            <h3>Leading Edge Genes</h3>
+            <p>
+              The leading edge subset represents the core genes driving the enrichment signal. These
+              are the genes that appear at the top of the ranked list and before the point where the
+              enrichment score reaches its maximum. They are the most biologically relevant genes
+              within the enriched gene set and are strong candidates for follow-up investigation.
+            </p>
+
+            <h3 id="quick-guide">Quick Interpretation Guide</h3>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>NES</th>
+                    <th>FDR</th>
+                    <th>Interpretation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>&gt; 2.0</td>
+                    <td>&lt; 0.05</td>
+                    <td>Strong enrichment — high confidence that this pathway is relevant</td>
+                  </tr>
+                  <tr>
+                    <td>1.5 – 2.0</td>
+                    <td>&lt; 0.25</td>
+                    <td>Moderate enrichment — worth investigating further</td>
+                  </tr>
+                  <tr>
+                    <td>1.0 – 1.5</td>
+                    <td>&gt; 0.25</td>
+                    <td>Weak enrichment — treat with caution, may not be meaningful</td>
+                  </tr>
+                  <tr>
+                    <td>&lt; 1.0</td>
+                    <td>any</td>
+                    <td>Not enriched — gene set is not concentrated at the top of the ranked list</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 0.8rem; font-style: italic; color: var(--grey-500);">
+              These thresholds are guidelines, not rigid cutoffs. Biological context and the number of
+              gene sets tested should inform interpretation.
+            </p>
+          </section>
+
+          <!-- Result Views -->
+          <section id="result-views">
+            <h2>Result Views</h2>
+            <p>
+              The Platform provides three ways to explore GSEA results, each suited to different
+              stages of analysis.
+            </p>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>View</th>
+                    <th>Description</th>
+                    <th>Best used for</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Table View</td>
+                    <td>Sortable, filterable table listing all enriched gene sets with NES, p-value, and FDR.</td>
+                    <td>Scanning results numerically, sorting by significance or enrichment strength, identifying top-ranked gene sets.</td>
+                  </tr>
+                  <tr>
+                    <td>Tree View</td>
+                    <td>Hierarchical display showing how enriched gene sets relate to each other within the library's organisational structure.</td>
+                    <td>Understanding broader biological context — e.g. whether multiple enriched pathways share a top-level process.</td>
+                  </tr>
+                  <tr>
+                    <td>Sunburst View</td>
+                    <td>Radial, multi-level chart where inner rings represent broad categories and outer rings represent specific gene sets.</td>
+                    <td>At-a-glance overview of dominant biological areas; spotting clusters of related enrichments; visual communication of findings.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <hr class="section-divider" />
+
+          <!-- References -->
+          <section id="references">
+            <h2>References</h2>
+            <ol class="references-list">
+              <li id="ref-1">
+                <span class="ref-num">[1]</span>
+                <span>Lachmann, A., Xie, Z., &amp; Ma'ayan, A. (2022). blitzGSEA: efficient computation of gene set enrichment analysis through gamma distribution approximation. <em>Bioinformatics</em>, 38(8), 2356–2357.</span>
+              </li>
+              <li id="ref-2">
+                <span class="ref-num">[2]</span>
+                <span>Jassal, B. et al. (2020). The Reactome pathway knowledgebase. <em>Nucleic Acids Research</em>, 48(D1), D498–D503.</span>
+              </li>
+              <li id="ref-3">
+                <span class="ref-num">[3]</span>
+                <span>Reimand, J. et al. (2019). Pathway enrichment analysis and visualization of omics data using g:Profiler, GSEA, Cytoscape and EnrichmentMap. <em>Nature Protocols</em>, 14, 482–517.</span>
+              </li>
+              <li id="ref-4">
+                <span class="ref-num">[4]</span>
+                <span>Subramanian, A. et al. (2005). Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles. <em>PNAS</em>, 102(43), 15545–15550.</span>
+              </li>
+              <li id="ref-5">
+                <span class="ref-num">[5]</span>
+                <span>The Gene Ontology Consortium. (2026). The Gene Ontology knowledgebase in 2026. <em>Nucleic Acids Research</em>, 54(D1), D1779–D1792.</span>
+              </li>
+              <li id="ref-6">
+                <span class="ref-num">[6]</span>
+                <span>Zdrazil, B. et al. (2024). The ChEMBL Database in 2023: a drug discovery platform spanning multiple bioactivity data types and time periods. <em>Nucleic Acids Research</em>, 52(D1), D1180–D1192.</span>
+              </li>
+            </ol>
+          </section>
+
+        </div><!-- /content-inner -->
+      </main>
+    </div><!-- /page -->
+
+    <footer>
+      Open Targets Platform · GSEA Documentation · Content reflects library versions as of February 2026
+    </footer>
+
+  </body>
+</html>

@@ -16,6 +16,7 @@ export interface GseaResult {
   "Leading edge genes": string; // comma-separated string
   Link?: string;
   "Parent pathway"?: string;
+  "Pathway genes"?: string; // comma-separated string of all genes in the pathway
 }
 
 export interface InputOverlap {
