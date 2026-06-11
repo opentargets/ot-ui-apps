@@ -8,10 +8,15 @@ import {
 } from "ui";
 import { Fragment } from "react";
 import { clinicalStageCategories } from "@ot/constants";
+import { parseSynonyms } from "@ot/utils";
 
 import Smiles from "./Smiles";
 
 import DRUG_PROFILE_HEADER_FRAGMENT from "./ProfileHeader.gql";
+
+// Drug synonym/tradeName sources, in display order: ChEMBL first, then AACT
+// (names mined from clinical trials). Sources are shown raw in the chip tooltip.
+const DRUG_SYNONYM_SORT_ORDER = ["ChEMBL", "AACT"];
 
 function ProfileHeader({ chemblId }: { chemblId: string }) {
   const { loading, error, data } = usePlatformApi();
@@ -30,7 +35,10 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
   } = data?.drug || {};
 
   const maxStage = clinicalStageCategories[maximumClinicalStage] ? clinicalStageCategories[maximumClinicalStage].label : "N/A";
- 
+
+  const parsedSynonyms = parseSynonyms(synonyms || [], { sortOrder: DRUG_SYNONYM_SORT_ORDER });
+  const parsedTradeNames = parseSynonyms(tradeNames || [], { sortOrder: DRUG_SYNONYM_SORT_ORDER });
+
   return (
     <BaseProfileHeader>
       <>
@@ -55,10 +63,10 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
           ))}
         </Field>
         <ProfileChipList title="Synonyms" inline loading={loading}>
-          {synonyms}
+          {parsedSynonyms}
         </ProfileChipList>
         <ProfileChipList title="Known trade names" inline loading={loading}>
-          {tradeNames}
+          {parsedTradeNames}
         </ProfileChipList>
       </>
       <Smiles chemblId={chemblId} />

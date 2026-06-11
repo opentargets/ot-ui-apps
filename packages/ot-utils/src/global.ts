@@ -59,6 +59,58 @@ export function clearDescriptionCodes(
   });
 }
 
+export interface LabelAndSourceSynonym {
+  label: string;
+  source: string;
+}
+
+export interface ParsedSynonym {
+  label: string;
+  tooltip: string;
+}
+
+interface ParseSynonymsOptions {
+  // map raw source values to display names; unmapped sources fall back to the raw value
+  sourceLabels?: Record<string, string>;
+  // sort sources in this order; sources not listed are placed last
+  sortOrder?: string[];
+}
+
+/*
+ * Synonyms from the API have a "label" and a "source", and the same label can
+ * appear more than once with different sources. Collapse them into a unique
+ * list (by case-insensitive label) where each term lists all of its sources in
+ * a tooltip. Shared by the Target and Drug profile headers.
+ */
+export function parseSynonyms(
+  synonyms: LabelAndSourceSynonym[],
+  { sourceLabels = {}, sortOrder = [] }: ParseSynonymsOptions = {}
+): ParsedSynonym[] {
+  const rank = (source: string): number => {
+    const i = sortOrder.indexOf(source);
+    return i === -1 ? sortOrder.length : i;
+  };
+  const sortedSynonyms = synonyms.slice().sort((a, b) => rank(a.source) - rank(b.source));
+
+  const parsedSynonyms: { label: string; tooltip: string[] }[] = [];
+  sortedSynonyms.forEach((s) => {
+    const thisSyn = parsedSynonyms.find(
+      (parsedSynonym) => parsedSynonym.label.toLowerCase() === s.label.toLowerCase()
+    );
+    if (!thisSyn) {
+      parsedSynonyms.push({ label: s.label, tooltip: [s.source] });
+    } else {
+      // if the synonym is already in the list, add this source to its tooltip
+      thisSyn.tooltip.push(s.source);
+    }
+  });
+
+  return parsedSynonyms.map((syn) => ({
+    label: syn.label,
+    tooltip: `Source: ${syn.tooltip.map((s) => sourceLabels[s] ?? s).join(", ")}`,
+  }));
+}
+
 interface GraphQLParams {
   query: string;
   variables?: Record<string, unknown>;
