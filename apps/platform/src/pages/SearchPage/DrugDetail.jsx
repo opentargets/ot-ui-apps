@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPrescriptionBottleAlt } from "@fortawesome/free-solid-svg-icons";
 
 import { LongText, Chip, Link, LongList } from "ui";
+import { parseSynonyms } from "@ot/utils";
 
 const useStyles = makeStyles({
   link: {
@@ -18,8 +19,13 @@ const useStyles = makeStyles({
   },
 });
 
+// ChEMBL first, then AACT (names mined from clinical trials)
+const DRUG_SYNONYM_SORT_ORDER = ["ChEMBL", "AACT"];
+
 function DrugDetail({ data }) {
   const classes = useStyles();
+  const synonyms = parseSynonyms(data.synonyms || [], { sortOrder: DRUG_SYNONYM_SORT_ORDER });
+  const tradeNames = parseSynonyms(data.tradeNames || [], { sortOrder: DRUG_SYNONYM_SORT_ORDER });
   return (
     <CardContent>
       <Typography color="primary" variant="h5">
@@ -54,27 +60,31 @@ function DrugDetail({ data }) {
           />
         </>
       )}
-      {data.synonyms.length > 0 && (
+      {synonyms.length > 0 && (
         <>
           <Typography className={classes.subtitle} variant="subtitle1">
             Synonyms
           </Typography>
           <LongList
-            terms={data.synonyms}
+            terms={synonyms}
             maxTerms={5}
-            render={synonym => <Chip key={synonym} title={synonym} label={synonym} />}
+            render={synonym => (
+              <Chip key={synonym.label} title={synonym.tooltip} label={synonym.label} />
+            )}
           />
         </>
       )}
-      {data.tradeNames.length > 0 && (
+      {tradeNames.length > 0 && (
         <>
           <Typography className={classes.subtitle} variant="subtitle1">
             Trade names
           </Typography>
           <LongList
-            terms={data.tradeNames}
+            terms={tradeNames}
             maxTerms={5}
-            render={tradeName => <Chip key={tradeName} title={tradeName} label={tradeName} />}
+            render={tradeName => (
+              <Chip key={tradeName.label} title={tradeName.tooltip} label={tradeName.label} />
+            )}
           />
         </>
       )}
