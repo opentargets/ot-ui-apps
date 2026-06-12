@@ -11,7 +11,7 @@ import Description from "./Description";
 import GtexTab, { getData as getGtexData } from "./GtexTab";
 import SummaryTab, { getData as getSummaryData } from "./SummaryTab";
 
-function Section({ id: ensgId, label: symbol, entity, viewMode }) {
+function Section({ id: ensgId, label: symbol, entity, viewMode, expandSpecificity }) {
   const defaultTab = "summary";
   const [showAlert, setShowAlert] = useState(true);
   const [tab, setTab] = useState(defaultTab);
@@ -57,7 +57,15 @@ function Section({ id: ensgId, label: symbol, entity, viewMode }) {
             <Tab value="summary" label="Summary" />
             <Tab value="gtex" label="Variation (GTEx)" />
           </Tabs>
-          {tab === "summary" && <SummaryTab symbol={symbol} ensgId={ensgId} data={request.data} viewMode={viewMode} />}
+          {tab === "summary" &&
+            <SummaryTab
+              symbol={symbol}
+              ensgId={ensgId}
+              data={request.data}
+              viewMode={viewMode}
+              expandSpecificity={expandSpecificity}
+            />
+          }
           {tab === "gtex" && <GtexTab symbol={symbol} data={request.data} />}
         </Fragment>
       )}

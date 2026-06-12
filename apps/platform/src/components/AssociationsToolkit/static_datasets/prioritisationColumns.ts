@@ -149,7 +149,7 @@ const tissueSpecificity: Column = {
   description: "HPA category types of elevated expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
-  sectionProps: { viewMode: "tissue" },
+  sectionProps: { viewMode: "tissue", expandSpecificity: true },
 };
 
 const tissueDistribution: Column = {
@@ -160,6 +160,28 @@ const tissueDistribution: Column = {
   description: "HPA category types of detectable expression across tissues for the target",
   docsLink:
     "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
+  sectionProps: { viewMode: "tissue" },
+};
+
+const celltypeSpecificity: Column = {
+  id: "celltypeSpecificity",
+  label: "Cell type specificity",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "HPA category types of elevated expression across cell types for the target",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#cell-specificity",
+  sectionProps: { viewMode: "celltype", expandSpecificity: true },
+};
+
+const celltypeDistribution: Column = {
+  id: "celltypeDistribution",
+  label: "Cell type distribution",
+  aggregation: TargetPrioritisationAggregation.SAFETY,
+  sectionId: "expressions",
+  description: "HPA category types of detectable expression across cell types for the target",
+  docsLink:
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#cell-distribution",
   sectionProps: { viewMode: "celltype" },
 };
 
@@ -180,6 +202,8 @@ const cols: Column[] = [
   paralogMaxIdentityPercentage,
   tissueSpecificity,
   tissueDistribution,
+  celltypeSpecificity,
+  celltypeDistribution,
 ];
 
 export default cols;

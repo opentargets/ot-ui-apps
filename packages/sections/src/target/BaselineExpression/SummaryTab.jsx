@@ -42,7 +42,7 @@ const getDownloadRows = (baselineExpressions) =>
     distributionScore: expression.distribution_score,
   }));
 
-function SummaryTab({ symbol, ensgId, data, viewMode }) {
+function SummaryTab({ symbol, ensgId, data, viewMode, expandSpecificity }) {
   if (!data) return null;
 
   const datatypes = ["scrna-seq", "bulk rna-seq", "mass-spectrometry proteomics"];
@@ -69,6 +69,7 @@ function SummaryTab({ symbol, ensgId, data, viewMode }) {
           />
         }
         viewMode={viewMode}
+        expandSpecificity={expandSpecificity}
       />
     </Grid>
   );

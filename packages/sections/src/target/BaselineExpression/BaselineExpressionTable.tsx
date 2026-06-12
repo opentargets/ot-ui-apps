@@ -403,6 +403,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   DownloaderComponent,
   specificityThreshold,
   viewMode = "tissue",
+  expandSpecificity = false  // sort on viewMode specificity and expand top-levels over specificityThreshold
 }) => {
 
   const classes = useStyles();
@@ -791,6 +792,27 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   useEffect(() => {
     setExpanded({});
   }, [groupByTissue]);
+
+  // Auto-expand the row with highest specificity only on initial load
+  useEffect(() => {
+    if (
+      expandSpecificity &&
+      firstLevel._maxSpecificity?.score !== undefined &&
+      firstLevel._maxSpecificity.score >= specificityThreshold &&
+      firstLevel._maxSpecificity._firstLevelId
+    ) {
+      const targetRow = table.getRowModel().rows.find(
+        (row) => row.original._firstLevelId === firstLevel._maxSpecificity._firstLevelId
+      );
+      
+      if (targetRow) {
+        setExpanded((prev: ExpandedState) => ({
+          ...prev,
+          [targetRow.id]: true,
+        }));
+      }
+    }
+  }, []); // only auto expand when first loads
 
   return (
     <Box className={classes.tableContainer}>
