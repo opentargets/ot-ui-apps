@@ -1,102 +1,88 @@
-import { Paper, Box, Typography, Chip } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { OtTable, Link } from "ui";
+import { useMemo, useState } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import { Link } from "ui";
+import ProjectCard from "./ProjectCard";
+import ProjectsFilter, { EMPTY_FILTERS } from "./ProjectsFilter";
 import projectsData from "./projects-data.json";
 
-const useStyles = makeStyles(theme => ({
-  icon: {
-    color: theme.palette.primary.main,
+const FILTER_GROUPS = [
+  {
+    key: "integration",
+    label: "Integration",
+    options: ["PPP only", "PPP", "Public"],
   },
-  diseaseContainer: {
-    display: "flex",
+  {
+    key: "project_status",
+    label: "Project Status",
+    options: [...new Set(projectsData.map(p => p.project_status))].sort(),
   },
-  disease: {
-    marginRight: "0.2rem",
+  {
+    key: "open_targets_therapeutic_area",
+    label: "Research & Development Area",
+    options: [...new Set(projectsData.map(p => p.open_targets_therapeutic_area))].sort(),
   },
-}));
+];
 
-const CURRENTLY_INTEGRATES_IN_PPP = {
-  Y: faCircleCheck,
-  N: faCircleNotch,
-};
+function sortProjects(projects, sortBy) {
+  return [...projects].sort((a, b) => {
+    if (sortBy === "integrated_into_PPP") {
+      if (a.integrated_into_PPP === b.integrated_into_PPP) return 0;
+      return a.integrated_into_PPP === "Y" ? -1 : 1;
+    }
+    return (a[sortBy] ?? "").localeCompare(b[sortBy] ?? "");
+  });
+}
+
+function matchesFilters(project, filters) {
+  const q = filters.search.toLowerCase();
+  if (q) {
+    const haystack = [
+      project.project_name,
+      project.otar_code,
+      project.project_lead,
+      project.project_status,
+      project.open_targets_therapeutic_area,
+    ]
+      .join(" ")
+      .toLowerCase();
+    if (!haystack.includes(q)) return false;
+  }
+  if (filters.project_status.length > 0 && !filters.project_status.includes(project.project_status))
+    return false;
+  if (
+    filters.open_targets_therapeutic_area.length > 0 &&
+    !filters.open_targets_therapeutic_area.includes(project.open_targets_therapeutic_area)
+  )
+    return false;
+  if (filters.integration.length > 0) {
+    const ok = filters.integration.every(
+      i =>
+        (i === "PPP" && project.integrated_into_PPP === "Y") ||
+        (i === "PPP only" &&
+          project.integrated_into_PPP === "Y" &&
+          project.integrated_into_Public === "N") ||
+        (i === "Public" && project.integrated_into_Public === "Y")
+    );
+    if (!ok) return false;
+  }
+  return true;
+}
 
 function ProjectPage() {
-  const classes = useStyles();
-  const columns = [
-    {
-      id: "otar_code",
-      label: "Project Code",
-      renderCell: ({ otar_code: otarCode }) =>
-        otarCode ? (
-          <Link to={`http://home.opentargets.org/${otarCode}`} external newTab>
-            {otarCode}
-          </Link>
-        ) : null,
-    },
-    { id: "project_name", label: "Project Name" },
-    { id: "project_lead", label: "Project Lead" },
-    { id: "generates_data", label: "Generates Data" },
-    {
-      id: "integrated_into_PPP",
-      label: "Integrated into PPP",
-      filterValue: ({ integrated_into_PPP }) => `${integrated_into_PPP}`,
-      sortable: true,
-      renderCell: ({ integrated_into_PPP }) => (
-        <FontAwesomeIcon
-          size="lg"
-          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_PPP]}
-          className={classes.icon}
-        />
-      ),
-    },
-    {
-      id: "integrated_into_Public",
-      label: "Integrated into Public",
-      filterValue: ({ integrated_into_Public }) => `${integrated_into_Public}`,
-      sortable: true,
-      renderCell: ({ integrated_into_Public }) => (
-        <FontAwesomeIcon
-          size="lg"
-          icon={CURRENTLY_INTEGRATES_IN_PPP[integrated_into_Public]}
-          className={classes.icon}
-        />
-      ),
-    },
-    { id: "project_status", label: "Project Status", sortable: true },
-    { id: "open_targets_therapeutic_area", label: "Therapeutic Area" },
-    {
-      id: "disease_mapping",
-      label: "Disease Mapped in the PPP",
-      renderCell: ({ disease_mapping: diseaseMapping }) => {
-        const ALL_AVATARS = [];
-        diseaseMapping.forEach(disease => {
-          if (disease && disease.disease_id) {
-            ALL_AVATARS.push(
-              <Link to={`/disease/${disease.disease_id}`} key={disease.disease_id}>
-                <Chip
-                  size="small"
-                  label={disease.label || disease.disease_id}
-                  clickable
-                  color="primary"
-                  className={classes.disease}
-                />
-              </Link>
-            );
-          }
-        });
-        return <div className={classes.diseaseContainer}>{ALL_AVATARS}</div>;
-      },
-    },
-  ];
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+
+  const filteredProjects = useMemo(
+    () => sortProjects(projectsData.filter(p => matchesFilters(p, filters)), filters.sortBy),
+    [filters]
+  );
+
   return (
     <>
       <Typography variant="h4" component="h1" paragraph>
-        Open Targets Projects Table
+        Open Targets Projects
       </Typography>
       <Typography paragraph>
-        The table below contains key information on the OTAR projects, their status and data
+        The cards below contain key information on the OTAR projects, their status and data
         availability into the PPP.
       </Typography>
       <Typography paragraph>
@@ -117,17 +103,31 @@ function ProjectPage() {
         </Link>
       </Typography>
 
-      <Paper variant="outlined" elevation={0}>
-        <Box m={2}>
-          <OtTable
-            showGlobalFilter
-            columns={columns}
-            rows={projectsData}
-            sortBy="integrated_into_PPP"
-            order="desc"
+      <Grid container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid item xs={12} md={3} lg={2} sx={{ display: "flex", justifyContent: "center" }}>
+          <ProjectsFilter
+            filters={filters}
+            filterGroups={FILTER_GROUPS}
+            onChange={setFilters}
           />
-        </Box>
-      </Paper>
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          md={9}
+          lg={10}
+          sx={{ display: "flex", flexDirection: "column", gap: 1, pl: { md: 2 } }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            All Projects ({filteredProjects.length})
+          </Typography>
+          <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2 }}>
+            {filteredProjects.map(project => (
+              <ProjectCard key={project.otar_code} data={project} />
+            ))}
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }

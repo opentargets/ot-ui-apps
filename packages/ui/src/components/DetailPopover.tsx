@@ -39,6 +39,8 @@ export default function DetailPopover({
           fontWeight: 600,
           color: "secondary.main",
         }}
+        data-testid="detail-popover-trigger"
+        aria-roledescription="button"
         aria-describedby={id}
         onClick={handleClick}
       >
@@ -57,7 +59,7 @@ export default function DetailPopover({
           horizontal: "left",
         }}
       >
-        <Box p={2}>{children}</Box>
+        <Box data-testid="detail-popover-content" p={2}>{children}</Box>
       </Popover>
     </>
   );

@@ -34,10 +34,10 @@ function CredibleSetPage(): ReactElement {
       <>
         <Header
           loading={loading}
-          studyId={studyId}
-          variantId={variantId}
-          referenceAllele={referenceAllele}
-          alternateAllele={alternateAllele}
+          studyId={studyId ?? ""}
+          variantId={variantId ?? ""}
+          referenceAllele={referenceAllele ?? ""}
+          alternateAllele={alternateAllele ?? ""}
         />
         <ScrollToTop />
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

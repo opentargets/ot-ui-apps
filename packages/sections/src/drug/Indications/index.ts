@@ -1,10 +1,10 @@
 import { lazy } from "react";
 
 export const definition = {
-  id: "indications",
+  id: "Indications",
   name: "Indications",
   shortName: "I",
-  hasData: (data: any) => data.indications?.count > 0 || false,
+  hasData: (data) => data?.indications?.count > 0,
 };
 
 // Components

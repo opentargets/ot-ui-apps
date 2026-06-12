@@ -3,7 +3,7 @@ fragment otEncoreSummary on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["encore"]
-    size: 0
+    size: 1
   ) {
     count
   }

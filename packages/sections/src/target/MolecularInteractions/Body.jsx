@@ -94,9 +94,10 @@ function Body({ label: symbol, id, entity }) {
       renderBody={() => (
         <>
           {/* Interaction Resource */}
-          <Tabs value={source} onChange={onTabChange} aria-label="simple tabs example">
+          <Tabs data-testid="interactions-tabs" value={source} onChange={onTabChange} aria-label="simple tabs example">
             {sources.map(s => (
               <Tab
+                data-testid={`interactions-tab-${s.id}`}
                 label={
                   <>
                     <Typography variant="body1">{s.label}</Typography>
@@ -119,18 +120,32 @@ function Body({ label: symbol, id, entity }) {
 
           <div style={{ marginTop: "50px" }}>
             {/* intact stuff */}
-            {source === "intact" && counts[source] > 0 && <IntactTab ensgId={id} symbol={symbol} />}
+            {source === "intact" && counts[source] > 0 && (
+              <div data-testid="interactions-content-intact">
+                <IntactTab ensgId={id} symbol={symbol} />
+              </div>
+            )}
 
             {/* signor stuff */}
-            {source === "signor" && counts[source] > 0 && <SignorTab ensgId={id} symbol={symbol} />}
+            {source === "signor" && counts[source] > 0 && (
+              <div data-testid="interactions-content-signor">
+                <SignorTab ensgId={id} symbol={symbol} />
+              </div>
+            )}
 
             {/* reactome stuff */}
             {source === "reactome" && counts[source] > 0 && (
-              <ReactomeTab ensgId={id} symbol={symbol} />
+              <div data-testid="interactions-content-reactome">
+                <ReactomeTab ensgId={id} symbol={symbol} />
+              </div>
             )}
 
             {/* string stuff */}
-            {source === "string" && counts[source] > 0 && <StringTab ensgId={id} symbol={symbol} />}
+            {source === "string" && counts[source] > 0 && (
+              <div data-testid="interactions-content-string">
+                <StringTab ensgId={id} symbol={symbol} />
+              </div>
+            )}
           </div>
         </>
       )}

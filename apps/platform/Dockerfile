@@ -1,27 +1,27 @@
-FROM alpine
+# ------------------------------------------------------------------------ BUILD
+FROM alpine:3.21 AS nginx-base
 
-# install nginx and brotli module
-RUN apk update
-RUN apk add --upgrade nginx brotli nginx-mod-http-brotli
+RUN apk add --no-cache nginx brotli nginx-mod-http-brotli && \
+    # Point pid to /var/lib/nginx (owned by nginx user)
+    # Drop user directive because we already run as nginx
+    sed -i \
+        -e 's|/var/run/nginx.pid|/var/lib/nginx/nginx.pid|' \
+        -e '/^user/d' \
+        /etc/nginx/nginx.conf
 
-RUN addgroup -g 1001 -S nginxgroup && \
-    adduser -u 1001 -D -S -G nginxgroup nginxuser
-    
-# copy assets, config and entrypoint
-COPY ./bundle-platform /usr/share/nginx/html
-COPY ./etc/platform.conf /etc/nginx/http.d/platform.conf
-COPY ./etc/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# ---------------------------------------------------------------------- RUNTIME
+FROM nginx-base
 
-# create necessary nginx folders and set permissions
-RUN mkdir -p /var/run/nginx /var/log/nginx /etc/nginx /usr/share/nginx/html 
-RUN chown -R nginxuser:nginxgroup /run /var/run/nginx /var/log/nginx /var/lib/nginx /etc/nginx /usr/share/nginx/html
+COPY --chown=nginx:nginx ./bundle-platform   /usr/share/nginx/html
+COPY --chown=nginx:nginx ./etc/platform.conf /etc/nginx/http.d/platform.conf
+COPY --chmod=755         ./etc/entrypoint.sh /entrypoint.sh
 
-# adjust nginx config to use correct pid file location and remove user directive
-RUN sed -i 's/\/var\/run\/nginx.pid/\/var\/run\/nginx\/nginx.pid/g' /etc/nginx/nginx.conf
-RUN sed -i '/^user/d' /etc/nginx/nginx.conf
+USER nginx
 
-USER nginxuser
+EXPOSE 8080
 
-# run nginx
-ENTRYPOINT [ "/entrypoint.sh" ]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -qO- http://localhost:8080/health || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]

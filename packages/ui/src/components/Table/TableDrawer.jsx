@@ -163,7 +163,7 @@ function TableDrawer({ entries, message, caption = "Records", showSingle = true 
 
   return (
     <>
-      <ButtonBase onClick={toggleDrawer} className={classes.drawerLink}>
+      <ButtonBase data-testid="table-drawer" onClick={toggleDrawer} className={classes.drawerLink}>
         <Typography variant="body2"> {message || `${entries.length} entries`}</Typography>
       </ButtonBase>
 

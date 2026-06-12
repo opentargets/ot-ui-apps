@@ -26,6 +26,7 @@ function GlobalSearchInput(): ReactElement {
       placeholder={searchPlaceholder}
       autoFocus
       value={inputValue}
+      data-testid="global-search-input"
       type="text"
       onChange={(e: ChangeEvent<HTMLInputElement>) => setInputValue(e.currentTarget.value)}
       onFocus={(e: FocusEvent<HTMLInputElement>) => {

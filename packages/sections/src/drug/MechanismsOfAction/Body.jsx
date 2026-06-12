@@ -81,7 +81,7 @@ function Body({ id: chemblId, label: name, entity }) {
           <OtTable
             showGlobalFilter
             columns={columns}
-            rows={request.data?.drug.mechanismsOfAction.rows}
+            rows={request.data?.drug.mechanismsOfAction?.rows}
             dataDownloader
             dataDownloaderFileStem={`${chemblId}-mechanisms-of-action`}
             query={MECHANISMS_OF_ACTION_QUERY.loc.source.body}

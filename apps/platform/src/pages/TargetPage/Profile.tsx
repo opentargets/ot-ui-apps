@@ -7,16 +7,18 @@ import {
   SectionsRenderer,
   SummaryRenderer,
 } from "ui";
-import { Target, Widget } from "sections";
+import { Target } from "sections";
 
 import ProfileHeader from "./ProfileHeader";
 
 import { getConfig } from "@ot/config";
 
-const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
+// !! JUST FOR PREVIEW !!
+// const baselineName = getConfig().profile.isPartnerPreview ? "BaselineExpression": "Expression";
+const baselineName = "BaselineExpression";
 
-const targetProfileWidgets = new Map<string, Widget>([
-  [Target.KnownDrugs.definition.id, Target.KnownDrugs],
+const targetProfileWidgets = new Map<string, any>([
+  [Target.Drugs.definition.id, Target.Drugs],
   [Target.Tractability.definition.id, Target.Tractability],
   [Target.Safety.definition.id, Target.Safety],
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],

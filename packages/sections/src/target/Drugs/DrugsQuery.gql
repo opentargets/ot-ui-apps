@@ -1,0 +1,18 @@
+query DrugsQuery($ensemblId: String!) {
+  target(ensemblId: $ensemblId) {
+    drugAndClinicalCandidates {
+      count
+      rows {
+        id
+        maxClinicalStage
+        drug {
+          id
+          name
+        }
+        clinicalReports {
+          id
+        }
+      }
+    }
+  }
+}

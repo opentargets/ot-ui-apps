@@ -1,7 +1,8 @@
+import { ReactElement } from "react";
 import Link from "../Link";
 
 type ExternalLinkProps = {
-  id: string | null;
+  id: string | ReactElement |null;
   title: string;
   url: string;
 };

@@ -111,21 +111,13 @@ query SearchPageQuery($queryString: String!, $index: Int!, $entityNames: [String
           description
           name
           drugType
-          maximumClinicalTrialPhase
-          hasBeenWithdrawn
+          maximumClinicalStage
           indications {
             rows {
               disease {
                 id
                 name
               }
-            }
-          }
-          linkedTargets {
-            count
-            rows {
-              id
-              approvedSymbol
             }
           }
           synonyms

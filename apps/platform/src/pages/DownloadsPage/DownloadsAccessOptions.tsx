@@ -4,10 +4,12 @@ import { singleBtnGroupObj } from "ui/src/components/OtBtnGroup";
 
 const FTP = "ftp-location";
 const GCP = "gcp-location";
+const AWS = "aws-location";
 // component ids to show when given location url
 const DATA_MAP = {
   [FTP]: ["http-location", FTP, "rsync", "wget"],
   [GCP]: [GCP, "gcp"],
+  [AWS]: [AWS, "aws"],
 };
 
 type DownloadsAccessOptionsProps = {
@@ -40,6 +42,10 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
       title: "Google Cloud",
       component: <GcpLocation link={getLink("gcp-location")} />,
     },
+      "aws-location": {
+      title: "AWS",
+      component: <AwsLocation link={getLink("aws-location")} />,
+    },
   };
 
   const SCRIPT_MAP: Record<string, singleBtnGroupObj> = {
@@ -52,8 +58,12 @@ function DownloadsAccessOptions({ data, locationUrl, version }: DownloadsAccessO
       component: <WgetScript link={getLink("ftp-location")} />,
     },
     gcp: {
-      title: "Google Cloud",
+      title: "Google Cloud CLI",
       component: <GcpScript link={getLink("gcp-location")} />,
+    },
+    aws: {
+      title: "AWS CLI",
+      component: <AwsScript link={getLink("aws-location")} />,
     },
   };
 
@@ -108,6 +118,7 @@ function GcpLocationMemo() {
     </Typography>
   )
 }
+
 function GcpLocation({ link }: { link: string }) {
   return (
     <Box sx={{ p: 2 }}>
@@ -116,7 +127,13 @@ function GcpLocation({ link }: { link: string }) {
   );
 }
 
-
+function AwsLocation({ link }: { link: string }) {
+  return (
+    <Box sx={{ p: 2 }}>
+      <OtCodeBlock textToCopy={link}> {link}</OtCodeBlock>
+    </Box>
+  );
+}
 
 function FtpLocation({ link }: { link: string }) {
   return (
@@ -157,6 +174,15 @@ function GcpScript({ link }: { link: string }) {
   );
 }
 
+function AwsScript({ link }: { link: string }) {
+  const cmd = `aws s3 cp --recursive --no-sign-request ${link}/ .`;
+  return (
+    <Box sx={{ p: 2 }}>
+      <OtCodeBlock textToCopy={cmd}>{cmd}</OtCodeBlock>
+    </Box>
+  );
+}
+
 function getFilteredData({
   allDataObj,
   containedInArray,
@@ -165,7 +191,6 @@ function getFilteredData({
   containedInArray: Array<Record<"@id", string>>;
 }) {
   const entriesToShow: Record<string, singleBtnGroupObj> = {};
-
   containedInArray.map(e => {
     DATA_MAP[e["@id"]].map(i => {
       if (Object.prototype.hasOwnProperty.call(allDataObj, i)) entriesToShow[i] = allDataObj[i];

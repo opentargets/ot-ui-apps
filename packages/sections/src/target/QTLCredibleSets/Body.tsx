@@ -92,7 +92,7 @@ const columns = [
       return (
         <Link
           external
-          to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}&ontology=uberon`}
+          to={`https://www.ebi.ac.uk/ols4/search?q=${biosampleId}`}
         >
           {study?.biosample?.biosampleName}
         </Link>

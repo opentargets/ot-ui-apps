@@ -1,6 +1,6 @@
 fragment EnhancerToGenePredictionsSummaryFragment on CredibleSet {
   variant {
-    intervals {
+    enhancerToGenes {
       count
     }
   }

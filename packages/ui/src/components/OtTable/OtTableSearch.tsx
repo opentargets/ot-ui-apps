@@ -11,7 +11,10 @@ import { OtTableSearchProps } from "./table.types";
  *         SET DEBOUNCED VALUE          *
  ****************************************/
 
-function OtTableSearch({ setGlobalSearchTerm }: OtTableSearchProps): ReactElement {
+function OtTableSearch({
+  setGlobalSearchTerm,
+  placeholderText = "Search all columns..."
+}: OtTableSearchProps): ReactElement {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const debouncedTableSearchValue = useDebounce(globalFilter, 300);
@@ -22,10 +25,13 @@ function OtTableSearch({ setGlobalSearchTerm }: OtTableSearchProps): ReactElemen
 
   return (
     <Input
+      inputProps={{
+        "data-testid": "table-search-input",
+      }}
       sx={{ width: 1 }}
       value={globalFilter ?? ""}
       onChange={e => setGlobalFilter(e.target.value)}
-      placeholder="Search all columns..."
+      placeholder={placeholderText}
       startAdornment={
         <InputAdornment position="start">
           <FontAwesomeIcon icon={faMagnifyingGlass} />

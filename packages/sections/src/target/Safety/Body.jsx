@@ -38,7 +38,7 @@ function EffectTooltipContent({ classes, effect }) {
   );
 }
 
-function getColumns(classes) {
+function getColumns(classes, symbol) {
   return [
     {
       id: "event",
@@ -134,11 +134,11 @@ function getColumns(classes) {
     {
       id: "datasource",
       label: "Source",
-      renderCell: ({ datasource, literature, url }) =>
+      renderCell: ({ datasource, literature }) =>
         literature ? (
           <PublicationsDrawer entries={[{ name: literature }]} customLabel={datasource} />
         ) : (
-          <Link external to={url}>
+          <Link external to={`https://www.clinpgx.org/search?query=${symbol}`}>
             {datasource}
           </Link>
         ),
@@ -161,7 +161,7 @@ function Body({ id: ensemblId, label: symbol, entity }) {
           showGlobalFilter
           dataDownloader
           dataDownloaderFileStem={`${ensemblId}-safety-${entity}`}
-          columns={getColumns(classes)}
+          columns={getColumns(classes, symbol)}
           rows={request.data?.target.safetyLiabilities}
           rowsPerPageOptions={defaultRowsPerPageOptions}
           query={SAFETY_QUERY.loc.source.body}

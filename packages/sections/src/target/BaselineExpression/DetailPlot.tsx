@@ -1,18 +1,17 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import * as PlotLib from "@observablehq/plot";
 import { nullishComparator } from "@ot/utils";
 import { max, min } from "d3";
 import { ObsPlot } from "ui";
-import BaselineTooltipTable from "./BaselineTooltipTable";
+import MedianTooltipTable from "./MedianTooltipTable";
 
 function DetailPlot({
   data,
   show = "tissue", // "tissue" or "celltype"
 }) {
   const height = 200;
-  const theme = useTheme();
-  const barBackground = theme.palette.grey[200];
-  const barFill = "#BFDAEE";
+  const barBackground = "#e7edf3";
+  const barFill = "#91b8dd";
 
   if (data == null) return null;
 
@@ -28,17 +27,16 @@ function DetailPlot({
   return (
     <Box
       sx={{
-        backgroundColor: "grey.50",
+        backgroundColor: "#fff",
         borderStyle: "solid",
         borderColor: "grey.300",
-        borderTopWidth: 0,
-        borderBottomWidth: "1px",
-        borderLeftWidth: "1px",
-        borderRightWidth: "1px",
+        borderWidth: "1px",
         marginLeft: "80px",
+        marginRight: "16px",
         marginBottom: "16px",
         paddingTop: 1.5,
-        paddingLeft: 2.5,
+        paddingLeft: "16px",
+        paddingBottom: "16px",
       }}
     >
       <Typography variant="caption" component="div" sx={{ fontSize: "11px", mb: 1, ml: 0.4 }}>
@@ -142,7 +140,7 @@ function renderTooltip(datum, otherData) {
         padding: "0.25em 0.5rem",
       }}
     >
-      <BaselineTooltipTable data={datum} show={otherData.show} showName />
+      <MedianTooltipTable data={datum} show={otherData.show} showName />
     </Box>
   );
 }

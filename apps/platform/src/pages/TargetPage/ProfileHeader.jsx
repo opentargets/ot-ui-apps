@@ -13,6 +13,7 @@ import { clearDescriptionCodes } from "@ot/utils";
 import TARGET_PROFILE_HEADER_FRAGMENT from "./TargetProfileHeader.gql";
 import { Box } from "@mui/material";
 import { getGenomicLocation } from "@ot/constants";
+import GenomicLocation from "ui/src/components/GenomicLocation";
 
 /*
  * Target synonyms from the API have a "label" and a "source"
@@ -90,36 +91,7 @@ function ProfileHeader() {
           targetId={data?.target.id}
         />
         {data?.target.genomicLocation && (
-          <Box sx={{ mt: 1, typography: "body2" }} component="span">
-            <Tooltip title="build | chromosome:start-end,strand">
-              <Box
-                component="span"
-                sx={{
-                  whiteSpace: "nowrap",
-                  background: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
-                  p: "1px 5px",
-                  color: "white",
-                  borderRadius: "5px 0 0 5px",
-                }}
-              >
-                {/* TODO: check UI and add it to getGenomicLocation function */}
-                GRCh38
-              </Box>
-              <Box
-                component="span"
-                sx={{
-                  whiteSpace: "nowrap",
-                  p: "1px 5px",
-                  color: theme => theme.palette.grey[600],
-                  border: theme => `1px solid ${theme.palette.grey[600]}`,
-                  borderRadius: "0 5px 5px 0",
-                }}
-              >
-                {getGenomicLocation(data?.target.genomicLocation)}
-              </Box>
-            </Tooltip>
-          </Box>
+          <GenomicLocation geneLoc={data?.target.genomicLocation} />
         )}
         {geneInfo
           .filter(gi => gi.isVisible)

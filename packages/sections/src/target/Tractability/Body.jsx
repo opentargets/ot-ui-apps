@@ -58,12 +58,13 @@ const modalities = [
 function ModalityList({ modality, data }) {
   const classes = useStyles();
   return (
-    <>
+    <div data-testid={`tractability-modality-list-${modality.toLowerCase()}`}>
       {data
         .filter(d => d.modality === modality)
         .map(d => (
           <div
             key={v1()}
+            data-testid={`tractability-item-${d.value ? "enabled" : "disabled"}`}
             className={classNames(
               classes.modality,
               d.value ? classes.modalityEnabled : classes.modalityDisabled
@@ -81,7 +82,7 @@ function ModalityList({ modality, data }) {
             </EllsWrapper>
           </div>
         ))}
-    </>
+    </div>
   );
 }
 
@@ -100,10 +101,10 @@ function Body({ label: symbol, id: ensemblId, entity }) {
       renderDescription={() => <Description symbol={symbol} />}
       showContentLoading={true}
       renderBody={() => (
-        <Grid container spacing={3}>
+        <Grid data-testid="tractability-grid" container spacing={3}>
           {modalities.map(m => (
-            <Grid item xs={6} sm={3} key={v1()}>
-              <Typography variant="subtitle1" gutterBottom>
+            <Grid data-testid={`tractability-modality-${m.modality.toLowerCase()}`} item xs={6} sm={3} key={v1()}>
+              <Typography data-testid={`tractability-modality-title-${m.modality.toLowerCase()}`} variant="subtitle1" gutterBottom>
                 {m.label}
               </Typography>
               <ModalityList modality={m.modality} data={request.data?.target.tractability} />

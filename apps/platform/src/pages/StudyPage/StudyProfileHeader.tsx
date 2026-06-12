@@ -51,16 +51,16 @@ function ProfileHeader() {
   return (
     <BaseProfileHeader>
       <Box>
-        <Field loading={loading} title="Study type">
+        <Field testId="field-study-type" loading={loading} title="Study type">
           {getStudyTypeDisplay(studyType)}
         </Field>
         {studyType === "gwas" && (
           <>
-            <Field loading={loading} title="Reported trait">
+            <Field testId="field-reported-trait" loading={loading} title="Reported trait">
               {traitFromSource}
             </Field>
             {diseases?.length > 0 && (
-              <Field loading={loading} title="Disease or phenotype">
+              <Field testId="field-disease-or-phenotype" loading={loading} title="Disease or phenotype">
                 {diseases.map(({ id, name }, index) => (
                   <Fragment key={id}>
                     {index > 0 ? ", " : null}
@@ -70,7 +70,7 @@ function ProfileHeader() {
               </Field>
             )}
             {backgroundTraits?.length > 0 && (
-              <Field loading={loading} title="Background trait">
+              <Field testId="field-background-trait" loading={loading} title="Background trait">
                 {backgroundTraits.map(({ id, name }, index) => (
                   <Fragment key={id}>
                     {index > 0 ? ", " : null}
@@ -84,29 +84,29 @@ function ProfileHeader() {
         {studyType !== "gwas" && ( // QTL
           <>
             {projectId && (
-              <Field loading={loading} title="Project">
+              <Field testId="field-project" loading={loading} title="Project">
                 {projectId?.replace(/_/gi, " ")}
               </Field>
             )}
             {target?.id && (
-              <Field loading={loading} title="Affected gene">
+              <Field testId="field-affected-gene" loading={loading} title="Affected gene">
                 <Link to={`../target/${target.id}`}>{target.approvedSymbol}</Link>
               </Field>
             )}
             {biosample?.biosampleId && (
-              <Field loading={loading} title="Affected cell/tissue">
+              <Field testId="field-affected-cell-tissue" loading={loading} title="Affected cell/tissue">
                 <Link external to={`https://www.ebi.ac.uk/ols4/search?q=${biosample.biosampleId}`}>
                   {biosample.biosampleName}
                 </Link>
               </Field>
             )}
-            <Field loading={loading} title="Condition">
+            <Field testId="field-condition" loading={loading} title="Condition">
               {condition}
             </Field>
           </>
         )}
         {publicationFirstAuthor && (
-          <Field loading={loading} title="Publication">
+          <Field testId="field-publication" loading={loading} title="Publication">
             <StudyPublication
               publicationFirstAuthor={publicationFirstAuthor}
               publicationDate={publicationDate}
@@ -115,14 +115,14 @@ function ProfileHeader() {
           </Field>
         )}
         {pubmedId && (
-          <Field loading={loading} title="PubMed">
+          <Field testId="field-pubmed" loading={loading} title="PubMed">
             <PublicationsDrawer name={pubmedId} entries={[{ name: pubmedId }]} />
           </Field>
         )}
       </Box>
 
       <Box>
-        <Field loading={loading} title="Summary statistics">
+        <Field testId="field-summary-statistics" loading={loading} title="Summary statistics">
           {!hasSumstats ? (
             "Not Available"
           ) : sumstatQCValues ? (
@@ -134,7 +134,7 @@ function ProfileHeader() {
           )}
         </Field>
         {qualityControls?.length > 0 && (
-          <Box>
+          <Box data-testid="field-qc-warnings">
             <DetailPopover title="QC warnings">
               <ul
                 style={{
@@ -153,7 +153,7 @@ function ProfileHeader() {
           </Box>
         )}
         {nSamples && (
-          <Field loading={loading} title="Sample size">
+          <Field testId="field-sample-size" loading={loading} title="Sample size">
             <DisplaySampleSize
               nSamples={nSamples}
               cohorts={cohorts}
@@ -161,15 +161,15 @@ function ProfileHeader() {
             />
           </Field>
         )}
-        <Field loading={loading} title="N cases">
+        <Field testId="field-n-cases" loading={loading} title="N cases">
           {/* do not show anything when value 0 */}
           {nCases ? nCases?.toLocaleString() : null}
         </Field>
-        <Field loading={loading} title="N controls">
+        <Field testId="field-n-controls" loading={loading} title="N controls">
           {/* do not show anything when value 0 */}
           {nCases ? nControls?.toLocaleString() : null}
         </Field>
-        <Field loading={loading} title="Analysis">
+        <Field testId="field-analysis" loading={loading} title="Analysis">
           {analysisFlags?.join(", ")}
         </Field>
 
@@ -178,6 +178,7 @@ function ProfileHeader() {
             ({ ldPopulation, relativeSampleSize }) => (
               <LabelChip
                 key={ldPopulation}
+                data-testid={`chip-ld-population-${ldPopulation}`}
                 label={ldPopulation.toUpperCase()}
                 value={`${formatPercentage(relativeSampleSize)}%`}
                 tooltip={`LD reference population: ${populationMap[ldPopulation]}`}

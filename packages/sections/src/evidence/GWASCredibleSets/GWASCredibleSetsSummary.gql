@@ -3,7 +3,7 @@ fragment EvidenceGWASCredibleSetsSummaryFragment on Disease {
     ensemblIds: [$ensgId]
     enableIndirect: true
     datasourceIds: ["gwas_credible_sets"]
-    size: 0
+    size: 1
   ) {
     count
   }

@@ -14,6 +14,7 @@ type HeaderProps = {
     name: string;
   }[];
   studyCategory: string;
+  testId?: string;
 };
 
 function Header({
@@ -23,6 +24,7 @@ function Header({
   targetId,
   diseases,
   projectId,
+  testId,
 }: HeaderProps) {
   let traitLinks, sourceLink;
   if (projectId === "GCST") {
