@@ -3,11 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect } from "react";
 import { useGenTrackTooltipState } from "../../providers/GenTrackTooltipProvider";
+import { useGenTrackState } from "../../providers/GenTrackProvider";
 import { TARGET_TOOLTIP_QUERY, VARIANT_TOOLTIP_QUERY } from "../OtAsyncTooltip/utils/asyncTooltipUtil";
 import { getEntityIcon, getEntityDescription } from "../OtAsyncTooltip/utils/asyncTooltipUtil";
 import { naLabel } from "@ot/constants";
 import { OtGenomicLocation } from "../..";
 import { GenomicLocationPresentationType } from "@ot/constants";
+import HeatmapTable from "../HeatmapTable/HeatmapTable";
+import L2G_QUERY from "../../components/HeatmapTable/Locus2GeneQuery.gql";
 
 export const TOOLTIP_WIDTH = 400;
 
@@ -35,6 +38,22 @@ function UnifiedTooltip() {
   const loading = entityType === "target" ? targetQuery.loading : variantQuery.loading;
   const data = entityType === "target" ? targetQuery.data?.target : variantQuery.data?.variant;
 
+  // Access GenTrack state for L2G predictions
+  const genTrackState = useGenTrackState() as unknown as { data?: any } | null | undefined;
+  const trackData = genTrackState?.data;
+  const studyLocusId = trackData?.studyLocusId;
+  const l2GPredictions = trackData?.l2GPredictions;
+
+  // Find L2G prediction for current target gene (if applicable)
+  const geneL2G = entityType === "target" && l2GPredictions?.rows?.find(
+    (row: { target: { id: string } }) => row.target.id === datum?.id
+  );
+  // Show L2G heatmap for any gene that has L2G data (regardless of score)
+  const hasL2G = !!geneL2G;
+
+  // Determine tooltip width based on whether we're showing the heatmap
+  const tooltipWidth = hasL2G ? 550 : TOOLTIP_WIDTH;
+
   // Loading state
   if (loading || !data) {
     return (
@@ -52,7 +71,7 @@ function UnifiedTooltip() {
   // Render rich async tooltip content
   return (
     <Box sx={{
-      width: TOOLTIP_WIDTH,
+      width: tooltipWidth,
       p: 1,
       backgroundColor: "#fff",
       border: "1px solid #ccc",
@@ -92,10 +111,29 @@ function UnifiedTooltip() {
       </Box>
       {entityType === "target" && data.genomicLocation?.chromosome && (
         <Box sx={{ mt: 1, px: 1, typography: "body2" }} component="span">
-          <Divider />
+          {/* <Divider /> */}
           <OtGenomicLocation
             type={GenomicLocationPresentationType.PLAIN}
             geneLoc={data.genomicLocation}
+          />
+        </Box>
+      )}
+      {hasL2G && l2GPredictions && (
+        <Box sx={{ mt: 2 }}>
+          <Divider />
+          <HeatmapTable
+            fixedGene={datum?.id}
+            loading={false}
+            data={l2GPredictions}
+            query={L2G_QUERY.loc?.source?.body || L2G_QUERY}
+            variables={{ studyLocusId }}
+            disabledFilter
+            disabledExport
+            disabledLegend
+            disabledGeneColumn
+            disabledScoreColumn
+            disabledDetailColumn
+            compact
           />
         </Box>
       )}

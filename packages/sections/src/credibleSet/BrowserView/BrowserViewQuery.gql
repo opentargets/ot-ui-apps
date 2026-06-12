@@ -35,6 +35,12 @@ query BrowserViewQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
       count
       rows {
         score
+        shapBaseValue
+        features {
+          shapValue
+          value
+          name
+        }
         target {
           id
           approvedSymbol
