@@ -33,6 +33,7 @@ interface DataGeneBoxProps {
   isL2G?: boolean;
   pointerover?: (e: any) => void;
   pointerout?: (e: any) => void;
+  pointertap?: (e: any) => void;
 }
 
 const PADDING_PIXELS = 4; // constant screen-space padding around gene+label
@@ -50,6 +51,7 @@ export function DataGeneBox({
   isL2G = false,
   pointerover,
   pointerout,
+  pointertap,
 }: DataGeneBoxProps) {
   const app = useApp();
   const spriteRef = useRef<PixiSprite | null>(null);
@@ -151,6 +153,7 @@ export function DataGeneBox({
       eventMode="static"
       pointerover={handlePointerOver}
       pointerout={handlePointerOut}
+      pointertap={pointertap}
     />
   );
 }

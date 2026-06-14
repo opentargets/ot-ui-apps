@@ -17,9 +17,14 @@ import {
 import { getGroupResults, computeWaterfall, getColorInterpolator } from "./helpers";
 
 const FONT_SIZE = 13.5;
-const COMPACT_FONT_SIZE = 13;
+const COMPACT_FONT_SIZE = 12.6;
+const CELL_Y_PADDING = 1.4;
+const COMPACT_CELL_Y_PADDING = 1.1;
 
-function THead({ children, disabledGeneColumn, disabledScoreColumn, compact }) {
+function THead({ children, singleRowMode }: { children: React.ReactNode; singleRowMode: boolean }) {
+  const compact = singleRowMode;
+  const disabledGeneColumn = singleRowMode;
+  const disabledScoreColumn = singleRowMode;
   return (
     <thead>
       <Box component="tr">
@@ -52,7 +57,10 @@ function TBody({ children }) {
   return <tbody>{children}</tbody>;
 }
 
-function BodyRow({ row, colorInterpolator, data, disabledGeneColumn, disabledScoreColumn, disabledDetailColumn, compact }) {
+function BodyRow({ row, colorInterpolator, data, singleRowMode }: { row: any; colorInterpolator: any; data: any; singleRowMode: boolean }) {
+  const compact = singleRowMode;
+  const disabledGeneColumn = singleRowMode;
+  const disabledScoreColumn = singleRowMode;
   const [over, setOver] = useState(false);
 
   const { row: waterfallRow, xDomain: waterfallXDomain } = computeWaterfall(
@@ -77,7 +85,7 @@ function BodyRow({ row, colorInterpolator, data, disabledGeneColumn, disabledSco
       component="tr"
       sx={{
         "& td": {
-          bgcolor: over ? grey[100] : "transparent",
+          bgcolor: !singleRowMode && over ? grey[100] : "transparent",
         },
       }}
     >
@@ -107,7 +115,7 @@ function BodyRow({ row, colorInterpolator, data, disabledGeneColumn, disabledSco
       <CellWrapper {...cellWrapperProps}>
         <BaseCell value={row.shapBaseValue.toFixed(3)} compact={compact} />
       </CellWrapper>
-      {!disabledDetailColumn &&
+      {!singleRowMode && (
         <CellWrapper {...cellWrapperProps}>
           <DetailCell
             geneSymbol={row.targetSymbol}
@@ -118,7 +126,7 @@ function BodyRow({ row, colorInterpolator, data, disabledGeneColumn, disabledSco
             over={over}
           />
         </CellWrapper>
-      }
+      )}
     </Box>
   );
 }
@@ -131,10 +139,11 @@ function CellWrapper({ handleMouseEnter, handleMouseLeave, children }) {
   );
 }
 
-function HeaderCell({ value, textAlign, compact }) {
+function HeaderCell({ value, textAlign, singleRowMode }: { value: string; textAlign: string; singleRowMode: boolean }) {
+  const compact = singleRowMode;
   return (
     <Box component="th" pt={1}>
-      <Typography 
+      <Typography
         variant="subtitle2"
         sx={{ fontSize: (compact ? COMPACT_FONT_SIZE : FONT_SIZE) + 0.5 }}
         textAlign={textAlign}
@@ -227,7 +236,7 @@ function HeatCell({ value, bgrd, groupName, mouseLeaveRow, waterfallRow, waterfa
         justifyContent="center"
         alignItems="center"
         borderRadius={1.5}
-        py={1.4}
+        py={compact ? COMPACT_CELL_Y_PADDING : CELL_Y_PADDING}
         onClick={handleClick}
         sx={{
           outline: anchorEl ? "2px solid #000" : "none",
@@ -283,7 +292,7 @@ function BaseCell({ value, compact }) {
       justifyContent="center"
       alignItems="center"
       borderRadius={1.5}
-      py={1.4}
+      py={compact ? COMPACT_CELL_Y_PADDING : CELL_Y_PADDING }
       outline={`1px solid ${grey[400]}`}
     >
       <Typography fontSize={compact ? COMPACT_FONT_SIZE : FONT_SIZE} color={grey[500]}>
@@ -320,7 +329,7 @@ function DetailCell({ geneSymbol, score, mouseLeaveRow, waterfallRow, waterfallX
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: 1,
+            gap: 0.5,
             padding: 1,
             borderRadius: "0.4em",
             "&:hover": {
@@ -410,11 +419,10 @@ function HeatmapTable({
   disabledFilter = false,  // only relevant if fixedGene is provided
   disabledExport = false,
   disabledLegend = false,
-  disabledGeneColumn = false,
-  disabledScoreColumn = false,
-  disabledDetailColumn = false,
-  compact = false,
+  singleRowMode = false,
 }) {
+  const disabledGeneColumn = singleRowMode;
+  const disabledScoreColumn = singleRowMode;
   const [showAll, setShowAll] = useState(!fixedGene);
   const [defaultChecked] = useState(true);
 
@@ -479,12 +487,11 @@ function HeatmapTable({
           component="table"
           sx={{
             tableLayout: "fixed",
-            width: compact ? "100%" : "90%",
-            // mx: compact ? 2 : 0,
+            width: singleRowMode ? "100%" : "90%",
             borderCollapse: "collapse",
             sx: {
               maxWidth: "1000px",
-              my: compact ? 0 : 4,
+              my: singleRowMode ? 0 : 4,
             },
           }}
         >
@@ -502,22 +509,18 @@ function HeatmapTable({
               />
             </Box>
           )}
-          <THead
-            disabledGeneColumn={disabledGeneColumn}
-            disabledScoreColumn={disabledScoreColumn}
-            compact={compact}
-          >
+          <THead singleRowMode={singleRowMode}>
             {[
                 ...(disabledGeneColumn ? [] : ["Gene"]),
                 ...(disabledScoreColumn ? [] : ["Score"]),
                 ...groupNames, "Base",
-                ...(disabledDetailColumn ? [] : [""]),
+                ...(singleRowMode ? [] : [""]),
               ].map((value, index) => (
               <HeaderCell
                 key={index}
                 value={value}
                 textAlign={value === "Gene" ? "right" : "center"}
-                compact={compact}
+                singleRowMode={singleRowMode}
               />
             ))}
           </THead>
@@ -528,10 +531,7 @@ function HeatmapTable({
                 key={row.targetId}
                 row={row}
                 colorInterpolator={colorInterpolator}
-                disabledGeneColumn={disabledGeneColumn}
-                disabledScoreColumn={disabledScoreColumn}
-                disabledDetailColumn={disabledDetailColumn}
-                compact={compact}
+                singleRowMode={singleRowMode}
               />
             ))}
           </TBody>

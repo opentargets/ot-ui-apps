@@ -1,9 +1,7 @@
 import { useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useGenTrackTooltipState, useGenTrackTooltipDispatch } from "../../providers/GenTrackTooltipProvider";
-import { Box, IconButton } from "@mui/material";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box } from "@mui/material";
 
 function GenTrackTooltip({
   width,  
@@ -169,23 +167,6 @@ function GenTrackTooltip({
             zIndex: 9999,
           }}
         >
-          {sticky && (
-            <IconButton
-              size="small"
-              onClick={() => genTrackTooltipDispatch({ type: "clearSticky" })}
-              sx={{
-                position: "absolute",
-                top: 2,
-                right: 2,
-                padding: "2px",
-                zIndex: 1,
-                color: "grey.600",
-                "&:hover": { color: "grey.900", backgroundColor: "rgba(0,0,0,0.04)" },
-              }}
-            >
-              <FontAwesomeIcon icon={faXmark} style={{ fontSize: "0.75rem" }} />
-            </IconButton>
-          )}
           {children}
         </Box>,
         document.body

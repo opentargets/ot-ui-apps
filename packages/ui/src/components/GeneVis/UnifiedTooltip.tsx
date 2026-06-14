@@ -1,4 +1,4 @@
-import { Box, Skeleton, Divider } from "@mui/material";
+import { Box, Skeleton, Divider, Typography } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect } from "react";
@@ -111,7 +111,6 @@ function UnifiedTooltip() {
       </Box>
       {entityType === "target" && data.genomicLocation?.chromosome && (
         <Box sx={{ mt: 1, px: 1, typography: "body2" }} component="span">
-          {/* <Divider /> */}
           <OtGenomicLocation
             type={GenomicLocationPresentationType.PLAIN}
             geneLoc={data.genomicLocation}
@@ -119,22 +118,32 @@ function UnifiedTooltip() {
         </Box>
       )}
       {hasL2G && l2GPredictions && (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 1 }}>
           <Divider />
-          <HeatmapTable
-            fixedGene={datum?.id}
-            loading={false}
-            data={l2GPredictions}
-            query={L2G_QUERY.loc?.source?.body || L2G_QUERY}
-            variables={{ studyLocusId }}
-            disabledFilter
-            disabledExport
-            disabledLegend
-            disabledGeneColumn
-            disabledScoreColumn
-            disabledDetailColumn
-            compact
-          />
+          <Box sx={{ pl: 0, pt: 1 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                pl: 1, 
+                color: theme => theme.palette.grey[900],
+                fontSize: 13.1,
+                fontWeight: 600,
+              }}
+            >
+              L2G score: {geneL2G.score.toFixed(3) ?? naLabel}
+            </Typography>
+              <HeatmapTable
+                fixedGene={datum?.id}
+                loading={false}
+                data={l2GPredictions}
+                query={L2G_QUERY.loc?.source?.body || L2G_QUERY}
+                variables={{ studyLocusId }}
+                disabledFilter
+                disabledExport
+                disabledLegend
+                singleRowMode
+              />
+          </Box>
         </Box>
       )}
     </Box>
