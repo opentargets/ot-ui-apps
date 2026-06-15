@@ -170,7 +170,7 @@ const celltypeSpecificity: Column = {
   sectionId: "expressions",
   description: "HPA category types of elevated expression across cell types for the target",
   docsLink:
-    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#cell-specificity",
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-specificity",
   sectionProps: { viewMode: "celltype", expandSpecificity: true },
 };
 
@@ -181,7 +181,7 @@ const celltypeDistribution: Column = {
   sectionId: "expressions",
   description: "HPA category types of detectable expression across cell types for the target",
   docsLink:
-    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#cell-distribution",
+    "https://platform-docs.opentargets.org/web-interface/target-prioritisation#tissue-distribution",
   sectionProps: { viewMode: "celltype" },
 };
 
