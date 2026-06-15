@@ -145,6 +145,7 @@ interface BaselineExpressionTableProps {
   DownloaderComponent?: React.ReactNode;
   specificityThreshold: number;
   viewMode: "tissue" | "celltype";
+  expandSpecificity: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -403,7 +404,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   DownloaderComponent,
   specificityThreshold,
   viewMode = "tissue",
-  expandSpecificity = false  // sort on viewMode specificity and expand top-levels over specificityThreshold
+  expandSpecificity = false
 }) => {
 
   const classes = useStyles();
@@ -793,7 +794,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     setExpanded({});
   }, [groupByTissue]);
 
-  // Auto-expand the row with highest specificity only on initial load
+  // Auto-expand the row with highest specificity
   useEffect(() => {
     if (
       expandSpecificity &&
