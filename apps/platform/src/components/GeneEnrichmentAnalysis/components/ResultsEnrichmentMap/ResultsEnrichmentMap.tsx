@@ -39,10 +39,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   }
   const { state: controls, dispatch } = controlsContext;
 
-  // Detect if this is GO data
-  const isGoData = useMemo(() => {
-    return (results).some((r) => /^GO:\d+$/.test((r.ID as string) || ""));
-  }, [results]);
+
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [filterToggled, setFilterToggled] = useState(false);
@@ -154,7 +151,6 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   return (
     <Paper sx={{ p: 2 }}>
       <EnrichmentMapControls
-          isGoData={isGoData}
           pathwayNames={availablePathways}
           geneNames={uniqueGenes}
           onToggleCollapsed={() => setFilterToggled(prev => !prev)}

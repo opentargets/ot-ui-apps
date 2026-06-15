@@ -206,7 +206,7 @@ function computePathwayEdgesSync(
       const similarity = overlapSimilarity(genesA, genesB)
 
       const minThreshold = 0.01;
-      const threshold = Math.max(minThreshold, similarityThreshold / 10);
+      const threshold = Math.max(minThreshold, similarityThreshold);
 
       if (similarity >= threshold) {
         const edgeId = `${idA}-${idB}`;
@@ -237,7 +237,7 @@ function computePathwayEdgesSync(
       }
     }
   }
-  console.log(nodes.length, results.length, 'computed nodes and results synchronously')
+  console.log(similarityThreshold, 'computed nodes and results synchronously')
   return {
     elements: [...nodes, ...edges],
     stats: {

@@ -5,7 +5,6 @@ import { useContext, useState, useMemo } from "react";
 import { EnrichmentMapControlsContext } from "../utils/EnrichmentMapControlsContext";
 
 interface EnrichmentMapControlsProps {
-  isGoData?: boolean;
   pathwayNames?: string[];
   geneNames?: string[];
   onToggleCollapsed?: (isCollapsed: boolean) => void;
@@ -36,7 +35,7 @@ export function EnrichmentMapControls({
   // Determine if there are active filters
   const hasActiveFilters = useMemo(() => {
     return (
-      state.similarityThreshold > 1 ||
+      state.similarityThreshold > 0.1 ||
       state.fdrThreshold < 1.0 ||
       state.pValueThreshold < 1.0 ||
       state.searchQuery !== "" ||
@@ -179,16 +178,16 @@ export function EnrichmentMapControls({
                 </Tooltip>
               </Box>
               <Typography variant="caption" fontSize="0.65rem" color="text.secondary">
-                {(state.similarityThreshold / 10).toFixed(2)}
+                {state.similarityThreshold.toFixed(2)}
               </Typography>
               <Slider
                 size="small"
                 value={state.similarityThreshold}
                 onChange={(_, value) => dispatch({ type: "SET_SIMILARITY_THRESHOLD", payload: value as number })}
                 valueLabelDisplay="auto"
-                min={1}
-                max={10}
-                step={1}
+                min={0.1}
+                max={1.0}
+                step={0.1}
               />
             </Box>
 

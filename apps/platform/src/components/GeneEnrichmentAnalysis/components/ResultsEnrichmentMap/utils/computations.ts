@@ -1,6 +1,6 @@
 import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
-import { getGeneList, jaccardSimilarity, overlapSimilarity } from "./index";
+import { getGeneList, overlapSimilarity } from "./index";
 import type { ComputedStats } from "./types";
 
 /**
@@ -43,21 +43,12 @@ export async function computePathwayViewElements(
     );
   }
 
-  const tempPathwayIds = Array.from(tempPathwayGenes.keys());
-
-  // Detect if this is GO data by checking if any pathway ID follows GO format (GO:0000000)
-  const isGoData = tempPathwayIds.some((id) => /^GO:\d+$/.test(id));
-
   // Apply stricter FDR threshold for GO data to reduce computational load
-  const fdrThreshold = isGoData ? 0.001 : 0.5;
+  const fdrThreshold = 0.5;
   const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold);
   const displayResults =
     significantResults.length > 0 ? significantResults : results.slice(0, 50);
 
-  console.log(
-    `[ENRICHMENT_MAP] Detected ${isGoData ? "GO (Gene Ontology)" : "Pathway"} data - ` +
-    `${results.length} total terms, ${displayResults.length} significant (FDR < ${fdrThreshold})`
-  );
 
   const geneToPathways = new Map<string, string[]>();
 
@@ -92,13 +83,11 @@ export async function computePathwayViewElements(
   }
 
   const pathwayIds = Array.from(pathwayGenes.keys());
-  const edgeSet = new Set<string>();
 
-  console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms`);
 
   // For GO data, use async chunked processing to allow UI responsiveness
   // After FDR filtering, this should be manageable in size
-  if (isGoData && pathwayIds.length > 50) {
+  if (pathwayIds.length > 50) {
     console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} GO terms asynchronously...`);
     // Use the async version
     return await computePathwayEdgesAsync(
@@ -106,7 +95,6 @@ export async function computePathwayViewElements(
       pathwayGenes,
       pathwayNameMap,
       pathwayLinkMap,
-      isGoData,
       nodes,
       similarityThreshold,
       results
@@ -119,7 +107,6 @@ export async function computePathwayViewElements(
     pathwayGenes,
     pathwayNameMap,
     pathwayLinkMap,
-    isGoData,
     nodes,
     similarityThreshold,
     results
@@ -137,7 +124,6 @@ async function computePathwayEdgesAsync(
   pathwayGenes: Map<string, string[]>,
   pathwayNameMap: Map<string, string>,
   pathwayLinkMap: Map<string, string | undefined>,
-  isGoData: boolean,
   nodes: ElementDefinition[],
   similarityThreshold: number,
   results: Array<GseaResult>
@@ -163,14 +149,13 @@ async function computePathwayEdgesAsync(
 
       if (genesA.length === 0 || genesB.length === 0) continue;
 
-      const similarity = isGoData
-        ? overlapSimilarity(genesA, genesB)
-        : jaccardSimilarity(genesA, genesB);
+      const similarity = overlapSimilarity(genesA, genesB);
 
-      const minGoThreshold = 0.01;
+  
       const minPathwayThreshold = 0.05;
-      const minThreshold = isGoData ? minGoThreshold : minPathwayThreshold;
-      const threshold = Math.max(minThreshold, similarityThreshold / 10);
+      const minThreshold = minPathwayThreshold;
+      const threshold = Math.max(minThreshold, similarityThreshold);
+      
 
       if (similarity >= threshold) {
         const edgeId = `${idA}-${idB}`;
@@ -224,7 +209,6 @@ function computePathwayEdgesSync(
   pathwayGenes: Map<string, string[]>,
   pathwayNameMap: Map<string, string>,
   pathwayLinkMap: Map<string, string | undefined>,
-  isGoData: boolean,
   nodes: ElementDefinition[],
   similarityThreshold: number,
   results: Array<GseaResult>
@@ -242,15 +226,12 @@ function computePathwayEdgesSync(
 
       if (genesA.length === 0 || genesB.length === 0) continue;
 
-      const similarity = isGoData
-        ? overlapSimilarity(genesA, genesB)
-        : jaccardSimilarity(genesA, genesB);
+      const similarity = overlapSimilarity(genesA, genesB);
 
-      const minGoThreshold = 0.01;
+
       const minPathwayThreshold = 0.05;
-      const minThreshold = isGoData ? minGoThreshold : minPathwayThreshold;
-      const threshold = Math.max(minThreshold, similarityThreshold / 10);
-
+      const minThreshold = minPathwayThreshold;
+      const threshold = Math.max(minThreshold, similarityThreshold);
       if (similarity >= threshold) {
         const edgeId = `${idA}-${idB}`;
         if (!edgeSet.has(edgeId)) {

@@ -62,7 +62,7 @@ export function enrichmentMapControlsReducer(
     case "RESET_FILTERS":
       return {
         ...state,
-        similarityThreshold: 1,
+        similarityThreshold: 0.1,
         fdrThreshold: 1.0,
         pValueThreshold: 1.0,
         searchQuery: "",
@@ -86,7 +86,7 @@ export const EnrichmentMapControlsContext = createContext<{
  * Initial state for enrichment map controls
  */
 export const createInitialState = (): EnrichmentMapControlsState => ({
-  similarityThreshold: 1,
+  similarityThreshold: 0.1,
   sizeBy: "pathwaySize",
   fdrThreshold: 1.0,
   pValueThreshold: 1.0,
