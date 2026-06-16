@@ -7,12 +7,20 @@ function formatExpression(v) {
   return v?.toFixed?.(3);
 }
 
-function MedianTooltipTable({ data, show, showName, showSource }) {
+function MedianTooltipTable({ data, show, showSource, subname }) {
+  const name = data._firstLevelName
+    ? `${data._firstLevelName} (max: ${subname})`
+    : data[`${show}Biosample`]?.biosampleName;
   return (
     <TooltipTable>
-      {showName && data[`${show}Biosample`] && (
+      {name && (
         <TooltipRow label={show === "tissue" ? "Tissue" : "Cell type"}>
-          <Box display="flex">{data[`${show}Biosample`].biosampleName}</Box>
+          <Box display="flex">{name}</Box>
+        </TooltipRow>
+      )}
+      {showSource && data?.[`${show}BiosampleFromSource`] && (
+        <TooltipRow label="Reported annotation">
+          <Box display="flex">{data?.[`${show}BiosampleFromSource`]}</Box>
         </TooltipRow>
       )}
       <TooltipRow label="Median expression">
@@ -20,11 +28,6 @@ function MedianTooltipTable({ data, show, showName, showSource }) {
           {formatExpression(data.median)} {data.unit}
         </Box>
       </TooltipRow>
-      {showSource && data?.[`${show}BiosampleFromSource`] && (
-        <TooltipRow label="Reported annotation">
-          <Box display="flex">{data?.[`${show}BiosampleFromSource`]}</Box>
-        </TooltipRow>
-      )}
     </TooltipTable>
   );
 }

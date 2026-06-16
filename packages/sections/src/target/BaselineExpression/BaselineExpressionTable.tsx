@@ -132,6 +132,12 @@ interface BaselineExpressionDataRow {
   datatypeId: string;
   specificity_score?: number;
   unit: string;
+  _firstLevelName?: string;
+  _firstLevelId?: string;
+  _secondLevelMedianName?: string;
+  _secondLevelMedianId?: string;
+  _secondLevelSpecificityName?: string;
+  _secondLevelSpecificityId?: string;
 }
 
 type BaselineExpressionTableRow = {
@@ -674,6 +680,9 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                           data={cellContext.row.original[datatype]}
                           show={groupByTissue ? "tissue" : "celltype"}
                           showSource={isSecondLevel && datatype !== datatypes[0]}
+                          subname={isFirstLevel
+                            ? cellContext.row.original[datatype]._secondLevelMedianName
+                            : undefined}
                         />
                       }
                     >
@@ -699,9 +708,13 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                             title={
                               <SpecificityTooltipTable
                                 data={cellContext.row.original[datatype]}
+                                show={groupByTissue ? "tissue" : "celltype"}
                                 specificityThreshold={specificityThreshold}
                                 groupByTissue={groupByTissue}
                                 symbol={symbol}
+                                subname={isFirstLevel
+                                  ? cellContext.row.original[datatype]._secondLevelSpecificityName
+                                  : undefined}
                               />
                             }
                           >
