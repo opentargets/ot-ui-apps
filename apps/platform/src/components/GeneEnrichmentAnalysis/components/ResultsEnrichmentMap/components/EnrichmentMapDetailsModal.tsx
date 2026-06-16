@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy, faCheck} from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useApolloClient } from "@apollo/client";
 import { getGeneTargetUrl, buildGeneToTargetIdMapping, buildAOTFLink, getTargetIdsFromMapping } from "../utils/geneMapping";
 
@@ -125,9 +125,10 @@ type GeneListProps = {
 
 export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: GeneListProps & { title: string }) {
   const [copied, setCopied] = useState(false);
+  const filteredGenes = useMemo(() => genes.filter((gene) => gene.trim() !== ""), [genes]);
 
     const handleCopyGenes = async () => {
-    const geneText = (genes || []).join("\n");
+    const geneText = (filteredGenes || []).join("\n");
     try {
       await navigator.clipboard.writeText(geneText);
       setCopied(true);
@@ -139,8 +140,8 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
   };
 
     const handleViewInAOTF = () => {
-      console.log("Viewing genes in AOTF with diseaseId:", diseaseId, "and genes:", genes, geneToTargetIdMapping);
-        const targetIds = getTargetIdsFromMapping(genes || [], geneToTargetIdMapping || new Map());
+      console.log("Viewing genes in AOTF with diseaseId:", diseaseId, "and genes:", filteredGenes, geneToTargetIdMapping);
+        const targetIds = getTargetIdsFromMapping(filteredGenes || [], geneToTargetIdMapping || new Map());
         const aotfLink = buildAOTFLink(diseaseId || "", targetIds);
         window.open(aotfLink, "_blank");
     };
@@ -153,7 +154,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
         sx={{ alignItems: "center", mb: 1 }}
       >
         <Typography variant="subtitle2" fontWeight={600}>
-          {title}: {genes.length}
+          {title}: {filteredGenes.length}
         </Typography>
 
         <Tooltip title={copied ? "Copied!" : "Copy all genes"}>
@@ -200,7 +201,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
         }}
       >
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-          {genes.map((gene, idx) => {
+          {filteredGenes.map((gene, idx) => {
             const targetUrl = getGeneTargetUrl(
               gene,
               geneToTargetIdMapping || new Map()
@@ -234,7 +235,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
         </Box>
       </Box>
 
-      {diseaseId && (
+      {diseaseId && filteredGenes.length > 0 && (
         <Button
           onClick={handleViewInAOTF}
           size="small"

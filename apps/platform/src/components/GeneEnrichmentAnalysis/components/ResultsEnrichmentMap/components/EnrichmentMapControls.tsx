@@ -101,14 +101,15 @@ export function EnrichmentMapControls({
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            gap: 3,
+            gap: 2,
             px: 2,
             py: 2,
             backgroundColor: "grey.50",
+            
           }}
         >
           {/* Left column: P-value, FDR, NES, Jaccard, Node Size */}
-          <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", gap: 2, flex: 1 }}>
+          <Box sx={{ display: "flex", flexWrap: "nowrap", alignItems: "flex-end", gap: 2, flex: 1, minWidth: 0, overflow: "visible" }}>
             {/* P-value threshold */}
             <Box sx={{ width: 120 }}>
               <FormControl fullWidth size="small">
@@ -168,7 +169,7 @@ export function EnrichmentMapControls({
             </Box>
 
             {/* Similarity */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 220 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: 240 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
                   Similarity
@@ -194,9 +195,9 @@ export function EnrichmentMapControls({
           </Box>
 
           {/* Right column: Gene Search */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: "auto" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 150, flex: 0.3 }}>
             {/* Gene/Pathway Search with Autocomplete */}
-            <Box sx={{ width: 240 }}>
+            <Box sx={{ width: "100%", minWidth: 0 }}>
               <Autocomplete
                 options={searchOptions}
                 value={state.searchQuery}

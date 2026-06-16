@@ -55,7 +55,7 @@ export function EnrichmentMapLegend({ nesRange }: EnrichmentMapLegendProps) {
                   Scroll to zoom
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              {/* <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 <FontAwesomeIcon
                   icon={faUpDownLeftRight}
                   style={{ fontSize: "0.7rem", opacity: 0.5 }}
@@ -63,7 +63,7 @@ export function EnrichmentMapLegend({ nesRange }: EnrichmentMapLegendProps) {
                 <Typography variant="caption" color="text.disabled">
                   Shift+drag to pan
                 </Typography>
-              </Box>
+              </Box> */}
             </Box>
           </Box>
       {/* <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
