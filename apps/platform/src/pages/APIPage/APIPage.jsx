@@ -79,10 +79,10 @@ function APIPage() {
         <Link external to="https://community.opentargets.org">
           Open Targets Community
         </Link>{" "}
-        for more how-to guides and tutorials. You can also access the Open targets data through our {" "}
+         for more how-to guides and tutorials. You can also access the Open targets data through our {" "}
         <Link external to="https://platform-docs.opentargets.org/data-access/model-context-protocol">
-          MCP
-        </Link>{" "}, which enables more integrated 
+        MCP
+        </Link>{" "}, enabling more integrated 
         interactions with the Platform.
       </Typography>
       <Typography paragraph>
