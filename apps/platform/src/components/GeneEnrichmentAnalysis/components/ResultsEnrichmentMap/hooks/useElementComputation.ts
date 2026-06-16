@@ -82,7 +82,7 @@ export function useElementComputation(
     const significantResults = fdrFilteredResults.filter((r) => (r.FDR as number) < 0.25);
     const displayResults = significantResults.length > 0 ? significantResults : fdrFilteredResults.slice(0, 50);
 
-    const result = buildPathwayViewNodes(displayResults, debouncedSizeBy, genes as Array<Gene>);
+    const result = buildPathwayViewNodes(displayResults, genes as Array<Gene>);
     const stats = {
       ...result.stats,
       totalPathways: results.length,
@@ -91,7 +91,7 @@ export function useElementComputation(
     };
 
     return { nodes: result.nodes, initialStats: stats };
-  }, [fdrFilteredResults, debouncedSizeBy, genes, results]);
+  }, [fdrFilteredResults, genes, results]);
 
   // Apply NES-based coloring separately (doesn't affect edge computation)
   const nodes = useMemo(() => {

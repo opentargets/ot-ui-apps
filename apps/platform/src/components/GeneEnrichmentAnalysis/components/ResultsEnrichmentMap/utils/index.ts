@@ -30,7 +30,6 @@ export {
   calculateNodeSize,
   createPathwayNode,
   filterAndSortGenes,
-  getBorderColor,
 } from "./nodeBuilder";
 export { createStylesheet } from "./stylesheet";
 // Tooltip utilities

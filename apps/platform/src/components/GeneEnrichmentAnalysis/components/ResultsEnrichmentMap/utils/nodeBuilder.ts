@@ -22,53 +22,16 @@ export interface PathwayNodeMetadata {
 }
 
 
-/**
- * Gets border color that matches the node color
- */
-export function getBorderColor(nodeColor: string): string {
-  switch (nodeColor) {
-    case "#4caf50":
-      return "#2e7d32";
-    case "#8bc34a":
-      return "#558b2f";
-    case "#ff9800":
-      return "#ef6c00";
-    case "#ffcc80":
-      return "#ff9800";
-    case "#e91e63": // Upregulated (red)
-      return "#ad1457";
-    case "#2196f3": // Downregulated (blue)
-      return "#1565c0";
-    case "#9c27b0": // Conflicting (purple)
-      return "#6a1b9a";
-    case "#bdbdbd": // Non-leading-edge (grey)
-      return "#616161";
-    default:
-      return "#9e9e9e";
-  }
-}
+
 
 /**
- * Calculates node size based on sizeBy parameter and value
+ * Calculates node size based on pathway size value
  */
 export function calculateNodeSize(
-  sizeBy: "significance" | "pathwaySize" | "geneCount",
   value: number,
   pathwayCount?: number
 ): number {
-  switch (sizeBy) {
-    case "significance":
-      return Math.min(80, Math.max(30, -Math.log10(Math.max(value, 1e-10)) * 8));
-    case "pathwaySize":
-      return Math.min(80, Math.max(30, Math.sqrt(value) * (pathwayCount ? 20 : 5)));
-    case "geneCount":
-      return Math.min(
-        80,
-        Math.max(30, (pathwayCount || value) * (pathwayCount ? 5 : 3) + (pathwayCount ? 0 : 20))
-      );
-    default:
-      return 40;
-  }
+  return Math.min(80, Math.max(30, Math.sqrt(value) * (pathwayCount ? 20 : 5)));
 }
 
 
@@ -96,13 +59,11 @@ export function filterAndSortGenes(
  */
 export function createPathwayNode(
   result: Record<string, unknown>,
-  geneList: string[],
-  sizeBy: "significance" | "pathwaySize" | "geneCount"
+  geneList: string[]
 ): ElementDefinition {
   const fdr = result.FDR as number;
   const nodeSize = calculateNodeSize(
-    sizeBy,
-    sizeBy === "pathwaySize" ? (result["Pathway size"] as number) : fdr,
+    result["Pathway size"] as number,
     geneList.length
   );
 
@@ -125,7 +86,7 @@ export function createPathwayNode(
       geneCount: geneList.length,
       leadingGenes: result["Leading edge genes"],
       color: defaultColor,
-      borderColor: getBorderColor(defaultColor),
+      borderColor: defaultColor,
       size: nodeSize,
       displayLabel: nodePathway.length > 25 ? `${nodePathway.substring(0, 22)}...` : nodePathway,
     },
@@ -137,7 +98,6 @@ export function createPathwayNode(
  */
 export function buildPathwayViewNodes(
   displayResults: Array<Record<string, unknown>> | GseaResult[],
-  sizeBy: "significance" | "pathwaySize" | "geneCount",
   genes?: Gene[]
 ): {
   nodes: ElementDefinition[];
@@ -162,7 +122,7 @@ export function buildPathwayViewNodes(
   for (const r of displayResults) {
     const geneList_ = getGeneList(r as GseaResult);
     nodes.push(
-      createPathwayNode(r as Record<string, unknown>, geneList_, sizeBy)
+      createPathwayNode(r as Record<string, unknown>, geneList_)
     );
   }
 
