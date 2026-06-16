@@ -144,6 +144,8 @@ interface BaselineExpressionTableProps {
   datatypes: string[];
   DownloaderComponent?: React.ReactNode;
   specificityThreshold: number;
+  viewMode: "tissue" | "celltype";
+  expandSpecificity: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -401,7 +403,10 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   datatypes,
   DownloaderComponent,
   specificityThreshold,
+  viewMode = "tissue",
+  expandSpecificity = false
 }) => {
+
   const classes = useStyles();
   const [sorting, setSorting] = useState<SortingState>([{ id: datatypes[0], desc: true }]);
   const [pagination, setPagination] = useState<PaginationState>({
@@ -409,7 +414,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     pageSize: 50,
   });
   const [expanded, setExpanded] = useState<ExpandedState>({});
-  const [groupByTissue, setGroupByTissue] = useState(true);
+  const [groupByTissue, setGroupByTissue] = useState(viewMode === 'tissue');
   // const [searchTerm, setSearchTerm] = useState("");
 
   const handleExpandedChange = useCallback(
@@ -439,8 +444,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
     []
   );
 
-  const viewType = groupByTissue ? "tissue" : "celltype";
-  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[viewType];
+  const { firstLevel, secondLevel, thirdLevel, maxMedians } = data[groupByTissue ? "tissue" : "celltype"];
 
   // Handler to collapse all expanded rows
   const handleCollapseAll = useCallback(() => {
@@ -668,7 +672,7 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                       title={
                         <MedianTooltipTable
                           data={cellContext.row.original[datatype]}
-                          show={viewType}
+                          show={groupByTissue ? "tissue" : "celltype"}
                           showSource={isSecondLevel && datatype !== datatypes[0]}
                         />
                       }
@@ -789,6 +793,27 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
   useEffect(() => {
     setExpanded({});
   }, [groupByTissue]);
+
+  // Auto-expand the row with highest specificity
+  useEffect(() => {
+    if (
+      expandSpecificity &&
+      firstLevel._maxSpecificity?.score !== undefined &&
+      firstLevel._maxSpecificity.score >= specificityThreshold &&
+      firstLevel._maxSpecificity._firstLevelId
+    ) {
+      const targetRow = table.getRowModel().rows.find(
+        (row) => row.original._firstLevelId === firstLevel._maxSpecificity._firstLevelId
+      );
+      
+      if (targetRow) {
+        setExpanded((prev: ExpandedState) => ({
+          ...prev,
+          [targetRow.id]: true,
+        }));
+      }
+    }
+  }, []); // only auto expand when first loads
 
   return (
     <Box className={classes.tableContainer}>
