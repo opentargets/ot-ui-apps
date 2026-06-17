@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { Box, Typography } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import * as Plot from "@observablehq/plot";
 import dataSourcesAssoc from "../../static_datasets/dataSourcesAssoc";
@@ -16,6 +17,7 @@ export const NOVELTY_TIME_SERIES_QUERY = gql`
           year
           aggregationType
           aggregationValue
+          associationScore
         }
       }
     }
@@ -38,6 +40,7 @@ export type RawRow = {
   year: number;
   aggregationType: string;
   aggregationValue: string;
+  associationScore?: number;
 };
 
 export type LabeledRow = RawRow & { label: string };
@@ -61,7 +64,7 @@ export function injectGradient(plot: SVGSVGElement, id: string, color: string) {
 function sharedAxis() {
   return {
     x: { label: "Year", tickFormat: (d: number) => String(d), line: true },
-    y: { label: "Novelty", domain: [0, 1] as [number, number], tickFormat: ".1f" },
+    y: { label: "Score", labelAnchor: "center", domain: [0, 1] as [number, number], tickFormat: ".1f" },
     style: { width: "100%", background: "none" } as React.CSSProperties,
     marginLeft: CHART_MARGIN.left,
     marginRight: CHART_MARGIN.right,
@@ -76,18 +79,21 @@ export function OverallChart({
   height = 180,
   plotWidth = 500,
   showArea = true,
+  scoreColor = "#9e9e9e",
 }: {
   rows: LabeledRow[];
   color: string;
   height?: number;
   plotWidth?: number;
   showArea?: boolean;
+  scoreColor?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ref.current || !rows.length) return;
     const gradientId = "novelty-overall-gradient";
+    const scoreRows = rows.filter(r => r.associationScore != null);
 
     const plot = Plot.plot({
       width: plotWidth,
@@ -99,6 +105,9 @@ export function OverallChart({
           ? [Plot.areaY(rows, { x: "year", y: "novelty", fill: `url(#${gradientId})` })]
           : []),
         Plot.line(rows, { x: "year", y: "novelty", stroke: color, strokeWidth: 2.5 }),
+        ...(scoreRows.length
+          ? [Plot.line(scoreRows, { x: "year", y: "associationScore", stroke: scoreColor, strokeWidth: 1.5, strokeDasharray: "5,3" })]
+          : []),
         Plot.ruleX(rows, Plot.pointerX({ x: "year", stroke: "#999", strokeWidth: 1, strokeDasharray: "4,2" })),
       ],
     });
@@ -106,9 +115,29 @@ export function OverallChart({
     if (showArea) injectGradient(plot, gradientId, color);
     ref.current.appendChild(plot);
     return () => plot.remove();
-  }, [rows, color, height, plotWidth, showArea]);
+  }, [rows, color, height, plotWidth, showArea, scoreColor]);
 
-  return <div ref={ref} style={{ width: "100%" }} />;
+  const hasScore = rows.some(r => r.associationScore != null);
+
+  return (
+    <Box>
+      <Box sx={{ display: "flex", gap: 2, mb: 0.75, mr: `${CHART_MARGIN.right}px`, alignItems: "center", justifyContent: "flex-end" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+          <Box sx={{ width: 20, height: 2.5, bgcolor: color, borderRadius: 1 }} />
+          <Typography variant="caption">Novelty</Typography>
+        </Box>
+        {hasScore && (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+            <svg width="20" height="4" style={{ display: "block" }}>
+              <line x1="0" y1="2" x2="20" y2="2" stroke={scoreColor} strokeWidth="1.5" strokeDasharray="5,3" />
+            </svg>
+            <Typography variant="caption">Association score</Typography>
+          </Box>
+        )}
+      </Box>
+      <div ref={ref} style={{ width: "100%" }} />
+    </Box>
+  );
 }
 
 export function SourcesChart({
