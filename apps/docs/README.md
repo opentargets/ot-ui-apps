@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# apps/docs — Open Targets UI Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Storybook 10 app that serves as both a deployable component showcase and a machine-readable reference for AI tooling.
 
-Currently, two official plugins are available:
+## Quick start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+yarn dev:docs      # dev server at http://localhost:6006
+yarn build:docs    # static build → apps/docs/storybook-static/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## What's in here
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **UI Components** — autodocs for `packages/ui` components (opt-in per story with `tags: ["autodocs"]`)
+- **Sections** — custom stories for `packages/sections` composed widgets
+- **Associations on the Fly** — dedicated section for the AOTF toolkit
+- **Package docs** — hand-authored MDX for `ot-config`, `ot-constants`, `ot-utils`
+- **Architecture** — how the monorepo packages relate
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Adding a story
+
+Stories live **in the package they document**, not in `apps/docs`:
+
 ```
+packages/ui/src/components/MyComponent/MyComponent.stories.tsx
+packages/sections/src/target/MySection/MySection.stories.tsx
+```
+
+Use `tags: ["autodocs"]` to get a generated docs page for that component.
+
+## Adding a docs page
+
+Drop an `.mdx` file anywhere under `apps/docs/src/docs/`. Use the `title` field in `<Meta>` to set sidebar position:
+
+```mdx
+import { Meta } from "@storybook/blocks";
+
+<Meta title="My Section/My Page" />
+
+# My Page
+```
+
+## Storybook config
+
+| File | Purpose |
+|---|---|
+| `.storybook/main.ts` | Story globs, addons, Vite config |
+| `.storybook/preview.ts` | Global decorators — MemoryRouter + OTApolloProvider + ThemeProvider |
+| `.storybook/preview-head.html` | `window.configUrlApi` and other globals required before React loads |
+| `.storybook/manager.ts` | Sidebar branding |
+
+## Deployment
+
+Build output is `storybook-static/`. Recommended target: Vercel with:
+- Root directory: `apps/docs`
+- Build command: `cd ../.. && yarn build:docs`
+- Output directory: `storybook-static`

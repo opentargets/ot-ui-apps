@@ -1,36 +1,59 @@
-// This file has been automatically migrated to valid ESM format by Storybook.
-import { createRequire } from "node:module";
 import type { StorybookConfig } from "@storybook/react-vite";
-import { dirname, join } from "path";
+import remarkGfm from "remark-gfm";
 import { mergeConfig } from "vite";
 
-const require = createRequire(import.meta.url);
-const gql = require("vite-plugin-simple-gql").default;
-
-/**
- * This function is used to resolve the absolute path of a package.
- * It is needed in projects that use Yarn PnP or are set up within a monorepo.
- */
-function getAbsolutePath(value: string): any {
-  return dirname(require.resolve(join(value, "package.json")));
-}
 const config: StorybookConfig = {
   stories: [
-    "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    "../src/docs/**/*.mdx",
     "../../../packages/ui/src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
     "../../../packages/sections/src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
   ],
 
-  addons: [],
+  addons: [
+    {
+      name: "@storybook/addon-docs",
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+        },
+      },
+    },
+  ],
 
   framework: {
-    name: getAbsolutePath("@storybook/react-vite"),
+    name: "@storybook/react-vite",
     options: {},
   },
 
-  async viteFinal(config) {
+  async viteFinal(config, { configType }) {
+    // vite-plugin-simple-gql is CJS with exports.default = fn; native ESM import()
+    // wraps module.exports as .default, so the factory is at .default.default
+    const gqlMod = await import("vite-plugin-simple-gql");
+    const gql = (gqlMod as any).default?.default ?? (gqlMod as any).default;
     return mergeConfig(config, {
-      plugins: [gql()],
+      // GitHub Pages serves project repos under /<repo-name>/
+      // STORYBOOK_BASE_PATH is injected by the deploy workflow
+      base: configType === "PRODUCTION" ? (process.env.STORYBOOK_BASE_PATH ?? "/") : "/",
+      plugins: [
+        gql(),
+        // graphiql is installed only in apps/platform; stub it here so
+        // DataDownloader and ApiPlaygroundDrawer don't break the dev server.
+        // Neither component has a story, so the stub is never rendered.
+        {
+          name: "graphiql-stub",
+          resolveId(id: string) {
+            if (id === "graphiql" || id === "graphiql/graphiql.min.css") {
+              return `\0${id}`;
+            }
+          },
+          load(id: string) {
+            if (id === "\0graphiql/graphiql.min.css") return "";
+            if (id === "\0graphiql") return "export default {}";
+          },
+        },
+      ],
       esbuild: {
         jsxInject: `import React from 'react'`,
       },

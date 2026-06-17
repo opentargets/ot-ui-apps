@@ -1,0 +1,51 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# Open Targets Platform UI
+
+This site documents the React component library that powers the [Open Targets Platform](https://platform.opentargets.org) — a data integration tool for systematic drug target identification and prioritisation.
+
+## What you'll find here
+
+| Section | Contents |
+|---|---|
+| **Getting Started** | Dev setup, branch conventions, adding stories |
+| **Architecture** | How the monorepo packages relate to each other |
+| **Packages** | Reference docs for `ot-config`, `ot-constants`, `ot-utils` |
+| **UI Components** | Auto-generated docs for `packages/ui` primitives |
+| **Sections** | Custom stories for `packages/sections` composed widgets |
+| **Associations on the Fly** | Dedicated docs for the AOTF toolkit |
+
+## Technology stack
+
+- **React 18** with TypeScript (strict mode)
+- **MUI v5** component library, custom Open Targets theme
+- **Apollo Client** + GraphQL (generated types in `ot-constants`)
+- **Vite 6** build tooling, Turbo monorepo task runner
+- **Biome** for linting and formatting
+
+## Monorepo layout
+
+```
+ot-ui-apps/
+├── apps/
+│   ├── platform/          # The deployable Open Targets Platform app
+│   └── docs/              # This Storybook site
+└── packages/
+    ├── ui/                # Shared React component primitives
+    ├── sections/          # Composed data widgets (evidence sections, etc.)
+    ├── ot-config/         # Runtime configuration and MUI theme
+    ├── ot-constants/      # App-wide constants + generated GraphQL types
+    └── ot-utils/          # Pure utility functions
+```
+
+## For AI tooling
+
+This Storybook is structured to be machine-readable. Each package has a dedicated docs page with its public API, type signatures, and usage patterns. Component stories include realistic props so AI agents can understand the component surface without re-deriving it from source.
+
+Key reference points:
+- Generated GraphQL types → **Packages / ot-constants**
+- Runtime config shape → **Packages / ot-config**
+- URL and data utilities → **Packages / ot-utils**
+- AOTF context architecture → **Associations on the Fly / Integration**
