@@ -710,7 +710,6 @@ const BaselineExpressionTable: React.FC<BaselineExpressionTableProps> = ({
                                 data={cellContext.row.original[datatype]}
                                 show={groupByTissue ? "tissue" : "celltype"}
                                 specificityThreshold={specificityThreshold}
-                                groupByTissue={groupByTissue}
                                 symbol={symbol}
                                 subname={isFirstLevel
                                   ? cellContext.row.original[datatype]._secondLevelSpecificityName
