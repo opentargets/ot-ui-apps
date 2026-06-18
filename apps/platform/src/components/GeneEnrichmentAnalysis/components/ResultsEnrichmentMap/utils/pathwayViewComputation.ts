@@ -16,20 +16,12 @@ export async function computePathwayViewElements(
   elements: cytoscape.ElementDefinition[];
   stats: ComputedStats;
 }> {
-  // Build temporary pathway genes from all results to detect data type
-  const tempPathwayGenes = new Map<string, string[]>();
-  for (const r of results) {
-    tempPathwayGenes.set(
-      (r.ID as string) || (r.Pathway as string),
-      getGeneList(r as unknown as GseaResult)
-    );
-  }
-
 
 
 
   const fdrThreshold =  0.1
-  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold);
+  const pValueThreshold = 0.1
+  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold && (r["p-value"] as number) < pValueThreshold);
   const displayResults =
     significantResults.length > 0 ? significantResults : results.slice(0, 50);
 
@@ -72,15 +64,17 @@ export async function computePathwayViewElements(
 
   // For larger datasets, use async chunked processing to allow UI responsiveness
   if (nodes.length > 1200) {
+    //filter results to only include those with FDR < 0.5
+   
     console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} terms asynchronously...`);
-    return  computePathwayEdgesSync(
+    return  computePathwayEdgesAsync(
       pathwayIds,
       pathwayGenes,
       pathwayNameMap,
       pathwayLinkMap,
       nodes,
       similarityThreshold,
-      results
+      significantResults.length > 0 ? significantResults : results.slice(0, 50)
     );
   }
 
@@ -92,13 +86,13 @@ export async function computePathwayViewElements(
     pathwayLinkMap,
     nodes,
     similarityThreshold,
-    results
+    significantResults.length > 0 ? significantResults : results.slice(0, 50)
   );
 }
 
 /**
  * Async computation for filtered GO datasets
- * Processes all edges but yields to browser every CHUNK_SIZE iterations
+ * Limits to top 300 most significant pathways and computes edges
  */
 async function computePathwayEdgesAsync(
   pathwayIds: string[],
@@ -109,22 +103,24 @@ async function computePathwayEdgesAsync(
   similarityThreshold: number,
   results: Array<GseaResult>
 ) {
+  // Sort pathways by FDR significance and limit to top 300
+  const sortedPathwayIds = pathwayIds
+    .map((id) => {
+      const result = results.find((r) => (r.ID as string) === id || (r.Pathway as string) === id);
+      return { id, fdr: result?.FDR as number || 1 };
+    })
+    .sort((a, b) => a.fdr - b.fdr)
+    .slice(0, 100)
+    .map((item) => item.id);
+  
   const edges: ElementDefinition[] = [];
   const edgeSet = new Set<string>();
   let edgeCount = 0;
-  const CHUNK_SIZE = 20; // Yield to browser every 20 comparisons
-  let comparisonCount = 0;
 
-  for (let i = 0; i < pathwayIds.length; i++) {
-    for (let j = i + 1; j < pathwayIds.length; j++) {
-      // Yield to browser every CHUNK_SIZE comparisons
-      if (comparisonCount > 0 && comparisonCount % CHUNK_SIZE === 0) {
-        await yieldToBrowser();
-      }
-      comparisonCount++;
-
-      const idA = pathwayIds[i];
-      const idB = pathwayIds[j];
+  for (let i = 0; i < sortedPathwayIds.length; i++) {
+    for (let j = i + 1; j < sortedPathwayIds.length; j++) {
+      const idA = sortedPathwayIds[i];
+      const idB = sortedPathwayIds[j];
       const genesA = pathwayGenes.get(idA) || [];
       const genesB = pathwayGenes.get(idB) || [];
 
@@ -165,7 +161,7 @@ async function computePathwayEdgesAsync(
     }
   }
 
-console.log(nodes.length, results.length, 'computed nodes and results async')
+  console.log(`[ENRICHMENT_MAP] Computed edges for top 300 significant pathways: ${sortedPathwayIds.length} pathways, ${edgeCount} edges`)
   return {
     elements: [...nodes, ...edges],
     stats: {

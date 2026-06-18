@@ -54,7 +54,7 @@ export function useElementComputation(
 
   // FDR, p-value, and NES filtered results
   const fdrFilteredResults = useMemo(() => {
-    return results.filter((r) => {
+    const filtered = results.filter((r) => {
       const fdr = r.FDR as number;
       const pValue = r["p-value"] as number;
       const nes = r.NES as number;
@@ -63,6 +63,14 @@ export function useElementComputation(
       const nesPass = nes >= debouncedNesRange[0] && nes <= debouncedNesRange[1];
       return fdrPass || pValuePass || nesPass;
     });
+    console.log("[FDR_FILTER] Filtered results", {
+      totalResults: results.length,
+      filteredResults: filtered.length,
+      debouncedFdrThreshold,
+      debouncedPValueThreshold,
+      debouncedNesRange,
+    });
+    return filtered;
   }, [results, debouncedFdrThreshold, debouncedPValueThreshold, debouncedNesRange]);
 
   // Memoized NES range for color scaling
@@ -70,15 +78,23 @@ export function useElementComputation(
     const nesValues = fdrFilteredResults
       .map((r) => r.NES as number)
       .filter((nes) => typeof nes === "number");
-    if (nesValues.length === 0) return { min: 0, max: 0 };
-    return {
+    const range = nesValues.length === 0 ? { min: 0, max: 0 } : {
       min: Math.min(...nesValues),
       max: Math.max(...nesValues),
     };
+    console.log("[DISPLAY_NES_RANGE] Computed NES range", range);
+    return range;
   }, [fdrFilteredResults]);
 
   // Compute pathway nodes (uncolored)
   const { nodes: uncoloredNodes } = useMemo(() => {
+    console.log("[UNCOLORED_NODES] Computing uncolored nodes", {
+      fdrFilteredResultsLength: fdrFilteredResults.length,
+      genesLength: (genes as Array<Gene>)?.length,
+      resultsLength: results.length,
+      genesRef: genes,
+      resultsRef: results,
+    });
     const significantResults = fdrFilteredResults.filter((r) => (r.FDR as number) < 0.25);
     const displayResults = significantResults.length > 0 ? significantResults : fdrFilteredResults.slice(0, 50);
 
@@ -93,41 +109,59 @@ export function useElementComputation(
     return { nodes: result.nodes, initialStats: stats };
   }, [fdrFilteredResults, genes, results]);
 
-  // Apply NES-based coloring separately (doesn't affect edge computation)
-  const nodes = useMemo(() => {
-    return uncoloredNodes.map((node) => {
-      if (node.data?.source) return node; // Skip edges
+  // // Apply NES-based coloring separately (doesn't affect edge computation)
+  // const nodes = useMemo(() => {
+  //   console.log("[NODES_COLORING] Recalculating colored nodes", {
+  //     uncoloredNodesLength: uncoloredNodes.length,
+  //     displayNesRange,
+  //   });
+  //   return uncoloredNodes.map((node) => {
+  //     if (node.data?.source) return node; // Skip edges
 
-      const correspondingResult = fdrFilteredResults.find((r) => (r.ID as string) === node.data?.id);
+  //     const correspondingResult = fdrFilteredResults.find((r) => (r.ID as string) === node.data?.id);
 
-      if (correspondingResult && typeof correspondingResult.NES === "number") {
-        const nesColor = mapToPrioritizationColor(
-          correspondingResult.NES as number,
-          displayNesRange.min,
-          displayNesRange.max
-        );
-        return {
-          ...node,
-          data: { ...node.data, color: nesColor },
-        };
-      }
+  //     if (correspondingResult && typeof correspondingResult.NES === "number") {
+  //       const nesColor = mapToPrioritizationColor(
+  //         correspondingResult.NES as number,
+  //         displayNesRange.min,
+  //         displayNesRange.max
+  //       );
+  //       return {
+  //         ...node,
+  //         data: { ...node.data, color: nesColor },
+  //       };
+  //     }
 
-      return node;
-    });
-  }, [uncoloredNodes, fdrFilteredResults, displayNesRange]);
+  //     return node;
+  //   });
+  // }, [uncoloredNodes, fdrFilteredResults, displayNesRange]);
 
   // Assemble elements
   useEffect(() => {
+    console.log("[ELEMENT_COMPUTATION] Effect triggered", {
+      fdrFilteredResultsLength: fdrFilteredResults.length,
+      uncoloredNodesLength: uncoloredNodes.length,
+      debouncedSimilarityThreshold,
+      timestamp: new Date().toISOString(),
+    });
 
     const computeElements = async () => {
+      console.log("[ELEMENT_COMPUTATION] Starting computation...");
       // Yield to browser to allow loader to render before computation starts
       await new Promise(resolve => setTimeout(resolve, 0));
       
+      console.log("[ELEMENT_COMPUTATION] Computing pathway view elements...");
       const { elements, stats } = await computePathwayViewElements(fdrFilteredResults, uncoloredNodes, debouncedSimilarityThreshold);
-      
+      console.log("[ELEMENT_COMPUTATION] Elements computed, filtering nodes without edges...", {
+        totalElements: elements.length,
+      });
       // Filter nodes without edges and get dropped count
       const { elements: filteredElements, droppedNodesCount } = filterNodesWithoutEdges(elements);
       
+      console.log("[ELEMENT_COMPUTATION] Filtered elements, applying NES coloring...", {
+        filteredElementsLength: filteredElements.length,
+        droppedNodesCount,
+      });
       // Apply NES coloring to filtered nodes
       const coloredElements = filteredElements.map((el) => {
         if (el.data?.source) return el; // Skip edges
@@ -147,6 +181,7 @@ export function useElementComputation(
         return el;
       });
       
+      console.log("[ELEMENT_COMPUTATION] Coloring complete, updating state...");
       // Wrap state updates in startTransition to avoid blocking render
       startTransition(() => {
         setComputedElements(coloredElements);
@@ -168,6 +203,12 @@ export function useElementComputation(
           return fdr !== undefined && fdr < 3 && displayedNodeIds.has(nodeId);
         }).length;
         
+        console.log("[ELEMENT_COMPUTATION] State updated", {
+          elementsCount: coloredElements.length,
+          edgesCount: filteredEdges.length,
+          nodesCount: filteredNodes.length,
+          significantCount: significantDisplayed,
+        });
         setComputedStats({
           ...stats,
           totalPathways: fdrFilteredResults.length,
@@ -183,11 +224,15 @@ export function useElementComputation(
 
     // Wrap in requestAnimationFrame to show loader immediately before computation
     const frameId = requestAnimationFrame(() => {
+      console.log("[ELEMENT_COMPUTATION] Starting computation in next frame...");
       computeElements();
     });
 
-    return () => cancelAnimationFrame(frameId);
-  }, [fdrFilteredResults, debouncedSimilarityThreshold, uncoloredNodes, displayNesRange]);
+    return () => {
+      console.log("[ELEMENT_COMPUTATION] Cleaning up effect");
+      cancelAnimationFrame(frameId);
+    };
+  }, [fdrFilteredResults, debouncedSimilarityThreshold, uncoloredNodes]);
 
   return {
     computedElements,

@@ -159,11 +159,8 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
 
       const nes = pathway.NES || 0;
       const pValue = pathway["p-value"] || 1;
-      const genes = pathway["Leading edge genes"] || "";
-      const geneList = genes
-        .split(",")
-        .map((g) => g.trim())
-        .filter(Boolean);
+      const genes = pathway["Leading edge genes"] || [];
+      const geneList = Array.isArray(genes) ? genes : [];
 
       // Get children first to determine if this is a leaf
       const children = childrenMap.get(id) || [];

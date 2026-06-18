@@ -110,7 +110,7 @@ function NodeDetailsContent({ data, diseaseId, geneToTargetIdMapping }: { data: 
       </Box>
 
       <Box>
-        <GeneList title="Leading Edge Genes" genes={data?.leadingGenes?.split(",") || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
+        <GeneList title="Leading Edge Genes" genes={Array.isArray(data?.leadingGenes) ? data.leadingGenes : data?.leadingGenes?.split(",") || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
 
       </Box>
     </>
@@ -336,7 +336,11 @@ export function EnrichmentMapDetailsModal({
       if( type === "edge") {
         sharedGenes = (data as EdgeData).sharedGenes || [];
       } else if (type === "node") {
-        sharedGenes = (data as NodeData).leadingGenes?.split(",") || [];
+        const leadingGenes = (data as NodeData).leadingGenes;
+        // Handle both array format (new) and string format (legacy)
+        sharedGenes = Array.isArray(leadingGenes) 
+          ? leadingGenes 
+          : leadingGenes?.split(",") || [];
       } else {
         sharedGenes = [];
       }

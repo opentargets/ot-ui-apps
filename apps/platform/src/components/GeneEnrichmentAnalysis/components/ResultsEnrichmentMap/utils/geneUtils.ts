@@ -21,7 +21,11 @@ export function getGeneList(
   field: GeneListField
 ): string[] {
   const genes = result[field];
-  if (!genes || genes === "") return [];
+  if (!genes) return [];
+  // Handle both array format (new) and string format (legacy)
+  if (Array.isArray(genes)) {
+    return genes.filter(Boolean);
+  }
   return genes
     .split(",")
     .map((g) => g.trim())

@@ -26,6 +26,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { AnalysisRun, AssociationsState } from "../types";
+import { GseaLibrariesMap } from "../constants";
 
 interface RunHistorySidebarProps {
   runs: AnalysisRun[];
@@ -76,12 +77,7 @@ function formatTimeAgo(timestamp: number): string {
   return `${days}d ago`;
 }
 
-const LIBRARY_DISPLAY_NAMES: Record<string, string> = {
-  ReactomePathways_2025: "Reactome 2025",
-  "GO:BP_2025": "Gene Ontology (Biological Process) 2025",
-  "GO:CC_2025": "Gene Ontology (Cellular Component) 2025",
-  "GO:MF_2025": "Gene Ontology (Molecular Function) 2025",
-};
+const LIBRARY_DISPLAY_NAMES: Record<string, string> = GseaLibrariesMap
 
 /** Get library display name (extract last part of path) */
 function getLibraryDisplayName(library: string): string {

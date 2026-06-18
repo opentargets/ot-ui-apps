@@ -13,10 +13,10 @@ export interface GseaResult {
   "Sidak's p-value"?: number;
   "Pathway size": number;
   "Number of input genes": number;
-  "Leading edge genes": string; // comma-separated string
+  "Leading edge genes": Array<string>;
   Link?: string;
   "Parent pathway"?: string;
-  "Pathway genes"?: string; // comma-separated string of all genes in the pathway
+  "Pathway genes"?: Array<string>;
 }
 
 export interface InputOverlap {
