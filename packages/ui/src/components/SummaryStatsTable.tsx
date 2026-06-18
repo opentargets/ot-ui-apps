@@ -36,9 +36,8 @@ export default function SummaryStatsTable({ sumstatQCValues }: any) {
       <table>
         <tbody>
           {dicSummary.map((sumstat: any) => {
-            const summStatValue = sumstatQCValues.find(
-              (v: any) => v.QCCheckName === sumstat.id
-            ).QCCheckValue;
+            const match = sumstatQCValues.find((v: any) => v.QCCheckName === sumstat.id);
+            if (!match) return null;
             return (
               <tr key={v1()}>
                 <td>
@@ -47,7 +46,7 @@ export default function SummaryStatsTable({ sumstatQCValues }: any) {
                   </Tooltip>
                 </td>
                 <Typography sx={{ textAlign: "right" }} component="td" variant="body2">
-                  {formatValue(summStatValue)}
+                  {formatValue(match.QCCheckValue)}
                 </Typography>
               </tr>
             );
