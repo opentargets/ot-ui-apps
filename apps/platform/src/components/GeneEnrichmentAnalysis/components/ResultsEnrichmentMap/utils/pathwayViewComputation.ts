@@ -19,9 +19,9 @@ export async function computePathwayViewElements(
 
 
 
-  const fdrThreshold =  0.1
-  const pValueThreshold = 0.1
-  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold && (r["p-value"] as number) < pValueThreshold);
+  const fdrThreshold =  1.0
+  const pValueThreshold = 1.0
+  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold || (r["p-value"] as number) < pValueThreshold);
   const displayResults =
     significantResults.length > 0 ? significantResults : results.slice(0, 50);
 
