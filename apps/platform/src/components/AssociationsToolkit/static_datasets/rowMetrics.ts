@@ -7,6 +7,7 @@ export interface RowMetricDef {
   description: string;
   sortable: boolean;
   isPrivate?: boolean;
+  docsLink?: string;
   format: (v: number | null | undefined) => string;
 }
 
@@ -19,6 +20,7 @@ export const ROW_METRICS: RowMetricDef[] = [
     label: "Novelty Trend",
     description: "Click to view novelty details for this association.",
     sortable: true,
+    docsLink: "https://home.opentargets.org/timeseries",
     format: (v) => (v != null ? v.toFixed(2) : "—"),
     isPrivate: true,
   },

@@ -147,6 +147,7 @@ const metricsColumns = ROW_METRICS.filter(
     id: metric.id,
     enableSorting: metric.sortable,
     isPrivate: metric.isPrivate,
+    docsLink: metric.docsLink,
     header: (
       <Typography
         variant="assoc_header"
