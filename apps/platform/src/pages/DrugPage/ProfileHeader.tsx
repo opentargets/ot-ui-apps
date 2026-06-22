@@ -8,6 +8,7 @@ import {
 } from "ui";
 import { Button, Paper, Modal } from "@mui/material";
 import { Fragment, useState } from "react";
+import { parseDrugLabels } from "@ot/utils";
 import { clinicalStageCategories } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlassPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -31,14 +32,14 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
     description,
     parentMolecule,
     childMolecules = [],
-    synonyms,
-    tradeNames,
+    synonyms = [],
+    tradeNames = [],
     drugType,
     maximumClinicalStage
   } = data?.drug || {};
 
   const maxStage = clinicalStageCategories[maximumClinicalStage] ? clinicalStageCategories[maximumClinicalStage].label : "N/A";
- 
+
   return (
     <BaseProfileHeader>
       <>
@@ -63,10 +64,10 @@ function ProfileHeader({ chemblId }: { chemblId: string }) {
           ))}
         </Field>
         <ProfileChipList title="Synonyms" inline loading={loading}>
-          {synonyms}
+          {parseDrugLabels(synonyms)}
         </ProfileChipList>
         <ProfileChipList title="Known trade names" inline loading={loading}>
-          {tradeNames}
+          {parseDrugLabels(tradeNames)}
         </ProfileChipList>
       </>
       <Paper
@@ -162,3 +163,4 @@ ProfileHeader.fragments = {
 };
 
 export default ProfileHeader;
+
