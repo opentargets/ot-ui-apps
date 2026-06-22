@@ -122,6 +122,8 @@ export function processData(
         ) {
           firstLevelRow[datatypeId].median = row.median;
           firstLevelRow[datatypeId]._normalisedMedian = row._normalisedMedian;
+          firstLevelRow[datatypeId]._secondLevelMedianName = row._secondLevelName;
+          firstLevelRow[datatypeId]._secondLevelMedianId = row._secondLevelId;
         }
 
         // specificity
@@ -132,6 +134,8 @@ export function processData(
             (currentSpecificity === null || row.specificity_score > currentSpecificity))
         ) {
           firstLevelRow[datatypeId].specificity_score = row.specificity_score;
+          firstLevelRow[datatypeId]._secondLevelSpecificityName = row._secondLevelName;
+          firstLevelRow[datatypeId]._secondLevelSpecificityId = row._secondLevelId;
           if (
             maxSpecificity.score === undefined ||
             (row.specificity_score !== null &&
