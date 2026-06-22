@@ -3,11 +3,10 @@ import type { ElementDefinition } from "cytoscape";
 import {
   buildPathwayViewNodes,
   computePathwayViewElements,
-  filterNodesWithoutEdges,
   useDebounce,
 } from "../utils";
 import type { ComputedStats } from "../utils";
-import { mapToPrioritizationColor } from "../../../utils/colorPalettes";
+import { mapToPrioritizationColor, PRIORITISATION_COLORS } from "../../../utils/colorPalettes";
 import { GseaResult } from "../../../api/gseaApi";
 import { Gene } from "../../../types";
 
@@ -126,73 +125,86 @@ export function useElementComputation(
       
       console.log("[ELEMENT_COMPUTATION] Computing pathway view elements...", { nodeCount: uncoloredNodes.length });
       const start = performance.now();
-      const { elements, stats } = await computePathwayViewElements(fdrFilteredResults, uncoloredNodes, debouncedSimilarityThreshold);
-      const duration = performance.now() - start;
-      console.log(`[ELEMENT_COMPUTATION] Elements computed in ${duration.toFixed(0)}ms`, { totalElements: elements.length });
-      console.log("[ELEMENT_COMPUTATION] Elements computed, filtering nodes without edges...", {
-        totalElements: elements.length,
-      });
-      // Filter nodes without edges and get dropped count
-      const { elements: filteredElements, droppedNodesCount } = filterNodesWithoutEdges(elements);
       
-      console.log("[ELEMENT_COMPUTATION] Filtered elements, applying NES coloring...", {
-        filteredElementsLength: filteredElements.length,
-        droppedNodesCount,
-      });
-      // Apply NES coloring to filtered nodes
-      const coloredElements = filteredElements.map((el) => {
-        if (el.data?.source) return el; // Skip edges
-        
-        const correspondingResult = fdrFilteredResults.find((r) => (r.ID as string) === el.data?.id);
-        if (correspondingResult && typeof correspondingResult.NES === "number") {
-          const nesColor = mapToPrioritizationColor(
-            correspondingResult.NES as number,
-            displayNesRange.min,
-            displayNesRange.max
-          );
-          return {
-            ...el,
-            data: { ...el.data, color: nesColor },
-          };
+      // Build NES value map for worker
+      const nesValueMap: Record<string, number> = {};
+      for (const result of fdrFilteredResults) {
+        const id = (result.ID as string) || (result.Pathway as string);
+        if (typeof result.NES === "number") {
+          nesValueMap[id] = result.NES;
         }
-        return el;
+      }
+      
+      const { elements, stats } = await computePathwayViewElements(
+        fdrFilteredResults,
+        uncoloredNodes,
+        debouncedSimilarityThreshold,
+        nesValueMap,
+        displayNesRange,
+        PRIORITISATION_COLORS
+      );
+      const duration = performance.now() - start;
+      console.log(`[ELEMENT_COMPUTATION] Elements computed in ${duration.toFixed(0)}ms`, { 
+        totalElements: elements.length,
+        droppedNodesCount: (stats as any).droppedNodes,
       });
       
-      console.log("[ELEMENT_COMPUTATION] Coloring complete, updating state...");
-      // Wrap state updates in startTransition to avoid blocking render
+      // Apply NES coloring to received elements (non-blocking chunks)
+      console.log("[ELEMENT_COMPUTATION] Applying NES coloring to elements...");
+      const colorStart = performance.now();
+      const chunkSize = 500;
+      const coloredElements: ElementDefinition[] = [];
+      
+      const applyColorsInChunks = async (startIdx: number): Promise<void> => {
+        const endIdx = Math.min(startIdx + chunkSize, elements.length);
+        
+        for (let i = startIdx; i < endIdx; i++) {
+          const el = elements[i];
+          if (el.data?.source) {
+            coloredElements.push(el); // Keep edges as-is
+            continue;
+          }
+          
+          const nodeId = el.data?.id as string;
+          const nesValue = nesValueMap[nodeId];
+          if (nesValue !== undefined && nesValue !== null) {
+            const color = mapToPrioritizationColor(nesValue, displayNesRange.min, displayNesRange.max);
+            coloredElements.push({
+              ...el,
+              data: { ...el.data, color },
+            });
+          } else {
+            coloredElements.push(el);
+          }
+        }
+        
+        if (endIdx < elements.length) {
+          // Yield to browser before next chunk
+          await new Promise(resolve => setTimeout(resolve, 0));
+          await applyColorsInChunks(endIdx);
+        }
+      };
+      
+      await applyColorsInChunks(0);
+      console.log(`[ELEMENT_COMPUTATION] Coloring applied in ${(performance.now() - colorStart).toFixed(0)}ms`);
       startTransition(() => {
         setComputedElements(coloredElements);
         
-        // Recompute stats based on filtered results to match what's rendered
         const filteredEdges = coloredElements.filter((el) => el.data?.source);
         const filteredNodes = coloredElements.filter((el) => !el.data?.source);
-        
-        // Count significant nodes only among those displayed
-        const displayedNodeIds = new Set(
-          filteredNodes
-            .map((node) => node.data?.id)
-            .filter((id): id is string => Boolean(id))
-        );
-        
-        const significantDisplayed = fdrFilteredResults.filter((r) => {
-          const fdr = r.FDR as number | undefined;
-          const nodeId = (r.ID as string) || (r.Pathway as string);
-          return fdr !== undefined && fdr < 3 && displayedNodeIds.has(nodeId);
-        }).length;
         
         console.log("[ELEMENT_COMPUTATION] State updated", {
           elementsCount: coloredElements.length,
           edgesCount: filteredEdges.length,
           nodesCount: filteredNodes.length,
-          significantCount: significantDisplayed,
+          significantCount: stats.significantCount,
         });
+        
         setComputedStats({
           ...stats,
           totalPathways: fdrFilteredResults.length,
           displayedPathways: filteredNodes.length,
           edges: filteredEdges.length,
-          significantCount: significantDisplayed,
-          droppedNodes: droppedNodesCount,
         });
         
         setIsLoading(false);

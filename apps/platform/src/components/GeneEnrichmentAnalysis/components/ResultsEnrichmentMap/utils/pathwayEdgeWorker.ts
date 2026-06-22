@@ -10,6 +10,46 @@ function overlapSimilarity(setA: string[], setB: string[]): number {
   return union > 0 ? intersection / union : 0;
 }
 
+// Color mapping function (replicated from colorPalettes.ts)
+function mapToPrioritizationColor(
+  value: number,
+  minValue: number,
+  maxValue: number,
+  palette: string[]
+): string {
+  if (maxValue === minValue) {
+    return palette[Math.floor(palette.length / 2)];
+  }
+  const normalized = (value - minValue) / (maxValue - minValue);
+  const colorIndex = Math.floor(normalized * (palette.length - 1));
+  return palette[Math.max(0, Math.min(colorIndex, palette.length - 1))];
+}
+
+// Filter nodes without edges
+function filterNodesWithoutEdges(elements: ElementDefinition[]): { elements: ElementDefinition[]; droppedNodesCount: number } {
+  const edgeSourceTargets = new Set<string>();
+  for (const el of elements) {
+    if (el.data?.source && el.data?.target) {
+      edgeSourceTargets.add(el.data.source as string);
+      edgeSourceTargets.add(el.data.target as string);
+    }
+  }
+
+  let droppedNodesCount = 0;
+  const filtered = elements.filter((el) => {
+    if (!el.data?.source) {
+      // This is a node
+      if (!edgeSourceTargets.has(el.data?.id as string)) {
+        droppedNodesCount++;
+        return false;
+      }
+    }
+    return true;
+  });
+
+  return { elements: filtered, droppedNodesCount };
+}
+
 interface WorkerMessage {
   pathwayIds: string[];
   pathwayGenes: Record<string, string[]>; // Use plain object instead of Map
@@ -28,6 +68,7 @@ interface WorkerResult {
     edges: number;
     totalGenes: number;
     significantCount: number;
+    droppedNodesCount?: number;
   };
 }
 
@@ -36,7 +77,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   console.log("[WORKER] ⏱️ Processing pathway edges computation");
   const start = performance.now();
   
-  const { pathwayIds, pathwayGenes, pathwayNameMap, pathwayLinkMap, nodes, similarityThreshold, results } = event.data;
+  const { pathwayIds, pathwayGenes, pathwayNameMap, pathwayLinkMap, nodes, similarityThreshold, results, nesValueMap, displayNesRange, nesColorPalette } = event.data;
   console.log(`[WORKER] 📥 Received: ${pathwayIds.length} pathways, ${nodes.length} nodes, ${results.length} results`);
 
   // Sort pathways by FDR significance and limit to top 300
@@ -136,20 +177,39 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   const potentialComparisons = (sortedPathwayIds.length * (sortedPathwayIds.length - 1)) / 2;
   const reductionPercent = ((1 - comparisonCount / potentialComparisons) * 100).toFixed(1);
   console.log(`[WORKER] ✅ Edge computation: ${edgeCount} edges from ${comparisonCount} actual comparisons (avoided ${reductionPercent}% vs brute force)`);
-  console.log(`[WORKER] ⏱️ Total computation: ${duration.toFixed(0)}ms`);
+
+  // FILTER & COLOR: Remove nodes without edges and apply NES coloring
+  const filterStart = performance.now();
+  const allElements = [...nodes, ...edges];
+  const { elements: filteredElements, droppedNodesCount } = filterNodesWithoutEdges(allElements);
+  console.log(`[WORKER] 🔧 Filtered to ${filteredElements.length} elements (dropped ${droppedNodesCount} nodes) in ${(performance.now() - filterStart).toFixed(0)}ms`);
+
+  const colorStart = performance.now();
+  let coloredCount = 0;
+  const coloredElements = filteredElements.map((el) => {
+    if (el.data?.source) return el; // Keep edges as-is
+  // FILTER: Remove nodes without edges (keep original node data intact for main thread coloring)
+  const filterStart = performance.now();
+  const allElements = [...nodes, ...edges];
+  const { elements: filteredElements, droppedNodesCount } = filterNodesWithoutEdges(allElements);
+  console.log(`[WORKER] 🔧 Filtered to ${filteredElements.length} elements (dropped ${droppedNodesCount} nodes) in ${(performance.now() - filterStart).toFixed(0)}ms`);
+
+  const totalDuration = performance.now() - start;
+  console.log(`[WORKER] ⏱️ Total computation: ${totalDuration.toFixed(0)}ms`);
 
   const result: WorkerResult = {
-    elements: [...nodes, ...edges],
+    elements: filteredElements, // Return filtered but uncolored elements
     stats: {
       totalPathways: results.length,
-      displayedPathways: nodes.length,
+      displayedPathways: filteredElements.filter((el) => !el.data?.source).length,
       edges: edgeCount,
       totalGenes: 0,
       significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
+      droppedNodesCount,
     },
   };
 
-  console.log(`[WORKER] 📤 Sending result with ${result.elements.length} total elements`);
+  console.log(`[WORKER] 📤 Sending ${result.elements.length} filtered elements`);
   self.postMessage(result);
 };
 

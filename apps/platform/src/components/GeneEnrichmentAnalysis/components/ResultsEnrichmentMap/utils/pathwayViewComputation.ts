@@ -10,7 +10,10 @@ import type { ComputedStats } from "./types";
 export async function computePathwayViewElements(
   results: Array<GseaResult>,
   nodes: ElementDefinition[],
-  similarityThreshold: number
+  similarityThreshold: number,
+  nesValueMap: Record<string, number>,
+  displayNesRange: { min: number; max: number },
+  nesColorPalette: string[]
 ): Promise<{
   elements: cytoscape.ElementDefinition[];
   stats: ComputedStats;
@@ -59,12 +62,16 @@ export async function computePathwayViewElements(
 
   const pathwayIds = Array.from(pathwayGenes.keys());
 
-  console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms (${nodes.length} nodes)`);
+  console.log(`[ENRICHMENT_MAP] 📊 Computing graph with ${pathwayIds.length} filtered terms (${nodes.length} nodes)`);
 
-  // For larger datasets, use web worker to prevent browser freezing
-  // Even 300 nodes = 45K comparisons, use worker to keep UI responsive
-  if (nodes.length > 300) {
-    console.log(`[ENRICHMENT_MAP] Using web worker for large dataset computation (${pathwayIds.length} pathways)...`);
+  // For larger pathway datasets (>300 terms), use web worker to avoid blocking the main thread
+  // With N pathways, we compute ~N*(N-1)/2 pairwise comparisons
+  // 300 pathways = 45k comparisons (fast on main thread)
+  // 6554 pathways = 21.5M comparisons (MUST use worker to avoid freeze)
+  const largeDatasetThreshold = 300;
+  
+  if (pathwayIds.length > largeDatasetThreshold) {
+    console.log(`[ENRICHMENT_MAP] 🚀 Using web worker for large dataset (${pathwayIds.length} pathways, ~${(pathwayIds.length * (pathwayIds.length - 1) / 2 / 1000000).toFixed(1)}M comparisons)...`);
     return computePathwayEdgesWithWorker(
       pathwayIds,
       pathwayGenes,
@@ -76,21 +83,8 @@ export async function computePathwayViewElements(
     );
   }
 
-  // For smaller datasets, still use worker if >100 nodes to stay responsive
-  if (nodes.length > 100) {
-    console.log(`[ENRICHMENT_MAP] Using web worker for medium dataset (${nodes.length} nodes)...`);
-    return computePathwayEdgesWithWorker(
-      pathwayIds,
-      pathwayGenes,
-      pathwayNameMap,
-      pathwayLinkMap,
-      nodes,
-      similarityThreshold,
-      significantResults.length > 0 ? significantResults : results.slice(0, 50)
-    );
-  }
-
-  // Only use sync for very small datasets
+  // For smaller datasets, use synchronous computation
+  console.log(`[ENRICHMENT_MAP] 📊 Using sync computation for small dataset (${pathwayIds.length} pathways)...`);
   return computePathwayEdgesSync(
     pathwayIds,
     pathwayGenes,
