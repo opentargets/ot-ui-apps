@@ -2,7 +2,6 @@ import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
 import { getGeneList, overlapSimilarity } from "./index";
 import type { ComputedStats } from "./types";
-import { yieldToBrowser } from "./browser";
 
 /**
  * Computes pathway view elements (nodes and edges)
@@ -60,14 +59,13 @@ export async function computePathwayViewElements(
 
   const pathwayIds = Array.from(pathwayGenes.keys());
 
-  console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms`);
+  console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms (${nodes.length} nodes)`);
 
-  // For larger datasets, use async chunked processing to allow UI responsiveness
-  if (nodes.length > 1200) {
-    //filter results to only include those with FDR < 0.5
-   
-    console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} terms asynchronously...`);
-    return  computePathwayEdgesAsync(
+  // For larger datasets, use web worker to prevent browser freezing
+  // Even 300 nodes = 45K comparisons, use worker to keep UI responsive
+  if (nodes.length > 300) {
+    console.log(`[ENRICHMENT_MAP] Using web worker for large dataset computation (${pathwayIds.length} pathways)...`);
+    return computePathwayEdgesWithWorker(
       pathwayIds,
       pathwayGenes,
       pathwayNameMap,
@@ -78,7 +76,21 @@ export async function computePathwayViewElements(
     );
   }
 
-  // For smaller datasets, use synchronous computation
+  // For smaller datasets, still use worker if >100 nodes to stay responsive
+  if (nodes.length > 100) {
+    console.log(`[ENRICHMENT_MAP] Using web worker for medium dataset (${nodes.length} nodes)...`);
+    return computePathwayEdgesWithWorker(
+      pathwayIds,
+      pathwayGenes,
+      pathwayNameMap,
+      pathwayLinkMap,
+      nodes,
+      similarityThreshold,
+      significantResults.length > 0 ? significantResults : results.slice(0, 50)
+    );
+  }
+
+  // Only use sync for very small datasets
   return computePathwayEdgesSync(
     pathwayIds,
     pathwayGenes,
@@ -88,6 +100,80 @@ export async function computePathwayViewElements(
     similarityThreshold,
     significantResults.length > 0 ? significantResults : results.slice(0, 50)
   );
+}
+
+/**
+ * Offload edge computation to web worker to prevent browser freezing
+ */
+async function computePathwayEdgesWithWorker(
+  pathwayIds: string[],
+  pathwayGenes: Map<string, string[]>,
+  pathwayNameMap: Map<string, string>,
+  pathwayLinkMap: Map<string, string | undefined>,
+  nodes: ElementDefinition[],
+  similarityThreshold: number,
+  results: Array<GseaResult>
+): Promise<{
+  elements: cytoscape.ElementDefinition[];
+  stats: any;
+}> {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log(`[ENRICHMENT_MAP] Creating web worker...`);
+      const workerStartTime = performance.now();
+      
+      // Create a new worker instance
+      const worker = new Worker(new URL('./pathwayEdgesWorker.ts', import.meta.url), { type: 'module' });
+      console.log(`[ENRICHMENT_MAP] Worker created successfully`);
+
+      // Set up message handler
+      worker.onmessage = (event) => {
+        const duration = performance.now() - workerStartTime;
+        console.log(`[ENRICHMENT_MAP] ✅ Worker completed in ${duration.toFixed(0)}ms: ${event.data.stats.edges} edges, ${event.data.stats.displayedPathways} pathways`);
+        resolve(event.data);
+        worker.terminate();
+      };
+
+      worker.onerror = (error) => {
+        console.error(`[ENRICHMENT_MAP] ❌ Worker error:`, error);
+        reject(error);
+        worker.terminate();
+      };
+
+      // Convert Maps to plain objects for serialization
+      const pathwayGenesObj: Record<string, string[]> = {};
+      pathwayGenes.forEach((value, key) => {
+        pathwayGenesObj[key] = value;
+      });
+
+      const pathwayNameMapObj: Record<string, string> = {};
+      pathwayNameMap.forEach((value, key) => {
+        pathwayNameMapObj[key] = value;
+      });
+
+      const pathwayLinkMapObj: Record<string, string | undefined> = {};
+      pathwayLinkMap.forEach((value, key) => {
+        pathwayLinkMapObj[key] = value;
+      });
+
+      console.log(`[ENRICHMENT_MAP] 📤 Sending ${pathwayIds.length} pathways to worker (${nodes.length} nodes)...`);
+
+      // Send data to worker
+      worker.postMessage({
+        pathwayIds,
+        pathwayGenes: pathwayGenesObj,
+        pathwayNameMap: pathwayNameMapObj,
+        pathwayLinkMap: pathwayLinkMapObj,
+        nodes,
+        similarityThreshold,
+        results,
+      });
+    } catch (error) {
+      console.error(`[ENRICHMENT_MAP] ❌ Failed to create worker, falling back to sync:`, error);
+      // Fallback to sync computation if worker fails
+      resolve(computePathwayEdgesSync(pathwayIds, pathwayGenes, pathwayNameMap, pathwayLinkMap, nodes, similarityThreshold, results));
+    }
+  });
 }
 
 /**

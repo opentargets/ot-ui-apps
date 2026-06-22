@@ -61,7 +61,7 @@ export function useElementComputation(
       const fdrPass = fdr < debouncedFdrThreshold;
       const pValuePass = pValue < debouncedPValueThreshold;
       const nesPass = nes >= debouncedNesRange[0] && nes <= debouncedNesRange[1];
-      return fdrPass || pValuePass || nesPass;
+      return fdrPass && pValuePass && nesPass;
     });
     console.log("[FDR_FILTER] Filtered results", {
       totalResults: results.length,
@@ -109,32 +109,6 @@ export function useElementComputation(
     return { nodes: result.nodes, initialStats: stats };
   }, [fdrFilteredResults, genes, results]);
 
-  // // Apply NES-based coloring separately (doesn't affect edge computation)
-  // const nodes = useMemo(() => {
-  //   console.log("[NODES_COLORING] Recalculating colored nodes", {
-  //     uncoloredNodesLength: uncoloredNodes.length,
-  //     displayNesRange,
-  //   });
-  //   return uncoloredNodes.map((node) => {
-  //     if (node.data?.source) return node; // Skip edges
-
-  //     const correspondingResult = fdrFilteredResults.find((r) => (r.ID as string) === node.data?.id);
-
-  //     if (correspondingResult && typeof correspondingResult.NES === "number") {
-  //       const nesColor = mapToPrioritizationColor(
-  //         correspondingResult.NES as number,
-  //         displayNesRange.min,
-  //         displayNesRange.max
-  //       );
-  //       return {
-  //         ...node,
-  //         data: { ...node.data, color: nesColor },
-  //       };
-  //     }
-
-  //     return node;
-  //   });
-  // }, [uncoloredNodes, fdrFilteredResults, displayNesRange]);
 
   // Assemble elements
   useEffect(() => {
@@ -148,10 +122,13 @@ export function useElementComputation(
     const computeElements = async () => {
       console.log("[ELEMENT_COMPUTATION] Starting computation...");
       // Yield to browser to allow loader to render before computation starts
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 50));
       
-      console.log("[ELEMENT_COMPUTATION] Computing pathway view elements...");
+      console.log("[ELEMENT_COMPUTATION] Computing pathway view elements...", { nodeCount: uncoloredNodes.length });
+      const start = performance.now();
       const { elements, stats } = await computePathwayViewElements(fdrFilteredResults, uncoloredNodes, debouncedSimilarityThreshold);
+      const duration = performance.now() - start;
+      console.log(`[ELEMENT_COMPUTATION] Elements computed in ${duration.toFixed(0)}ms`, { totalElements: elements.length });
       console.log("[ELEMENT_COMPUTATION] Elements computed, filtering nodes without edges...", {
         totalElements: elements.length,
       });

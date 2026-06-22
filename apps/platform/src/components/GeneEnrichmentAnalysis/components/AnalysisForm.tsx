@@ -33,6 +33,25 @@ function getLibraryDisplayName(library: string): string {
   return LIBRARY_DISPLAY_NAMES[rawName] ?? rawName;
 }
 
+/** Sort libraries: reactome first, go_* next, chembl last */
+export function sortLibraries(libs: string[]): string[] {
+  return [...libs].sort((a, b) => {
+    const aLower = a.toLowerCase();
+    const bLower = b.toLowerCase();
+
+    // Reactome first
+    if (aLower.includes("reactome") && !bLower.includes("reactome")) return -1;
+    if (!aLower.includes("reactome") && bLower.includes("reactome")) return 1;
+
+    // GO next
+    if (aLower.includes("go_") && !bLower.includes("go_")) return -1;
+    if (!aLower.includes("go_") && bLower.includes("go_")) return 1;
+
+    // ChEMBL last (everything else)
+    return a.localeCompare(b);
+  });
+}
+
 function AnalysisForm({
   libraries,
   analysisInputs,
@@ -83,7 +102,7 @@ function AnalysisForm({
               <MenuItem value="" disabled>
                 Choose a library...
               </MenuItem>
-              {libraries.map((lib) => (
+              {sortLibraries(libraries).map((lib) => (
                 <MenuItem value={lib} key={lib}>
                   {getLibraryDisplayName(lib)}
                 </MenuItem>
