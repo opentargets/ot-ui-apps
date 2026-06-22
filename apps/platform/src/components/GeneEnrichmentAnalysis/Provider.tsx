@@ -31,8 +31,6 @@ interface GeneEnrichmentProviderProps {
 export function GeneEnrichmentProvider({ children }: GeneEnrichmentProviderProps): ReactElement {
   const [state, dispatch] = useReducer(geneEnrichmentReducer, initialState);
 
-  console.log("state", state);
-
   // Fetch libraries on mount
   useEffect(() => {
     async function fetchLibraries() {
