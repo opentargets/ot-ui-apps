@@ -6,7 +6,6 @@ export function createNodeTooltipHTML(
   data: Record<string, unknown>
 ): string {
   if (viewMode === "genes") {
-    console.log("Creating tooltip for gene node:", data);
     const pathwayList = (data.pathways as string[])?.slice(0, 5).join("<br/>");
     
     return `
@@ -64,9 +63,7 @@ export function styleAndAppendTooltip(tooltip: HTMLDivElement): void {
   tooltip.style.maxWidth = "300px";
   try {
     document.body.appendChild(tooltip);
-    console.log("[TOOLTIP] Appended tooltip to DOM");
   } catch (err) {
-    console.error("[TOOLTIP] Failed to appendChild:", err);
   }
 }
 
@@ -80,19 +77,9 @@ export function removeTooltip(
 ): void {
   try {
     if (tooltip.parentNode) {
-      console.log(`[${context}] Removing tooltip, parent exists:`, (tooltip.parentNode as Element).tagName);
       tooltip.parentNode.removeChild(tooltip);
-      console.log(`[${context}] Successfully removed tooltip`);
-    } else {
-      console.warn(`[${context}] Tooltip has no parent node`);
     }
   } catch (err) {
-    console.error(
-      `[${context}] Failed to removeChild:`,
-      err,
-      "parent:",
-      (tooltip.parentNode as Element)?.tagName
-    );
   }
 
   try {

@@ -217,7 +217,7 @@ function SunburstFilters({
                 <MenuItem value={0.01}>≤ 0.01</MenuItem>
                 <MenuItem value={0.05}>≤ 0.05</MenuItem>
                 <MenuItem value={0.1}>≤ 0.1</MenuItem>
-                <MenuItem value={1.0}>All</MenuItem>
+                 <MenuItem value={1.0}>{"< 1.0"}</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -235,7 +235,7 @@ function SunburstFilters({
                 <MenuItem value={0.01}>≤ 0.01</MenuItem>
                 <MenuItem value={0.05}>≤ 0.05</MenuItem>
                 <MenuItem value={0.1}>≤ 0.1</MenuItem>
-                <MenuItem value={1.0}>All</MenuItem>
+                 <MenuItem value={1.0}>{"< 1.0"}</MenuItem>
               </Select>
             </FormControl>
           </Box>

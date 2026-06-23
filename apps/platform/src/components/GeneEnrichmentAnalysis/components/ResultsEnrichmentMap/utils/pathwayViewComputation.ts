@@ -2,7 +2,6 @@ import type { ElementDefinition } from "cytoscape";
 import type { GseaResult } from "../../../api/gseaApi";
 import { getGeneList, overlapSimilarity } from "./index";
 import type { ComputedStats } from "./types";
-import { yieldToBrowser } from "./browser";
 
 /**
  * Computes pathway view elements (nodes and edges)
@@ -16,20 +15,17 @@ export async function computePathwayViewElements(
   elements: cytoscape.ElementDefinition[];
   stats: ComputedStats;
 }> {
-  // Build temporary pathway genes from all results to detect data type
-  const tempPathwayGenes = new Map<string, string[]>();
-  for (const r of results) {
-    tempPathwayGenes.set(
-      (r.ID as string) || (r.Pathway as string),
-      getGeneList(r as unknown as GseaResult)
-    );
-  }
 
 
 
 
-  const fdrThreshold =  0.1
-  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold);
+
+  console.log(`[ENRICHMENT_MAP] 🚀 Started with ${results.length} results, ${nodes.length} nodes`);
+  
+  const fdrThreshold =  1.0;
+  const pValueThreshold = 1.0;
+
+  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold || (r["p-value"] as number) < pValueThreshold);
   const displayResults =
     significantResults.length > 0 ? significantResults : results.slice(0, 50);
 
@@ -49,6 +45,7 @@ export async function computePathwayViewElements(
     }
   }
 
+
   const pathwayGenes = new Map<string, string[]>();
   for (const r of displayResults) {
     pathwayGenes.set(
@@ -58,6 +55,7 @@ export async function computePathwayViewElements(
   }
 
   // Create maps for pathway ID -> name and link lookup
+
   const pathwayNameMap = new Map<string, string>();
   const pathwayLinkMap = new Map<string, string | undefined>();
   for (const r of displayResults) {
@@ -68,19 +66,21 @@ export async function computePathwayViewElements(
 
   const pathwayIds = Array.from(pathwayGenes.keys());
 
-  console.log(`[ENRICHMENT_MAP] Computing graph with ${pathwayIds.length} filtered terms`);
-
-  // For larger datasets, use async chunked processing to allow UI responsiveness
-  if (nodes.length > 1200) {
-    console.log(`[ENRICHMENT_MAP] Computing edges for ${pathwayIds.length} terms asynchronously...`);
-    return  computePathwayEdgesSync(
+  // For larger pathway datasets (>300 terms), use web worker to avoid blocking the main thread
+  // With N pathways, we compute ~N*(N-1)/2 pairwise comparisons
+  // 300 pathways = 45k comparisons (fast on main thread)
+  // 6554 pathways = 21.5M comparisons (MUST use worker to avoid freeze)
+  const largeDatasetThreshold = 300;
+  
+  if (pathwayIds.length > largeDatasetThreshold) {
+    return computePathwayEdgesWithWorker(
       pathwayIds,
       pathwayGenes,
       pathwayNameMap,
       pathwayLinkMap,
       nodes,
       similarityThreshold,
-      results
+      significantResults.length > 0 ? significantResults : results.slice(0, 50)
     );
   }
 
@@ -92,15 +92,11 @@ export async function computePathwayViewElements(
     pathwayLinkMap,
     nodes,
     similarityThreshold,
-    results
+    significantResults.length > 0 ? significantResults : results.slice(0, 50)
   );
 }
 
-/**
- * Async computation for filtered GO datasets
- * Processes all edges but yields to browser every CHUNK_SIZE iterations
- */
-async function computePathwayEdgesAsync(
+async function computePathwayEdgesWithWorker(
   pathwayIds: string[],
   pathwayGenes: Map<string, string[]>,
   pathwayNameMap: Map<string, string>,
@@ -108,74 +104,58 @@ async function computePathwayEdgesAsync(
   nodes: ElementDefinition[],
   similarityThreshold: number,
   results: Array<GseaResult>
-) {
-  const edges: ElementDefinition[] = [];
-  const edgeSet = new Set<string>();
-  let edgeCount = 0;
-  const CHUNK_SIZE = 20; // Yield to browser every 20 comparisons
-  let comparisonCount = 0;
+): Promise<{
+  elements: cytoscape.ElementDefinition[];
+  stats: any;
+}> {
+  return new Promise((resolve, reject) => {
+    try {
+      
+      // Create a new worker instance
+      const worker = new Worker(new URL('./pathwayEdgeWorker.ts', import.meta.url), { type: 'module' });
 
-  for (let i = 0; i < pathwayIds.length; i++) {
-    for (let j = i + 1; j < pathwayIds.length; j++) {
-      // Yield to browser every CHUNK_SIZE comparisons
-      if (comparisonCount > 0 && comparisonCount % CHUNK_SIZE === 0) {
-        await yieldToBrowser();
-      }
-      comparisonCount++;
+      // Set up message handler
+      worker.onmessage = (event) => {
+        resolve(event.data);
+        worker.terminate();
+      };
 
-      const idA = pathwayIds[i];
-      const idB = pathwayIds[j];
-      const genesA = pathwayGenes.get(idA) || [];
-      const genesB = pathwayGenes.get(idB) || [];
+      worker.onerror = (error) => {
+        reject(error);
+        worker.terminate();
+      };
 
-      if (genesA.length === 0 || genesB.length === 0) continue;
+      // Convert Maps to plain objects for serialization
+      
+      const pathwayGenesObj: Record<string, string[]> = {};
+      pathwayGenes.forEach((value, key) => {
+        pathwayGenesObj[key] = value;
+      });
 
-      const similarity = overlapSimilarity(genesA, genesB)
+      const pathwayNameMapObj: Record<string, string> = {};
+      pathwayNameMap.forEach((value, key) => {
+        pathwayNameMapObj[key] = value;
+      });
 
-      const minThreshold = 0.01;
-      const threshold = Math.max(minThreshold, similarityThreshold / 10);
-
-      if (similarity >= threshold) {
-        const edgeId = `${idA}-${idB}`;
-        if (!edgeSet.has(edgeId)) {
-          edgeSet.add(edgeId);
-
-          const setA = new Set(genesA);
-          const sharedGenes = genesB.filter((g) => setA.has(g));
-
-          edges.push({
-            data: {
-              id: edgeId,
-              source: idA,
-              target: idB,
-              sourceName: pathwayNameMap.get(idA),
-              targetName: pathwayNameMap.get(idB),
-              sourceLink: pathwayLinkMap.get(idA),
-              targetLink: pathwayLinkMap.get(idB),
-              sharedGenes,
-              sharedCount: sharedGenes.length,
-              similarityIndex: similarity,
-              edgeWidth: Math.max(1.5, similarity * 5),
-              edgeOpacity: Math.min(1, Math.max(0.5, similarity * 1.5)),
-            },
-          });
-          edgeCount++;
-        }
-      }
+      const pathwayLinkMapObj: Record<string, string | undefined> = {};
+      pathwayLinkMap.forEach((value, key) => {
+        pathwayLinkMapObj[key] = value;
+      });
+      // Send data to worker
+      worker.postMessage({
+        pathwayIds,
+        pathwayGenes: pathwayGenesObj,
+        pathwayNameMap: pathwayNameMapObj,
+        pathwayLinkMap: pathwayLinkMapObj,
+        nodes,
+        similarityThreshold,
+        results,
+      });
+    } catch (error) {
+      // Fallback to sync computation if worker fails
+      resolve(computePathwayEdgesSync(pathwayIds, pathwayGenes, pathwayNameMap, pathwayLinkMap, nodes, similarityThreshold, results));
     }
-  }
-
-console.log(nodes.length, results.length, 'computed nodes and results async')
-  return {
-    elements: [...nodes, ...edges],
-    stats: {
-      totalPathways: results.length,
-      displayedPathways: nodes.length,
-      edges: edgeCount,
-      totalGenes: new Map<string, string[]>().size,
-      significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
-    },
-  };
+  });
 }
 
 /**

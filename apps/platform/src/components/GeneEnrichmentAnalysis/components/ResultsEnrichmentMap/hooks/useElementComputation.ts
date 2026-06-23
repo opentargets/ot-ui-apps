@@ -93,28 +93,6 @@ export function useElementComputation(
     return { nodes: result.nodes, initialStats: stats };
   }, [fdrFilteredResults, genes, results]);
 
-  // Apply NES-based coloring separately (doesn't affect edge computation)
-  const nodes = useMemo(() => {
-    return uncoloredNodes.map((node) => {
-      if (node.data?.source) return node; // Skip edges
-
-      const correspondingResult = fdrFilteredResults.find((r) => (r.ID as string) === node.data?.id);
-
-      if (correspondingResult && typeof correspondingResult.NES === "number") {
-        const nesColor = mapToPrioritizationColor(
-          correspondingResult.NES as number,
-          displayNesRange.min,
-          displayNesRange.max
-        );
-        return {
-          ...node,
-          data: { ...node.data, color: nesColor },
-        };
-      }
-
-      return node;
-    });
-  }, [uncoloredNodes, fdrFilteredResults, displayNesRange]);
 
   // Assemble elements
   useEffect(() => {

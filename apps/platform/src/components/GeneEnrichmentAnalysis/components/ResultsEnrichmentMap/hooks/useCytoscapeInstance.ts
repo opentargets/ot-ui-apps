@@ -29,7 +29,9 @@ export function useCytoscapeInstance(
       return;
     }
 
-    // Create a stable string representation of element IDs and key properties for comparison
+
+
+
     const elementSignature = computedElements
       .map((el) => `${el.data?.id}:${el.data?.source || ""}:${JSON.stringify(el.data)}`)
       .sort()
@@ -54,11 +56,14 @@ export function useCytoscapeInstance(
       }
 
       // Filter nodes without edges right before rendering
+      
       const { elements: elementsToRender } = filterNodesWithoutEdges(computedElements);
 
       const nodeCount = elementsToRender.filter((el) => !el.data?.source).length;
+
       const layoutConfig = getLayoutConfig("pathways", nodeCount);
 
+   
       cyRef.current = initializeCytoscapeInstance(
         containerRef.current,
         elementsToRender,
@@ -84,7 +89,6 @@ export function useCytoscapeInstance(
           }
         });
       }
-
     }
 
     return () => {
