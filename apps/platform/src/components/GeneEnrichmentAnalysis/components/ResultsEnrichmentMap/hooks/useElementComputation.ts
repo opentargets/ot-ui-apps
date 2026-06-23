@@ -143,11 +143,7 @@ export function useElementComputation(
         displayNesRange,
         PRIORITISATION_COLORS
       );
-      const duration = performance.now() - start;
-      console.log(`[ELEMENT_COMPUTATION] Elements computed in ${duration.toFixed(0)}ms`, { 
-        totalElements: elements.length,
-        droppedNodesCount: (stats as any).droppedNodes,
-      });
+  
       
       // Apply NES coloring to received elements (non-blocking chunks)
       console.log("[ELEMENT_COMPUTATION] Applying NES coloring to elements...");

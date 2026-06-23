@@ -33,32 +33,36 @@ interface WorkerResult {
 
 // Worker message handler
 self.onmessage = (event: MessageEvent<WorkerMessage>) => {
-  console.log("[WORKER] ⏱️ Processing pathway edges computation");
   const start = performance.now();
   
   const { pathwayIds, pathwayGenes, pathwayNameMap, pathwayLinkMap, nodes, similarityThreshold, results } = event.data;
-  console.log(`[WORKER] 📥 Received: ${pathwayIds.length} pathways, ${nodes.length} nodes, ${results.length} results`);
 
-  // Sort pathways by FDR significance and limit to top 300
-  const sortStart = performance.now();
+  // Sort pathways by FDR significance and limit to top 300 if more than 300
   const sortedPathwayIds = pathwayIds
     .map((id) => {
       const result = results.find((r) => (r.ID as string) === id || (r.Pathway as string) === id);
       return { id, fdr: result?.FDR as number || 1 };
     })
     .sort((a, b) => a.fdr - b.fdr)
-    .slice(0, 300)
+    .slice(0, pathwayIds.length > 200 ? 200 : pathwayIds.length)
     .map((item) => item.id);
-  console.log(`[WORKER] 🔄 Sorting & filtering took ${(performance.now() - sortStart).toFixed(0)}ms, ${sortedPathwayIds.length} pathways to process`);
 
   const edges: ElementDefinition[] = [];
   const edgeSet = new Set<string>();
   let edgeCount = 0;
   const edgeStart = performance.now();
   
+  // Filter nodes to only include the sorted pathway IDs (limited to 300)
+  const sortedPathwayIdSet = new Set(sortedPathwayIds);
+  const filteredNodes = nodes.filter((node) => {
+    if (node.data?.id && sortedPathwayIdSet.has(node.data.id as string)) {
+      return true;
+    }
+    return false;
+  });
+  
   // OPTIMIZATION: Build gene index to only compare pathways that share genes
   // This reduces comparisons from ~45k to typically <5k for sparse gene networks
-  console.log(`[WORKER] 🔧 Building gene index for ${sortedPathwayIds.length} pathways...`);
   const geneIndex = new Map<string, string[]>();
   for (const pathwayId of sortedPathwayIds) {
     const genes = pathwayGenes[pathwayId] || [];
@@ -69,7 +73,6 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
       geneIndex.get(gene)!.push(pathwayId);
     }
   }
-  console.log(`[WORKER] ✓ Gene index built: ${geneIndex.size} unique genes`);
 
   // Track compared pairs to avoid duplicates when pathways share multiple genes
   const comparedPairs = new Set<string>();
@@ -135,21 +138,18 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   const duration = performance.now() - start;
   const potentialComparisons = (sortedPathwayIds.length * (sortedPathwayIds.length - 1)) / 2;
   const reductionPercent = ((1 - comparisonCount / potentialComparisons) * 100).toFixed(1);
-  console.log(`[WORKER] ✅ Edge computation: ${edgeCount} edges from ${comparisonCount} actual comparisons (avoided ${reductionPercent}% vs brute force)`);
-  console.log(`[WORKER] ⏱️ Total computation: ${duration.toFixed(0)}ms`);
 
   const result: WorkerResult = {
-    elements: [...nodes, ...edges],
+    elements: [...filteredNodes, ...edges],
     stats: {
       totalPathways: results.length,
-      displayedPathways: nodes.length,
+      displayedPathways: filteredNodes.length,
       edges: edgeCount,
       totalGenes: 0,
       significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
     },
   };
 
-  console.log(`[WORKER] 📤 Sending result with ${result.elements.length} total elements`);
   self.postMessage(result);
 };
 

@@ -62,8 +62,6 @@ export async function computePathwayViewElements(
 
   const pathwayIds = Array.from(pathwayGenes.keys());
 
-  console.log(`[ENRICHMENT_MAP] 📊 Computing graph with ${pathwayIds.length} filtered terms (${nodes.length} nodes)`);
-
   // For larger pathway datasets (>300 terms), use web worker to avoid blocking the main thread
   // With N pathways, we compute ~N*(N-1)/2 pairwise comparisons
   // 300 pathways = 45k comparisons (fast on main thread)
@@ -71,7 +69,6 @@ export async function computePathwayViewElements(
   const largeDatasetThreshold = 300;
   
   if (pathwayIds.length > largeDatasetThreshold) {
-    console.log(`[ENRICHMENT_MAP] 🚀 Using web worker for large dataset (${pathwayIds.length} pathways, ~${(pathwayIds.length * (pathwayIds.length - 1) / 2 / 1000000).toFixed(1)}M comparisons)...`);
     return computePathwayEdgesWithWorker(
       pathwayIds,
       pathwayGenes,
@@ -84,7 +81,6 @@ export async function computePathwayViewElements(
   }
 
   // For smaller datasets, use synchronous computation
-  console.log(`[ENRICHMENT_MAP] 📊 Using sync computation for small dataset (${pathwayIds.length} pathways)...`);
   return computePathwayEdgesSync(
     pathwayIds,
     pathwayGenes,
@@ -170,89 +166,6 @@ async function computePathwayEdgesWithWorker(
   });
 }
 
-/**
- * Async computation for filtered GO datasets
- * Limits to top 300 most significant pathways and computes edges
- */
-async function computePathwayEdgesAsync(
-  pathwayIds: string[],
-  pathwayGenes: Map<string, string[]>,
-  pathwayNameMap: Map<string, string>,
-  pathwayLinkMap: Map<string, string | undefined>,
-  nodes: ElementDefinition[],
-  similarityThreshold: number,
-  results: Array<GseaResult>
-) {
-  // Sort pathways by FDR significance and limit to top 300
-  const sortedPathwayIds = pathwayIds
-    .map((id) => {
-      const result = results.find((r) => (r.ID as string) === id || (r.Pathway as string) === id);
-      return { id, fdr: result?.FDR as number || 1 };
-    })
-    .sort((a, b) => a.fdr - b.fdr)
-    .slice(0, 100)
-    .map((item) => item.id);
-  
-  const edges: ElementDefinition[] = [];
-  const edgeSet = new Set<string>();
-  let edgeCount = 0;
-
-  for (let i = 0; i < sortedPathwayIds.length; i++) {
-    for (let j = i + 1; j < sortedPathwayIds.length; j++) {
-      const idA = sortedPathwayIds[i];
-      const idB = sortedPathwayIds[j];
-      const genesA = pathwayGenes.get(idA) || [];
-      const genesB = pathwayGenes.get(idB) || [];
-
-      if (genesA.length === 0 || genesB.length === 0) continue;
-
-      const similarity = overlapSimilarity(genesA, genesB)
-
-      const minThreshold = 0.01;
-      const threshold = Math.max(minThreshold, similarityThreshold / 10);
-
-      if (similarity >= threshold) {
-        const edgeId = `${idA}-${idB}`;
-        if (!edgeSet.has(edgeId)) {
-          edgeSet.add(edgeId);
-
-          const setA = new Set(genesA);
-          const sharedGenes = genesB.filter((g) => setA.has(g));
-
-          edges.push({
-            data: {
-              id: edgeId,
-              source: idA,
-              target: idB,
-              sourceName: pathwayNameMap.get(idA),
-              targetName: pathwayNameMap.get(idB),
-              sourceLink: pathwayLinkMap.get(idA),
-              targetLink: pathwayLinkMap.get(idB),
-              sharedGenes,
-              sharedCount: sharedGenes.length,
-              similarityIndex: similarity,
-              edgeWidth: Math.max(1.5, similarity * 5),
-              edgeOpacity: Math.min(1, Math.max(0.5, similarity * 1.5)),
-            },
-          });
-          edgeCount++;
-        }
-      }
-    }
-  }
-
-  console.log(`[ENRICHMENT_MAP] Computed edges for top 300 significant pathways: ${sortedPathwayIds.length} pathways, ${edgeCount} edges`)
-  return {
-    elements: [...nodes, ...edges],
-    stats: {
-      totalPathways: results.length,
-      displayedPathways: nodes.length,
-      edges: edgeCount,
-      totalGenes: new Map<string, string[]>().size,
-      significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
-    },
-  };
-}
 
 /**
  * Synchronous computation for smaller datasets
