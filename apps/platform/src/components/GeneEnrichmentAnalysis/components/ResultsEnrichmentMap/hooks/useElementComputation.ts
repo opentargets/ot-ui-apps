@@ -4,6 +4,7 @@ import {
   buildPathwayViewNodes,
   computePathwayViewElements,
   useDebounce,
+  filterNodesWithoutEdges,
 } from "../utils";
 import type { ComputedStats } from "../utils";
 import { mapToPrioritizationColor, PRIORITISATION_COLORS } from "../../../utils/colorPalettes";
@@ -179,14 +180,33 @@ export function useElementComputation(
       startTransition(() => {
         setComputedElements(coloredElements);
         
-        const filteredEdges = coloredElements.filter((el) => el.data?.source);
-        const filteredNodes = coloredElements.filter((el) => !el.data?.source);
+        // Log what came from the worker/computation
+        const workerNodes = coloredElements.filter((el) => !el.data?.source);
+        const workerEdges = coloredElements.filter((el) => el.data?.source);
+        console.log("[WORKER_OUTPUT] Elements before filterNodesWithoutEdges:", {
+          totalElements: coloredElements.length,
+          nodes: workerNodes.length,
+          edges: workerEdges.length,
+          nodeIds: workerNodes.map((el) => el.data?.id),
+          edgeSample: workerEdges.slice(0, 5).map((el) => ({
+            id: el.data?.id,
+            source: el.data?.source,
+            target: el.data?.target,
+          })),
+        });
+        
+        // Use the same filtering logic as Cytoscape rendering
+        const { elements: filteredElementsAfterValidation } = filterNodesWithoutEdges(coloredElements);  
+        
+        const filteredNodes = filteredElementsAfterValidation.filter((el) => !el.data?.source);
+        const filteredEdges = filteredElementsAfterValidation.filter((el) => el.data?.source);
+        
         
         setComputedStats({
           ...stats,
           totalPathways: fdrFilteredResults.length,
           displayedPathways: filteredNodes.length,
-          edges: filteredNodes.length > 0 ? filteredEdges.length : 0,
+          edges: filteredEdges.length,
         });
         
         setIsLoading(false);

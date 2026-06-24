@@ -74,7 +74,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   }, [nesDataRange, dispatch]);
 
   // Cytoscape instance
-  const { cyRef } = useCytoscapeInstance(
+  const { cyRef, finalStats } = useCytoscapeInstance(
     containerRef,
     computedElements,
     results as unknown as Array<GseaResult>,
@@ -145,8 +145,8 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
 
   // Calculate filtered pathway count (nodes only, not edges)
   const filteredPathwayCount = useMemo(() => {
-    return computedElements.filter((el) => !el.data?.source).length;
-  }, [computedElements]);
+    return finalStats.displayedPathways || 0;
+  }, [finalStats]);
 
   return (
     <Paper sx={{ p: 2 }}>
@@ -155,11 +155,11 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
           geneNames={uniqueGenes}
           onToggleCollapsed={() => setFilterToggled(prev => !prev)}
           filteredPathwayCount={filteredPathwayCount}
-          totalPathwayCount={results.length}
+          totalPathwayCount={finalStats.totalPathways || computedStats.totalPathways}
         />
       <Box sx={{ mb: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <EnrichmentMapLegend nesRange={nesRange} />
-        <EnrichmentMapHeader stats={computedStats} cyRef={cyRef} />
+        <EnrichmentMapHeader stats={finalStats} cyRef={cyRef} />
       </Box>
       
 

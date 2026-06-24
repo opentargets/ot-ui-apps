@@ -91,6 +91,7 @@ export function filterNodesWithoutEdges(
   // Identify edges and the nodes they connect
   const validEdges = new Set<string>();
   const nodesWithValidEdges = new Set<string>();
+  const invalidEdges: Array<{ edgeId: string; source: string; target: string; reason: string }> = [];
 
   for (const el of elements) {
     const data = el.data as Record<string, unknown> | undefined;
@@ -102,6 +103,17 @@ export function filterNodesWithoutEdges(
         validEdges.add(el.data?.id as string);
         nodesWithValidEdges.add(source);
         nodesWithValidEdges.add(target);
+      } else {
+        invalidEdges.push({
+          edgeId: el.data?.id as string,
+          source,
+          target,
+          reason: !existingNodeIds.has(source) && !existingNodeIds.has(target) 
+            ? "both nodes missing" 
+            : !existingNodeIds.has(source) 
+            ? `source missing: ${source}`
+            : `target missing: ${target}`,
+        });
       }
     }
   }
@@ -117,7 +129,19 @@ export function filterNodesWithoutEdges(
     return nodesWithValidEdges.has(data?.id as string);
   });
 
-  const droppedNodesCount = totalNodes - nodesWithValidEdges.size;
+  const droppedNodes = Array.from(existingNodeIds).filter((nodeId) => !nodesWithValidEdges.has(nodeId));
+  const droppedNodesCount = droppedNodes.length;
+
+  console.log("[FILTER_NODES_WITHOUT_EDGES] Details:", {
+    totalNodes,
+    nodesWithValidEdges: nodesWithValidEdges.size,
+    droppedNodesCount,
+    droppedNodeIds: droppedNodes,
+    invalidEdgesCount: invalidEdges.length,
+    invalidEdges: invalidEdges.slice(0, 50), // Log first 50 invalid edges
+    missingSourceNodes: [...new Set(invalidEdges.filter(e => !existingNodeIds.has(e.source)).map(e => e.source))],
+    missingTargetNodes: [...new Set(invalidEdges.filter(e => !existingNodeIds.has(e.target)).map(e => e.target))],
+  });
 
   return {
     elements: filteredElements,

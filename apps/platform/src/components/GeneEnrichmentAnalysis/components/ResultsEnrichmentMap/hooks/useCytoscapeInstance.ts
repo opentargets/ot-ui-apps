@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Core as CytoscapeCore, ElementDefinition } from "cytoscape";
 import {
   cleanupCytoscapeInstance,
@@ -6,6 +6,7 @@ import {
   initializeCytoscapeInstance,
   filterNodesWithoutEdges,
 } from "../utils";
+import type { ComputedStats } from "../utils";
 
 /**
  * Manages Cytoscape instance lifecycle and cleanup
@@ -23,6 +24,7 @@ export function useCytoscapeInstance(
   const tooltipsRef = useRef<Set<HTMLDivElement>>(new Set());
   const prevElementsRef = useRef<string>("");
   const shortestPathRef = useRef<{ nodes: Set<string>; edges: Set<string> }>({ nodes: new Set(), edges: new Set() });
+  const [finalStats, setFinalStats] = useState<ComputedStats>({ edges: 0, significantCount: 0 });
 
   useEffect(() => {
     if (!containerRef.current || results.length === 0 || computedElements.length === 0 || isLoading) {
@@ -54,9 +56,21 @@ export function useCytoscapeInstance(
       }
 
       // Filter nodes without edges right before rendering
-      const { elements: elementsToRender } = filterNodesWithoutEdges(computedElements);
+      const { elements: elementsToRender, droppedNodesCount } = filterNodesWithoutEdges(computedElements);
 
       const nodeCount = elementsToRender.filter((el) => !el.data?.source).length;
+      const edgeCount = elementsToRender.filter((el) => el.data?.source).length;
+      const renderedNodeIds = elementsToRender.filter((el) => !el.data?.source).map((el) => el.data?.id);
+      
+
+      // Update final stats based on filtered elements
+      setFinalStats({
+        edges: edgeCount,
+        significantCount: 0,
+        totalPathways: results.length,
+        displayedPathways: nodeCount,
+      });
+
       const layoutConfig = getLayoutConfig("pathways", nodeCount);
 
       cyRef.current = initializeCytoscapeInstance(
@@ -93,5 +107,5 @@ export function useCytoscapeInstance(
     };
   }, [computedElements, results.length, genes, isLoading]);
 
-  return { cyRef, tooltipsRef };
+  return { cyRef, tooltipsRef, finalStats };
 }

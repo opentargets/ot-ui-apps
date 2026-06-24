@@ -18,15 +18,9 @@ export async function computePathwayViewElements(
   elements: cytoscape.ElementDefinition[];
   stats: ComputedStats;
 }> {
-
-
-
-  const fdrThreshold =  1.0
-  const pValueThreshold = 1.0
-  const significantResults = results.filter((r) => (r.FDR as number) < fdrThreshold || (r["p-value"] as number) < pValueThreshold);
-  const displayResults =
-    significantResults.length > 0 ? significantResults : results.slice(0, 50);
-
+  // Results are already filtered by FDR/p-value/NES in useElementComputation
+  // Use them directly without re-filtering
+  const displayResults = results.length > 0 ? results : [];
 
   const geneToPathways = new Map<string, string[]>();
 
@@ -76,7 +70,7 @@ export async function computePathwayViewElements(
       pathwayLinkMap,
       nodes,
       similarityThreshold,
-      significantResults.length > 0 ? significantResults : results.slice(0, 50)
+      results
     );
   }
 
@@ -88,7 +82,7 @@ export async function computePathwayViewElements(
     pathwayLinkMap,
     nodes,
     similarityThreshold,
-    significantResults.length > 0 ? significantResults : results.slice(0, 50)
+    results
   );
 }
 
@@ -253,7 +247,6 @@ function computePathwayEdgesSync(
     connectedNodeIds.has(node.data?.id as string)
   );
 
-  console.log(similarityThreshold, 'computed nodes and results synchronously')
   return {
     elements: [...connectedNodes, ...edges],
     stats: {
