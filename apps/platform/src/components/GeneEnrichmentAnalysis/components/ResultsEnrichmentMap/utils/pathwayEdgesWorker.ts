@@ -100,10 +100,7 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
 
           const similarity = overlapSimilarity(genesA, genesB);
 
-          const minThreshold = 0.01;
-          const threshold = Math.max(minThreshold, similarityThreshold / 10);
-
-          if (similarity >= threshold) {
+          if (similarity >= similarityThreshold) {
             if (!edgeSet.has(pairKey)) {
               edgeSet.add(pairKey);
 
@@ -134,10 +131,8 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
     }
   }
 
-  const edgeDuration = performance.now() - edgeStart;
-  const duration = performance.now() - start;
+
   const potentialComparisons = (sortedPathwayIds.length * (sortedPathwayIds.length - 1)) / 2;
-  const reductionPercent = ((1 - comparisonCount / potentialComparisons) * 100).toFixed(1);
 
   const result: WorkerResult = {
     elements: [...filteredNodes, ...edges],
