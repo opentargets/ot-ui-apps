@@ -87,20 +87,14 @@ export function useElementComputation(
 
   // Compute pathway nodes (uncolored)
   const { nodes: uncoloredNodes } = useMemo(() => {
-    console.log("[UNCOLORED_NODES] Computing uncolored nodes", {
-      fdrFilteredResultsLength: fdrFilteredResults.length,
-      genesLength: (genes as Array<Gene>)?.length,
-      resultsLength: results.length,
-      genesRef: genes,
-      resultsRef: results,
-    });
     const significantResults = fdrFilteredResults.filter((r) => (r.FDR as number) < 0.25);
     const displayResults = significantResults.length > 0 ? significantResults : fdrFilteredResults.slice(0, 50);
 
     const result = buildPathwayViewNodes(displayResults, genes as Array<Gene>);
+
     const stats = {
       ...result.stats,
-      totalPathways: results.length,
+      totalPathways: fdrFilteredResults.length,
       displayedPathways: result.nodes.length,
       significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
     };
@@ -182,25 +176,17 @@ export function useElementComputation(
       };
       
       await applyColorsInChunks(0);
-      console.log(`[ELEMENT_COMPUTATION] Coloring applied in ${(performance.now() - colorStart).toFixed(0)}ms`);
       startTransition(() => {
         setComputedElements(coloredElements);
         
         const filteredEdges = coloredElements.filter((el) => el.data?.source);
         const filteredNodes = coloredElements.filter((el) => !el.data?.source);
         
-        console.log("[ELEMENT_COMPUTATION] State updated", {
-          elementsCount: coloredElements.length,
-          edgesCount: filteredEdges.length,
-          nodesCount: filteredNodes.length,
-          significantCount: stats.significantCount,
-        });
-        
         setComputedStats({
           ...stats,
           totalPathways: fdrFilteredResults.length,
           displayedPathways: filteredNodes.length,
-          edges: filteredEdges.length,
+          edges: filteredNodes.length > 0 ? filteredEdges.length : 0,
         });
         
         setIsLoading(false);

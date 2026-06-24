@@ -132,13 +132,40 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
   }
 
 
-  const potentialComparisons = (sortedPathwayIds.length * (sortedPathwayIds.length - 1)) / 2;
+
+  // If no edges were created, don't display any nodes
+  if (edges.length === 0) {
+    const result: WorkerResult = {
+      elements: [],
+      stats: {
+        totalPathways: results.length,
+        displayedPathways: 0,
+        edges: 0,
+        totalGenes: 0,
+        significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
+      },
+    };
+    self.postMessage(result);
+    return;
+  }
+
+  // Track which nodes are actually connected by edges
+  const connectedNodeIds = new Set<string>();
+  for (const edge of edges) {
+    connectedNodeIds.add(edge.data?.source as string);
+    connectedNodeIds.add(edge.data?.target as string);
+  }
+
+  // Only include nodes that have at least one connection
+  const connectedNodes = filteredNodes.filter((node) =>
+    connectedNodeIds.has(node.data?.id as string)
+  );
 
   const result: WorkerResult = {
-    elements: [...filteredNodes, ...edges],
+    elements: [...connectedNodes, ...edges],
     stats: {
       totalPathways: results.length,
-      displayedPathways: filteredNodes.length,
+      displayedPathways: connectedNodes.length,
       edges: edgeCount,
       totalGenes: 0,
       significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,

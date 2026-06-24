@@ -226,14 +226,41 @@ function computePathwayEdgesSync(
       }
     }
   }
+
+  // If no edges were created, don't display any nodes
+  if (edges.length === 0) {
+    return {
+      elements: [],
+      stats: {
+        totalPathways: results.length,
+        displayedPathways: 0,
+        edges: 0,
+        totalGenes: 0,
+        significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
+      },
+    };
+  }
+
+  // Track which nodes are actually connected by edges
+  const connectedNodeIds = new Set<string>();
+  for (const edge of edges) {
+    connectedNodeIds.add(edge.data?.source as string);
+    connectedNodeIds.add(edge.data?.target as string);
+  }
+
+  // Only include nodes that have at least one connection
+  const connectedNodes = nodes.filter((node) =>
+    connectedNodeIds.has(node.data?.id as string)
+  );
+
   console.log(similarityThreshold, 'computed nodes and results synchronously')
   return {
-    elements: [...nodes, ...edges],
+    elements: [...connectedNodes, ...edges],
     stats: {
       totalPathways: results.length,
-      displayedPathways: nodes.length,
+      displayedPathways: connectedNodes.length,
       edges: edgeCount,
-      totalGenes: new Map<string, string[]>().size,
+      totalGenes: 0,
       significantCount: results.filter((r) => (r.FDR as number) < 0.05).length,
     },
   };

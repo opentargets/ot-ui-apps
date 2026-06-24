@@ -64,7 +64,6 @@ export function styleAndAppendTooltip(tooltip: HTMLDivElement): void {
   tooltip.style.maxWidth = "300px";
   try {
     document.body.appendChild(tooltip);
-    console.log("[TOOLTIP] Appended tooltip to DOM");
   } catch (err) {
     console.error("[TOOLTIP] Failed to appendChild:", err);
   }
@@ -80,9 +79,7 @@ export function removeTooltip(
 ): void {
   try {
     if (tooltip.parentNode) {
-      console.log(`[${context}] Removing tooltip, parent exists:`, (tooltip.parentNode as Element).tagName);
       tooltip.parentNode.removeChild(tooltip);
-      console.log(`[${context}] Successfully removed tooltip`);
     } else {
       console.warn(`[${context}] Tooltip has no parent node`);
     }
