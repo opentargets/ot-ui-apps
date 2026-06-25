@@ -18,7 +18,7 @@ export const ROW_METRICS: RowMetricDef[] = [
     gqlField: "novelty",
     sortField: "novelty",
     label: "Novelty Trend",
-    description: "Click to view novelty details for this association.",
+    description: "How novel this association is over time, based on the recency of its supporting evidence.",
     sortable: true,
     docsLink: "https://home.opentargets.org/timeseries",
     format: (v) => (v != null ? v.toFixed(2) : "—"),
