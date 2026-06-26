@@ -14,6 +14,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 
 - [GraphQL endpoint](https://api.platform.opentargets.org/api/v4/graphql)
 - [GraphQL browser / playground](https://api.platform.opentargets.org/api/v4/graphql/browser)
+- [GraphQL schema](https://api.platform.opentargets.org/api/v4/graphql/schema)
 - [API how-to](https://platform-docs.opentargets.org/data-access/graphql-api)
 - [MCP server](http://mcp.platform.opentargets.org/mcp): Model Context Protocol endpoint for AI agents
 

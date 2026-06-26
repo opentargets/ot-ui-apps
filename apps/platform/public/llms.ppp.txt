@@ -15,6 +15,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 
 - [GraphQL endpoint](https://api.partner-platform.opentargets.org/api/v4/graphql)
 - [GraphQL browser / playground](https://api.partner-platform.opentargets.org/api/v4/graphql/browser)
+- [GraphQL schema](https://api.partner-platform.opentargets.org/api/v4/graphql/schema)
 - [API how-to](https://platform-docs.opentargets.org/data-access/graphql-api)
 
 ## Data request
