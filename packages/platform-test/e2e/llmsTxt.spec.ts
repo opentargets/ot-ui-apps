@@ -1,7 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "../fixtures";
 
-test("serves a llmstxt.org-compliant /llms.txt", async ({ request }) => {
-  const res = await request.get("/llms.txt");
+test("serves a llmstxt.org-compliant /llms.txt", async ({ request, baseURL }) => {
+  const res = await request.get(`${baseURL}/llms.txt`);
   expect(res.status()).toBe(200);
 
   const body = await res.text();
