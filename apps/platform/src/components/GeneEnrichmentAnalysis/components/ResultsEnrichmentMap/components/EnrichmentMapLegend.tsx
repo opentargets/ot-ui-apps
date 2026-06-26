@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Typography, IconButton, Popover } from "@mui/material";
+import { Box, Typography, Chip, Popover } from "@mui/material";
 import { PRIORITISATION_COLORS } from "../../../utils/colorPalettes";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHandPointer } from "@fortawesome/free-regular-svg-icons";
@@ -57,27 +57,19 @@ export function EnrichmentMapLegend({ nesRange }: EnrichmentMapLegendProps) {
                 <Typography variant="caption" color="text.disabled">
                   Scroll to zoom
                 </Typography>
-                <IconButton
+                <Chip
+                  icon={<FontAwesomeIcon icon={faInfoCircle} />}
+                  label="About network view"
                   size="small"
-                  onClick={(e) => setAnchorEl(e.currentTarget)}
+                  color="primary"
+                  onClick={(e) => setAnchorEl(e.currentTarget as HTMLElement)}
                   sx={{
-                    p: 0.25,
-                    ml: 0.5,
-                    "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)", borderRadius: 0, px:1 },
+                    ml: 1,
+                    cursor: "pointer",
+                    height: 24,
+                    fontSize: "0.7rem",
                   }}
-                >
-                  <FontAwesomeIcon
-                    icon={faInfoCircle}
-                    style={{
-                      fontSize: "0.65rem",
-                      opacity: 0.5,
-                      cursor: "pointer",
-                    }}
-                  />
-                  <Typography sx={{ml: 1}} variant="caption" color="text.disabled">
-                  About network view
-                </Typography>
-                </IconButton>
+                />
               </Box>
             </Box>
           </Box>
