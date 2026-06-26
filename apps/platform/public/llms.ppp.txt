@@ -7,6 +7,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 ## Documentation
 
 - [Documentation home](https://platform-docs.opentargets.org)
+- [Partner Preview documentation](https://home.opentargets.org/ppp-documentation): partner-only docs, in addition to the public documentation
 - [Data sources](https://platform-docs.opentargets.org/data-sources)
 - [Data access](https://platform-docs.opentargets.org/data-access)
 
