@@ -30,6 +30,7 @@ interface NodeData {
   geneCount?: number;
   displayLabel?: string;
   leadingGenes?: string[];
+  pathwayGenes?: string[];
 }
 
 interface EdgeData {
@@ -109,10 +110,11 @@ function NodeDetailsContent({ data, diseaseId, geneToTargetIdMapping }: { data: 
         </Box>
       </Box>
 
-      <Box>
-        <GeneList title="Leading Edge Genes" genes={Array.isArray(data?.leadingGenes) ? data.leadingGenes : data?.leadingGenes?.split(",") || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
-
-      </Box>
+      {data?.pathwayGenes && data.pathwayGenes.length > 0 && (
+        <Box>
+          <GeneList title="Pathway Genes" genes={Array.isArray(data.pathwayGenes) ? data.pathwayGenes : data.pathwayGenes.split(",") || []} diseaseId={diseaseId} geneToTargetIdMapping={geneToTargetIdMapping} />
+        </Box>
+      )}
     </>
   );
 }
@@ -242,7 +244,7 @@ export function GeneList({ title, genes, diseaseId, geneToTargetIdMapping }: Gen
           variant="outlined"
           sx={{ mt: 1 }}
         >
-          View genes in Associations On The Fly page
+          View genes in Disease Association page.
         </Button>
       )}
     </Box>
@@ -326,7 +328,7 @@ export function EnrichmentMapDetailsModal({
 
   // Lazy-load gene mapping when modal opens with edge data
   useEffect(() => {
-    if (!open  || !data || (!(data as EdgeData).sharedGenes && !(data as NodeData).leadingGenes)) {
+    if (!open  || !data || (!(data as EdgeData).sharedGenes && !(data as NodeData).pathwayGenes)) {
       return;
     }
 
@@ -337,10 +339,15 @@ export function EnrichmentMapDetailsModal({
         sharedGenes = (data as EdgeData).sharedGenes || [];
       } else if (type === "node") {
         const leadingGenes = (data as NodeData).leadingGenes;
-        // Handle both array format (new) and string format (legacy)
-        sharedGenes = Array.isArray(leadingGenes) 
+        const pathwayGenes = (data as NodeData).pathwayGenes;
+        // Combine leading genes and pathway genes for mapping
+        const leadingGenesList = Array.isArray(leadingGenes) 
           ? leadingGenes 
           : leadingGenes?.split(",") || [];
+        const pathwayGenesList = Array.isArray(pathwayGenes) 
+          ? pathwayGenes 
+          : pathwayGenes?.split(",") || [];
+        sharedGenes = [...new Set([...leadingGenesList, ...pathwayGenesList])];
       } else {
         sharedGenes = [];
       }
@@ -352,6 +359,8 @@ export function EnrichmentMapDetailsModal({
   }, [open, type, data, apolloClient]);
 
   if (!data) return null;
+
+
 
   const isNode = type === "node";
   const isEdge = type === "edge";

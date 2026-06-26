@@ -185,6 +185,7 @@ function RunHistorySidebar({
         ) : (
           <List dense disablePadding>
             {sortedRuns.map((run) => {
+              console.log("Run:", run); // Debugging log to inspect run data
               const isActive = run.id === activeRunId;
               const isStale = isRunStale(run, currentAssociationsState);
               const isRunning = run.status === "pending" || run.status === "fetching_associations" || run.status === "running_gsea";
@@ -198,6 +199,7 @@ function RunHistorySidebar({
                     key={run.id}
                     title={
                       <Box>
+                        <div>{run.efoName}</div>
                         <div>{getLibraryDisplayName(run.inputs.selectedLibrary)}</div>
                         <div>{formatTimeAgo(run.timestamp)}</div>
                         {isComplete && <div>{run.results.length} pathways</div>}
@@ -281,6 +283,9 @@ function RunHistorySidebar({
                       }
                       secondary={
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, mt: 0.5 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 500 }}>
+                            {run.efoName}
+                          </Typography>
                           <Typography variant="caption" color="text.secondary">
                             {formatTimeAgo(run.timestamp)}
                           </Typography>

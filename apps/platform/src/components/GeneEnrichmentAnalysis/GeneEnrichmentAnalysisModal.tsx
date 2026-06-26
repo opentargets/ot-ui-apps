@@ -82,7 +82,7 @@ function GeneEnrichmentAnalysisModal({ children }: GeneEnrichmentAnalysisModalPr
           <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
             Identifying overrepresented biological pathways and functional categories in ranked
             lists of disease-associated genes.{" "}
-            <Link to="/gsea-docs.html" external newTab>
+            <Link to="https://home.opentargets.org/GSEA" external newTab>
               Read more details here
             </Link>
           </Typography>

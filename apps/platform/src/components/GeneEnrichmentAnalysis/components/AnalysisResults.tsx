@@ -18,7 +18,7 @@ interface AnalysisResultsProps {
   activeRunId?: string | null;
   diseaseId?: string;
 }
-
+const MIN_OVERLAP_COUNT = 25; // Minimum number of genes required for analysis
 function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseId }: AnalysisResultsProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("table");
 
@@ -29,11 +29,13 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseI
   };
 
   const significantCount = results.filter((r) => r.FDR < 0.05).length;
+  const hasLessThanNormalGenes = inputOverlap && inputOverlap.used_count < MIN_OVERLAP_COUNT;
 
   return (
     <EnrichmentMapControlsProvider>
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%", flex: 1 }}>
       {/* Fixed header */}
+
       <Box
         sx={{
           display: "flex",
@@ -78,9 +80,15 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseI
           </ToggleButtonGroup>
         </Box>
       </Box>
-
+      {hasLessThanNormalGenes && (
+        <Box sx={{ p: 1, backgroundColor: "warning.light", borderRadius: 1, mb: 1 }}>
+          <Typography variant="body2" color="warning.dark">
+            Warning, No sufficient genes.
+          </Typography>
+        </Box>
+      )}
       {/* Scrollable content */}
-      <Box sx={{ flex: 1, overflow: "auto", p: viewMode === "plotly" ? 0 : 2 }}>
+      <Box sx={{ flex: 1, overflow: "auto", p: ['network', 'plotly'].includes(viewMode) ? 0 : 2 }}>
         {viewMode === "table" && <ResultsTable results={results} />}
         {viewMode === "tree" && <ResultsTreeView results={results} />}
         {/* {viewMode === "sunburst" && <ResultsSunburst results={results} />} */}

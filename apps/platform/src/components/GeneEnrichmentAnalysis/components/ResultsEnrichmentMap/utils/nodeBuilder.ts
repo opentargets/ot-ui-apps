@@ -85,6 +85,7 @@ export function createPathwayNode(
       inputGenes: result["Number of input genes"],
       geneCount: geneList.length,
       leadingGenes: result["Leading edge genes"],
+      pathwayGenes: result["Pathway genes"],
       color: defaultColor,
       borderColor: defaultColor,
       size: nodeSize,

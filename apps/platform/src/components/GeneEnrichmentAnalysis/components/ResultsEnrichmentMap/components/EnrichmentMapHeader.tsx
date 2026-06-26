@@ -8,10 +8,10 @@ interface EnrichmentMapHeaderProps {
   cyRef?: React.MutableRefObject<CytoscapeCore | null>;
 }
 
-export function EnrichmentMapHeader({ stats, cyRef }: EnrichmentMapHeaderProps) {
+export function EnrichmentMapHeader({ _, cyRef }: EnrichmentMapHeaderProps) {
   return (
     <Box>
-      {cyRef && <Box sx={{ ml: "auto" }}><ExportButtons cyRef={cyRef} /></Box>}
+      {cyRef && <Box sx={{ ml: "auto", mr: 2 }}><ExportButtons cyRef={cyRef} /></Box>}
     </Box>
   );
 }

@@ -142,7 +142,7 @@ function PlotlySunburstChart({ results, height = 600 }: PlotlySunburstChartProps
 
     // Add root node
     data.ids.push("root");
-    data.labels.push("All Pathways");
+    data.labels.push("");
     data.parents.push("");
     data.values.push(0); // Will be calculated as sum of children with remainder mode
     data.customdata.push({ type: "root", count: results.length });

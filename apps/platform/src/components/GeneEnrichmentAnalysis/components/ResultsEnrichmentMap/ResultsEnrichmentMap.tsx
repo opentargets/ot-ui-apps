@@ -149,7 +149,7 @@ function ResultsEnrichmentMapContent({ results, genes, diseaseId }: ResultsEnric
   }, [finalStats]);
 
   return (
-    <Paper sx={{ p: 2 }}>
+    <Paper sx={{ p: 0 }}>
       <EnrichmentMapControls
           pathwayNames={availablePathways}
           geneNames={uniqueGenes}
