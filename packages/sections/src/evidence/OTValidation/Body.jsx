@@ -115,6 +115,7 @@ const getColumns = classes => [
     id: "assays",
     label: "OTVL hit",
     renderCell: ({ assays }) => {
+      if (!assays?.length) return null;
       const sortedAssays = assays.toSorted((a, b) => {
         return ASSAYS_DISPLAY_NAME_MAPPING[a.shortName].localeCompare(
           ASSAYS_DISPLAY_NAME_MAPPING[b.shortName]);
