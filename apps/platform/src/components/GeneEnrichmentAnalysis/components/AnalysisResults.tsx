@@ -1,6 +1,6 @@
 import { faChartPie, faCircle, faSitemap, faTableColumns, faNetworkWired } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Alert, Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useState } from "react";
 import type { GseaResult, InputOverlap } from "../api/gseaApi";
 import ResultsPlotlySunburst from "./ResultsPlotlySunburst";
@@ -81,11 +81,11 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseI
         </Box>
       </Box>
       {hasLessThanNormalGenes && (
-        <Box sx={{ p: 1, backgroundColor: "warning.light", borderRadius: 1, mb: 1 }}>
+        <Alert severity="warning" sx={{ p: 1, backgroundColor: "warning.light", borderRadius: 1, mb: 1 }}>
           <Typography variant="body2" color="warning.dark">
             Warning, No sufficient genes.
           </Typography>
-        </Box>
+        </Alert>
       )}
       {/* Scrollable content */}
       <Box sx={{ flex: 1, overflow: "auto", p: ['network', 'plotly'].includes(viewMode) ? 0 : 2 }}>
