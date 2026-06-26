@@ -2,8 +2,6 @@
 
 > The Open Targets Platform integrates publicly available datasets to support systematic identification and prioritisation of drug targets, connecting targets, diseases, drugs, variants, studies and credible sets through evidence. This file orients AI agents to the Platform's resources and APIs.
 
-## Overview
-
 The Platform is organised around entity pages — target, disease, drug, variant, study and credible set — each aggregating evidence and associations for that entity. Pages live under `https://platform.opentargets.org/<entity>/<id>` (for example `/target/ENSG00000169174`). Programmatic access is via the GraphQL API listed below.
 
 ## Documentation
