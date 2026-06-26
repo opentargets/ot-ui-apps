@@ -36,7 +36,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 - [Release software versions](https://github.com/opentargets/ot-snapshot)
 - [How to cite](https://platform-docs.opentargets.org/citation#latest-publication)
 
-## Optional
+## Latest changes
 
 - [Release notes](https://platform-docs.opentargets.org/release-notes#overall-data-metrics)
 - [Blog](https://blog.opentargets.org)
