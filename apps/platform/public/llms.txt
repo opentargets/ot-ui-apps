@@ -2,7 +2,7 @@
 
 > The Open Targets Platform integrates publicly available datasets to support systematic identification and prioritisation of drug targets, connecting targets, diseases, drugs, variants, studies and credible sets through evidence. This file orients AI agents to the Platform's resources and APIs.
 
-The Platform is organised around entity pages — target, disease, drug, variant, study and credible set — each aggregating evidence and associations for that entity. Pages live under `https://platform.opentargets.org/<entity>/<id>` (for example `/target/ENSG00000169174`). Programmatic access is via the GraphQL API listed below.
+The Platform is organised around entity pages — target, disease, drug, variant, study and credible set — each aggregating evidence and associations for that entity. Pages live under `https://platform.opentargets.org/<entity>/<id>` (for example `/target/ENSG00000169174`). Programmatic access is available through bulk data downloads (recommended for large-scale use), the GraphQL API, or the MCP server — all listed below.
 
 ## Documentation
 
@@ -15,6 +15,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 - [GraphQL endpoint](https://api.platform.opentargets.org/api/v4/graphql)
 - [GraphQL browser / playground](https://api.platform.opentargets.org/api/v4/graphql/browser)
 - [API how-to](https://platform-docs.opentargets.org/data-access/graphql-api)
+- [MCP server](http://mcp.platform.opentargets.org/mcp): Model Context Protocol endpoint for AI agents
 
 ## Data downloads
 
