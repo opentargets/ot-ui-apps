@@ -30,6 +30,7 @@ export function useGseaAnalysis({ client, state, dispatch }: UseGseaAnalysisPara
       status: "pending",
       inputs: { ...analysisInputs },
       efoId: isStandalone ? "standalone" : associationsState.efoId,
+      efoName: isStandalone ? "Standalone" : associationsState.efoName,
       genes: [],
       results: [],
       inputOverlap: null,
