@@ -22,20 +22,17 @@ The Platform is organised around entity pages — target, disease, drug, variant
 
 - [Request data](https://home.opentargets.org/data-request)
 
+## Source & citation
+
+- [GitHub organisation](https://github.com/opentargets)
+- [Release software versions](https://github.com/opentargets/ot-snapshot)
+- [Release notes](https://platform-docs.opentargets.org/release-notes#overall-data-metrics)
+- [How to cite](https://platform-docs.opentargets.org/citation#latest-publication)
+
 ## Community
 
 - [Community forum](https://community.opentargets.org)
 - [Feature requests](https://community.opentargets.org/c/feature-requests/16)
 - [Report a bug](https://github.com/opentargets/issues)
-- [Partner support email](mailto:partner-support@opentargets.org)
-
-## Source & citation
-
-- [GitHub organisation](https://github.com/opentargets)
-- [Release software versions](https://github.com/opentargets/ot-snapshot)
-- [How to cite](https://platform-docs.opentargets.org/citation#latest-publication)
-
-## Latest changes
-
-- [Release notes](https://platform-docs.opentargets.org/release-notes#overall-data-metrics)
 - [Blog](https://blog.opentargets.org)
+- [Partner support email](mailto:partner-support@opentargets.org)
