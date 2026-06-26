@@ -81,9 +81,9 @@ function AnalysisResults({ results, inputOverlap, onReset, activeRunId, diseaseI
         </Box>
       </Box>
       {hasLessThanNormalGenes && (
-        <Alert severity="warning" sx={{ p: 1, backgroundColor: "warning.light", borderRadius: 1, mb: 1 }}>
-          <Typography variant="body2" color="warning.dark">
-            Warning, No sufficient genes.
+        <Alert severity="warning" sx={{m: 2}}>
+          <Typography variant="body2">
+            The number of input genes used for the analysis ({inputOverlap?.used_count}) is less than the recommended minimum ({MIN_OVERLAP_COUNT}). This may affect the reliability of the results.
           </Typography>
         </Alert>
       )}
