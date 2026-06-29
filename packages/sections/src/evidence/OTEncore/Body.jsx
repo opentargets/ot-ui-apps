@@ -3,6 +3,8 @@ import { useQuery } from "@apollo/client";
 import { makeStyles } from "@mui/styles";
 import { faArrowAltCircleUp, faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Chip } from "@mui/material";
+import { v1 } from "uuid";
 import {
   Link,
   SectionItem,
@@ -18,6 +20,12 @@ import Description from "./Description";
 import { dataTypesMap, sectionsBaseSizeQuery } from "@ot/constants";
 
 import ENCORE_QUERY from "./OTEncoreQuery.gql";
+
+export const methodDisplayNameMapping = {
+  CTG: "CellTiterGlo",
+  CellTox: "CellTox",
+  Confluence: "Cell Confluence",
+};
 
 const useStyles = makeStyles(theme => ({
   primaryColor: {
@@ -101,7 +109,6 @@ const getColumns = classes => [
               description={row.phenotypicConsequenceLogFoldChange}
             />
             <TooltipStyledLabel label="P-value" description={row.phenotypicConsequencePValue} />
-            <TooltipStyledLabel label="FDR" description={row.phenotypicConsequenceFDR} />
           </>
         }
       >
@@ -126,9 +133,9 @@ const getColumns = classes => [
     ),
   },
   {
-    id: "geneInteractionType",
+    id: "geneticInteractionType",
     label: "Type of effect",
-    filterValue: row => row.geneInteractionType,
+    filterValue: row => row.geneticInteractionType,
   },
   {
     id: "geneticInteractionScore",
@@ -138,10 +145,44 @@ const getColumns = classes => [
     numeric: true,
   },
   {
-    id: "geneticInteractionPValue",
-    label: "P-value",
-    renderCell: row => <ScientificNotation number={row.geneticInteractionPValue} />,
-    numeric: true,
+    id: "validationLabAssessment",
+    label: "Validation Lab Assessment",
+    sortable: true,
+    comparator: (a, b) => {
+      const getScore = o => {
+        return (o.validationReadouts ?? [])
+          .map(({ isValidated }) => isValidated ? 1 : 0.1)
+          .reduce((a, b) => a + b, 0);
+      }
+      return getScore(a) - getScore(b);
+    },
+    filterValue: ({ validationReadouts = [] }) => {
+      return validationReadouts.map(({ readoutMethodName }) => {
+        return methodDisplayNameMapping[readoutMethodName];
+      }).join();
+    },
+    renderCell: ({ validationReadouts }) => {
+      if (!validationReadouts?.length) return null;
+      const sortedReadouts = validationReadouts.toSorted((a, b) => {
+        return methodDisplayNameMapping[a.readoutMethodName].localeCompare(
+          methodDisplayNameMapping[b.readoutMethodName]);
+      });
+      return (
+        <>
+          {sortedReadouts.map(({ readoutMethodName, screen, isValidated }) => (
+            <Box sx={{ my: theme => theme.spacing(0.3) }} key={v1()}>
+              <Tooltip title={`Screen: ${screen}`}>
+                <Chip
+                  label={methodDisplayNameMapping[readoutMethodName]}
+                  size="small"
+                  color={isValidated ? "primary" : "default"}
+                />
+              </Tooltip>
+            </Box>
+          ))}
+        </>
+      );
+    },
   },
 ];
 
@@ -190,31 +231,25 @@ const exportColumns = [
     label: "phenotypicConsequenceLogFoldChange",
     exportValue: row => row.phenotypicConsequenceLogFoldChange,
   },
-  {
-    label: "phenotypicConsequencePValue",
-    exportValue: row => row.phenotypicConsequencePValue,
-  },
-  {
-    label: "phenotypicConsequenceFDR",
-    exportValue: row => row.phenotypicConsequenceFDR,
-  },
   // type of effect
   {
     label: "type of effect",
-    exportValue: row => row.geneInteractionType,
+    exportValue: row => row.geneticInteractionType,
   },
   {
     label: "BLISS score",
     exportValue: row => row.geneticInteractionScore.toFixed(3),
   },
   {
-    label: "p value",
-    exportValue: row => row.geneticInteractionPValue,
-  },
-  {
     label: "release version",
     exportValue: row => row.releaseVersion,
   },
+  {
+    label: "validation lab assessment",
+    exportValue: row => row.validationReadouts.map(row => {
+      return `${methodDisplayNameMapping[row.readoutMethodName]}: ${row.isValidated}`;
+    }).join(", "),
+  }
 ];
 
 function Body({ id, label, entity }) {
@@ -246,8 +281,8 @@ function Body({ id, label, entity }) {
             dataDownloaderColumns={exportColumns}
             dataDownloaderFileStem={`${ensgId}-${efoId}-otencore`}
             showGlobalFilter
-            sortBy="geneticInteractionPValue"
-            order="asc"
+            sortBy="validationLabAssessment"
+            order="desc"
             fixed
             noWrap={false}
             noWrapHeader={false}
