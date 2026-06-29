@@ -38,6 +38,11 @@ const useStyles = makeStyles(theme => ({
   circleUp: {
     marginRight: "10px",
   },
+  hsWhite: {
+    backgroundColor: "#ffffff !important",
+    color: `${theme.palette.grey[600]} !important`,
+    border: `1px solid ${theme.palette.grey[600]} !important`,
+  },
 }));
 
 const getColumns = classes => [
@@ -86,6 +91,7 @@ const getColumns = classes => [
         items={row.biomarkerList.map(bm => ({
           label: bm.name,
           tooltip: bm.description,
+          customClass: classes.hsWhite,
         }))}
       />
     ),
@@ -139,8 +145,8 @@ const getColumns = classes => [
   },
   {
     id: "geneticInteractionScore",
-    label: "BLISS score",
-    tooltip: <>We used the Bliss independence model to define synergy between gRNA pairs.</>,
+    label: "HSA z-score",
+    tooltip: <>We used z-normalised HSA to represent synergy between gene pairs.</>,
     renderCell: row => row.geneticInteractionScore.toFixed(3),
     numeric: true,
   },
@@ -162,7 +168,7 @@ const getColumns = classes => [
       }).join();
     },
     renderCell: ({ validationReadouts }) => {
-      if (!validationReadouts?.length) return null;
+      if (!validationReadouts?.length) return "not screened";
       const sortedReadouts = validationReadouts.toSorted((a, b) => {
         return methodDisplayNameMapping[a.readoutMethodName].localeCompare(
           methodDisplayNameMapping[b.readoutMethodName]);
@@ -237,7 +243,7 @@ const exportColumns = [
     exportValue: row => row.geneticInteractionType,
   },
   {
-    label: "BLISS score",
+    label: "HSA z-score",
     exportValue: row => row.geneticInteractionScore.toFixed(3),
   },
   {
