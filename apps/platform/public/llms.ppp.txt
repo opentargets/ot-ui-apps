@@ -22,7 +22,7 @@ The Platform is organised around entity pages — target, disease, drug, variant
 ## Data request and download
 
 - [Request data](https://home.opentargets.org/data-request)
-- [Google Cloud bucket](gs:/open-targets-ppp-data-releases)
+- [Google Cloud bucket](gs://open-targets-ppp-data-releases/)
 
 ## Source & citation
 
