@@ -715,7 +715,7 @@ function ResultsTreeView({ results }: ResultsTreeViewProps) {
         >
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Typography variant="body2" fontWeight={500}>
-              Filters ({Object.values(filters).some((v) => (Array.isArray(v) ? v.some((x) => x !== nesDataRange.min && x !== nesDataRange.max) : v !== true)) ? "" : ""})
+              Filters
             </Typography>
             <Chip
               label={`${filteredResults.length} results`}
