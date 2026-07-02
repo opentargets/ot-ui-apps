@@ -99,12 +99,7 @@ export function useElementComputation(
 
   // Assemble elements
   useEffect(() => {
-    const debugInfo = {
-      fdrFilteredResultsLength: fdrFilteredResults.length,
-      uncoloredNodesLength: uncoloredNodes.length,
-      debouncedSimilarityThreshold,
-      timestamp: new Date().toISOString(),
-    });
+
 
     const computeElements = async () => {
 
@@ -176,17 +171,7 @@ export function useElementComputation(
         // Log what came from the worker/computation
         const workerNodes = coloredElements.filter((el) => !el.data?.source);
         const workerEdges = coloredElements.filter((el) => el.data?.source);
-        const debugElements = {
-          totalElements: coloredElements.length,
-          nodes: workerNodes.length,
-          edges: workerEdges.length,
-          nodeIds: workerNodes.map((el) => el.data?.id),
-          edgeSample: workerEdges.slice(0, 5).map((el) => ({
-            id: el.data?.id,
-            source: el.data?.source,
-            target: el.data?.target,
-          })),
-        });
+
         
         // Use the same filtering logic as Cytoscape rendering
         const { elements: filteredElementsAfterValidation } = filterNodesWithoutEdges(coloredElements);  
