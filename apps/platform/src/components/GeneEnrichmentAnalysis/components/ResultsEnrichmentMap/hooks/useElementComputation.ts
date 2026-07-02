@@ -63,13 +63,7 @@ export function useElementComputation(
       const nesPass = nes >= debouncedNesRange[0] && nes <= debouncedNesRange[1];
       return fdrPass && pValuePass && nesPass;
     });
-    console.log("[FDR_FILTER] Filtered results", {
-      totalResults: results.length,
-      filteredResults: filtered.length,
-      debouncedFdrThreshold,
-      debouncedPValueThreshold,
-      debouncedNesRange,
-    });
+
     return filtered;
   }, [results, debouncedFdrThreshold, debouncedPValueThreshold, debouncedNesRange]);
 
@@ -82,7 +76,6 @@ export function useElementComputation(
       min: Math.min(...nesValues),
       max: Math.max(...nesValues),
     };
-    console.log("[DISPLAY_NES_RANGE] Computed NES range", range);
     return range;
   }, [fdrFilteredResults]);
 
@@ -106,7 +99,7 @@ export function useElementComputation(
 
   // Assemble elements
   useEffect(() => {
-    console.log("[ELEMENT_COMPUTATION] Effect triggered", {
+    const debugInfo = {
       fdrFilteredResultsLength: fdrFilteredResults.length,
       uncoloredNodesLength: uncoloredNodes.length,
       debouncedSimilarityThreshold,
@@ -114,11 +107,11 @@ export function useElementComputation(
     });
 
     const computeElements = async () => {
-      console.log("[ELEMENT_COMPUTATION] Starting computation...");
+
       // Yield to browser to allow loader to render before computation starts
       await new Promise(resolve => setTimeout(resolve, 50));
       
-      console.log("[ELEMENT_COMPUTATION] Computing pathway view elements...", { nodeCount: uncoloredNodes.length });
+
       const start = performance.now();
       
       // Build NES value map for worker
@@ -141,7 +134,7 @@ export function useElementComputation(
   
       
       // Apply NES coloring to received elements (non-blocking chunks)
-      console.log("[ELEMENT_COMPUTATION] Applying NES coloring to elements...");
+
       const colorStart = performance.now();
       const chunkSize = 500;
       const coloredElements: ElementDefinition[] = [];
@@ -183,7 +176,7 @@ export function useElementComputation(
         // Log what came from the worker/computation
         const workerNodes = coloredElements.filter((el) => !el.data?.source);
         const workerEdges = coloredElements.filter((el) => el.data?.source);
-        console.log("[WORKER_OUTPUT] Elements before filterNodesWithoutEdges:", {
+        const debugElements = {
           totalElements: coloredElements.length,
           nodes: workerNodes.length,
           edges: workerEdges.length,
@@ -215,12 +208,12 @@ export function useElementComputation(
 
     // Wrap in requestAnimationFrame to show loader immediately before computation
     const frameId = requestAnimationFrame(() => {
-      console.log("[ELEMENT_COMPUTATION] Starting computation in next frame...");
+
       computeElements();
     });
 
     return () => {
-      console.log("[ELEMENT_COMPUTATION] Cleaning up effect");
+
       cancelAnimationFrame(frameId);
     };
   }, [fdrFilteredResults, debouncedSimilarityThreshold, uncoloredNodes]);
