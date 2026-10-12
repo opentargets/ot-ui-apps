@@ -45,7 +45,7 @@ export const PAGE_SIZES = {
   A4: { widthMm: 210, heightMm: 297 },
   Letter: { widthMm: 215.9, heightMm: 279.4 },
 } as const;
-export const PAPER_MARGIN_MM = 18;
+export const PAPER_MARGIN_MM = 20;
 export const PAPER_WIDGET_PX = { fullWidth: 1050, halfColumn: 510 };
 export const PAPER_MAX_TABLE = { cols: 8, rows: 25 };
 export const PAPER_SPAN_TABLE_COLS = 5;

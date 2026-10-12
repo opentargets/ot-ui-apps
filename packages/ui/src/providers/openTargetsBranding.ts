@@ -67,7 +67,19 @@ export const openTargetsBranding: BrandingInput = {
       office: { heading: "Arial", body: "Arial", mono: "Courier New" },
     },
   },
+  paper: {
+    // Research-paper layout: a Charter-like serif for body and headings, as in Google DeepMind's template
+    fonts: {
+      heading: "Source Serif 4",
+      body: "Source Serif 4",
+      mono: "Roboto Mono",
+      headingStack: '"Source Serif 4", Charter, Georgia, "Times New Roman", serif',
+      bodyStack: '"Source Serif 4", Charter, Georgia, "Times New Roman", serif',
+      monoStack: "'Roboto Mono', Menlo, monospace",
+      office: { heading: "Georgia", body: "Georgia", mono: "Courier New" },
+    },
+  },
   fontStylesheets: [
-    "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;700&family=Roboto+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap",
   ],
 };

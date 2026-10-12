@@ -59,9 +59,9 @@ export async function writeDocx(plan: ExportPlan, ctx: WriterContext): Promise<B
 
   const branding: ExportBranding = resolveBranding(ctx.branding);
   const { colors } = branding.document;
-  const FONT = branding.document.fonts.office.body;
-  const HEADING_FONT = branding.document.fonts.office.heading;
-  const MONO = branding.document.fonts.office.mono;
+  const FONT = branding.paper.fonts.office.body;
+  const HEADING_FONT = branding.paper.fonts.office.heading;
+  const MONO = branding.paper.fonts.office.mono;
   const TONE_COLOR: Record<string, string> = {
     finding: hex(colors.finding),
     warning: hex(colors.warning),

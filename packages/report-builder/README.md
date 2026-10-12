@@ -34,6 +34,7 @@ CSS font stacks from the family names, the logo's aspect ratio from its SVG.
         decor: true,                        // diagonal panels on title and section slides
       },
       document: { colors: { primary: "#3489ca", primaryDark: "#1e6ba8", primaryLight: "#e3f0fa" } },
+      paper: { fonts: { body: "Source Serif 4", heading: "Source Serif 4" } }, // research-paper layout, serif by default
       fontStylesheets: ["https://fonts.googleapis.com/css2?family=Roboto&display=swap"],
       wording: { endNarration: "Explore the data on the Acme Data Platform." },
     },
@@ -42,7 +43,11 @@ CSS font stacks from the family names, the logo's aspect ratio from its SVG.
 ```
 
 `fonts.office` names the faces written into PPTX and DOCX (which can only use fonts installed on
-the reader's machine) when they differ from the web fonts. The Open Targets preset is
+the reader's machine) when they differ from the web fonts. The paper target (PDF and DOCX) uses a
+research-paper layout after Google DeepMind's template: a masthead with the logo and date, a large
+serif title, the organisation as the author line, the abstract in bold across the page, numbered
+two-column sections, "Figure n | caption" captions, a running short title on later pages, the
+page number bottom-right and "© year organisation" on the first page. The Open Targets preset is
 `openTargetsBranding` in `packages/ui/src/providers/openTargetsBranding.ts`.
 
 `yarn workspace report-builder check:boundaries` fails if a layer imports upward.

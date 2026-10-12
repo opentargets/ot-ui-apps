@@ -3,14 +3,15 @@ import { Box } from "@mui/material";
 import { formatReference, orderReferences } from "../citations";
 import { useReportConfig } from "../../../react";
 import { PAGE_SIZES, PAPER_MARGIN_MM } from "../layout";
+import { logoAlt, logoSrc } from "../slideTheme";
 import type { PaperSettings, PaperUnit } from "../types";
+import { formatPaperDate } from "../writers/shared";
 import { docHtml, formatDate } from "./nodeMeta";
 import { FigureView, PX_PER_MM, PX_PER_PT, RichHtml, ScaledBox, TableView } from "./previewParts";
 
 const pt = (n: number) => n * PX_PER_PT;
 
-export const PAPER_FONT = "Georgia, 'Times New Roman', serif";
-const BODY_PT = 10;
+const BODY_PT = 9.5;
 const COLUMN_GAP_MM = 6;
 const UNIT_GAP = pt(7);
 
@@ -69,40 +70,67 @@ const SectionTitle: React.FC<{ children: ReactNode }> = ({ children }) => (
   <Box sx={{ fontSize: pt(12), fontWeight: 700, mb: `${pt(4)}px` }}>{children}</Box>
 );
 
-const captionSx = { fontSize: pt(8.5), lineHeight: 1.35, color: "#424242", mt: `${pt(3)}px` } as const;
+const captionSx = { fontSize: pt(8.5), lineHeight: 1.3, mt: `${pt(6)}px`, textAlign: "left" } as const;
 
-/** One paper flow item, at print size. */
+/** "Fig. 1" → "Figure 1" in captions, as in the print layout. */
+const captionLabel = (label: string) => label.replace(/^Fig\.\s*/, "Figure ");
+
+/**
+ * One paper flow item, at print size, in the research-paper layout the print writer uses
+ * (masthead, numbered sections, "Figure n | caption").
+ */
 export const PaperUnitView: React.FC<{ unit: PaperUnit }> = memo(({ unit }) => {
-  const { colors, fonts } = useReportConfig().branding.document;
+  const { branding } = useReportConfig();
+  const { colors } = branding.document;
+  const fonts = branding.paper.fonts;
   switch (unit.kind) {
-    case "paperTitle":
+    case "paperTitle": {
+      const logo = logoSrc(branding, "light");
       return (
-        <Box sx={{ pb: `${pt(6)}px`, borderBottom: `1px solid ${colors.border}` }}>
-          <Box sx={{ fontSize: pt(20), fontWeight: 700, lineHeight: 1.2 }}>{unit.title}</Box>
-          <Box sx={{ fontSize: pt(9), fontStyle: "italic", color: colors.muted, mt: `${pt(4)}px` }}>
-            {unit.byline}
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              borderBottom: "0.5pt solid #777",
+              pb: `${pt(4)}px`,
+              mb: `${pt(18)}px`,
+            }}
+          >
+            {logo ? (
+              <Box component="img" src={logo} alt={logoAlt(branding)} sx={{ height: 7 * PX_PER_MM, display: "block" }} />
+            ) : (
+              <Box sx={{ fontSize: pt(12), fontWeight: 700, fontFamily: fonts.headingStack }}>{branding.organisation ?? ""}</Box>
+            )}
+            <Box sx={{ fontSize: pt(9), fontStyle: "italic" }}>{formatPaperDate(unit.date)}</Box>
           </Box>
+          <Box sx={{ fontSize: pt(24), fontWeight: 700, lineHeight: 1.15, fontFamily: fonts.headingStack, mb: `${pt(8)}px` }}>
+            {unit.title}
+          </Box>
+          {branding.organisation && <Box sx={{ fontSize: pt(9), fontWeight: 700, mb: `${pt(4)}px` }}>{branding.organisation}</Box>}
+          <Box sx={{ fontSize: pt(8.5), color: colors.muted, mb: `${pt(16)}px` }}>{unit.byline}</Box>
           {unit.abstract && (
-            <Box sx={{ fontSize: pt(9.5), mt: `${pt(8)}px`, lineHeight: 1.4 }}>
-              <Box component="span" sx={{ fontWeight: 700 }}>
-                Abstract.{" "}
-              </Box>
+            <Box sx={{ fontSize: pt(10), fontWeight: 700, lineHeight: 1.35, textAlign: "justify", mb: `${pt(4)}px` }}>
               {unit.abstract}
             </Box>
           )}
         </Box>
       );
+    }
     case "paperHeading": {
-      const size = unit.level === 1 ? 13 : unit.level === 2 ? 11 : 10;
-      const number = unit.number ? `${unit.number}${unit.level === 1 ? " ·" : ""} ` : "";
+      const size = unit.level === 1 ? 12 : 10;
+      const number = unit.number ? `${unit.number}. ` : "";
       return (
         <Box
           sx={{
             fontSize: pt(size),
             fontWeight: 700,
+            fontFamily: fonts.headingStack,
             fontStyle: unit.level === 3 ? "italic" : "normal",
-            color: unit.level === 1 ? colors.primaryDark : colors.text,
-            pt: unit.level === 1 ? `${pt(4)}px` : 0,
+            color: colors.text,
+            pt: unit.level === 1 ? `${pt(6)}px` : `${pt(3)}px`,
+            pb: `${pt(2)}px`,
           }}
         >
           {number}
@@ -117,10 +145,13 @@ export const PaperUnitView: React.FC<{ unit: PaperUnit }> = memo(({ unit }) => {
           html={html}
           sx={{
             fontSize: pt(BODY_PT),
-            lineHeight: 1.45,
+            lineHeight: 1.32,
             textAlign: "justify",
-            "& h2": { fontSize: pt(11), m: 0, mb: "0.3em" },
-            "& h3": { fontSize: pt(10), fontStyle: "italic", m: 0, mb: "0.3em" },
+            "& p": { m: 0, textIndent: "1.3em" },
+            "& p:first-of-type, & blockquote p, & li p": { textIndent: 0 },
+            "& blockquote": { m: `${pt(4)}px 1.6em ${pt(6)}px`, fontSize: pt(9.2) },
+            "& h2": { fontSize: pt(10), fontFamily: fonts.headingStack, m: 0, mb: "0.3em", textAlign: "left" },
+            "& h3": { fontSize: pt(10), fontStyle: "italic", fontFamily: fonts.headingStack, m: 0, mb: "0.3em", textAlign: "left" },
             "& a": { color: colors.primaryDark },
           }}
         />
@@ -149,7 +180,8 @@ export const PaperUnitView: React.FC<{ unit: PaperUnit }> = memo(({ unit }) => {
           <Box sx={captionSx}>
             {unit.label && (
               <Box component="span" sx={{ fontWeight: 700 }}>
-                {unit.label}.{" "}
+                {captionLabel(unit.label)}
+                {" | "}
               </Box>
             )}
             {unit.caption || unit.title}
@@ -159,18 +191,17 @@ export const PaperUnitView: React.FC<{ unit: PaperUnit }> = memo(({ unit }) => {
     case "paperTable":
       return (
         <Box>
-          <Box sx={{ ...captionSx, mt: 0, mb: `${pt(3)}px` }}>
+          <Box sx={{ ...captionSx, mt: 0, mb: `${pt(4)}px` }}>
             {unit.label && (
               <Box component="span" sx={{ fontWeight: 700 }}>
-                {unit.label}.{" "}
+                {captionLabel(unit.label)}
+                {" | "}
               </Box>
             )}
-            {unit.title}
+            {unit.caption || unit.title}
           </Box>
           <TableView table={unit.table} fontPx={pt(7.5)} maxCellChars={40} />
-          {(unit.caption || unit.table.note) && (
-            <Box sx={captionSx}>{[unit.caption, unit.table.note].filter(Boolean).join(" ")}</Box>
-          )}
+          {unit.table.note && <Box sx={{ ...captionSx, mt: `${pt(3)}px`, fontStyle: "italic", color: colors.muted }}>{unit.table.note}</Box>}
         </Box>
       );
     case "paperMethods":
@@ -272,7 +303,8 @@ export const paginate = (
 
 /** Measures every unit at its laid-out width (hidden), then paginates. */
 export const usePaperPages = (units: PaperUnit[], geometry: PageGeometry) => {
-  const { colors } = useReportConfig().branding.document;
+  const { branding } = useReportConfig();
+  const { colors } = branding.document;
   const measureRef = useRef<HTMLDivElement>(null);
   const [heights, setHeights] = useState<Map<string, number>>(() => new Map());
 
@@ -301,7 +333,9 @@ export const usePaperPages = (units: PaperUnit[], geometry: PageGeometry) => {
         top: 0,
         visibility: "hidden",
         pointerEvents: "none",
-        fontFamily: PAPER_FONT,
+        fontFamily: branding.paper.fonts.bodyStack,
+        fontSize: pt(BODY_PT),
+        lineHeight: 1.32,
         color: colors.text,
       }}
     >
@@ -328,11 +362,20 @@ interface PagePreviewProps {
   pageNumber: number;
   pageCount: number;
   scale: number;
+  /** Running header on pages after the first (the report title). */
+  shortTitle?: string;
 }
 
-/** One paginated page: span units full width, runs of column units in CSS columns. */
-export const PagePreview: React.FC<PagePreviewProps> = memo(({ units, geometry, pageNumber, pageCount, scale }) => {
-  const { colors } = useReportConfig().branding.document;
+/**
+ * One paginated page: span units full width, runs of column units in CSS columns; the running
+ * short title on later pages, the page number bottom-right, the copyright line on page 1.
+ */
+export const PagePreview: React.FC<PagePreviewProps> = memo(({ units, geometry, pageNumber, pageCount, scale, shortTitle }) => {
+  const { branding } = useReportConfig();
+  const { colors } = branding.document;
+  const year = new Date((units.find((u) => u.kind === "paperTitle") as { date?: number } | undefined)?.date ?? Date.now()).getUTCFullYear();
+  const copyright = branding.organisation ? `© ${year} ${branding.organisation}` : "";
+  const running = shortTitle && shortTitle.length > 70 ? `${shortTitle.slice(0, 69)}…` : shortTitle;
   const segments: { span: boolean; units: PaperUnit[] }[] = [];
   units.forEach((u) => {
     const span = unitSpans(u, geometry.columns);
@@ -353,12 +396,31 @@ export const PagePreview: React.FC<PagePreviewProps> = memo(({ units, geometry, 
           width: geometry.width,
           height: geometry.height,
           bgcolor: "#fff",
-          fontFamily: PAPER_FONT,
+          fontFamily: branding.paper.fonts.bodyStack,
+          fontSize: pt(BODY_PT),
+          lineHeight: 1.32,
           color: colors.text,
           position: "relative",
           boxSizing: "border-box",
         }}
       >
+        {pageNumber > 1 && running && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: geometry.margin / 2,
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: pt(8),
+              color: "#444",
+              borderBottom: "0.5pt solid #777",
+              pb: `${pt(3)}px`,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {running}
+          </Box>
+        )}
         <Box
           sx={{
             position: "absolute",
@@ -388,18 +450,22 @@ export const PagePreview: React.FC<PagePreviewProps> = memo(({ units, geometry, 
             )
           )}
         </Box>
+        {pageNumber === 1 && copyright && (
+          <Box sx={{ position: "absolute", bottom: geometry.margin / 2 - pt(4), left: geometry.margin, fontSize: pt(8), color: "#444" }}>
+            {copyright}
+          </Box>
+        )}
         <Box
           sx={{
             position: "absolute",
             bottom: geometry.margin / 2 - pt(4),
-            left: 0,
-            right: 0,
-            textAlign: "center",
+            right: geometry.margin,
             fontSize: pt(8),
-            color: colors.muted,
+            color: "#444",
           }}
+          title={`Page ${pageNumber} of ${pageCount}`}
         >
-          {pageNumber} / {pageCount}
+          {pageNumber}
         </Box>
       </Box>
     </ScaledBox>

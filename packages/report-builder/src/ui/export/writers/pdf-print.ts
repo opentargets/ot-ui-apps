@@ -14,6 +14,7 @@ import {
   titleMetaColumns,
   titleSlideLayout,
 } from "../slideTheme";
+import { formatPaperDate } from "./shared";
 import { formatReference, orderReferences } from "../citations";
 import { escapeHtml as esc, formatCell, richTextToHtml } from "../richText/toHtml";
 import type {
@@ -159,8 +160,13 @@ const requestHtml = (request: DataSourceRequest) => {
   return parts.join("");
 };
 
-const headingLabel = (number: string | undefined, text: string, level: number) =>
-  number ? (level === 1 ? `${number} · ${text}` : `${number} ${text}`) : text;
+/** "1. Introduction", "2.1. Mechanics" — numbered headings as in a research paper. */
+const headingLabel = (number: string | undefined, text: string) => (number ? `${number}. ${text}` : text);
+
+/** "Fig. 1" → "Figure 1" for captions; tables keep their label. */
+const captionLabel = (label: string) => label.replace(/^Fig\.\s*/, "Figure ");
+
+const cssString = (text: string) => `"${text.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 
 // ---------- slides ----------
 
@@ -443,40 +449,71 @@ const methodsTableHtml = (entries: MethodsEntry[], branding: ExportBranding) => 
 
 // ---------- paper ----------
 
-const PAPER_CSS = (pageSize: string, twoColumn: boolean) => `
-@page { size: ${pageSize}; margin: ${PAPER_MARGIN_MM}mm; }
-body { font-size: 10pt; line-height: 1.45; }
-h1, h2, h3, h4, h5 { break-after: avoid; page-break-after: avoid; line-height: 1.2; }
-h1 { font-size: 14pt; color: var(--primary-dark); margin: 1.2em 0 0.5em; }
-h2 { font-size: 12pt; color: var(--primary-dark); margin: 1em 0 0.4em; }
-h3 { font-size: 10.5pt; margin: 0.9em 0 0.3em; }
-h4, h5 { font-size: 10pt; margin: 0.8em 0 0.3em; }
-p { margin: 0 0 0.6em; orphans: 2; widows: 2; }
-.paper-title { font-size: 20pt; font-weight: 700; margin: 0 0 0.3em; color: var(--text); }
-.byline { color: var(--muted); font-style: italic; margin-bottom: 1.2em; }
-.abstract { margin-bottom: 1.4em; }
-.abstract .label { font-weight: 700; }
+/**
+ * Research-paper layout (after Google DeepMind's template): a masthead with the logo and date,
+ * a large serif title, the abstract in bold across the page, then a two-column body with
+ * numbered sections, "Figure n | caption" captions, a running short title on later pages, the
+ * page number bottom-right and the copyright line on the first page.
+ */
+const PAPER_CSS = (
+  pageSize: string,
+  twoColumn: boolean,
+  branding: ExportBranding,
+  running: { shortTitle?: string; copyright?: string } = {},
+) => {
+  const f = branding.paper.fonts;
+  const marginBox = `font-family: ${f.bodyStack}; font-size: 8pt; color: #444;`;
+  return `
+@page {
+  size: ${pageSize}; margin: 22mm ${PAPER_MARGIN_MM}mm ${PAPER_MARGIN_MM}mm ${PAPER_MARGIN_MM}mm;
+  @top-center { content: ${running.shortTitle ? cssString(running.shortTitle) : "none"}; ${marginBox} vertical-align: bottom; padding-bottom: 3pt; margin-bottom: 7mm; border-bottom: 0.5pt solid #777; }
+  @bottom-right { content: counter(page); ${marginBox} vertical-align: top; padding-top: 4mm; }
+}
+@page :first {
+  @top-center { content: none; }
+  @bottom-left { content: ${running.copyright ? cssString(running.copyright) : "none"}; ${marginBox} vertical-align: top; padding-top: 4mm; }
+}
+body { font-family: ${f.bodyStack}; font-size: 9.5pt; line-height: 1.32; text-align: justify; hyphens: auto; }
+h1, h2, h3, h4, h5, .paper-title, .masthead .org { font-family: ${f.headingStack}; color: var(--text); }
+h1, h2, h3, h4, h5 { break-after: avoid; page-break-after: avoid; line-height: 1.2; text-align: left; }
+h1 { font-size: 12pt; margin: 1.1em 0 0.45em; }
+h2 { font-size: 10pt; margin: 0.9em 0 0.35em; }
+h3 { font-size: 10pt; font-style: italic; font-weight: 700; margin: 0.8em 0 0.3em; }
+h4, h5 { font-size: 9.5pt; margin: 0.8em 0 0.3em; }
+p { margin: 0; text-indent: 1.3em; orphans: 2; widows: 2; }
+h1 + p, h2 + p, h3 + p, h4 + p, .flow > p:first-child, .callout p, blockquote p, figcaption p, li p { text-indent: 0; }
+.masthead { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 0.5pt solid #777; padding-bottom: 4pt; margin-bottom: 18pt; }
+.masthead .logo { height: 7mm; width: auto; display: block; }
+.masthead .org { font-size: 12pt; font-weight: 700; }
+.masthead .date { font-style: italic; font-size: 9pt; }
+.paper-title { font-size: 24pt; font-weight: 700; line-height: 1.15; margin: 0 0 8pt; text-align: left; }
+.authors { font-size: 9pt; font-weight: 700; margin-bottom: 4pt; text-align: left; }
+.byline { font-size: 8.5pt; color: var(--muted); margin-bottom: 16pt; text-align: left; }
+.abstract { font-weight: 700; font-size: 10pt; line-height: 1.35; margin: 0 0 20pt; text-indent: 0; }
 .flow { ${twoColumn ? "column-count: 2; column-gap: 7mm; column-fill: auto;" : ""} }
 .span { column-span: all; }
-figure { margin: 0.8em 0; break-inside: avoid; page-break-inside: avoid; }
+figure { margin: 8pt 0 12pt; break-inside: avoid; page-break-inside: avoid; }
 figure img { display: block; margin: 0 auto; max-height: 150mm; object-fit: contain; }
 figure .placeholder { min-height: 40mm; }
-figcaption, .caption { font-size: 8.5pt; color: #555; margin-top: 0.4em; }
-.caption .lbl, figcaption .lbl { font-weight: 700; color: var(--text); }
-.table-wrap { margin: 0.8em 0; break-inside: avoid; page-break-inside: avoid; }
-.table-wrap .caption { margin: 0 0 0.3em; }
+figcaption, .caption { font-size: 8.5pt; line-height: 1.3; color: var(--text); margin-top: 6pt; text-align: left; }
+.caption .lbl, figcaption .lbl { font-weight: 700; }
+.table-wrap { margin: 8pt 0 12pt; break-inside: avoid; page-break-inside: avoid; }
+.table-wrap .caption { margin: 0 0 4pt; }
 .table-wrap table.data { font-size: 8pt; }
-.table-wrap .note { font-size: 8pt; font-style: italic; color: var(--muted); margin-top: 0.3em; }
-.method { break-inside: avoid; margin-bottom: 0.8em; font-size: 9pt; }
+.table-wrap .note { font-size: 8pt; font-style: italic; color: var(--muted); margin-top: 3pt; }
+blockquote { margin: 6pt 1.6em 8pt; font-size: 9.2pt; }
+blockquote p + p { margin-top: 4pt; }
+.method { break-inside: avoid; margin-bottom: 8pt; font-size: 9pt; text-align: left; }
 .method .m-title { font-weight: 700; }
-.method pre.code, .working pre.code { background: #f7f9fb; border: 0.5pt solid var(--border); padding: 0.4em; font-size: 7.5pt; margin: 0.2em 0 0.4em; }
+.method pre.code, .working pre.code { background: #f7f9fb; border: 0.5pt solid var(--border); padding: 0.4em; font-size: 7.5pt; margin: 0.2em 0 0.4em; text-align: left; }
 .method .req-label, .working .req-label { font-weight: 700; font-size: 8pt; }
-ol.refs { padding-left: 1.6em; font-size: 8.5pt; }
+ol.refs { padding-left: 1.6em; font-size: 8.5pt; text-align: left; }
 ol.refs li, ul.refs li { margin-bottom: 0.3em; overflow-wrap: anywhere; }
-ul.refs { list-style: none; padding-left: 0; font-size: 8.5pt; }
+ul.refs { list-style: none; padding-left: 0; font-size: 8.5pt; text-align: left; }
 ul.refs li { padding-left: 1.5em; text-indent: -1.5em; }
-ul.links { font-size: 9pt; overflow-wrap: anywhere; }
+ul.links { font-size: 9pt; overflow-wrap: anywhere; text-align: left; }
 `;
+};
 
 export function paperToHtml(plan: ExportPlan, ctx: WriterContext): string {
   const branding = resolveBranding(ctx.branding);
@@ -486,20 +523,31 @@ export function paperToHtml(plan: ExportPlan, ctx: WriterContext): string {
   const front: string[] = [];
   const flow: string[] = [];
 
+  let generatedAt = ctx.doc.generatedAt;
   const units = plan.units as PaperUnit[];
   units.forEach((unit, i) => {
     switch (unit.kind) {
-      case "paperTitle":
-        front.push(`<h1 class="paper-title">${esc(unit.title)}</h1><div class="byline">${esc(unit.byline)}</div>`);
-        if (unit.abstract)
-          front.push(`<div class="abstract"><span class="label">Abstract.</span> ${esc(unit.abstract)}</div>`);
+      case "paperTitle": {
+        generatedAt = unit.date;
+        const logo = logoSrc(branding, "light");
+        const brand = logo
+          ? `<img class="logo" src="${logo}" alt="${esc(logoAlt(branding))}">`
+          : branding.organisation
+            ? `<span class="org">${esc(branding.organisation)}</span>`
+            : "<span></span>";
+        front.push(`<div class="masthead">${brand}<span class="date">${esc(formatPaperDate(unit.date))}</span></div>`);
+        front.push(`<h1 class="paper-title">${esc(unit.title)}</h1>`);
+        if (branding.organisation) front.push(`<div class="authors">${esc(branding.organisation)}</div>`);
+        front.push(`<div class="byline">${esc(unit.byline)}</div>`);
+        if (unit.abstract) front.push(`<p class="abstract">${esc(unit.abstract)}</p>`);
         break;
+      }
       case "paperHeading": {
         // The heading introducing full-width items (supplementary tables) spans too
         const next = units[i + 1];
         const spanning = next?.kind === "paperTable" && next.supplementary;
         flow.push(
-          `<h${unit.level}${spanning ? ' class="span"' : ""}>${esc(headingLabel(unit.number, unit.text, unit.level))}</h${unit.level}>`,
+          `<h${unit.level}${spanning ? ' class="span"' : ""}>${esc(headingLabel(unit.number, unit.text))}</h${unit.level}>`,
         );
         break;
       }
@@ -520,7 +568,7 @@ export function paperToHtml(plan: ExportPlan, ctx: WriterContext): string {
           : placeholderHtml(unit.title, undefined, unit.asset.kind === "missing" ? unit.asset.reason : undefined);
         flow.push(
           `<figure${unit.span ? ' class="span"' : ""}>${img}<figcaption>${
-            unit.label ? `<span class="lbl">${esc(unit.label)}.</span> ` : ""
+            unit.label ? `<span class="lbl">${esc(captionLabel(unit.label))}</span> | ` : ""
           }${esc(unit.caption || unit.title)}</figcaption></figure>`,
         );
         break;
@@ -528,7 +576,7 @@ export function paperToHtml(plan: ExportPlan, ctx: WriterContext): string {
       case "paperTable":
         flow.push(
           `<div class="table-wrap${unit.span || unit.supplementary ? " span" : ""}"><div class="caption">${
-            unit.label ? `<span class="lbl">${esc(unit.label)}.</span> ` : ""
+            unit.label ? `<span class="lbl">${esc(captionLabel(unit.label))}</span> | ` : ""
           }${esc(unit.caption || unit.title)}</div>${tableHtml(unit.table.data)}${
             unit.table.note ? `<div class="note">${esc(unit.table.note)}</div>` : ""
           }</div>`,
@@ -564,10 +612,13 @@ export function paperToHtml(plan: ExportPlan, ctx: WriterContext): string {
     }
   });
 
+  const shortTitle = plan.title.length > 70 ? `${plan.title.slice(0, 69)}…` : plan.title;
+  const year = new Date(generatedAt).getUTCFullYear();
+  const copyright = branding.organisation ? `© ${year} ${branding.organisation}` : undefined;
   return doc(
     branding,
     plan.title,
-    PAPER_CSS(size, twoColumn),
+    PAPER_CSS(size, twoColumn, branding, { shortTitle, copyright }),
     `<header>${front.join("")}</header><main class="flow">${flow.join("")}</main>`,
   );
 }
@@ -599,7 +650,8 @@ const methodHtml = (e: MethodsEntry, branding: ExportBranding) => {
 // ---------- working ----------
 
 const WORKING_CSS = `
-@page { size: A4; margin: ${PAPER_MARGIN_MM}mm; }
+@page { size: A4; margin: ${PAPER_MARGIN_MM}mm; @top-center { content: none; } @bottom-right { content: none; } }
+.working p { text-indent: 0; margin: 0 0 0.6em; }
 .working .block { margin: 0 0 1.1em; }
 .working .block-title { font-weight: 700; font-size: 11pt; margin-bottom: 0.3em; }
 .working .takeaway { font-style: italic; margin-bottom: 0.3em; }
@@ -721,7 +773,7 @@ export function workingToHtml(irDoc: ExportDocument, ctx: WriterContext): string
   return doc(
     branding,
     irDoc.title,
-    PAPER_CSS("A4", false) + WORKING_CSS,
+    PAPER_CSS("A4", false, branding) + WORKING_CSS,
     `<div class="working"><h1 class="paper-title">${esc(irDoc.title)}</h1>` +
       (irDoc.description ? `<p>${esc(irDoc.description)}</p>` : "") +
       `<div class="doc-meta">${esc(meta.join(" · "))}</div>${blocks.join("")}` +

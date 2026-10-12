@@ -365,7 +365,7 @@ export type SlideUnit =
   | { kind: "methodsSlide"; id: string; entries: MethodsEntry[] };
 
 export type PaperUnit =
-  | { kind: "paperTitle"; id: string; title: string; byline: string; abstract?: string }
+  | { kind: "paperTitle"; id: string; title: string; byline: string; abstract?: string; date: number }
   | {
       kind: "paperHeading";
       id: string;

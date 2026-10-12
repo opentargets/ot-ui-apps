@@ -87,6 +87,10 @@ export interface ExportBranding {
     colors: DocumentColors;
     fonts: BrandFonts;
   };
+  /** The paper export (PDF / DOCX): a research-paper layout, serif by default. Colours come from `document`. */
+  paper: {
+    fonts: BrandFonts;
+  };
   /** Stylesheet URLs (e.g. Google Fonts) linked from the print HTML so web fonts resolve. */
   fontStylesheets: string[];
   wording: BrandWording;
@@ -101,6 +105,7 @@ export interface BrandingInput {
   logo?: BrandLogo;
   slides?: { colors?: Partial<SlideColors>; fonts?: FontsInput; decor?: boolean };
   document?: { colors?: Partial<DocumentColors>; fonts?: FontsInput };
+  paper?: { fonts?: FontsInput };
   fontStylesheets?: string[];
   wording?: Partial<BrandWording>;
 }
@@ -146,6 +151,7 @@ const quote = (family: string) => (/[^a-z0-9-]/i.test(family) ? `"${family}"` : 
 
 const resolveFonts = (base: BrandFonts, input?: FontsInput): BrandFonts => {
   const heading = input?.heading ?? base.heading;
+  const generic = (key: "heading" | "body") => (/serif/i.test(base[`${key}Stack`]) && !/sans-serif/i.test(base[`${key}Stack`]) ? "Georgia, serif" : "Arial, sans-serif");
   const body = input?.body ?? base.body;
   const mono = input?.mono ?? base.mono;
   const custom = (key: "heading" | "body" | "mono") => input?.[key] !== undefined && input[key] !== base[key];
@@ -155,8 +161,8 @@ const resolveFonts = (base: BrandFonts, input?: FontsInput): BrandFonts => {
     heading,
     body,
     mono,
-    headingStack: stack("heading", heading, "Arial, sans-serif"),
-    bodyStack: stack("body", body, "Arial, sans-serif"),
+    headingStack: stack("heading", heading, generic("heading")),
+    bodyStack: stack("body", body, generic("body")),
     monoStack: stack("mono", mono, "Menlo, monospace"),
     office: {
       heading: input?.office?.heading ?? (custom("heading") ? heading : base.office.heading),
@@ -216,6 +222,15 @@ export const defaultBranding = (): ExportBranding => {
     monoStack: '"Courier New", Menlo, monospace',
     office: { heading: "Arial", body: "Arial", mono: "Courier New" },
   });
+  const serif = (): BrandFonts => ({
+    heading: "Georgia",
+    body: "Georgia",
+    mono: "Courier New",
+    headingStack: 'Georgia, "Times New Roman", serif',
+    bodyStack: 'Georgia, "Times New Roman", serif',
+    monoStack: '"Courier New", Menlo, monospace',
+    office: { heading: "Georgia", body: "Georgia", mono: "Courier New" },
+  });
   const heading = "#1f2937";
   const accent = "#2563eb";
   const alert = "#dc2626";
@@ -252,6 +267,7 @@ export const defaultBranding = (): ExportBranding => {
       },
       fonts: arial(),
     },
+    paper: { fonts: serif() },
     fontStylesheets: [],
     wording: { reportKind: "Report", endNarration: "Explore the full data." },
   };
@@ -304,6 +320,7 @@ export function resolveBranding(input?: BrandingInput): ExportBranding {
       colors: { ...base.document.colors, ...input?.document?.colors },
       fonts: resolveFonts(base.document.fonts, input?.document?.fonts),
     },
+    paper: { fonts: resolveFonts(base.paper.fonts, input?.paper?.fonts) },
     fontStylesheets: input?.fontStylesheets ?? base.fontStylesheets,
     wording,
   };

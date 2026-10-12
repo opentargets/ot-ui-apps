@@ -150,7 +150,7 @@ export const TableView: React.FC<{
         width: widthPx ?? "100%",
         tableLayout: layout ? "fixed" : "auto",
         borderCollapse: "collapse",
-        fontFamily: variant === "slides" ? branding.slides.fonts.bodyStack : branding.document.fonts.bodyStack,
+        fontFamily: variant === "slides" ? branding.slides.fonts.bodyStack : branding.paper.fonts.bodyStack,
         fontSize: font,
         color: variant === "slides" ? S.text : D.text,
         "& th, & td": {

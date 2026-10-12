@@ -18,6 +18,15 @@ export const yieldFrame = (): Promise<void> =>
 
 export const formatDate = (ms: number): string => new Date(ms).toISOString().slice(0, 10);
 
+/** "Jan 27th, 2026": the paper's masthead date. */
+export const formatPaperDate = (ms: number): string => {
+  const d = new Date(ms);
+  const day = d.getUTCDate();
+  const suffix = day % 10 === 1 && day !== 11 ? "st" : day % 10 === 2 && day !== 12 ? "nd" : day % 10 === 3 && day !== 13 ? "rd" : "th";
+  const month = d.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC" });
+  return `${month} ${day}${suffix}, ${d.getUTCFullYear()}`;
+};
+
 /** "9 November 2022", as on the template's title slide. */
 export const formatLongDate = (ms: number): string =>
   new Date(ms).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });

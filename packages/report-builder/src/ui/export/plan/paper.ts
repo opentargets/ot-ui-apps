@@ -94,6 +94,7 @@ export function planPaper(doc: ExportDocument, settings: ExportSettings, brandin
       title: doc.title,
       byline: bylineText(b, release, date),
       abstract: p.abstract && doc.description?.trim() ? doc.description.trim() : undefined,
+      date: doc.generatedAt,
     });
   }
 

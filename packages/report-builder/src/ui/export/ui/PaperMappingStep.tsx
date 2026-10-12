@@ -256,6 +256,7 @@ export const PaperMappingStep: React.FC<PaperMappingStepProps> = ({
               pageNumber={i + 1}
               pageCount={pages.length}
               scale={PREVIEW_SCALE}
+              shortTitle={plan.title}
             />
           ))}
         </Box>
