@@ -15,7 +15,8 @@ type fetchSimilarEntitiesParam = {
   threshold?: number;
   size?: number;
   query: any;
-  cursor?: any;
+  page?: number;
+  pageSize?: number;
   category: string[];
   entities: SelectedEntityType[];
   startYear?: number | null;
@@ -30,7 +31,8 @@ export const fetchSimilarEntities = ({
   threshold = 0.5,
   size = 15,
   query,
-  cursor = null,
+  page = 0,
+  pageSize = 5,
   category = [],
   entities = [],
   startYear = null,
@@ -44,7 +46,8 @@ export const fetchSimilarEntities = ({
   return client.query({
     query,
     variables: {
-      cursor,
+      index: page,
+      pageSize,
       id,
       ids,
       startYear,
