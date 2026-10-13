@@ -1,5 +1,5 @@
 import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
-import type { ColumnDef, Row, Table } from "@tanstack/table-core";
+import type { ColumnDef, Row, SortingState, Table } from "@tanstack/table-core";
 
 export const INIT_PAGE_SIZE = 10;
 
@@ -118,3 +118,43 @@ export type Action =
   | { type: ActionType.SET_DATA; payload: Record<string, unknown> }
   | { type: ActionType.ADD_DATA; payload: Record<string, unknown> }
   | { type: ActionType.SET_LOADING; loading: boolean };
+
+/*************************************
+ * OT TABLE SERVER PAGINATION TYPES  *
+ *************************************/
+
+export type OtTableServerProps = {
+  columns: Array<Record<string, unknown>>;
+  query: DocumentNode;
+  /** base query variables; `index`, `size`, sort and search variables are added by the table */
+  variables: Record<string, unknown>;
+  /** path of the `{ count, rows }` object in the response, e.g. `disease.phenotypes` */
+  dataPath: string;
+  rowField?: string;
+  countField?: string;
+  /** post-process the rows of the current page (and of the downloaded dataset) */
+  transformRows?: (rows: Array<Record<string, unknown>>) => Array<Record<string, unknown>>;
+  pageSize?: number;
+  pageSizeOptions?: number[];
+  sortBy?: string;
+  order?: "asc" | "desc";
+  /** maps the react-table sorting state to query variables; enables server-side sorting */
+  getSortVariables?: (sorting: SortingState) => Record<string, unknown>;
+  /** name of the query variable receiving the global search text (server-side search);
+   * without it a search term fetches the whole dataset once and filters it locally */
+  searchVariable?: string;
+  showGlobalFilter?: boolean;
+  globalFilterPlaceholderText?: string;
+  verticalHeaders?: boolean;
+  showColumnVisibilityControl?: boolean;
+  showRowsPerPageControl?: boolean;
+  showPaginationAlways?: boolean;
+  dataDownloader?: boolean;
+  dataDownloaderColumns?: Array<Record<string, unknown>>;
+  dataDownloaderFileStem?: string;
+  enableMultipleRowSelection?: boolean;
+  getSelectedRows?: (r: Row<any>[]) => void;
+  /** receives the raw response of every page request */
+  onDataLoaded?: (data: unknown) => void;
+  wrapControls?: boolean | Record<string, unknown>;
+};
