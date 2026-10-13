@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-import { Link, OtTable, Box, Typography } from "ui";
+import { Link, OtTableServer, Box, Typography } from "ui";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { clinicalStageCategories } from "@ot/constants";
@@ -11,29 +10,11 @@ const onLinkClick = (e) => {
   e.stopPropagation();
 };
 
-function stageAndRecordCountComparator(a, b) {
-  if (a.maxClinicalStage === b.maxClinicalStage) {
-    return a.clinicalReports?.length - b.clinicalReports?.length;
-  }
-  return (
-    (clinicalStageCategories)[a.maxClinicalStage]?.index -
-    (clinicalStageCategories)[b.maxClinicalStage]?.index
-  );
-}
+export const DRUGS_PAGE_SIZE = 10;
 
-function DrugsTable({
-  efoId,
-  rows,
-  selectedRow,
-  selectRow,
-  loading,
-}) {
+function DrugsTable({ efoId, selectedRow, selectRow }) {
   const theme = useTheme();
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
-
-  const sortedRows = useMemo(() => {
-    return structuredClone(rows).sort(stageAndRecordCountComparator).reverse();
-  }, [rows]);
 
   const columns = [
     {
@@ -122,8 +103,6 @@ function DrugsTable({
           </Box>
         );
       },
-      sortable: true,
-      comparator: stageAndRecordCountComparator,
       filterValue: (row) => {
         return `${row.drug?.name ?? ""} ${(clinicalStageCategories)[row.maxClinicalStage]?.label}`;
       },
@@ -185,17 +164,17 @@ function DrugsTable({
         }),
       }}
     >
-      <OtTable
-        showGlobalFilter
-        globalFilterPlaceholderText="Search..."
+      <OtTableServer
         columns={columns}
-        rows={sortedRows}
-        query={DRUGS_QUERY.loc?.source?.body}
+        query={DRUGS_QUERY}
         variables={{ efoId }}
+        dataPath="disease.drugAndClinicalCandidates"
+        pageSize={DRUGS_PAGE_SIZE}
         dataDownloader
         dataDownloaderFileStem="drugs-and-clinical-candidates"
         dataDownloaderColumns={dataDownloaderColoumns}
         showColumnVisibilityControl={false}
+        globalFilterPlaceholderText="Search..."
         getSelectedRows={(rowsInfo) => {
           if (!(rowsInfo?.length > 0)) return;
 
@@ -210,11 +189,7 @@ function DrugsTable({
             selectRow(nextRow);
           }
         }}
-        loading={loading}
-        sortBy="drugCard"
-        order="desc"
         showRowsPerPageControl={false}
-        showPaginationAlways={false}
         wrapControls={{ rowGap: 4, pr: { sm: 0, md: 1 }, ml: { sm: 0, md: -1 } }}
       />
     </Box>

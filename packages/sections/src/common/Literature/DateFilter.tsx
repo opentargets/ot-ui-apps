@@ -106,20 +106,19 @@ export function DateFilter() {
       id,
       category,
       entities: selectedEntities,
-      cursor: null,
+      pageSize,
       ...values, // values has startYear, startMonth, endYear, endMonth
     });
     const data = request.data[globalEntity];
     const update = {
       id,
-      cursor: data.literatureOcurrences?.cursor,
       query,
-      entities: data.similarEntities,
+      entities: data.similarEntities?.rows ?? [],
       loadingEntities: false,
       category,
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.filteredCount,
-      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
+      litsCount: data.literatureOcurrences?.count,
+      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
       globalEntity,
       selectedEntities,
       page: 0,
