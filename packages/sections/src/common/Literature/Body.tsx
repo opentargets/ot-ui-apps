@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
-import { SectionItem, useApolloClient, Box } from "ui";
+import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
+import { SectionItem, useApolloClient, Box, type SectionRequest } from "ui";
+import type { DocumentNode } from "@apollo/client";
+import type { WidgetDefinition } from "../../types/widget";
+
+type LiteratureProps = {
+  id: string;
+  name: string;
+  entity: string;
+  BODY_QUERY: DocumentNode;
+  definition: Omit<WidgetDefinition, "isPrivate"> & { isPrivate?: boolean };
+};
 import PublicationsList from "./PublicationsList";
 import Description from "./Description";
 import Entities from "./Entities";
@@ -9,8 +19,8 @@ import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
 
-function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
-  const [requestObj, setRequestObj] = useState({});
+function LiteratureList({ id, name, entity, BODY_QUERY, definition }: LiteratureProps) {
+  const [requestObj, setRequestObj] = useState<SectionRequest>({ loading: true });
   const literature = useLiterature();
   const { category, startYear, startMonth, endYear, endMonth, pageSize } = literature;
   const literatureDispatch = useLiteratureDispatch();
@@ -30,17 +40,15 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
         endMonth,
       });
       setRequestObj(initRequest);
-      const data = initRequest.data[entity];
-      const update = {
-        entities: data.similarEntities?.rows ?? [],
-        litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-        litsCount: data.literatureOcurrences?.count,
-        earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
-        id,
-        query: BODY_QUERY,
-        globalEntity: entity,
-      };
-      literatureDispatch({ type: "stateUpdate", value: update });
+      literatureDispatch({
+        type: "stateUpdate",
+        value: {
+          ...literatureStateFromResponse(initRequest.data[entity]),
+          id,
+          query: BODY_QUERY,
+          globalEntity: entity,
+        },
+      });
     }
     startRequest();
   }, []);
@@ -69,7 +77,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   );
 }
 
-function Body({ definition, name, id, entity, BODY_QUERY }) {
+function Body({ definition, name, id, entity, BODY_QUERY }: LiteratureProps) {
   return (
     <LiteratureProvider>
       <LiteratureList

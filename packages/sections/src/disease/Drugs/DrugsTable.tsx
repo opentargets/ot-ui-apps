@@ -1,26 +1,43 @@
-import { Link, OtTableServer, Box, Typography } from "ui";
+import type { Row } from "@tanstack/react-table";
+import type { MouseEvent } from "react";
+import { Link, OtTableServer, Box, Typography, type OtTableColumn } from "ui";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { clinicalStageCategories } from "@ot/constants";
+import { clinicalStageCategories, type DrugsQuery } from "@ot/constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import DRUGS_QUERY from "./DrugsQuery.gql";
+import DRUGS_QUERY_DOCUMENT from "./DrugsQuery.gql";
+import { typedDocument } from "../../utils/typedDocument";
+import type { DrugsQueryVariables } from "@ot/constants";
 
-const onLinkClick = (e) => {
+export const DRUGS_QUERY = typedDocument<DrugsQuery, DrugsQueryVariables>(DRUGS_QUERY_DOCUMENT);
+
+export type DrugRow = NonNullable<DrugsQuery["disease"]>["drugAndClinicalCandidates"]["rows"][number];
+
+type StageCategory = { index: number; label: string };
+const stageCategories: Record<string, StageCategory | undefined> = clinicalStageCategories;
+
+const onLinkClick = (e: MouseEvent) => {
   e.stopPropagation();
 };
 
 export const DRUGS_PAGE_SIZE = 10;
 
-function DrugsTable({ efoId, selectedRow, selectRow }) {
+type DrugsTableProps = {
+  efoId: string;
+  selectedRow: DrugRow | null;
+  selectRow: (row: DrugRow | null) => void;
+};
+
+function DrugsTable({ efoId, selectedRow, selectRow }: DrugsTableProps) {
   const theme = useTheme();
   const mdDown = useMediaQuery(theme.breakpoints.down("md"));
 
-  const columns = [
+  const columns: OtTableColumn<DrugRow>[] = [
     {
       id: "drugCard",
       label: "",
-      renderCell: (row) => {
+      renderCell: row => {
         const { drug, maxClinicalStage, clinicalReports } = row;
         const isSelected = selectedRow?.id && row.id === selectedRow.id;
 
@@ -74,7 +91,7 @@ function DrugsTable({ efoId, selectedRow, selectRow }) {
               <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
                 <Typography variant="caption">Max stage:</Typography>
                 <Typography variant="caption" sx={{ fontSize: 13 }}>
-                  {(clinicalStageCategories)[maxClinicalStage].label}
+                  {stageCategories[maxClinicalStage]?.label ?? maxClinicalStage}
                 </Typography>
               </Box>
 
@@ -103,28 +120,16 @@ function DrugsTable({ efoId, selectedRow, selectRow }) {
           </Box>
         );
       },
-      filterValue: (row) => {
-        return `${row.drug?.name ?? ""} ${(clinicalStageCategories)[row.maxClinicalStage]?.label}`;
-      },
+      filterValue: row =>
+        `${row.drug?.name ?? ""} ${stageCategories[row.maxClinicalStage]?.label ?? ""}`,
     },
   ];
 
-  const dataDownloaderColoumns = [
-    {
-      id: "drugName",
-      exportValue: (row) => row.drug?.name,
-    },
-    {
-      id: "drugId",
-      exportValue: (row) => row.drug?.id,
-    },
-    {
-      id: "maxClinicalStage",
-    },
-    {
-      id: "reportCount",
-      exportValue: (row) => row.clinicalReports?.length,
-    },
+  const dataDownloaderColumns: OtTableColumn<DrugRow>[] = [
+    { id: "drugName", label: "Drug name", exportValue: row => row.drug?.name },
+    { id: "drugId", label: "Drug id", exportValue: row => row.drug?.id },
+    { id: "maxClinicalStage", label: "Max clinical stage" },
+    { id: "reportCount", label: "Report count", exportValue: row => row.clinicalReports?.length },
   ];
 
   return (
@@ -164,7 +169,7 @@ function DrugsTable({ efoId, selectedRow, selectRow }) {
         }),
       }}
     >
-      <OtTableServer
+      <OtTableServer<DrugRow>
         columns={columns}
         query={DRUGS_QUERY}
         variables={{ efoId }}
@@ -172,10 +177,10 @@ function DrugsTable({ efoId, selectedRow, selectRow }) {
         pageSize={DRUGS_PAGE_SIZE}
         dataDownloader
         dataDownloaderFileStem="drugs-and-clinical-candidates"
-        dataDownloaderColumns={dataDownloaderColoumns}
+        dataDownloaderColumns={dataDownloaderColumns}
         showColumnVisibilityControl={false}
         globalFilterPlaceholderText="Search..."
-        getSelectedRows={(rowsInfo) => {
+        getSelectedRows={(rowsInfo: Row<DrugRow>[]) => {
           if (!(rowsInfo?.length > 0)) return;
 
           const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);

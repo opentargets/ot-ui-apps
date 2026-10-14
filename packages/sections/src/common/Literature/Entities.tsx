@@ -1,7 +1,8 @@
 import { styled } from "@mui/material/styles";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
+import { fetchSimilarEntities, literatureStateFromResponse, similarEntityLabel } from "./requests";
 import { useApolloClient, Grow, Chip } from "ui";
+import type { SimilarEntity } from "./types";
 
 const StyledChipRow = styled("div")(({ theme }) => ({
   display: "flex",
@@ -11,13 +12,13 @@ const StyledChipRow = styled("div")(({ theme }) => ({
   },
 }));
 
-function EntitiesToSelect({ id }) {
+function EntitiesToSelect({ id }: { id: string }) {
   const literature = useLiterature();
   const { entities, selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleSelectChip = async e => {
+  const handleSelectChip = async (e: SimilarEntity & { object: NonNullable<SimilarEntity["object"]> }) => {
     const {
       query,
       id: bibliographyId,
@@ -34,7 +35,7 @@ function EntitiesToSelect({ id }) {
       {
         score: e.score,
         object: {
-          name: e.object.name || e.object.approvedSymbol,
+          name: similarEntityLabel(e.object),
           id: e.object.id,
         },
       },
@@ -53,23 +54,14 @@ function EntitiesToSelect({ id }) {
       startYear,
       startMonth,
     });
-    const data = request.data[globalEntity];
-    const update = {
-      entities: data.similarEntities?.rows ?? [],
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.count,
-      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
-      loadingEntities: false,
-      page: 0,
-    };
-    literatureDispatch({ type: "stateUpdate", value: update });
+    literatureDispatch({
+      type: "stateUpdate",
+      value: { ...literatureStateFromResponse(request.data[globalEntity ?? ""]), loadingEntities: false },
+    });
   };
 
-  const validateEntity = entity => {
-    if (id === entity.object?.id) return null;
-    if (selectedChips.find(s => s.object.id === entity.object.id)) return null;
-    return entity;
-  };
+  const isSelectable = (entity: SimilarEntity & { object: NonNullable<SimilarEntity["object"]> }) =>
+    id !== entity.object.id && !selectedChips.some(s => s.object.id === entity.object.id);
 
   return entities.map(e => {
     if (!e.object)
@@ -86,17 +78,19 @@ function EntitiesToSelect({ id }) {
           />
         </Grow>
       );
-    return validateEntity(e) ? (
-      <Grow in key={e.object.id}>
+    const object = e.object;
+    const selectable = { ...e, object };
+    return isSelectable(selectable) ? (
+      <Grow in key={object.id}>
         <Chip
           style={{ opacity: loadingEntities ? 0.5 : 1 }}
-          label={e.object.name || e.object.approvedSymbol}
+          label={similarEntityLabel(object)}
           disabled={loadingEntities}
           clickable
           onClick={() => {
-            handleSelectChip(e);
+            handleSelectChip(selectable);
           }}
-          title={`Score: ${e.score} ID: ${e.object.id}`}
+          title={`Score: ${e.score} ID: ${object.id}`}
           color="primary"
           variant="outlined"
           size="medium"
@@ -106,13 +100,13 @@ function EntitiesToSelect({ id }) {
   });
 }
 
-export default function Entities({ name, id }) {
+export default function Entities({ name, id }: { name: string; id: string }) {
   const literature = useLiterature();
   const { selectedEntities: selectedChips, loadingEntities } = literature;
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleDeleteChip = async index => {
+  const handleDeleteChip = async (index: number) => {
     const {
       query,
       id: bibliographyId,
@@ -139,16 +133,10 @@ export default function Entities({ name, id }) {
       startYear,
       startMonth,
     });
-    const data = request.data[globalEntity];
-    const update = {
-      entities: data.similarEntities?.rows ?? [],
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.count,
-      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
-      loadingEntities: false,
-      page: 0,
-    };
-    literatureDispatch({ type: "stateUpdate", value: update });
+    literatureDispatch({
+      type: "stateUpdate",
+      value: { ...literatureStateFromResponse(request.data[globalEntity ?? ""]), loadingEntities: false },
+    });
   };
 
   return (
