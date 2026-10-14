@@ -1,4 +1,4 @@
-query SimilarEntitiesQuery(
+query DiseaseBibliographyQuery(
   $id: String!
   $ids: [String!] = []
   $startYear: Int = null

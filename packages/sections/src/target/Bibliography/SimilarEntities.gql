@@ -1,4 +1,4 @@
-query SimilarEntitiesQuery(
+query TargetBibliographyQuery(
   $id: String!
   $ids: [String!] = []
   $startYear: Int = null
