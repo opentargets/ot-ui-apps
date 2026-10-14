@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
+import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
 import { useApolloClient, FormControl, FormGroup, InputLabel, Slider } from "ui";
 
 const OTSlider = styled(Slider)({
@@ -109,23 +109,20 @@ export function DateFilter() {
       pageSize,
       ...values, // values has startYear, startMonth, endYear, endMonth
     });
-    const data = request.data[globalEntity];
-    const update = {
-      id,
-      query,
-      entities: data.similarEntities?.rows ?? [],
-      loadingEntities: false,
-      category,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.count,
-      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
-      globalEntity,
-      selectedEntities,
-      page: 0,
-      pageSize,
-      ...values, // values has startYear, startMonth, endYear, endMonth
-    };
-    literatureDispatch({ type: "stateUpdate", value: update });
+    literatureDispatch({
+      type: "stateUpdate",
+      value: {
+        ...literatureStateFromResponse(request.data[globalEntity ?? ""]),
+        id,
+        query,
+        loadingEntities: false,
+        category,
+        globalEntity,
+        selectedEntities,
+        pageSize,
+        ...values, // values has startYear, startMonth, endYear, endMonth
+      },
+    });
   };
 
   const valueLabelFormat = value => {
