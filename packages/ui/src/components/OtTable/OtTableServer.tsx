@@ -10,10 +10,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, CircularProgress, GridLegacy, IconButton, NativeSelect, Skeleton } from "@mui/material";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import {
+  type Cell,
+  type ColumnDef,
   flexRender,
   getCoreRowModel,
   type PaginationState,
-  type Row,
+  type Row as TableRow,
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -23,6 +25,7 @@ import useBatchDownloader from "../../hooks/useBatchDownloader";
 import { useApolloClient } from "../../providers/OTApolloProvider/OTApolloProvider";
 import DataDownloader from "../DataDownloader";
 import Tooltip from "../Tooltip";
+import { searchFilter } from "./OtTable";
 import OtTableColumnVisibility from "./OtTableColumnVisibility";
 import OtTableSearch from "./OtTableSearch";
 import {
@@ -41,53 +44,50 @@ import {
   getDefaultSortObj,
   getFilterValueFromObject,
   getLoadingRows,
-  isNestedColumns,
   mapTableColumnToTanstackColumns,
 } from "./utils/tableUtils";
 
-type TableRow = Record<string, unknown>;
-type MappedColumn = Record<string, unknown> & {
-  accessorFn?: (row: TableRow) => unknown;
-  columns?: MappedColumn[];
-};
-
-const flattenColumns = (columns: MappedColumn[]): MappedColumn[] =>
-  columns.flatMap(column => (column.columns ? flattenColumns(column.columns) : [column]));
-
-const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-// same matcher as the client-side OtTable: fuzzy rank on any column value, or a
-// case-insensitive substring match over the whole flattened row
-function matchesSearch(row: TableRow, term: string, columns: MappedColumn[]): boolean {
-  const fuzzy = columns.some(column => {
-    if (!column.accessorFn) return false;
-    const value = column.accessorFn(row);
-    return value != null && rankItem(value as string, term).passed;
-  });
-  return fuzzy || new RegExp(escapeRegExp(term), "i").test(getFilterValueFromObject(row));
-}
-
-type ServerState = {
-  rows: Array<Record<string, unknown>>;
+type ServerState<Row> = {
+  rows: Row[];
   count: number;
   loading: boolean;
   initialLoading: boolean;
   error: Error | null;
 };
 
-const INITIAL_STATE: ServerState = {
-  rows: [],
-  count: 0,
-  loading: true,
-  initialLoading: true,
-  error: null,
-};
+type ServerPage<ServerRow> = Partial<Record<string, ServerRow[] | number>>;
+
+const flattenColumns = <Row,>(columns: ColumnDef<Row>[]): ColumnDef<Row>[] =>
+  columns.flatMap(column => ("columns" in column && column.columns ? flattenColumns(column.columns) : [column]));
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+// same matcher as the client-side OtTable: fuzzy rank on any column value, or a
+// case-insensitive substring match over the whole flattened row
+function matchesSearch<Row extends object>(row: Row, term: string, columns: ColumnDef<Row>[]): boolean {
+  const fuzzy = columns.some(column => {
+    if (!("accessorFn" in column) || !column.accessorFn) return false;
+    const value = column.accessorFn(row, 0);
+    return value != null && rankItem(value, term).passed;
+  });
+  return (
+    fuzzy ||
+    new RegExp(escapeRegExp(term), "i").test(getFilterValueFromObject(row as Record<string, unknown>))
+  );
+}
+
+function getLoadingCells<Row>(columns: ColumnDef<Row>[]): ColumnDef<Row>[] {
+  return columns.map(column =>
+    "columns" in column && column.columns
+      ? { ...column, columns: getLoadingCells(column.columns) }
+      : { ...column, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> }
+  );
+}
 
 /**
  * Table whose pagination (and optionally sorting and text search) is driven by
  * the server. Every page change issues a query with `index`/`size` variables
- * (the API's `page: { index, size }` input); the table never holds more than
- * the current page.
+ * (the API's `page: { index, size }` input); the table holds one page at a time.
  *
  * - `dataPath` points at the `{ count, rows }` object inside the response
  *   (e.g. `disease.phenotypes`).
@@ -101,7 +101,7 @@ const INITIAL_STATE: ServerState = {
  *   the same matcher as the client-side table, and paginate the matches
  *   locally; clearing the box returns to server pagination.
  */
-function OtTableServer({
+function OtTableServer<Row extends object, ServerRow extends object = Row>({
   columns = [],
   query,
   variables,
@@ -128,19 +128,25 @@ function OtTableServer({
   getSelectedRows,
   onDataLoaded,
   wrapControls,
-}: OtTableServerProps): ReactElement {
+}: OtTableServerProps<Row, ServerRow>): ReactElement {
   const client = useApolloClient();
-  const [state, setState] = useState<ServerState>(INITIAL_STATE);
+  const [state, setState] = useState<ServerState<Row>>({
+    rows: [],
+    count: 0,
+    loading: true,
+    initialLoading: true,
+    error: null,
+  });
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
     pageSize: initialPageSize,
   });
-  const [sorting, setSorting] = useState<SortingState>(getDefaultSortObj(sortBy, order) ?? []);
+  const [sorting, setSorting] = useState<SortingState>(getDefaultSortObj(sortBy ?? "", order ?? "asc") ?? []);
   const [search, setSearch] = useState("");
   const [rowSelection, setRowSelection] = useState({});
   const requestId = useRef(0);
   // whole dataset, only fetched for a local search
-  const [allRows, setAllRows] = useState<TableRow[] | null>(null);
+  const [allRows, setAllRows] = useState<Row[] | null>(null);
   const [allRowsLoading, setAllRowsLoading] = useState(false);
 
   const memoizedVariables = useMemo(() => ({ ...variables }), [JSON.stringify(variables)]);
@@ -151,10 +157,30 @@ function OtTableServer({
   const localSearchMode = localSearchTerm.length > 0;
   const enableRowSelection = !!getSelectedRows || enableMultipleRowSelection;
 
-  const mappedColumns = useMemo(() => mapTableColumnToTanstackColumns(columns), [columns]);
-  const flatColumns = useMemo(() => flattenColumns(mappedColumns as MappedColumn[]), [mappedColumns]);
+  const toRows = (rows: ServerRow[]): Row[] =>
+    transformRows ? transformRows(rows) : (rows as unknown as Row[]);
+
+  const mappedColumns = useMemo(
+    () => mapTableColumnToTanstackColumns(columns) as unknown as ColumnDef<Row>[],
+    [columns]
+  );
+  const flatColumns = useMemo(() => flattenColumns(mappedColumns), [mappedColumns]);
   const loadingCells = useMemo(() => getLoadingCells(mappedColumns), [mappedColumns]);
-  const loadingRows = useMemo(() => getLoadingRows(pagination.pageSize), [pagination.pageSize]);
+  const loadingRows = useMemo(
+    () => getLoadingRows(pagination.pageSize) as unknown as Row[],
+    [pagination.pageSize]
+  );
+
+  // variables shared by the page requests and the full-dataset download
+  const requestVariables = useMemo(
+    () => ({
+      ...memoizedVariables,
+      ...(getSortVariables ? getSortVariables(sorting) : {}),
+      // omitted when empty so the first page shares its cache entry with the section's own query
+      ...(searchVariable && serverSearchTerm ? { [searchVariable]: serverSearchTerm } : {}),
+    }),
+    [memoizedVariables, getSortVariables, sorting, searchVariable, serverSearchTerm]
+  );
 
   // local search: every matching row of the whole dataset, paginated here
   const filteredRows = useMemo(() => {
@@ -181,17 +207,6 @@ function OtTableServer({
     return state.rows;
   }, [showLoadingRows, state.rows, filteredRows, loadingRows, pagination]);
 
-  // variables shared by the page requests and the full-dataset download
-  const requestVariables = useMemo(
-    () => ({
-      ...memoizedVariables,
-      ...(serverSorting ? getSortVariables(sorting) : {}),
-      // omitted when empty so the first page shares its cache entry with the section's own query
-      ...(serverSearchTerm ? { [searchVariable]: serverSearchTerm } : {}),
-    }),
-    [memoizedVariables, serverSorting, getSortVariables, sorting, searchVariable, serverSearchTerm]
-  );
-
   // reset to the first page whenever anything other than the page changes
   useEffect(() => {
     setPagination(prev => (prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 }));
@@ -206,7 +221,7 @@ function OtTableServer({
     const currentRequest = ++requestId.current;
     setState(prev => ({ ...prev, loading: true }));
     client
-      .query({
+      .query<Record<string, unknown>>({
         query,
         variables: {
           ...requestVariables,
@@ -217,29 +232,26 @@ function OtTableServer({
       })
       .then(response => {
         if (currentRequest !== requestId.current) return;
-        const page = _.get(response.data, dataPath, {});
-        const rows = _.get(page, rowField, []) as Array<Record<string, unknown>>;
-        setState({
-          rows: transformRows ? transformRows(rows) : rows,
-          count: _.get(page, countField, 0) as number,
-          loading: false,
-          initialLoading: false,
-          error: null,
-        });
+        const page = _.get(response.data, dataPath, {}) as ServerPage<ServerRow>;
+        const rows = (page[rowField] ?? []) as ServerRow[];
+        const count = (page[countField] ?? 0) as number;
+        setState({ rows: toRows(rows), count, loading: false, initialLoading: false, error: null });
         onDataLoaded?.(response.data);
         enableRowSelection && setRowSelection({ 0: true });
       })
-      .catch(error => {
+      .catch((error: Error) => {
         if (currentRequest !== requestId.current) return;
         setState({ rows: [], count: 0, loading: false, initialLoading: false, error });
       });
   }, [client, query, requestVariables, pagination.pageIndex, pagination.pageSize, dataPath]);
 
-  const table = useReactTable({
+  const table = useReactTable<Row>({
     data: tableData,
     columns: tableColumns,
     rowCount,
     state: { pagination, sorting, rowSelection },
+    // the OtTable module augments FilterFns with searchFilterFn, which makes it a required option
+    filterFns: { searchFilterFn: searchFilter },
     manualPagination: true,
     manualSorting: serverSorting,
     enableSorting: serverSorting,
@@ -257,17 +269,14 @@ function OtTableServer({
   }, [table.getSelectedRowModel()]);
 
   // the downloader reads from the Apollo result, hence the `data.` prefix
-  const getWholeDataset = useBatchDownloader(
+  const getWholeDataset: () => Promise<ServerRow[]> = useBatchDownloader(
     query,
     requestVariables,
     `data.${dataPath}`,
     rowField,
     countField
   );
-  const downloadRows = async () => {
-    const rows = await getWholeDataset();
-    return transformRows ? transformRows(rows) : rows;
-  };
+  const downloadRows = async (): Promise<Row[]> => toRows(await getWholeDataset());
 
   // fetch the whole dataset the first time a local search term is typed
   useEffect(() => {
@@ -276,10 +285,9 @@ function OtTableServer({
     setAllRowsLoading(true);
     downloadRows()
       .then(rows => {
-        if (!isCurrent) return;
-        setAllRows(rows as TableRow[]);
+        if (isCurrent) setAllRows(rows);
       })
-      .catch(error => {
+      .catch((error: Error) => {
         if (!isCurrent) return;
         setState(prev => ({ ...prev, error }));
         setAllRows([]);
@@ -290,21 +298,18 @@ function OtTableServer({
     };
   }, [localSearchMode, allRows, requestVariables]);
 
-  function onRowSelection(row: Row<any>) {
+  function onRowSelection(row: TableRow<Row>) {
     enableRowSelection && row.toggleSelected();
   }
 
-  function getCellData(cell: Record<string, unknown>): ReactNode {
+  function getCellData(cell: Cell<Row, unknown>): ReactNode {
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
   }
 
   const playgroundVariables = { ...requestVariables, index: 0, size: pagination.pageSize };
 
   const searchControl = showGlobalFilter ? (
-    <OtTableSearch
-      setGlobalSearchTerm={setSearch}
-      placeholderText={globalFilterPlaceholderText}
-    />
+    <OtTableSearch setGlobalSearchTerm={setSearch} placeholderText={globalFilterPlaceholderText} />
   ) : null;
 
   const rightControls = (
@@ -506,16 +511,6 @@ function OtTableServer({
       </Box>
     </div>
   );
-}
-
-function getLoadingCells(columms: Array<Record<string, unknown>>) {
-  const arr: Record<string, unknown>[] = [];
-  columms.forEach(e => {
-    if (isNestedColumns(e)) {
-      arr.push({ header: e.header || e.label, columns: getLoadingCells(e.columns) });
-    } else arr.push({ ...e, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> });
-  });
-  return arr;
 }
 
 export default OtTableServer;

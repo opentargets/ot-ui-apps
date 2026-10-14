@@ -1,5 +1,38 @@
 import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
-import type { ColumnDef, Row, SortingState, Table } from "@tanstack/table-core";
+import type { ColumnDef, Row as TableRow, RowData, SortingState, Table } from "@tanstack/table-core";
+import type { ReactNode } from "react";
+
+// presentation keys of an OtTable column that are spread onto the react-table
+// column definition (see mapTableColumnToTanstackColumns)
+declare module "@tanstack/table-core" {
+  interface ColumnDefBase<TData extends RowData, TValue = unknown> {
+    label?: string;
+    tooltip?: ReactNode;
+    numeric?: boolean;
+    sticky?: boolean;
+    verticalHeader?: boolean;
+  }
+}
+
+/** A column of an OtTable, as written by the sections */
+export type OtTableColumn<Row> = {
+  id: string;
+  label: string;
+  renderCell?: (row: Row) => ReactNode;
+  /** value used for searching/sorting; defaults to the value at `id` (dot path) */
+  filterValue?: (row: Row) => unknown;
+  exportValue?: (row: Row) => unknown;
+  exportLabel?: string;
+  sortable?: boolean;
+  comparator?: (a: Row, b: Row) => number;
+  enableHiding?: boolean;
+  enableColumnFilter?: boolean;
+  tooltip?: ReactNode;
+  numeric?: boolean;
+  sticky?: boolean;
+  verticalHeader?: boolean;
+  width?: string;
+};
 
 export const INIT_PAGE_SIZE = 10;
 
@@ -37,7 +70,7 @@ export type OtTableProps = {
   showPaginationAlways: boolean;
   loading: boolean;
   enableMultipleRowSelection: boolean;
-  getSelectedRows: (r: Row<any>[]) => void;
+  getSelectedRows: (r: TableRow<any>[]) => void;
   getFilteredRows: any;
   wrapControls: any;
 };
@@ -77,7 +110,7 @@ export type OtTableSSPProps = {
   showColumnVisibilityControl: boolean;
   setInitialRequestData: any;
   enableMultipleRowSelection: boolean;
-  getSelectedRows: (r: Row<any>[]) => void;
+  getSelectedRows: (r: TableRow<any>[]) => void;
 };
 
 export type OtTableSSPState = {
@@ -123,8 +156,12 @@ export type Action =
  * OT TABLE SERVER PAGINATION TYPES  *
  *************************************/
 
-export type OtTableServerProps = {
-  columns: Array<Record<string, unknown>>;
+/**
+ * @typeParam Row the rows rendered by the table
+ * @typeParam ServerRow the rows returned by the API when `transformRows` reshapes them
+ */
+export type OtTableServerProps<Row extends object, ServerRow extends object = Row> = {
+  columns: OtTableColumn<Row>[];
   query: DocumentNode;
   /** base query variables; `index`, `size`, sort and search variables are added by the table */
   variables: Record<string, unknown>;
@@ -132,8 +169,8 @@ export type OtTableServerProps = {
   dataPath: string;
   rowField?: string;
   countField?: string;
-  /** post-process the rows of the current page (and of the downloaded dataset) */
-  transformRows?: (rows: Array<Record<string, unknown>>) => Array<Record<string, unknown>>;
+  /** reshapes the rows of a page (and of the downloaded dataset) */
+  transformRows?: (rows: ServerRow[]) => Row[];
   pageSize?: number;
   pageSizeOptions?: number[];
   sortBy?: string;
@@ -150,10 +187,10 @@ export type OtTableServerProps = {
   showRowsPerPageControl?: boolean;
   showPaginationAlways?: boolean;
   dataDownloader?: boolean;
-  dataDownloaderColumns?: Array<Record<string, unknown>>;
+  dataDownloaderColumns?: OtTableColumn<Row>[];
   dataDownloaderFileStem?: string;
   enableMultipleRowSelection?: boolean;
-  getSelectedRows?: (r: Row<any>[]) => void;
+  getSelectedRows?: (rows: TableRow<Row>[]) => void;
   /** receives the raw response of every page request */
   onDataLoaded?: (data: unknown) => void;
   wrapControls?: boolean | Record<string, unknown>;
