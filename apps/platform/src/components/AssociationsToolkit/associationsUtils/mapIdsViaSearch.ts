@@ -13,8 +13,10 @@ const HITS_PER_TERM = 5;
  * few terms per request) and the hits are returned in the former `mapIds`
  * shape.
  */
+type SearchAliases = Record<string, { hits: MappedHit[] } | null | undefined>;
+
 export async function mapIdsViaSearch(
-  client: ApolloClient<unknown>,
+  client: ApolloClient<object>,
   queryTerms: string[],
   entityNames: string[] | null = null,
   hitsPerTerm = HITS_PER_TERM
@@ -46,7 +48,7 @@ export async function mapIdsViaSearch(
     chunk.forEach((term, i) => {
       variables[`q${i}`] = term;
     });
-    const { data } = await client.query({ query, variables });
+    const { data } = await client.query<SearchAliases>({ query, variables });
     chunk.forEach((term, i) => {
       mappings.push({ term, hits: data?.[`t${i}`]?.hits ?? [] });
     });

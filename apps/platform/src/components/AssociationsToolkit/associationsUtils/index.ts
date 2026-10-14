@@ -1,4 +1,4 @@
-import { Datasource } from "@ot/constants";
+import { Datasource, type DatasourcePolicyOverride } from "@ot/constants";
 import { scaleQuantize, rgb, RGBColor } from "d3";
 import Legend from "./Legend";
 import dataSources, { DataSourceDef } from "../static_datasets/dataSourcesAssoc";
@@ -110,13 +110,17 @@ export const defaulDatasourcesWeigths: columnAdvanceControl[] = dataSources.map(
  */
 const API_DATASOURCE_IDS = new Set<string>(Object.values(Datasource));
 
+/**
+ * Maps the datasource controls to the `datasourcePolicyOverrides` input of the
+ * `associatedTargets` / `associatedDiseases` fields.
+ */
 export const toDatasourcePolicyOverrides = (
-  controls: Array<{ id: string; weight: number; required: boolean }>
-): Array<{ id: string; policy: { weight: number; required: boolean } }> =>
+  controls: Pick<columnAdvanceControl, "id" | "weight" | "required">[]
+): DatasourcePolicyOverride[] =>
   controls
     // datasources unknown to the API (e.g. partner-preview only ones) are rejected by the enum
     .filter(({ id }) => API_DATASOURCE_IDS.has(id))
-    .map(({ id, weight, required }) => ({ id, policy: { weight, required } }));
+    .map(({ id, weight, required }) => ({ id: id as Datasource, policy: { weight, required } }));
 
 export const getWightSourceDefault = (source: string): number => {
   const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
