@@ -30,6 +30,7 @@ type OtTableOffsetPaginationProps = {
   dataDownloader?: boolean;
   dataDownloaderColumns?: Record<string, unknown>[];
   dataDownloaderFileStem: string;
+  dataPath?: string;
   entity: string;
   query: any;
   sectionName: string;
@@ -43,6 +44,7 @@ function OtTableOffsetPagination({
   dataDownloader = false,
   dataDownloaderColumns,
   dataDownloaderFileStem,
+  dataPath,
   entity,
   query,
   sectionName,
@@ -65,7 +67,7 @@ function OtTableOffsetPagination({
     setInitialRequestData({ data, error, loading });
   }, [data, error, loading, setInitialRequestData]);
 
-  const page = data?.[entity]?.[sectionName];
+  const page = getPage(data, entity, sectionName, dataPath);
   const rows = page?.rows ?? [];
   const count = page?.count ?? 0;
   const mappedColumns = useMemo(() => mapTableColumnToTanstackColumns(columns), [columns]);
@@ -86,7 +88,7 @@ function OtTableOffsetPagination({
       variables: { ...variables, page: { index: 0, size: downloaderChunkSize } },
       fetchPolicy: "no-cache",
     });
-    const firstPage = firstResult.data?.[entity]?.[sectionName];
+    const firstPage = getPage(firstResult.data, entity, sectionName, dataPath);
     const allRows = [...(firstPage?.rows ?? [])];
     const pageCount = Math.ceil((firstPage?.count ?? 0) / downloaderChunkSize);
 
@@ -96,11 +98,11 @@ function OtTableOffsetPagination({
         variables: { ...variables, page: { index, size: downloaderChunkSize } },
         fetchPolicy: "no-cache",
       });
-      allRows.push(...(result.data?.[entity]?.[sectionName]?.rows ?? []));
+      allRows.push(...(getPage(result.data, entity, sectionName, dataPath)?.rows ?? []));
     }
 
     return allRows;
-  }, [client, entity, query, sectionName, variables]);
+  }, [client, dataPath, entity, query, sectionName, variables]);
 
   function getCellData(cell: Record<string, unknown>): ReactNode {
     return <>{flexRender(cell.column.columnDef.cell, cell.getContext())}</>;
@@ -198,6 +200,13 @@ function getLoadingColumns(columns: Record<string, unknown>[]): Record<string, u
           columns: getLoadingColumns(column.columns as Record<string, unknown>[]),
         }
       : { ...column, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> }
+  );
+}
+
+function getPage(data: any, entity: string, sectionName: string, dataPath?: string) {
+  return (dataPath ? dataPath.split(".") : [entity, sectionName]).reduce(
+    (value, key) => value?.[key],
+    data
   );
 }
 
