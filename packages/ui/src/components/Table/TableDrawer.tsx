@@ -5,7 +5,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Button,
   ButtonBase,
   Drawer,
   IconButton,
@@ -87,7 +86,12 @@ type TableDrawerProps = {
   showSingle?: boolean;
 };
 
-function TableDrawer({ entries, message, caption = "Records", showSingle = true }: TableDrawerProps) {
+function TableDrawer({
+  entries,
+  message,
+  caption = "Records",
+  showSingle = true,
+}: TableDrawerProps) {
   const [open, setOpen] = useState(false);
 
   if (entries.length === 0 && message) {

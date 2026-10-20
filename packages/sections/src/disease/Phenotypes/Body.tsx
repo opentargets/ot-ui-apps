@@ -1,18 +1,17 @@
 import { useQuery } from "@apollo/client";
-import _ from "lodash";
-import { Link, SectionItem, Tooltip, TableDrawer, OtTableServer, type OtTableColumn } from "ui";
-
-import Description from "./Description";
 import {
-  naLabel,
   type DiseaseBodyProps,
+  naLabel,
   type PhenotypesQuery,
   type PhenotypesQueryVariables,
 } from "@ot/constants";
-
-import PHENOTYPES_BODY_QUERY_DOCUMENT from "./PhenotypesQuery.gql";
-import { definition } from ".";
+import _ from "lodash";
+import type { ReactNode } from "react";
+import { Link, type OtTableColumn, OtTableServer, SectionItem, TableDrawer, Tooltip } from "ui";
 import { typedDocument } from "../../utils/typedDocument";
+import { definition } from ".";
+import Description from "./Description";
+import PHENOTYPES_BODY_QUERY_DOCUMENT from "./PhenotypesQuery.gql";
 
 const PHENOTYPES_BODY_QUERY = typedDocument<PhenotypesQuery, PhenotypesQueryVariables>(
   PHENOTYPES_BODY_QUERY_DOCUMENT
@@ -51,14 +50,14 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
     label: "Phenotype",
     enableHiding: false,
     renderCell: ({ phenotypeEFO, phenotypeHPO }) => {
-      let content;
-      if (phenotypeEFO && phenotypeEFO.id ) {
+      let content: ReactNode;
+      if (phenotypeEFO?.id) {
         content = (
           <Link asyncTooltip to={`/disease/${phenotypeEFO.id}`}>
             {phenotypeEFO.name}
           </Link>
         );
-      } else if (phenotypeHPO && phenotypeHPO.name) content = phenotypeHPO.name;
+      } else if (phenotypeHPO?.name) content = phenotypeHPO.name;
       else content = naLabel;
 
       return phenotypeHPO?.description ? (
@@ -86,22 +85,22 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
       ) : (
         naLabel
       ),
-    filterValue: row => row.evidence.aspect,
-    exportValue: row => row.evidence.aspect,
+    filterValue: (row) => row.evidence.aspect,
+    exportValue: (row) => row.evidence.aspect,
   },
   {
     id: "frequency",
     label: "Frequency",
     renderCell: ({ evidence }) => evidence.frequency || naLabel,
-    filterValue: row => row.evidence.frequency || naLabel,
-    exportValue: row => row.evidence.frequency || naLabel,
+    filterValue: (row) => row.evidence.frequency || naLabel,
+    exportValue: (row) => row.evidence.frequency || naLabel,
   },
   {
     id: "onset",
     label: "Onset",
     renderCell: ({ evidence }) =>
       evidence.onset?.length > 0
-        ? evidence.onset.map(o => (
+        ? evidence.onset.map((o) => (
             <span key={o.id}>
               <Link external to={`https://identifiers.org/ols/${o.id.replace("_", ":")}`}>
                 {o.name}
@@ -110,15 +109,15 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
             </span>
           ))
         : naLabel,
-    filterValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
-    exportValue: row => row.evidence.onset?.map(o => o.name).join() || naLabel,
+    filterValue: (row) => row.evidence.onset?.map((o) => o.name).join() || naLabel,
+    exportValue: (row) => row.evidence.onset?.map((o) => o.name).join() || naLabel,
   },
   {
     id: "modifier",
     label: "Modifier",
     renderCell: ({ evidence }) =>
       evidence.modifiers?.length > 0
-        ? evidence.modifiers.map(m => (
+        ? evidence.modifiers.map((m) => (
             <span key={m.id}>
               <Link external to={`https://identifiers.org/ols/${m.id.replace("_", ":")}`}>
                 {m.name}
@@ -127,14 +126,14 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
             </span>
           ))
         : naLabel,
-    filterValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
-    exportValue: row => row.evidence.modifiers?.map(m => m.name).join() || naLabel,
+    filterValue: (row) => row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
+    exportValue: (row) => row.evidence.modifiers?.map((m) => m.name).join() || naLabel,
   },
   {
     id: "sex",
     label: "Sex",
     renderCell: ({ evidence }) => _.capitalize(evidence.sex ?? "") || naLabel,
-    filterValue: row => row.evidence.sex || naLabel,
+    filterValue: (row) => row.evidence.sex || naLabel,
   },
   {
     id: "evidenceType",
@@ -147,15 +146,15 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
       ) : (
         naLabel
       ),
-    filterValue: row => row.evidence.evidenceType || naLabel,
-    exportValue: row => row.evidence.evidenceType || naLabel,
+    filterValue: (row) => row.evidence.evidenceType || naLabel,
+    exportValue: (row) => row.evidence.evidenceType || naLabel,
   },
   {
     id: "source",
     label: "Source",
     renderCell: ({ evidence }) => evidence.resource || naLabel,
-    filterValue: row => row.evidence.resource || naLabel,
-    exportValue: row => row.evidence.resource || naLabel,
+    filterValue: (row) => row.evidence.resource || naLabel,
+    exportValue: (row) => row.evidence.resource || naLabel,
   },
   {
     id: "references",
@@ -166,7 +165,7 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
         return naLabel;
       }
       // parse references
-      const refs = evidence.references.map(r => ({
+      const refs = evidence.references.map((r) => ({
         url: r.toUpperCase().startsWith("PMID:")
           ? `https://europepmc.org/search?query=EXT_ID:${r.split(":").pop()}`
           : `https://hpo.jax.org/app/browse/disease/${r}`,
@@ -175,8 +174,8 @@ const columns: OtTableColumn<PhenotypeRow>[] = [
       }));
       return <TableDrawer entries={refs} message={`${refs.length} references`} />;
     },
-    filterValue: row => row.evidence.references?.map(r => r).join() || naLabel,
-    exportValue: row => row.evidence.references?.map(r => r).join() || naLabel,
+    filterValue: (row) => row.evidence.references?.map((r) => r).join() || naLabel,
+    exportValue: (row) => row.evidence.references?.map((r) => r).join() || naLabel,
     // width: '9%',
   },
 ];
@@ -186,8 +185,8 @@ type Props = DiseaseBodyProps;
 const PAGE_SIZE = 10;
 
 function flattenEvidence(rows: PhenotypeServerRow[]): PhenotypeRow[] {
-  return rows.flatMap(phenotype =>
-    phenotype.evidence.map(evidence => ({ ...phenotype, evidence }))
+  return rows.flatMap((phenotype) =>
+    phenotype.evidence.map((evidence) => ({ ...phenotype, evidence }))
   );
 }
 
