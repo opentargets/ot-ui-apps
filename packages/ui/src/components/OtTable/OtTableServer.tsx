@@ -7,7 +7,14 @@ import {
   faForwardStep,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, CircularProgress, GridLegacy, IconButton, NativeSelect, Skeleton } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  GridLegacy,
+  IconButton,
+  NativeSelect,
+  Skeleton,
+} from "@mui/material";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import {
   type Cell,
@@ -15,8 +22,8 @@ import {
   flexRender,
   getCoreRowModel,
   type PaginationState,
-  type Row as TableRow,
   type SortingState,
+  type Row as TableRow,
   useReactTable,
 } from "@tanstack/react-table";
 import _ from "lodash";
@@ -58,26 +65,34 @@ type ServerState<Row> = {
 type ServerPage<ServerRow> = Partial<Record<string, ServerRow[] | number>>;
 
 const flattenColumns = <Row,>(columns: ColumnDef<Row>[]): ColumnDef<Row>[] =>
-  columns.flatMap(column => ("columns" in column && column.columns ? flattenColumns(column.columns) : [column]));
+  columns.flatMap((column) =>
+    "columns" in column && column.columns ? flattenColumns(column.columns) : [column]
+  );
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 // same matcher as the client-side OtTable: fuzzy rank on any column value, or a
 // case-insensitive substring match over the whole flattened row
-function matchesSearch<Row extends object>(row: Row, term: string, columns: ColumnDef<Row>[]): boolean {
-  const fuzzy = columns.some(column => {
+function matchesSearch<Row extends object>(
+  row: Row,
+  term: string,
+  columns: ColumnDef<Row>[]
+): boolean {
+  const fuzzy = columns.some((column) => {
     if (!("accessorFn" in column) || !column.accessorFn) return false;
     const value = column.accessorFn(row, 0);
     return value != null && rankItem(value, term).passed;
   });
   return (
     fuzzy ||
-    new RegExp(escapeRegExp(term), "i").test(getFilterValueFromObject(row as Record<string, unknown>))
+    new RegExp(escapeRegExp(term), "i").test(
+      getFilterValueFromObject(row as Record<string, unknown>)
+    )
   );
 }
 
 function getLoadingCells<Row>(columns: ColumnDef<Row>[]): ColumnDef<Row>[] {
-  return columns.map(column =>
+  return columns.map((column) =>
     "columns" in column && column.columns
       ? { ...column, columns: getLoadingCells(column.columns) }
       : { ...column, cell: () => <Skeleton sx={{ minWidth: "50px" }} variant="text" /> }
@@ -141,7 +156,9 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
     pageIndex: 0,
     pageSize: initialPageSize,
   });
-  const [sorting, setSorting] = useState<SortingState>(getDefaultSortObj(sortBy ?? "", order ?? "asc") ?? []);
+  const [sorting, setSorting] = useState<SortingState>(
+    getDefaultSortObj(sortBy ?? "", order ?? "asc") ?? []
+  );
   const [search, setSearch] = useState("");
   const [rowSelection, setRowSelection] = useState({});
   const requestId = useRef(0);
@@ -185,7 +202,7 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
   // local search: every matching row of the whole dataset, paginated here
   const filteredRows = useMemo(() => {
     if (!localSearchMode || !allRows) return null;
-    return allRows.filter(row => matchesSearch(row, localSearchTerm, flatColumns));
+    return allRows.filter((row) => matchesSearch(row, localSearchTerm, flatColumns));
   }, [localSearchMode, allRows, localSearchTerm, flatColumns]);
 
   const rowCount = filteredRows ? filteredRows.length : state.count;
@@ -209,7 +226,7 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
 
   // reset to the first page whenever anything other than the page changes
   useEffect(() => {
-    setPagination(prev => (prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 }));
+    setPagination((prev) => (prev.pageIndex === 0 ? prev : { ...prev, pageIndex: 0 }));
   }, [requestVariables, localSearchTerm]);
 
   // the whole dataset is only valid for the current variables
@@ -219,7 +236,7 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
 
   useEffect(() => {
     const currentRequest = ++requestId.current;
-    setState(prev => ({ ...prev, loading: true }));
+    setState((prev) => ({ ...prev, loading: true }));
     client
       .query<Record<string, unknown>>({
         query,
@@ -230,7 +247,7 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
         },
         fetchPolicy: "cache-first",
       })
-      .then(response => {
+      .then((response) => {
         if (currentRequest !== requestId.current) return;
         const page = _.get(response.data, dataPath, {}) as ServerPage<ServerRow>;
         const rows = (page[rowField] ?? []) as ServerRow[];
@@ -284,12 +301,12 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
     let isCurrent = true;
     setAllRowsLoading(true);
     downloadRows()
-      .then(rows => {
+      .then((rows) => {
         if (isCurrent) setAllRows(rows);
       })
       .catch((error: Error) => {
         if (!isCurrent) return;
-        setState(prev => ({ ...prev, error }));
+        setState((prev) => ({ ...prev, error }));
         setAllRows([]);
       })
       .finally(() => isCurrent && setAllRowsLoading(false));
@@ -364,12 +381,12 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
         </GridLegacy>
       )}
 
-      <Box sx={{ w: 1, overflowX: "auto", marginTop: theme => theme.spacing(3) }}>
+      <Box sx={{ w: 1, overflowX: "auto", marginTop: (theme) => theme.spacing(3) }}>
         <OtTableContainer data-testid="ot-table">
           <thead>
-            {table.getHeaderGroups().map(headerGroup => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
+                {headerGroup.headers.map((header) => (
                   <OtTH
                     key={header.id}
                     colSpan={header.colSpan}
@@ -392,7 +409,11 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
                             {flexRender(header.column.columnDef.header, header.getContext())}
                           </Tooltip>
                           {!header.column.getIsSorted() && header.column.getCanSort() && (
-                            <FontAwesomeIcon size="sm" icon={faArrowUp} className="sortableColumn" />
+                            <FontAwesomeIcon
+                              size="sm"
+                              icon={faArrowUp}
+                              className="sortableColumn"
+                            />
                           )}
                           {{
                             asc: <FontAwesomeIconPadded size="sm" icon={faArrowUp} />,
@@ -407,14 +428,14 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
             ))}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map(row => (
+            {table.getRowModel().rows.map((row) => (
               <OtTR
                 key={row.id}
                 onClick={() => onRowSelection(row)}
                 enableRowSelection={enableRowSelection}
                 isSelected={row.getIsSelected()}
               >
-                {row.getVisibleCells().map(cell => (
+                {row.getVisibleCells().map((cell) => (
                   <OtTD key={cell.id} stickyColumn={cell.column.columnDef.sticky}>
                     <OtTableCellContainer numeric={cell.column.columnDef.numeric}>
                       {getCellData(cell)}
@@ -432,11 +453,11 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
           display: "flex",
           justifyContent: "end",
           alignItems: "center",
-          padding: theme => `${theme.spacing(2)} 0 `,
+          padding: (theme) => `${theme.spacing(2)} 0 `,
         }}
       >
         {loading && !state.initialLoading && (
-          <CircularProgress sx={{ mx: theme => theme.spacing(2) }} size={25} />
+          <CircularProgress sx={{ mx: (theme) => theme.spacing(2) }} size={25} />
         )}
         {showRowsPerPageControl && (
           <div>
@@ -445,11 +466,11 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
               id="paginationSelect"
               disableUnderline
               disabled={loading}
-              sx={{ pl: theme => theme.spacing(2) }}
+              sx={{ pl: (theme) => theme.spacing(2) }}
               value={pagination.pageSize}
-              onChange={e => setPagination({ pageIndex: 0, pageSize: Number(e.target.value) })}
+              onChange={(e) => setPagination({ pageIndex: 0, pageSize: Number(e.target.value) })}
             >
-              {pageSizeOptions.map(size => (
+              {pageSizeOptions.map((size) => (
                 <option key={size} value={size}>
                   {size}
                 </option>
@@ -463,8 +484,8 @@ function OtTableServer<Row extends object, ServerRow extends object = Row>({
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: theme => theme.spacing(3),
-              marginLeft: theme => theme.spacing(3),
+              gap: (theme) => theme.spacing(3),
+              marginLeft: (theme) => theme.spacing(3),
             }}
           >
             <div>
