@@ -18,7 +18,7 @@ import {
   useDetails,
   useDetailsDispatch,
 } from "./LiteratureContext";
-import { fetchSimilarEntities, literaturesEuropePMCQuery } from "./requests";
+import { fetchSimilarEntities, literatureStateFromResponse, literaturesEuropePMCQuery } from "./requests";
 import { grey } from "@mui/material/colors";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -164,18 +164,13 @@ function PublicationsList({ hideSearch = false }) {
       startYear,
       startMonth,
     });
-    const data = request.data[globalEntity];
-    const newLitsIds =
-      data.literatureOcurrences?.rows?.map(({ pmid, pmcid }) => (pmid ? pmid : pmcid)) ?? [];
+    const { litsIds: newLitsIds, litsCount } = literatureStateFromResponse(
+      request.data[globalEntity ?? ""],
+      newPage
+    );
     literatureDispatch({
       type: "stateUpdate",
-      value: {
-        litsIds: newLitsIds,
-        litsCount: data.literatureOcurrences?.count,
-        page: newPage,
-        pageSize: newPageSize,
-        loadingEntities: false,
-      },
+      value: { litsIds: newLitsIds, litsCount, page: newPage, pageSize: newPageSize, loadingEntities: false },
     });
   };
 
