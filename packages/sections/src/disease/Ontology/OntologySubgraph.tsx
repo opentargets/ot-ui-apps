@@ -1,5 +1,6 @@
 /// <reference path="../../react-measure.d.ts" />
 import { styled } from "@mui/material/styles";
+import type { OntologyAncestorsQuery, OntologyQuery } from "@ot/constants";
 import { curveMonotoneX, line as d3Line, max } from "d3";
 import {
   coordCenter,
@@ -13,7 +14,6 @@ import {
 import { type MeasuredComponentProps, withContentRect } from "react-measure";
 import { Link } from "react-router";
 import { MuiTooltip } from "ui";
-import type { OntologyAncestorsQuery, OntologyQuery } from "@ot/constants";
 
 type OntologyDisease = NonNullable<OntologyQuery["disease"]>;
 type OntologyAncestor = OntologyAncestorsQuery["diseases"]["rows"][number];
@@ -38,37 +38,36 @@ const StyledLink = styled(Link)({
   "&:hover": { fontWeight: "700" },
 });
 
-
 const buildDag = (data: OntologyGraphData): DagNodeData[] => {
   const nodes: DagNodeData[] = [
     {
       id: data.id,
       name: data.name,
-      parentIds: data.parents.map(parent => parent.id),
+      parentIds: data.parents.map((parent) => parent.id),
       isTerapeuticArea: data.isTherapeuticArea,
       nodeType: "anchor" as const,
     },
-    ...data.children.map(child => ({
+    ...data.children.map((child) => ({
       id: child.id,
       name: child.name,
       parentIds: [data.id],
       isTerapeuticArea: data.isTherapeuticArea,
       nodeType: "child" as const,
     })),
-    ...data.resolvedAncestors.map(ancestor => ({
+    ...data.resolvedAncestors.map((ancestor) => ({
       id: ancestor.id,
       name: ancestor.name,
-      parentIds: ancestor.parents.map(parent => parent.id),
+      parentIds: ancestor.parents.map((parent) => parent.id),
       isTerapeuticArea: data.isTherapeuticArea,
       nodeType: "ancestor" as const,
     })),
   ];
   // the ancestors are resolved in a separate request; drop links to any term
   // that is not part of the graph so that the stratification does not fail
-  const nodeIds = new Set(nodes.map(node => node.id));
-  return nodes.map(node => ({
+  const nodeIds = new Set(nodes.map((node) => node.id));
+  return nodes.map((node) => ({
     ...node,
-    parentIds: node.parentIds.filter(parentId => nodeIds.has(parentId)),
+    parentIds: node.parentIds.filter((parentId) => nodeIds.has(parentId)),
   }));
 };
 
@@ -83,10 +82,10 @@ const getMaxLayerCount = (dag: Dag): number => {
     layerCounts[layer] = (layerCounts[layer] || 0) + 1;
   };
 
-  (dag.descendants() as LayoutNode[]).forEach(n => addToLayer(n.layer));
-  (dag.links() as unknown as LayoutLink[]).forEach(l =>
-    l.points.forEach((_, i) => addToLayer(l.source.layer + i + 1))
-  );
+  for (const node of dag.descendants() as LayoutNode[]) addToLayer(node.layer);
+  for (const link of dag.links() as unknown as LayoutLink[]) {
+    for (let i = 0; i < link.points.length; i++) addToLayer(link.source.layer + i + 1);
+  }
 
   return Math.max(...Object.values(layerCounts));
 };
@@ -130,10 +129,10 @@ function OntologySubgraph({ name, data, measureRef, contentRect }: OntologySubgr
   layout(dag);
   const nodes = dag.descendants() as LayoutNode[];
   const links = dag.links() as unknown as LayoutLink[];
-  const separation = width / ((max(nodes, d => d.layer) ?? 0) + 1);
+  const separation = width / ((max(nodes, (d) => d.layer) ?? 0) + 1);
   const xOffset = separation / 2 - radius;
   const textLimit = separation / 8;
-  line.x(d => d.y - xOffset).y(d => d.x);
+  line.x((d) => d.y - xOffset).y((d) => d.x);
 
   return (
     <div ref={measureRef}>
@@ -143,7 +142,9 @@ function OntologySubgraph({ name, data, measureRef, contentRect }: OntologySubgr
           xmlnsXlink="http://www.w3.org/1999/xlink"
           width={width}
           height={height + yOffset}
+          role="img"
         >
+          <title>Ontology subgraph of {name}</title>
           <defs>
             <marker
               id="arrowhead"
@@ -213,9 +214,12 @@ function OntologySubgraph({ name, data, measureRef, contentRect }: OntologySubgr
             ))}
           </g>
           <g transform={`translate(0, ${yOffset})`}>
-            {nodes.map(node => (
+            {nodes.map((node) => (
               <StyledLink to={`/disease/${node.data.id}`} key={node.id}>
-                <MuiTooltip placement="top" title={`${node.data.name || "No name"} | ID: ${node.id}`}>
+                <MuiTooltip
+                  placement="top"
+                  title={`${node.data.name || "No name"} | ID: ${node.id}`}
+                >
                   <g>
                     <text
                       x={node.y - xOffset}

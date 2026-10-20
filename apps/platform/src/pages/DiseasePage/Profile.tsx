@@ -1,16 +1,16 @@
 import { gql } from "@apollo/client";
 import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 import type { ReactNode } from "react";
+import { Disease, type Widget } from "sections";
 import {
   PlatformApiProvider,
   SectionContainer,
+  SectionsRenderer,
   StickyProfileHeader,
   SummaryContainer,
-  SectionsRenderer,
   SummaryRenderer,
   summaryUtils,
 } from "ui";
-import { Disease, Widget } from "sections";
 
 import ProfileHeader from "./ProfileHeader";
 
@@ -26,7 +26,7 @@ const diseaseProfileWidgets = new Map<string, Widget>([
 const DISEASE_WIDGETS = Array.from(diseaseProfileWidgets.values());
 
 const diseaseProfileWidgetsSummaries = Array.from(diseaseProfileWidgets.values()).map(
-  widget => widget.Summary
+  (widget) => widget.Summary
 );
 
 const DISEASE = "disease";
