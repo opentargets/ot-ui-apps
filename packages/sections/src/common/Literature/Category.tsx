@@ -1,8 +1,9 @@
 import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities } from "./requests";
+import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
+import type { ChangeEvent } from "react";
 import { useApolloClient, InputLabel, FormGroup, Checkbox, FormControlLabel } from "ui";
 
-const toggleValue = (selected, categories) => {
+const toggleValue = (selected: string, categories: string[]): string[] => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
   return [...categories.filter(value => value !== selected).sort()];
@@ -20,7 +21,7 @@ export default function Category() {
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleChange = async event => {
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const {
       query,
       id,
@@ -50,17 +51,14 @@ export default function Category() {
       startYear,
       startMonth,
     });
-    const data = request.data[globalEntity];
-    const update = {
-      entities: data.similarEntities?.rows ?? [],
-      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
-      litsCount: data.literatureOcurrences?.count,
-      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      page: 0,
-      loadingEntities: false,
-      category: newCategories,
-    };
-    literatureDispatch({ type: "stateUpdate", value: update });
+    literatureDispatch({
+      type: "stateUpdate",
+      value: {
+        ...literatureStateFromResponse(request.data[globalEntity ?? ""]),
+        loadingEntities: false,
+        category: newCategories,
+      },
+    });
   };
 
   return (
