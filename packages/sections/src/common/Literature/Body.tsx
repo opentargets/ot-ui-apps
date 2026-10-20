@@ -12,7 +12,7 @@ import { DateFilter } from "./DateFilter";
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
   const [requestObj, setRequestObj] = useState({});
   const literature = useLiterature();
-  const { category, startYear, startMonth, endYear, endMonth } = literature;
+  const { category, startYear, startMonth, endYear, endMonth, pageSize } = literature;
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
@@ -23,6 +23,7 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
         id,
         query: BODY_QUERY,
         category,
+        pageSize,
         startYear,
         startMonth,
         endYear,
@@ -31,11 +32,10 @@ function LiteratureList({ id, name, entity, BODY_QUERY, definition }) {
       setRequestObj(initRequest);
       const data = initRequest.data[entity];
       const update = {
-        entities: data.similarEntities,
+        entities: data.similarEntities?.rows ?? [],
         litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-        litsCount: data.literatureOcurrences?.filteredCount,
-        earliestPubYear: data.literatureOcurrences?.earliestPubYear,
-        cursor: data.literatureOcurrences?.cursor,
+        litsCount: data.literatureOcurrences?.count,
+        earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
         id,
         query: BODY_QUERY,
         globalEntity: entity,
