@@ -9,20 +9,35 @@ import {
   OtTableServer,
   Box,
   Typography,
+  type OtTableColumn,
 } from "ui";
-import { naLabel } from "@ot/constants";
+import {
+  naLabel,
+  SortDirection,
+  StudySortField,
+  type GwasStudiesQuery,
+  type GwasStudiesQueryVariables,
+  type StudySort,
+} from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
 import Description from "./Description";
 
-import GWAS_STUDIES_BODY_QUERY from "./GWASStudiesQuery.gql";
+import GWAS_STUDIES_BODY_QUERY_DOCUMENT from "./GWASStudiesQuery.gql";
 import { definition } from ".";
+import { typedDocument } from "../../utils/typedDocument";
 
-const columns = [
+const GWAS_STUDIES_BODY_QUERY = typedDocument<GwasStudiesQuery, GwasStudiesQueryVariables>(
+  GWAS_STUDIES_BODY_QUERY_DOCUMENT
+);
+
+type StudyRow = GwasStudiesQuery["studies"]["rows"][number];
+
+const columns: OtTableColumn<StudyRow>[] = [
   {
     id: "id",
     label: "Study",
     enableHiding: false,
-    renderCell: ({ id }: { id: string }) => (
+    renderCell: ({ id }) => (
       <Link asyncTooltip to={`/study/${id}`}>
         {id}
       </Link>
@@ -36,7 +51,7 @@ const columns = [
   {
     id: "nSamples",
     label: "Sample size",
-    renderCell: ({ nSamples }: { nSamples: number }) => {
+    renderCell: ({ nSamples }) => {
       return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel;
     },
     sortable: true,
@@ -44,7 +59,7 @@ const columns = [
   {
     id: "cohorts",
     label: "Cohorts",
-    renderCell: ({ projectId, cohorts, ldPopulationStructure }: { projectId: string; cohorts: string[]; ldPopulationStructure: { ldPopulation: string; relativeSampleSize: number }[] }) => {
+    renderCell: ({ projectId, cohorts, ldPopulationStructure }) => {
       let displayText;
       if (getStudyCategory(projectId) === "FINNGEN") displayText = "FinnGen";
       else if (cohorts?.length) displayText = cohorts.join(", ");
@@ -73,7 +88,7 @@ const columns = [
         displayText
       );
     },
-    exportValue: ({ projectId, cohorts }: { projectId: string; cohorts: string[] }) =>
+    exportValue: ({ projectId, cohorts }) =>
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : cohorts?.length
@@ -84,45 +99,45 @@ const columns = [
     id: "publication",
     label: "Publication",
     sortable: true,
-    renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId, projectId }: { publicationFirstAuthor: string; publicationDate: string; pubmedId: string; projectId: string } ) => {
+    renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId, projectId }) => {
       if (!publicationFirstAuthor) return naLabel;
+      const year = publicationDate ? new Date(publicationDate).getFullYear() : naLabel;
       return (
         <PublicationsDrawer
-          entries={[{ name: pubmedId, url: epmcUrl(pubmedId) }]}
+          entries={pubmedId ? [{ name: pubmedId, url: epmcUrl(pubmedId) }] : []}
           customLabel={`${
-            getStudyCategory(projectId) === "FINNGEN"
-              ? "FinnGen"
-              : publicationFirstAuthor || naLabel
-          } et al. (${new Date(publicationDate).getFullYear()})`}
+            getStudyCategory(projectId) === "FINNGEN" ? "FinnGen" : publicationFirstAuthor
+          } et al. (${year})`}
         />
       );
     },
-    filterValue: ({ publicationYear, publicationFirstAuthor }: { publicationYear: string; publicationFirstAuthor: string }) =>
-      `${publicationYear} ${publicationFirstAuthor}`,
-    exportValue: ({ pubmedId }: { pubmedId: string }) => `${pubmedId}`,
+    filterValue: ({ publicationDate, publicationFirstAuthor }) =>
+      `${publicationDate ?? ""} ${publicationFirstAuthor ?? ""}`,
+    exportValue: ({ pubmedId }) => pubmedId ?? "",
   },
   {
     id: "credibleSets",
     label: "Credible sets count",
-    renderCell: ({ credibleSets }: { credibleSets: { count: number } }) => {
+    renderCell: ({ credibleSets }) => {
       return credibleSets?.count ?? naLabel;
     },
   },
 ];
 
 // column id -> StudySortField of the API; columns not listed here are not sortable
-const SORT_FIELDS: Record<string, string> = {
-  traitFromSource: "TRAIT_FROM_SOURCE",
-  nSamples: "N_SAMPLES",
-  publication: "PUBLICATION_AUTHOR_DATE",
+const SORT_FIELDS: Record<string, StudySortField | undefined> = {
+  traitFromSource: StudySortField.TraitFromSource,
+  nSamples: StudySortField.NSamples,
+  publication: StudySortField.PublicationAuthorDate,
 };
 
 const DEFAULT_SORTING: SortingState = [{ id: "nSamples", desc: true }];
 
-export function getStudySortVariables(sorting: SortingState) {
-  const sort = sorting
-    .filter(({ id }) => SORT_FIELDS[id])
-    .map(({ id, desc }) => ({ key: SORT_FIELDS[id], direction: desc ? "DESCENDING" : "ASCENDING" }));
+export function getStudySortVariables(sorting: SortingState): { sort: StudySort[] } {
+  const sort = sorting.flatMap(({ id, desc }) => {
+    const key = SORT_FIELDS[id];
+    return key ? [{ key, direction: desc ? SortDirection.Descending : SortDirection.Ascending }] : [];
+  });
   return { sort };
 }
 
@@ -151,7 +166,7 @@ function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
       request={request}
       renderDescription={() => <Description name={diseaseName} />}
       renderBody={() => (
-        <OtTableServer
+        <OtTableServer<StudyRow>
           columns={columns}
           query={GWAS_STUDIES_BODY_QUERY}
           variables={variables}
