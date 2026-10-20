@@ -1,10 +1,17 @@
 import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
-import type { ColumnDef, Row as TableRow, RowData, SortingState, Table } from "@tanstack/table-core";
+import type {
+  ColumnDef,
+  RowData,
+  SortingState,
+  Table,
+  Row as TableRow,
+} from "@tanstack/table-core";
 import type { ReactNode } from "react";
 
 // presentation keys of an OtTable column that are spread onto the react-table
 // column definition (see mapTableColumnToTanstackColumns)
 declare module "@tanstack/table-core" {
+  // biome-ignore lint/correctness/noUnusedVariables: the type parameters must match the augmented interface
   interface ColumnDefBase<TData extends RowData, TValue = unknown> {
     label?: string;
     tooltip?: ReactNode;
