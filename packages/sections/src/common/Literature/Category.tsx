@@ -1,12 +1,12 @@
-import { useLiterature, useSelectedCategories, useLiteratureDispatch } from "./LiteratureContext";
-import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
 import type { ChangeEvent } from "react";
-import { useApolloClient, InputLabel, FormGroup, Checkbox, FormControlLabel } from "ui";
+import { Checkbox, FormControlLabel, FormGroup, InputLabel, useApolloClient } from "ui";
+import { useLiterature, useLiteratureDispatch, useSelectedCategories } from "./LiteratureContext";
+import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
 
 const toggleValue = (selected: string, categories: string[]): string[] => {
   const isChecked = categories.indexOf(selected) !== -1;
   if (!isChecked) return [...categories, selected];
-  return [...categories.filter(value => value !== selected).sort()];
+  return [...categories.filter((value) => value !== selected).sort()];
 };
 
 const categories = [

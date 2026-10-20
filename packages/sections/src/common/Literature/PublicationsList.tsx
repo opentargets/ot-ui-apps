@@ -1,27 +1,31 @@
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { grey } from "@mui/material/colors";
 import { useEffect } from "react";
 import {
-  PublicationWrapper,
-  Table,
-  useApolloClient,
   Box,
-  GridLegacy,
   Fade,
+  GridLegacy,
+  PublicationWrapper,
   Skeleton,
+  Table,
   Typography,
+  useApolloClient,
 } from "ui";
-import Loader from "./Loader";
-import { PublicationType, DetailsStateType } from "./types";
 import {
+  useDetails,
+  useDetailsDispatch,
   useDisplayedPublications,
   useLiterature,
   useLiteratureDispatch,
-  useDetails,
-  useDetailsDispatch,
 } from "./LiteratureContext";
-import { fetchSimilarEntities, literatureStateFromResponse, literaturesEuropePMCQuery } from "./requests";
-import { grey } from "@mui/material/colors";
-import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Loader from "./Loader";
+import {
+  fetchSimilarEntities,
+  literatureStateFromResponse,
+  literaturesEuropePMCQuery,
+} from "./requests";
+import type { DetailsStateType, PublicationType } from "./types";
 
 function parsePublications(publications: PublicationType[]): DetailsStateType {
   const obj: DetailsStateType = {};
@@ -125,11 +129,11 @@ function PublicationsList({ hideSearch = false }) {
         const parsed = parsePublications(queryResult);
         detailsDispatch({ type: "addDetails", value: parsed });
         const returnedIds = new Set(Object.keys(parsed));
-        const notFoundIds = missingDetails.filter(id => !returnedIds.has(id));
+        const notFoundIds = missingDetails.filter((id) => !returnedIds.has(id));
         if (notFoundIds.length > 0) {
           detailsDispatch({ type: "setToTimedOut", value: notFoundIds });
         }
-      } catch (e) {
+      } catch {
         clearTimeout(timeoutId);
         detailsDispatch({ type: "setToTimedOut", value: missingDetails });
       }
@@ -170,7 +174,13 @@ function PublicationsList({ hideSearch = false }) {
     );
     literatureDispatch({
       type: "stateUpdate",
-      value: { litsIds: newLitsIds, litsCount, page: newPage, pageSize: newPageSize, loadingEntities: false },
+      value: {
+        litsIds: newLitsIds,
+        litsCount,
+        page: newPage,
+        pageSize: newPageSize,
+        loadingEntities: false,
+      },
     });
   };
 

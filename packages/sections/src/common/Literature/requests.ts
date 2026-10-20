@@ -1,3 +1,4 @@
+import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
 import { europePmcBiblioSearchPOSTQuery } from "@ot/utils";
 import type {
   LiteratureEntityData,
@@ -5,7 +6,6 @@ import type {
   PublicationType,
   SelectedEntityType,
 } from "./types";
-import type { ApolloClient, DocumentNode, NormalizedCacheObject } from "@apollo/client";
 
 /** label of a similar entity: targets have a symbol, diseases and drugs a name */
 export function similarEntityLabel(object: { name: string } | { approvedSymbol: string }): string {
@@ -37,7 +37,7 @@ export async function literaturesEuropePMCQuery({
 }): Promise<PublicationType[]> {
   if (literaturesIds.length === 0) return [];
   const { baseUrl, requestOptions } = europePmcBiblioSearchPOSTQuery(literaturesIds);
-  const response = await fetch(baseUrl, requestOptions).then(response => response.json());
+  const response = await fetch(baseUrl, requestOptions).then((response) => response.json());
   if (response.error) throw response.error;
   return response.resultList?.result;
 }
@@ -75,7 +75,7 @@ export const fetchSimilarEntities = ({
 }: fetchSimilarEntitiesParam) => {
   if (!query) throw new Error("fetchSimilarEntities: no bibliography query");
   const entityNames = category.length === 0 ? null : category;
-  const ids = entities.map(c => c.object.id);
+  const ids = entities.map((c) => c.object.id);
   return client.query<Record<string, LiteratureEntityData | null>>({
     query,
     variables: {
