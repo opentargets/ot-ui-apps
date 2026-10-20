@@ -1,14 +1,14 @@
 import { useQuery } from "@apollo/client";
+import type { DiseaseBodyProps } from "@ot/constants";
+import { useCallback } from "react";
 import {
+  ClinicalReportsMasterDetailFrame,
+  RecordsCards,
   SectionItem,
   useClinicalReportsMasterDetail,
-  RecordsCards,
-  ClinicalReportsMasterDetailFrame,
 } from "ui";
-import { useCallback } from "react";
-import Description from "./Description";
-import { type DiseaseBodyProps } from "@ot/constants";
 import { definition } from ".";
+import Description from "./Description";
 import DrugsTable, { DRUGS_PAGE_SIZE, DRUGS_QUERY, type DrugRow } from "./DrugsTable";
 
 type Props = DiseaseBodyProps;
@@ -21,21 +21,18 @@ function Body({ id: efoId, label: name, entity }: Props) {
   });
 
   const getClinicalReportsIds = useCallback(
-    (row: DrugRow) => row?.clinicalReports?.map(report => report.id),
+    (row: DrugRow) => row?.clinicalReports?.map((report) => report.id),
     []
   );
 
   const getMaxClinicalStage = useCallback((row: DrugRow) => row?.maxClinicalStage, []);
 
-  const getSelectedEntity = useCallback(
-    (row: DrugRow) => {
-      const id = row?.drug?.id;
-      const selectedName = row?.drug?.name;
-      if (!id || !selectedName) return null;
-      return { entityType: "drug", id, name: selectedName };
-    },
-    []
-  );
+  const getSelectedEntity = useCallback((row: DrugRow) => {
+    const id = row?.drug?.id;
+    const selectedName = row?.drug?.name;
+    if (!id || !selectedName) return null;
+    return { entityType: "drug", id, name: selectedName };
+  }, []);
 
   const {
     selectedRow,
