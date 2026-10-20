@@ -1,13 +1,4 @@
 import { type ApolloError, useQuery } from "@apollo/client";
-import { SectionItem } from "ui";
-
-import Description from "./Description";
-import ONTOLOGY_QUERY_DOCUMENT from "./OntologyQuery.gql";
-import ONTOLOGY_ANCESTORS_QUERY_DOCUMENT from "./OntologyAncestorsQuery.gql";
-import { typedDocument } from "../../utils/typedDocument";
-
-import { definition } from ".";
-import OntologySubgraph, { type OntologyGraphData } from "./OntologySubgraph";
 import type {
   DiseaseBodyProps,
   OntologyAncestorsQuery,
@@ -15,11 +6,21 @@ import type {
   OntologyQuery,
   OntologyQueryVariables,
 } from "@ot/constants";
+import { SectionItem } from "ui";
+import { typedDocument } from "../../utils/typedDocument";
+import { definition } from ".";
+import Description from "./Description";
+import ONTOLOGY_ANCESTORS_QUERY_DOCUMENT from "./OntologyAncestorsQuery.gql";
+import ONTOLOGY_QUERY_DOCUMENT from "./OntologyQuery.gql";
+import OntologySubgraph, { type OntologyGraphData } from "./OntologySubgraph";
 
-const ONTOLOGY_QUERY = typedDocument<OntologyQuery, OntologyQueryVariables>(ONTOLOGY_QUERY_DOCUMENT);
-const ONTOLOGY_ANCESTORS_QUERY = typedDocument<OntologyAncestorsQuery, OntologyAncestorsQueryVariables>(
-  ONTOLOGY_ANCESTORS_QUERY_DOCUMENT
+const ONTOLOGY_QUERY = typedDocument<OntologyQuery, OntologyQueryVariables>(
+  ONTOLOGY_QUERY_DOCUMENT
 );
+const ONTOLOGY_ANCESTORS_QUERY = typedDocument<
+  OntologyAncestorsQuery,
+  OntologyAncestorsQueryVariables
+>(ONTOLOGY_ANCESTORS_QUERY_DOCUMENT);
 
 type Props = DiseaseBodyProps;
 
