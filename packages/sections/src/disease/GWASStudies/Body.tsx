@@ -1,30 +1,29 @@
 import { useQuery } from "@apollo/client";
-import type { SortingState } from "@tanstack/react-table";
-import { ReactElement } from "react";
 import {
-  Link,
-  SectionItem,
-  Tooltip,
-  PublicationsDrawer,
-  OtTableServer,
-  Box,
-  Typography,
-  type OtTableColumn,
-} from "ui";
-import {
-  naLabel,
-  SortDirection,
-  StudySortField,
   type GwasStudiesQuery,
   type GwasStudiesQueryVariables,
+  naLabel,
+  SortDirection,
   type StudySort,
+  StudySortField,
 } from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
-import Description from "./Description";
-
-import GWAS_STUDIES_BODY_QUERY_DOCUMENT from "./GWASStudiesQuery.gql";
-import { definition } from ".";
+import type { SortingState } from "@tanstack/react-table";
+import type { ReactElement } from "react";
+import {
+  Box,
+  Link,
+  type OtTableColumn,
+  OtTableServer,
+  PublicationsDrawer,
+  SectionItem,
+  Tooltip,
+  Typography,
+} from "ui";
 import { typedDocument } from "../../utils/typedDocument";
+import { definition } from ".";
+import Description from "./Description";
+import GWAS_STUDIES_BODY_QUERY_DOCUMENT from "./GWASStudiesQuery.gql";
 
 const GWAS_STUDIES_BODY_QUERY = typedDocument<GwasStudiesQuery, GwasStudiesQueryVariables>(
   GWAS_STUDIES_BODY_QUERY_DOCUMENT
@@ -60,7 +59,7 @@ const columns: OtTableColumn<StudyRow>[] = [
     id: "cohorts",
     label: "Cohorts",
     renderCell: ({ projectId, cohorts, ldPopulationStructure }) => {
-      let displayText;
+      let displayText: string;
       if (getStudyCategory(projectId) === "FINNGEN") displayText = "FinnGen";
       else if (cohorts?.length) displayText = cohorts.join(", ");
       else return naLabel;
@@ -92,8 +91,8 @@ const columns: OtTableColumn<StudyRow>[] = [
       getStudyCategory(projectId) === "FINNGEN"
         ? "FinnGen"
         : cohorts?.length
-        ? cohorts.join(", ")
-        : null,
+          ? cohorts.join(", ")
+          : null,
   },
   {
     id: "publication",
@@ -136,7 +135,9 @@ const DEFAULT_SORTING: SortingState = [{ id: "nSamples", desc: true }];
 export function getStudySortVariables(sorting: SortingState): { sort: StudySort[] } {
   const sort = sorting.flatMap(({ id, desc }) => {
     const key = SORT_FIELDS[id];
-    return key ? [{ key, direction: desc ? SortDirection.Descending : SortDirection.Ascending }] : [];
+    return key
+      ? [{ key, direction: desc ? SortDirection.Descending : SortDirection.Ascending }]
+      : [];
   });
   return { sort };
 }
@@ -154,7 +155,12 @@ function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
   // first page only: drives the section loading/error state, the table fetches
   // the same page from the Apollo cache and then paginates on its own
   const request = useQuery(GWAS_STUDIES_BODY_QUERY, {
-    variables: { ...variables, index: 0, size: PAGE_SIZE, ...getStudySortVariables(DEFAULT_SORTING) },
+    variables: {
+      ...variables,
+      index: 0,
+      size: PAGE_SIZE,
+      ...getStudySortVariables(DEFAULT_SORTING),
+    },
   });
 
   return (
