@@ -10,29 +10,38 @@ const StyledLink = styled(Link)({
 });
 
 
-const buildDag = (data) => [
-  {
-    id: data.id,
-    name: data.name,
-    parentIds: data.parents.map(parent => parent.id),
-    isTerapeuticArea: data.isTherapeuticArea,
-    nodeType: 'anchor',
-  },
-  ...data.children.map(child => ({
-    id: child.id,
-    name: child.name,
-    parentIds: [data.id],
-    isTerapeuticArea: data.isTherapeuticArea,
-    nodeType: 'child',
-  })),
-  ...data.resolvedAncestors.map(ancestor => ({
-    id: ancestor.id,
-    name: ancestor.name,
-    parentIds: ancestor.parents.map(parent => parent.id),
-    isTerapeuticArea: data.isTherapeuticArea,
-    nodeType: 'ancestor',
-  }))
-];
+const buildDag = (data) => {
+  const nodes = [
+    {
+      id: data.id,
+      name: data.name,
+      parentIds: data.parents.map(parent => parent.id),
+      isTerapeuticArea: data.isTherapeuticArea,
+      nodeType: 'anchor',
+    },
+    ...data.children.map(child => ({
+      id: child.id,
+      name: child.name,
+      parentIds: [data.id],
+      isTerapeuticArea: data.isTherapeuticArea,
+      nodeType: 'child',
+    })),
+    ...data.resolvedAncestors.map(ancestor => ({
+      id: ancestor.id,
+      name: ancestor.name,
+      parentIds: ancestor.parents.map(parent => parent.id),
+      isTerapeuticArea: data.isTherapeuticArea,
+      nodeType: 'ancestor',
+    })),
+  ];
+  // the ancestors are resolved in a separate request; drop links to any term
+  // that is not part of the graph so that the stratification does not fail
+  const nodeIds = new Set(nodes.map(node => node.id));
+  return nodes.map(node => ({
+    ...node,
+    parentIds: node.parentIds.filter(parentId => nodeIds.has(parentId)),
+  }));
+};
 
 const getMaxLayerCount = dag => {
   helperLayout(dag);
