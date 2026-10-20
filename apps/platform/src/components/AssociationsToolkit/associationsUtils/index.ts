@@ -121,7 +121,7 @@ export const toDatasourcePolicyOverrides = (
 
 export const getWightSourceDefault = (source: string): number => {
   const sourcesDetails = defaulDatasourcesWeigths.find((src) => src.id === source);
-  return sourcesDetails!.weight;
+  return sourcesDetails?.weight ?? 0;
 };
 
 export const checkBoxPayload = (
@@ -180,7 +180,7 @@ export const prioritizationScale = prioritizationScaleDomain.range(PRIORITISATIO
 /* LEGENDS */
 const PrioritisationLegend = Legend(prioritizationScale, {
   title: PRIORITISATION_LEGEND_LABEL,
-  tickFormat: (d: any, i: number) =>
+  tickFormat: (_d: unknown, i: number) =>
     [
       TARGE_PRIORITISATION_LEGEND_TICKS[0],
       " ",
