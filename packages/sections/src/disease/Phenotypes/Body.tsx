@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import _ from "lodash";
-import { Link, SectionItem, Tooltip, TableDrawer, OtTable } from "ui";
+import { Link, SectionItem, Tooltip, TableDrawer, OtTableServer } from "ui";
 
 import Description from "./Description";
 import { naLabel, type DiseaseBodyProps} from "@ot/constants";
@@ -77,21 +77,9 @@ const columns = [
   {
     id: "frequency",
     label: "Frequency",
-    renderCell: ({ evidence }) => {
-      if (evidence.frequencyHPO && evidence.frequencyHPO.id && evidence.frequencyHPO.name)
-        return (
-          <Link
-            external
-            to={`https://identifiers.org/ols/${evidence.frequencyHPO.id.replace("_", ":")}`}
-          >
-            {evidence.frequencyHPO.name}
-          </Link>
-        );
-      if (evidence.frequencyHPO && evidence.frequencyHPO.name) return evidence.frequencyHPO.name;
-      return naLabel;
-    },
-    filterValue: row => row.evidence.frequencyHPO?.name || naLabel,
-    exportValue: row => row.evidence.frequencyHPO?.name || naLabel,
+    renderCell: ({ evidence }) => evidence.frequency || naLabel,
+    filterValue: row => row.evidence.frequency || naLabel,
+    exportValue: row => row.evidence.frequency || naLabel,
   },
   {
     id: "onset",
@@ -180,15 +168,22 @@ const columns = [
 
 type Props = DiseaseBodyProps;
 
-function Body({ label: name, id: efoId, entity }: Props) {
-  const variables = {
-    efoId,
-    index: 0,
-    size: 1000,
-  };
+const PAGE_SIZE = 10;
 
+// one table row per (phenotype, evidence) pair
+function flattenEvidence(rows) {
+  const flat = [];
+  rows.forEach(p => p.evidence.forEach(e => flat.push({ ...p, evidence: e })));
+  return flat;
+}
+
+function Body({ label: name, id: efoId, entity }: Props) {
+  const variables = { efoId };
+
+  // first page only: drives the section loading/error state, the table fetches
+  // the same page from the Apollo cache and then paginates on its own
   const request = useQuery(PHENOTYPES_BODY_QUERY, {
-    variables,
+    variables: { ...variables, index: 0, size: PAGE_SIZE },
   });
 
   return (
@@ -197,30 +192,18 @@ function Body({ label: name, id: efoId, entity }: Props) {
       entity={entity}
       request={request}
       renderDescription={() => <Description name={name} />}
-      renderBody={() => {
-        // process the data
-        const rows = [];
-        request.data?.disease.phenotypes.rows.forEach(p =>
-          p.evidence.forEach(e => {
-            const p1 = { ...p };
-            p1.evidence = e;
-            rows.push(p1);
-          })
-        );
-
-        return (
-          <OtTable
-            columns={columns}
-            rows={rows}
-            dataDownloader
-            dataDownloaderFileStem={`${efoId}-phenotypes`}
-            showGlobalFilter
-            query={PHENOTYPES_BODY_QUERY.loc.source.body}
-            variables={variables}
-            loading={request.loading}
-          />
-        );
-      }}
+      renderBody={() => (
+        <OtTableServer
+          columns={columns}
+          query={PHENOTYPES_BODY_QUERY}
+          variables={variables}
+          dataPath="disease.phenotypes"
+          transformRows={flattenEvidence}
+          pageSize={PAGE_SIZE}
+          dataDownloader
+          dataDownloaderFileStem={`${efoId}-phenotypes`}
+        />
+      )}
     />
   );
 }
