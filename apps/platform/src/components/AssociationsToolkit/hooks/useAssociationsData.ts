@@ -91,8 +91,8 @@ function useAssociationsData({
           includeMeasurements,
         },
       });
-      const parsedData = getAssociationsData(entity!, resData.data);
-      const dataCount = getAllDataCount(entity!, resData.data);
+      const parsedData = getAssociationsData(entity ?? "", resData.data);
+      const dataCount = getAllDataCount(entity ?? "", resData.data);
 
       if (isCurrent) {
         setState({

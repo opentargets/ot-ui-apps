@@ -19,13 +19,9 @@ export async function buildGeneToTargetIdMapping(
   try {
     const { mappings } = await mapIdsViaSearch(client, uniqueSymbols, ["target"], 1);
 
-    mappings.forEach((mapping_item) => {
-      const term = mapping_item.term;
-      if (mapping_item.hits && mapping_item.hits.length > 0) {
-        const targetId = mapping_item.hits[0].id;
-        mapping.set(term, targetId);
-      }
-    });
+    for (const mappingItem of mappings) {
+      if (mappingItem.hits.length > 0) mapping.set(mappingItem.term, mappingItem.hits[0].id);
+    }
   } catch (err) {
     console.warn("[GENE_MAPPING] Error fetching target IDs:", err);
   }

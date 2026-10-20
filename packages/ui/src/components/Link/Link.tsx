@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import type { MouseEvent, MouseEvent, ReactElement, ReactNode } from "react";
+import type { MouseEvent, MouseEvent, MouseEvent, ReactElement, ReactNode } from "react";
 import { Link as RouterLink } from "react-router";
 import OtAsyncTooltip from "../OtAsyncTooltip/OtAsyncTooltip";
 import Tooltip from "../Tooltip";
