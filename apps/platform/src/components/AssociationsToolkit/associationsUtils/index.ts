@@ -1,9 +1,9 @@
-import { scaleQuantize, rgb, RGBColor } from "d3";
-import Legend from "./Legend";
-import dataSources, { DataSourceDef } from "../static_datasets/dataSourcesAssoc";
-import { ROW_METRICS } from "../static_datasets/rowMetrics";
 import { getConfig } from "@ot/config";
-import { columnAdvanceControl } from "../types";
+import { type RGBColor, rgb, scaleQuantize } from "d3";
+import dataSources, { type DataSourceDef } from "../static_datasets/dataSourcesAssoc";
+import { ROW_METRICS } from "../static_datasets/rowMetrics";
+import type { columnAdvanceControl } from "../types";
+import Legend from "./Legend";
 
 const config = getConfig();
 
@@ -86,10 +86,7 @@ export const getCellId = (
   return [rowId, colId, sectionId, tablePrefix];
 };
 
-export const getColumAndSection = (
-  cell: any,
-  displayedTable: string
-): [string, string] | [] => {
+export const getColumAndSection = (cell: any, displayedTable: string): [string, string] | [] => {
   if (!cell.column) return [];
   const colId: string = cell.column.id;
   const sectionId: string =
@@ -110,7 +107,7 @@ export const defaulDatasourcesWeigths: columnAdvanceControl[] = dataSources.map(
 );
 
 export const getWightSourceDefault = (source: string): number => {
-  const sourcesDetails = defaulDatasourcesWeigths.find(src => src.id === source);
+  const sourcesDetails = defaulDatasourcesWeigths.find((src) => src.id === source);
   return sourcesDetails!.weight;
 };
 
@@ -124,7 +121,7 @@ export const checkBoxPayload = (
 });
 
 export const getControlChecked = (values: { id: string }[], id: string): boolean =>
-  values.filter(val => val.id === id).length > 0;
+  values.filter((val) => val.id === id).length > 0;
 
 /* --- CONSTANTS --- */
 const { primaryColor } = config.profile;
@@ -234,6 +231,8 @@ export const tableCSSVariables: Record<string, string> = {
   "--entities-border-color": "var(--grey-light)",
   "--table-footer-border-color": "var(--grey-light)",
   "--colums-controls-color": "var(--grey-lighter)",
-  "--metrics-col-count": String(ROW_METRICS.filter(m => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length),
-  "--metrics-zone-width": `${ROW_METRICS.filter(m => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length * 80}px`,
+  "--metrics-col-count": String(
+    ROW_METRICS.filter((m) => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length
+  ),
+  "--metrics-zone-width": `${ROW_METRICS.filter((m) => !(m.isPrivate && m.isPrivate !== isPartnerPreview)).length * 80}px`,
 };
