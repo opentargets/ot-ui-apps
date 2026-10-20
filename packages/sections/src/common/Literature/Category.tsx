@@ -27,7 +27,7 @@ export default function Category() {
       category: bibliographyCategory,
       selectedEntities,
       globalEntity,
-      cursor,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -44,7 +44,7 @@ export default function Category() {
       id,
       category: newCategories,
       entities: selectedEntities,
-      cursor,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -52,9 +52,11 @@ export default function Category() {
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
-      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
-      litsCount: data.literatureOcurrences?.filteredCount,
+      entities: data.similarEntities?.rows ?? [],
+      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
+      litsCount: data.literatureOcurrences?.count,
+      litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
+      page: 0,
       loadingEntities: false,
       category: newCategories,
     };
