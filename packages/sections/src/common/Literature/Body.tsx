@@ -1,9 +1,9 @@
+import type { DocumentNode } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { Box, SectionItem, type SectionRequest, useApolloClient } from "ui";
+import type { WidgetDefinition } from "../../types/widget";
 import { LiteratureProvider, useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities, literatureStateFromResponse } from "./requests";
-import { SectionItem, useApolloClient, Box, type SectionRequest } from "ui";
-import type { DocumentNode } from "@apollo/client";
-import type { WidgetDefinition } from "../../types/widget";
 
 type LiteratureProps = {
   id: string;
@@ -12,12 +12,13 @@ type LiteratureProps = {
   BODY_QUERY: DocumentNode;
   definition: Omit<WidgetDefinition, "isPrivate"> & { isPrivate?: boolean };
 };
-import PublicationsList from "./PublicationsList";
-import Description from "./Description";
-import Entities from "./Entities";
+
 import Category from "./Category";
 import CountInfo from "./CountInfo";
 import { DateFilter } from "./DateFilter";
+import Description from "./Description";
+import Entities from "./Entities";
+import PublicationsList from "./PublicationsList";
 
 function LiteratureList({ id, name, entity, BODY_QUERY, definition }: LiteratureProps) {
   const [requestObj, setRequestObj] = useState<SectionRequest>({ loading: true });

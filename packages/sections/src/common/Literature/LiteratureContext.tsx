@@ -1,10 +1,10 @@
 import isEmpty from "lodash/isEmpty";
-import { createContext, useContext, useReducer, Dispatch } from "react";
+import { createContext, type Dispatch, useContext, useReducer } from "react";
 import type {
-  LiteratureStateType,
+  DetailsActionType,
   DetailsStateType,
   LiteratureActionType,
-  DetailsActionType,
+  LiteratureStateType,
 } from "./types";
 
 function getInitialLiteratureState(): LiteratureStateType {
