@@ -1,10 +1,9 @@
 import { Box, Card, Divider, GridLegacy, Skeleton } from "@mui/material";
 import { VIEW } from "@ot/constants";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { Element } from "react-scroll";
 import ErrorBoundary from "../ErrorBoundary";
 import PartnerLockIcon from "../PartnerLockIcon";
-import { SummaryLoader } from "../PublicationsDrawer";
 import { createShortName } from "../Summary/utils";
 import SectionError from "./SectionError";
 import {
@@ -67,7 +66,7 @@ function SectionItem({
   const shortName = createShortName(definition);
   let hasData = false;
   const [selectedView, setSelectedView] = useState(defaultView);
-  const [showDelayLoadingMessage, setShowDelayLoadingMessage] = useState(false);
+  const [showDelayLoadingMessage] = useState(false);
 
   // TODO: refactor to avoid re-renders
 

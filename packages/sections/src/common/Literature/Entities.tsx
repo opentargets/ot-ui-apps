@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
+import { Chip, Grow, useApolloClient } from "ui";
 import { useLiterature, useLiteratureDispatch } from "./LiteratureContext";
 import { fetchSimilarEntities, literatureStateFromResponse, similarEntityLabel } from "./requests";
-import { useApolloClient, Grow, Chip } from "ui";
 import type { SimilarEntity } from "./types";
 
 const StyledChipRow = styled("div")(({ theme }) => ({
@@ -18,7 +18,9 @@ function EntitiesToSelect({ id }: { id: string }) {
   const literatureDispatch = useLiteratureDispatch();
   const client = useApolloClient();
 
-  const handleSelectChip = async (e: SimilarEntity & { object: NonNullable<SimilarEntity["object"]> }) => {
+  const handleSelectChip = async (
+    e: SimilarEntity & { object: NonNullable<SimilarEntity["object"]> }
+  ) => {
     const {
       query,
       id: bibliographyId,
@@ -56,14 +58,17 @@ function EntitiesToSelect({ id }: { id: string }) {
     });
     literatureDispatch({
       type: "stateUpdate",
-      value: { ...literatureStateFromResponse(request.data[globalEntity ?? ""]), loadingEntities: false },
+      value: {
+        ...literatureStateFromResponse(request.data[globalEntity ?? ""]),
+        loadingEntities: false,
+      },
     });
   };
 
   const isSelectable = (entity: SimilarEntity & { object: NonNullable<SimilarEntity["object"]> }) =>
-    id !== entity.object.id && !selectedChips.some(s => s.object.id === entity.object.id);
+    id !== entity.object.id && !selectedChips.some((s) => s.object.id === entity.object.id);
 
-  return entities.map(e => {
+  return entities.map((e) => {
     if (!e.object)
       return (
         <Grow in key={`empty-entity-${e.id}`}>
@@ -135,7 +140,10 @@ export default function Entities({ name, id }: { name: string; id: string }) {
     });
     literatureDispatch({
       type: "stateUpdate",
-      value: { ...literatureStateFromResponse(request.data[globalEntity ?? ""]), loadingEntities: false },
+      value: {
+        ...literatureStateFromResponse(request.data[globalEntity ?? ""]),
+        loadingEntities: false,
+      },
     });
   };
 
