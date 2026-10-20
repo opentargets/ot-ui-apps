@@ -1,13 +1,13 @@
+import type { ApolloClient, DocumentNode } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { ApolloClient, DocumentNode } from "@apollo/client";
 import {
-  getInitialLoadingData,
-  getAssociationsData,
   getAllDataCount,
+  getAssociationsData,
+  getInitialLoadingData,
   toDatasourcePolicyOverrides,
 } from "../associationsUtils";
-import { columnAdvanceControl } from "../types";
-import { Facet } from "../Facets/facetsTypes";
+import type { Facet } from "../Facets/facetsTypes";
+import type { columnAdvanceControl } from "../types";
 
 const INITIAL_ROW_COUNT = 25;
 
@@ -75,7 +75,7 @@ function useAssociationsData({
     }
     let isCurrent = true;
     const fetchData = async () => {
-      setState(prev => ({ ...prev, loading: true }));
+      setState((prev) => ({ ...prev, loading: true }));
       const resData = await client.query({
         query,
         variables: {

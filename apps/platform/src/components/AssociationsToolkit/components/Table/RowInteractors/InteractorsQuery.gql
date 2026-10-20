@@ -52,7 +52,6 @@ query InteractionsSectionQuery(
             miIdentifier
             shortName
           }
-          interactionDetectionMethodShortName
           expansionMethodShortName
           pubmedId
         }

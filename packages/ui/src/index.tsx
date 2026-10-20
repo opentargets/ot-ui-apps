@@ -105,7 +105,27 @@ export { default as FacetsSelect } from "./components/FacetsSelect/FacetsSelect"
 export * from "./components/Footer";
 export { default as Footer } from "./components/Footer";
 export { default as FromGeneticsModal } from "./components/FromGeneticsModal";
+export { default as GeneVis } from "./components/GeneVis/GeneVis";
+export type {
+  GeneVisGeneHighlight,
+  GeneVisModel,
+  GeneVisTooltipDetailProps,
+  GeneVisTooltipEntityType,
+  GeneVisTooltipOptions,
+  GeneVisVariant,
+  GeneVisVariantEmphasis,
+  GeneVisVariantRow,
+} from "./components/GeneVis/model";
 export { default as GenomicLocation } from "./components/GenomicLocation";
+export {
+  DataRect,
+  DataSprite,
+  DataText,
+  DataVLine,
+  RegionBoundaryOverlay,
+  type ScalesRef,
+} from "./components/GenTrack";
+export { default as GenTrack } from "./components/GenTrack/GenTrack";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
 /* PROVIDERS */
 export * from "./components/GlobalSearch/SearchContext";
@@ -131,8 +151,8 @@ export { default as ObsPlot } from "./components/ObsPlot/ObsPlot";
 export { default as ObsTooltip } from "./components/ObsPlot/ObsTooltip";
 export { default as OtAsyncTooltip } from "./components/OtAsyncTooltip/OtAsyncTooltip";
 export { default as OtTable } from "./components/OtTable/OtTable";
-export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as OtTableServer } from "./components/OtTable/OtTableServer";
+export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export type { OtTableColumn, OtTableServerProps } from "./components/OtTable/types/tableTypes";
 export { default as PageMeta } from "./components/PageMeta";
 export { default as PartnerLockIcon } from "./components/PartnerLockIcon";
@@ -146,14 +166,14 @@ export { default as ScientificNotation } from "./components/ScientificNotation";
 export { default as ScoreLinearBar } from "./components/ScoreLinearBar";
 export { default as ScrollToTop } from "./components/ScrollToTop";
 export * from "./components/Section";
+export { PROFILE_TABS_SENTINEL_ID } from "./components/Section/scrollOffset";
+export { default as StickyProfileHeader } from "./components/StickyProfileHeader";
 export { default as StudyPublication } from "./components/StudyPublication";
 export { default as SummaryContainer } from "./components/Summary/SummaryContainer";
 export { default as SummaryItem } from "./components/Summary/SummaryItem";
 export { default as SummaryRenderer } from "./components/Summary/SummaryRenderer";
 export * as summaryUtils from "./components/Summary/utils";
 export { default as SummaryStatsTable } from "./components/SummaryStatsTable";
-export { default as StickyProfileHeader } from "./components/StickyProfileHeader";
-export { PROFILE_TABS_SENTINEL_ID } from "./components/Section/scrollOffset";
 export * from "./components/Table";
 export { default as Tooltip } from "./components/Tooltip";
 export { default as TooltipRow } from "./components/TooltipRow";
@@ -182,16 +202,11 @@ export { default as NotFoundPage } from "./pages/NotFoundPage";
 export { default as Page } from "./pages/Page";
 export * from "./providers/APIMetadataProvider";
 export * from "./providers/ConfigurationProvider";
+export * from "./providers/GenTrackProvider";
+export * from "./providers/GenTrackTooltipProvider";
 export { createApolloClient } from "./providers/OTApolloProvider/apollo";
 export * from "./providers/OTApolloProvider/OTApolloProvider";
 export { default as PlatformApiProvider } from "./providers/PlatformApiProvider";
 export { default as ThemeProvider } from "./providers/ThemeProvider/ThemeProvider";
 export * from "./providers/ViewerInteractionProvider";
-
-export * from "./providers/GenTrackProvider";
-export * from "./providers/GenTrackTooltipProvider";
-export { default as GenTrack } from "./components/GenTrack/GenTrack";
-export { DataSprite, DataRect, DataText, DataVLine, RegionBoundaryOverlay, type ScalesRef } from "./components/GenTrack";
-export { default as GeneVis } from "./components/GeneVis/GeneVis";
-export type { GeneVisModel, GeneVisGeneHighlight, GeneVisTooltipDetailProps, GeneVisTooltipEntityType, GeneVisTooltipOptions, GeneVisVariant, GeneVisVariantEmphasis, GeneVisVariantRow } from "./components/GeneVis/model";
 export * from "./providers/ViewerProvider";

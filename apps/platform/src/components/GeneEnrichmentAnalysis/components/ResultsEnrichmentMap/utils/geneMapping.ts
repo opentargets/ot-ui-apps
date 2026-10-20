@@ -19,7 +19,7 @@ export async function buildGeneToTargetIdMapping(
   try {
     const { mappings } = await mapIdsViaSearch(client, uniqueSymbols, ["target"], 1);
 
-    mappings.forEach(mapping_item => {
+    mappings.forEach((mapping_item) => {
       const term = mapping_item.term;
       if (mapping_item.hits && mapping_item.hits.length > 0) {
         const targetId = mapping_item.hits[0].id;
@@ -37,10 +37,7 @@ export async function buildGeneToTargetIdMapping(
  * Get target URL for a gene symbol using the mapping
  * Falls back to symbol-based URL if target ID not found
  */
-export function getGeneTargetUrl(
-  geneSymbol: string,
-  mapping: Map<string, string>
-): string {
+export function getGeneTargetUrl(geneSymbol: string, mapping: Map<string, string>): string {
   const targetId = mapping.get(geneSymbol);
   if (targetId) {
     return `/target/${targetId}`;
@@ -69,11 +66,6 @@ export function buildAOTFLink(diseaseId: string, targetIds: string[]): string {
  * @param mapping - Map from gene symbols to target IDs
  * @returns Array of target IDs in order, excluding unmapped genes
  */
-export function getTargetIdsFromMapping(
-  genes: string[],
-  mapping: Map<string, string>
-): string[] {
-  return genes
-    .map((gene) => mapping.get(gene))
-    .filter((id): id is string => Boolean(id));
+export function getTargetIdsFromMapping(genes: string[], mapping: Map<string, string>): string[] {
+  return genes.map((gene) => mapping.get(gene)).filter((id): id is string => Boolean(id));
 }

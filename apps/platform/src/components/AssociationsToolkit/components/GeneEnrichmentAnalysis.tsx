@@ -7,12 +7,12 @@ import {
   setModalOpen,
   useGeneEnrichment,
 } from "../../GeneEnrichmentAnalysis";
+import type { AssociationsState } from "../../GeneEnrichmentAnalysis/types";
+import { toDatasourcePolicyOverrides } from "../associationsUtils";
+import { useAotfData } from "../context/AssociationsDataContext";
 import { useAotfQueryState } from "../context/AssociationsQueryContext";
 import { useAotfURLState } from "../context/AssociationsURLContext";
-import { useAotfData } from "../context/AssociationsDataContext";
 import { ENTITY } from "../types";
-import { toDatasourcePolicyOverrides } from "../associationsUtils";
-import type { AssociationsState } from "../../GeneEnrichmentAnalysis/types";
 
 const StyledMenuItem = styled(MenuItem)({
   "&>.MuiListItemIcon-root>svg": {
@@ -49,7 +49,7 @@ function buildAssociationsState(params: {
 /** Extract entity name from the query results to avoid refetching */
 function getEntityName(entity: ENTITY, data: any[]): string {
   if (!data || data.length === 0) return "";
-  
+
   if (entity === ENTITY.DISEASE) {
     return data[0].diseaseName || "";
   }
@@ -60,15 +60,8 @@ function getEntityName(entity: ENTITY, data: any[]): string {
 }
 
 function GeneEnrichmentAnalysis() {
-  const {
-    id,
-    entity,
-    entitySearch,
-    sorting,
-    enableIndirect,
-    dataSourceControls,
-    facetFiltersIds,
-  } = useAotfQueryState();
+  const { id, entity, entitySearch, sorting, enableIndirect, dataSourceControls, facetFiltersIds } =
+    useAotfQueryState();
   const { data } = useAotfData();
   const { pinnedEntries, uploadedEntries } = useAotfURLState();
 

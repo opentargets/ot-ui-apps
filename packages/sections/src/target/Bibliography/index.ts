@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { TargetData } from "../../types/target";
+import type { TargetData } from "../../types/target";
 
 export const definition = {
   id: "bibliography",
@@ -10,4 +10,4 @@ export const definition = {
 
 // Components
 export { default as Summary } from "./Summary";
-export const getBodyComponent = () => lazy(() => import("./Body")); 
+export const getBodyComponent = () => lazy(() => import("./Body"));

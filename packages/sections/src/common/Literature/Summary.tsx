@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 import { SummaryItem, usePlatformApi } from "ui";
-import { WidgetDefinition } from "../../types/widget";
+import type { WidgetDefinition } from "../../types/widget";
 
 const SIMILARENTTIES_SUMMARY_FRAGMENT = gql`
   fragment SimilarEntitiesDisease on Disease {
@@ -20,9 +20,7 @@ function Summary({ definition }: Props) {
     <SummaryItem
       definition={definition}
       request={request}
-      renderSummary={data =>
-        data.similarEntities?.count > 0 ? <>Data available</> : <>no data</>
-      }
+      renderSummary={(data) => (data.similarEntities?.count > 0 ? "Data available" : "no data")}
     />
   );
 }

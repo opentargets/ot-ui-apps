@@ -1,16 +1,15 @@
+import type { ApolloClient, DocumentNode } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { ApolloClient, DocumentNode } from "@apollo/client";
+import DiseaseAssociationsQuery from "../../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 import {
   getAssociationsData,
-  getInteractorIds,
   getInitialLoadingData,
+  getInteractorIds,
   INTERACTORS_SOURCES,
   toDatasourcePolicyOverrides,
 } from "../../../associationsUtils";
-import { columnAdvanceControl } from "../../../types";
-
+import type { columnAdvanceControl } from "../../../types";
 import InteractionsQuery from "./InteractorsQuery.gql";
-import DiseaseAssociationsQuery from "../../../../../pages/DiseasePage/DiseaseAssociations/DiseaseAssociationsQuery.gql";
 
 const INITIAL_ROW_COUNT = 8;
 
@@ -56,13 +55,9 @@ function useRowInteractors({
   options: {
     id = "",
     index = 0,
-    size = 50,
     filter = "",
     source = INTERACTORS_SOURCES.INTACT,
-    enableIndirect = false,
     datasources = [],
-    rowsFilter = [],
-    entityInteractors = null,
     scoreThreshold = null,
     entity,
     diseaseId,
@@ -80,7 +75,7 @@ function useRowInteractors({
   useEffect(() => {
     let isCurrent = true;
     async function getInteractors() {
-      setState(prev => ({ ...prev, loading: true }));
+      setState((prev) => ({ ...prev, loading: true }));
       const rowInteractorsId = id;
       const rowInteractorsSource = source;
 
@@ -126,7 +121,7 @@ function useRowInteractors({
       });
 
       const interactorsAssociations = getAssociationsData(
-        entity!,
+        entity ?? "",
         interactorsAssociationsRequest.data
       );
 
@@ -156,7 +151,7 @@ function useRowInteractors({
 }
 
 function addInteractorScore(associationsData: any[], interactorsMetaData: any[]): any[] {
-  return associationsData.map(element => {
+  return associationsData.map((element) => {
     const foundInteractor = interactorsMetaData.find((x: any) => x.targetB?.id === element.id);
     if (!foundInteractor) return { ...element, interactorScore: 0 };
     return { ...element, interactorScore: foundInteractor.score };

@@ -1,4 +1,4 @@
-import { Action, ActionType } from "../types";
+import { type Action, ActionType } from "../types";
 
 export function setDataSourceControl(
   id: string,

@@ -1,58 +1,58 @@
-import FileSaver from "file-saver";
-import { useState, useMemo, useEffect, useReducer } from "react";
-import { styled } from "@mui/material/styles";
 import { faCaretDown, faFileDownload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { styled } from "@mui/material/styles";
+import { getConfig } from "@ot/config";
 import {
+  createBlob,
+  getExportedColumns,
+  getExportedPrioritisationColumns,
+  getFilteredColumnArray,
+  getRowsQuerySelector,
+} from "@ot/utils";
+import FileSaver from "file-saver";
+import { useEffect, useMemo, useReducer, useState } from "react";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
   CopyUrlButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  GridLegacy,
+  InputLabel,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  Slide,
+  Snackbar,
+  Typography,
   useAPIMetadata,
   useApolloClient,
   useBatchDownloader,
-  GridLegacy,
-  Typography,
-  CircularProgress,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  ListItemText,
-  Box,
-  ListItemIcon,
-  Button,
-  Snackbar,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Divider,
-  FormHelperText,
-  Slide,
 } from "ui";
-import { getConfig } from "@ot/config";
 import { toDatasourcePolicyOverrides } from "../../associationsUtils";
+import { useAotfData } from "../../context/AssociationsDataContext";
 import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 import { useAotfURLState } from "../../context/AssociationsURLContext";
-import { useAotfData } from "../../context/AssociationsDataContext";
 import OriginalDataSources from "../../static_datasets/dataSourcesAssoc";
 import prioritizationCols from "../../static_datasets/prioritisationColumns";
-import {
-  getRowsQuerySelector,
-  getExportedColumns,
-  getExportedPrioritisationColumns,
-  createBlob,
-  getFilteredColumnArray,
-} from "@ot/utils";
 
 const config = getConfig();
 
 const { isPartnerPreview } = config.profile;
 
-const dataSources = OriginalDataSources.filter(e => {
+const dataSources = OriginalDataSources.filter((e) => {
   if (isPartnerPreview && e.isPrivate) return e;
   else if (!e.isPrivate) return e;
   return undefined;
@@ -83,8 +83,8 @@ const StyledSnackbar = styled(Snackbar)({
   },
 });
 
-const allAssociationsAggregation = [...new Set(dataSources.map(e => e.aggregation))];
-const allPrioritizationAggregation = [...new Set(prioritizationCols.map(e => e.aggregation))];
+const allAssociationsAggregation = [...new Set(dataSources.map((e) => e.aggregation))];
+const allPrioritizationAggregation = [...new Set(prioritizationCols.map((e) => e.aggregation))];
 
 interface DownloaderState {
   associationAggregationSelectValue: string[];
@@ -104,7 +104,10 @@ type DownloaderAction =
   | { type: "UPDATE_ASSOCIATION_COLUMNS"; payload: string[] }
   | { type: "UPDATE_PRIORITISATION_COLUMNS"; payload: string[] };
 
-const reducer = (state: DownloaderState = initialState, action: DownloaderAction): DownloaderState => {
+const reducer = (
+  state: DownloaderState = initialState,
+  action: DownloaderAction
+): DownloaderState => {
   switch (action.type) {
     case "UPDATE_ASSOCIATION_COLUMNS":
       return {
@@ -286,7 +289,7 @@ function DataDownloader() {
           ".MuiDialog-paper": {
             width: "70%",
             maxWidth: "800px !important",
-            borderRadius: theme => theme.spacing(1),
+            borderRadius: (theme) => theme.spacing(1),
           },
         }}
       >
@@ -296,7 +299,7 @@ function DataDownloader() {
         </DialogTitle>
         <DialogContent>
           <Typography
-            sx={{ m: theme => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
+            sx={{ m: (theme) => `${theme.spacing(1)} 0 ${theme.spacing(4)} 0` }}
             variant="subtitle2"
             gutterBottom
           >
@@ -321,8 +324,8 @@ function DataDownloader() {
                     labelId="select-association-small-label"
                     value={state.associationAggregationSelectValue}
                     label="Select associations data type"
-                    renderValue={selected => selected.join(", ")}
-                    onChange={e => {
+                    renderValue={(selected) => selected.join(", ")}
+                    onChange={(e) => {
                       dispatch(
                         actions.UPDATE_ASSOCIATION_COLUMNS(
                           e.target.value.length ? String(e.target.value).split(",") : []
@@ -330,7 +333,7 @@ function DataDownloader() {
                       );
                     }}
                   >
-                    {allAssociationsAggregation.map(ds => (
+                    {allAssociationsAggregation.map((ds) => (
                       <MenuItem key={ds} value={ds}>
                         <Checkbox
                           checked={state.associationAggregationSelectValue.indexOf(ds) > -1}
@@ -356,8 +359,8 @@ function DataDownloader() {
                       labelId="select-prioritization-small-label"
                       value={state.prioritisationAggregationSelectValue}
                       label="Select prioritisation data type"
-                      renderValue={selected => selected.join(", ")}
-                      onChange={e => {
+                      renderValue={(selected) => selected.join(", ")}
+                      onChange={(e) => {
                         dispatch(
                           actions.UPDATE_PRIORITISATION_COLUMNS(
                             e.target.value.length ? String(e.target.value).split(",") : []
@@ -365,7 +368,7 @@ function DataDownloader() {
                         );
                       }}
                     >
-                      {allPrioritizationAggregation.map(ds => (
+                      {allPrioritizationAggregation.map((ds) => (
                         <MenuItem key={ds} value={ds}>
                           <Checkbox
                             checked={state.prioritisationAggregationSelectValue.indexOf(ds) > -1}
@@ -387,7 +390,7 @@ function DataDownloader() {
                     <Checkbox
                       checked={weightControlCheckBox}
                       disabled={!modifiedSourcesDataControls || downloading}
-                      onChange={e => setWeightControlCheckBox(e.target.checked)}
+                      onChange={(e) => setWeightControlCheckBox(e.target.checked)}
                     />
                   }
                   label="Include custom controls"
@@ -398,7 +401,7 @@ function DataDownloader() {
                     <Checkbox
                       disabled={pinnedEntries.length <= 0 || downloading}
                       checked={onlyPinnedCheckBox}
-                      onChange={e => setOnlyPinnedCheckBox(e.target.checked)}
+                      onChange={(e) => setOnlyPinnedCheckBox(e.target.checked)}
                     />
                   }
                   label={`Only pinned${isPartnerPreview ? " / uploaded " : " "}rows`}
@@ -413,7 +416,7 @@ function DataDownloader() {
                           downloading || state.prioritisationAggregationSelectValue.length <= 0
                         }
                         checked={onlyTargetData}
-                        onChange={e => setOnlyTargetData(e.target.checked)}
+                        onChange={(e) => setOnlyTargetData(e.target.checked)}
                       />
                     }
                     label="Only prioritisation data"

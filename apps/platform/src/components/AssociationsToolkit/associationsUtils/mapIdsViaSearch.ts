@@ -21,7 +21,7 @@ export async function mapIdsViaSearch(
   entityNames: string[] | null = null,
   hitsPerTerm = HITS_PER_TERM
 ): Promise<MappingResults> {
-  const terms = Array.from(new Set(queryTerms.map(term => term.trim()).filter(Boolean)));
+  const terms = Array.from(new Set(queryTerms.map((term) => term.trim()).filter(Boolean)));
   const mappings: TermMapping[] = [];
 
   for (let start = 0; start < terms.length; start += TERMS_PER_REQUEST) {

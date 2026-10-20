@@ -3,15 +3,8 @@ import { toDatasourcePolicyOverrides } from "../../associationsUtils";
 import { useAotfQueryState } from "../../context/AssociationsQueryContext";
 
 function AotfApiPlayground() {
-  const {
-    id,
-    pagination,
-    sorting,
-    dataSourceControls,
-    entity,
-    query,
-    entitySearch,
-  } = useAotfQueryState();
+  const { id, pagination, sorting, dataSourceControls, entity, query, entitySearch } =
+    useAotfQueryState();
 
   const variables = {
     id,

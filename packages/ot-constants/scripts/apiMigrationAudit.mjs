@@ -70,10 +70,26 @@ const DEFAULT_OLD = "https://dev.opentargets.xyz/api/v4/graphql";
 const DEFAULT_NEW = "https://ng.opentargets.org:8080/latest/graphql";
 
 const PAGES = {
-  disease: ["apps/platform/src/pages/DiseasePage", "packages/sections/src/disease", "packages/sections/src/common"],
-  target: ["apps/platform/src/pages/TargetPage", "packages/sections/src/target", "packages/sections/src/common"],
-  drug: ["apps/platform/src/pages/DrugPage", "packages/sections/src/drug", "packages/sections/src/common"],
-  variant: ["apps/platform/src/pages/VariantPage", "packages/sections/src/variant", "packages/sections/src/common"],
+  disease: [
+    "apps/platform/src/pages/DiseasePage",
+    "packages/sections/src/disease",
+    "packages/sections/src/common",
+  ],
+  target: [
+    "apps/platform/src/pages/TargetPage",
+    "packages/sections/src/target",
+    "packages/sections/src/common",
+  ],
+  drug: [
+    "apps/platform/src/pages/DrugPage",
+    "packages/sections/src/drug",
+    "packages/sections/src/common",
+  ],
+  variant: [
+    "apps/platform/src/pages/VariantPage",
+    "packages/sections/src/variant",
+    "packages/sections/src/common",
+  ],
   study: ["apps/platform/src/pages/StudyPage", "packages/sections/src/study"],
   credibleSet: ["apps/platform/src/pages/CredibleSetPage", "packages/sections/src/credibleSet"],
   evidence: ["apps/platform/src/pages/EvidencePage", "packages/sections/src/evidence"],
@@ -110,7 +126,8 @@ function parseArgs(argv) {
     } else throw new Error(`Unknown argument ${a}`);
   }
   for (const page of args.pages) {
-    if (!PAGES[page]) throw new Error(`Unknown page "${page}". Known pages: ${Object.keys(PAGES).join(", ")}`);
+    if (!PAGES[page])
+      throw new Error(`Unknown page "${page}". Known pages: ${Object.keys(PAGES).join(", ")}`);
   }
   if (!args.all && args.pages.length === 0 && args.include.length === 0) {
     throw new Error("Nothing to audit: pass --page <name>, --include <dir> or --all (see --help)");
@@ -177,9 +194,8 @@ function extractDocuments(file) {
   if (/\.(gql|graphql)$/.test(file)) return [{ id: rel, source }];
   const docs = [];
   const re = /\bgql`([\s\S]*?)`/g;
-  let match;
   let i = 0;
-  while ((match = re.exec(source))) {
+  for (let match = re.exec(source); match; match = re.exec(source)) {
     const body = match[1].replace(/\$\{[^}]*\}/g, "");
     if (!/\b(query|mutation|fragment|subscription)\b/.test(body)) continue;
     docs.push({ id: `${rel}#${i++}`, source: body });
@@ -226,8 +242,8 @@ function synthesizeProfileSummaryFragment(name, registry) {
   if (!match) return null;
   const entity = match[1];
   const spreads = [...registry.values()]
-    .filter(f => f.typeCondition.name.value === entity && f.name.value !== name)
-    .map(f => `...${f.name.value}`);
+    .filter((f) => f.typeCondition.name.value === entity && f.name.value !== name)
+    .map((f) => `...${f.name.value}`);
   const fragment = parse(
     `fragment ${name} on ${entity} { ${spreads.length ? spreads.join(" ") : "__typename"} }`
   ).definitions[0];
@@ -238,7 +254,7 @@ function synthesizeProfileSummaryFragment(name, registry) {
 // the document plus every fragment it spreads (transitively) that it does not define itself
 function withFragments(doc, registry) {
   const defined = new Set(
-    doc.ast.definitions.filter(d => d.kind === Kind.FRAGMENT_DEFINITION).map(d => d.name.value)
+    doc.ast.definitions.filter((d) => d.kind === Kind.FRAGMENT_DEFINITION).map((d) => d.name.value)
   );
   const definitions = [...doc.ast.definitions];
   const missing = [];
@@ -261,17 +277,17 @@ function withFragments(doc, registry) {
   return { ast: { kind: Kind.DOCUMENT, definitions }, missing };
 }
 
-const RULES = specifiedRules.filter(rule => rule !== NoUnusedFragmentsRule);
+const RULES = specifiedRules.filter((rule) => rule !== NoUnusedFragmentsRule);
 
 function validateDocument(ast, schema) {
-  return validate(schema, ast, RULES).map(error => error.message);
+  return validate(schema, ast, RULES).map((error) => error.message);
 }
 
 // named schema types a document touches (parent types, field types, argument and variable types)
 function usedTypes(ast, schema) {
   const typeInfo = new TypeInfo(schema);
   const names = new Set();
-  const add = type => {
+  const add = (type) => {
     if (!type) return;
     let named = type;
     while (named.ofType) named = named.ofType;
@@ -307,7 +323,7 @@ function usedTypes(ast, schema) {
 
 function fieldSignature(field) {
   const args = field.args?.length
-    ? `(${field.args.map(a => `${a.name}: ${a.type}${a.defaultValue !== undefined ? ` = ${JSON.stringify(a.defaultValue)}` : ""}`).join(", ")})`
+    ? `(${field.args.map((a) => `${a.name}: ${a.type}${a.defaultValue !== undefined ? ` = ${JSON.stringify(a.defaultValue)}` : ""}`).join(", ")})`
     : "";
   return `${args}: ${field.type}`;
 }
@@ -320,7 +336,10 @@ function diffType(name, oldSchema, newSchema) {
   const lines = [];
   if (isObjectType(oldType) || isInterfaceType(oldType) || isInputObjectType(oldType)) {
     if (!(isObjectType(newType) || isInterfaceType(newType) || isInputObjectType(newType))) {
-      return { name, lines: [`kind changed to ${newType.astNode?.kind ?? newType.constructor.name}`] };
+      return {
+        name,
+        lines: [`kind changed to ${newType.astNode?.kind ?? newType.constructor.name}`],
+      };
     }
     const oldFields = oldType.getFields();
     const newFields = newType.getFields();
@@ -336,13 +355,13 @@ function diffType(name, oldSchema, newSchema) {
       if (!oldFields[f]) lines.push(`added field \`${f}${fieldSignature(newFields[f])}\``);
     }
   } else if (isEnumType(oldType) && isEnumType(newType)) {
-    const a = new Set(oldType.getValues().map(v => v.name));
-    const b = new Set(newType.getValues().map(v => v.name));
+    const a = new Set(oldType.getValues().map((v) => v.name));
+    const b = new Set(newType.getValues().map((v) => v.name));
     for (const v of a) if (!b.has(v)) lines.push(`removed value \`${v}\``);
     for (const v of b) if (!a.has(v)) lines.push(`added value \`${v}\``);
   } else if (isUnionType(oldType) && isUnionType(newType)) {
-    const a = new Set(oldType.getTypes().map(t => t.name));
-    const b = new Set(newType.getTypes().map(t => t.name));
+    const a = new Set(oldType.getTypes().map((t) => t.name));
+    const b = new Set(newType.getTypes().map((t) => t.name));
     for (const v of a) if (!b.has(v)) lines.push(`removed member \`${v}\``);
     for (const v of b) if (!a.has(v)) lines.push(`added member \`${v}\``);
   } else if (oldType.constructor !== newType.constructor) {
@@ -371,33 +390,43 @@ function auditPage(pageName, dirs, schemas, out, urls) {
     const newErrors = validateDocument(ast, schemas.new);
     if (oldErrors.length === 0) for (const t of usedTypes(ast, schemas.old)) touched.add(t);
     results.push({ doc, missing, oldErrors, newErrors });
-    const fileName = doc.id.replace(/[\/#]/g, "__").replace(/\.(gql|graphql|tsx?)$/, "") + ".graphql";
+    const fileName = `${doc.id.replace(/[/#]/g, "__").replace(/\.(gql|graphql|tsx?)$/, "")}.graphql`;
     writeFileSync(
       join(pageDir, "queries", fileName),
-      ast.definitions.map(d => doc.source.slice(d.loc?.start ?? 0, d.loc?.end ?? 0) || "").join("\n\n") || doc.source
+      ast.definitions
+        .map((d) => doc.source.slice(d.loc?.start ?? 0, d.loc?.end ?? 0) || "")
+        .join("\n\n") || doc.source
     );
   }
 
   const typeDiffs = [...touched]
     .sort()
-    .map(name => diffType(name, schemas.old, schemas.new))
+    .map((name) => diffType(name, schemas.old, schemas.new))
     .filter(Boolean);
 
-  const failingNew = results.filter(r => r.newErrors?.length);
-  const failingOld = results.filter(r => r.oldErrors?.length);
-  const parseFailures = results.filter(r => r.parseError);
+  const failingNew = results.filter((r) => r.newErrors?.length);
+  const failingOld = results.filter((r) => r.oldErrors?.length);
+  const parseFailures = results.filter((r) => r.parseError);
 
   const md = [];
   md.push(`# API migration audit: ${pageName}`);
   md.push("");
-  md.push(`Generated ${new Date().toISOString()} by \`packages/ot-constants/scripts/apiMigrationAudit.mjs\`.`);
+  md.push(
+    `Generated ${new Date().toISOString()} by \`packages/ot-constants/scripts/apiMigrationAudit.mjs\`.`
+  );
   md.push("");
   md.push(`- Old API: ${urls.old}`);
   md.push(`- New API: ${urls.new}`);
-  md.push(`- Scanned: ${dirs.map(d => `\`${d}\``).join(", ")}`);
-  md.push(`- Documents: ${results.length} (${failingOld.length} fail on the old API, ${failingNew.length} fail on the new API, ${parseFailures.length} could not be parsed)`);
-  md.push(`- Schemas, codegen output and full diffs: \`${relative(REPO_ROOT, out)}/{old,new,schema.diff,types.diff}\``);
-  md.push(`- Copies of each document with its fragments resolved: \`${relative(REPO_ROOT, pageDir)}/queries/\``);
+  md.push(`- Scanned: ${dirs.map((d) => `\`${d}\``).join(", ")}`);
+  md.push(
+    `- Documents: ${results.length} (${failingOld.length} fail on the old API, ${failingNew.length} fail on the new API, ${parseFailures.length} could not be parsed)`
+  );
+  md.push(
+    `- Schemas, codegen output and full diffs: \`${relative(REPO_ROOT, out)}/{old,new,schema.diff,types.diff}\``
+  );
+  md.push(
+    `- Copies of each document with its fragments resolved: \`${relative(REPO_ROOT, pageDir)}/queries/\``
+  );
   md.push("");
 
   md.push("## Documents failing against the new API");
@@ -407,22 +436,30 @@ function auditPage(pageName, dirs, schemas, out, urls) {
     md.push(`### ${r.doc.id}`);
     md.push("");
     for (const e of r.newErrors) md.push(`- ${e}`);
-    if (r.missing.length) md.push(`- (fragments not found in the scanned set: ${r.missing.join(", ")})`);
+    if (r.missing.length)
+      md.push(`- (fragments not found in the scanned set: ${r.missing.join(", ")})`);
     md.push("");
   }
 
   md.push("## Documents still valid against the new API");
   md.push("");
-  const ok = results.filter(r => r.newErrors && r.newErrors.length === 0);
-  md.push(ok.length ? ok.map(r => `- ${r.doc.id}`).join("\n") : "None.");
+  const ok = results.filter((r) => r.newErrors && r.newErrors.length === 0);
+  md.push(ok.length ? ok.map((r) => `- ${r.doc.id}`).join("\n") : "None.");
   md.push("");
-  md.push("Note: a valid document can still change behaviour (new pagination defaults, `Page.size` must be >= 1, nullability changes). Check the type changes below.");
+  md.push(
+    "Note: a valid document can still change behaviour (new pagination defaults, `Page.size` must be >= 1, nullability changes). Check the type changes below."
+  );
   md.push("");
 
   if (failingOld.length || parseFailures.length) {
-    md.push("## Documents that do not validate against the old API (already migrated, or outside this schema)");
+    md.push(
+      "## Documents that do not validate against the old API (already migrated, or outside this schema)"
+    );
     md.push("");
-    for (const r of failingOld) md.push(`- ${r.doc.id}: ${r.oldErrors[0]}${r.oldErrors.length > 1 ? ` (+${r.oldErrors.length - 1})` : ""}`);
+    for (const r of failingOld)
+      md.push(
+        `- ${r.doc.id}: ${r.oldErrors[0]}${r.oldErrors.length > 1 ? ` (+${r.oldErrors.length - 1})` : ""}`
+      );
     for (const r of parseFailures) md.push(`- ${r.doc.id}: parse error: ${r.parseError}`);
     md.push("");
   }
@@ -438,18 +475,25 @@ function auditPage(pageName, dirs, schemas, out, urls) {
   }
 
   writeFileSync(join(pageDir, "report.md"), md.join("\n"));
-  return { pageName, total: results.length, failingNew: failingNew.length, failingOld: failingOld.length, typeDiffs: typeDiffs.length, reportPath: join(pageDir, "report.md") };
+  return {
+    pageName,
+    total: results.length,
+    failingNew: failingNew.length,
+    failingOld: failingOld.length,
+    typeDiffs: typeDiffs.length,
+    reportPath: join(pageDir, "report.md"),
+  };
 }
 
 function schemaSummary(oldSdl, newSdl, out) {
-  const names = sdl =>
+  const names = (sdl) =>
     new Set(
-      [...sdl.matchAll(/^(?:type|input|enum|interface|union|scalar) (\w+)/gm)].map(m => m[1])
+      [...sdl.matchAll(/^(?:type|input|enum|interface|union|scalar) (\w+)/gm)].map((m) => m[1])
     );
   const a = names(oldSdl);
   const b = names(newSdl);
-  const removed = [...a].filter(n => !b.has(n)).sort();
-  const added = [...b].filter(n => !a.has(n)).sort();
+  const removed = [...a].filter((n) => !b.has(n)).sort();
+  const added = [...b].filter((n) => !a.has(n)).sort();
   writeFileSync(
     join(out, "schema-summary.md"),
     [
@@ -490,19 +534,27 @@ async function main() {
 
   const summary = schemaSummary(sdl.old, sdl.new, out);
   const schemaDiffLines = unifiedDiff(sdlPaths.old, sdlPaths.new, join(out, "schema.diff"));
-  console.log(`schema.diff: ${schemaDiffLines} lines; ${summary.removed} types removed, ${summary.added} added`);
+  console.log(
+    `schema.diff: ${schemaDiffLines} lines; ${summary.removed} types removed, ${summary.added} added`
+  );
 
   if (args.types) {
     console.log("running graphql-codegen for both APIs (use --no-types to skip)");
     await generateTypes(urls, out);
-    const typesDiffLines = unifiedDiff(join(out, "old/index.ts"), join(out, "new/index.ts"), join(out, "types.diff"));
+    const typesDiffLines = unifiedDiff(
+      join(out, "old/index.ts"),
+      join(out, "new/index.ts"),
+      join(out, "types.diff")
+    );
     console.log(`types.diff: ${typesDiffLines} lines`);
   }
 
   const targets = [];
   if (args.all) targets.push({ name: "all", dirs: ALL_DIRS });
-  for (const page of args.pages) targets.push({ name: page, dirs: [...PAGES[page], ...args.include] });
-  if (!args.pages.length && !args.all && args.include.length) targets.push({ name: "custom", dirs: args.include });
+  for (const page of args.pages)
+    targets.push({ name: page, dirs: [...PAGES[page], ...args.include] });
+  if (!args.pages.length && !args.all && args.include.length)
+    targets.push({ name: "custom", dirs: args.include });
 
   console.log("");
   for (const target of targets) {
@@ -513,7 +565,7 @@ async function main() {
   }
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error.message ?? error);
   process.exit(1);
 });
