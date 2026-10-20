@@ -1,23 +1,25 @@
-import type { Row } from "@tanstack/react-table";
-import type { MouseEvent } from "react";
-import { Link, OtTableServer, Box, Typography, type OtTableColumn } from "ui";
+import { faArrowDown, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { clinicalStageCategories, type DrugsQuery } from "@ot/constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faArrowDown } from "@fortawesome/free-solid-svg-icons";
-import DRUGS_QUERY_DOCUMENT from "./DrugsQuery.gql";
-import { typedDocument } from "../../utils/typedDocument";
 import type { DrugsQueryVariables } from "@ot/constants";
+import { clinicalStageCategories, type DrugsQuery } from "@ot/constants";
+import type { Row } from "@tanstack/react-table";
+import type { MouseEvent } from "react";
+import { Box, Link, type OtTableColumn, OtTableServer, Typography } from "ui";
+import { typedDocument } from "../../utils/typedDocument";
+import DRUGS_QUERY_DOCUMENT from "./DrugsQuery.gql";
 
 export const DRUGS_QUERY = typedDocument<DrugsQuery, DrugsQueryVariables>(DRUGS_QUERY_DOCUMENT);
 
-export type DrugRow = NonNullable<DrugsQuery["disease"]>["drugAndClinicalCandidates"]["rows"][number];
+export type DrugRow = NonNullable<
+  DrugsQuery["disease"]
+>["drugAndClinicalCandidates"]["rows"][number];
 
 type StageCategory = { index: number; label: string };
 const stageCategories: Record<string, StageCategory | undefined> = clinicalStageCategories;
 
-const onLinkClick = (e: MouseEvent) => {
+const onLinkClick = (e: MouseEvent<HTMLAnchorElement>) => {
   e.stopPropagation();
 };
 
@@ -37,7 +39,7 @@ function DrugsTable({ efoId, selectedRow, selectRow }: DrugsTableProps) {
     {
       id: "drugCard",
       label: "",
-      renderCell: row => {
+      renderCell: (row) => {
         const { drug, maxClinicalStage, clinicalReports } = row;
         const isSelected = selectedRow?.id && row.id === selectedRow.id;
 
@@ -74,11 +76,9 @@ function DrugsTable({ efoId, selectedRow, selectRow }: DrugsTableProps) {
                 whiteSpace: "nowrap",
               }}
             >
-              <span onClick={onLinkClick}>
-                <Link asyncTooltip to={`/drug/${drug.id}`}>
-                  {drug.name}
-                </Link>
-              </span>
+              <Link asyncTooltip to={`/drug/${drug.id}`} onClick={onLinkClick}>
+                {drug.name}
+              </Link>
             </Typography>
 
             <Box
@@ -120,16 +120,16 @@ function DrugsTable({ efoId, selectedRow, selectRow }: DrugsTableProps) {
           </Box>
         );
       },
-      filterValue: row =>
+      filterValue: (row) =>
         `${row.drug?.name ?? ""} ${stageCategories[row.maxClinicalStage]?.label ?? ""}`,
     },
   ];
 
   const dataDownloaderColumns: OtTableColumn<DrugRow>[] = [
-    { id: "drugName", label: "Drug name", exportValue: row => row.drug?.name },
-    { id: "drugId", label: "Drug id", exportValue: row => row.drug?.id },
+    { id: "drugName", label: "Drug name", exportValue: (row) => row.drug?.name },
+    { id: "drugId", label: "Drug id", exportValue: (row) => row.drug?.id },
     { id: "maxClinicalStage", label: "Max clinical stage" },
-    { id: "reportCount", label: "Report count", exportValue: row => row.clinicalReports?.length },
+    { id: "reportCount", label: "Report count", exportValue: (row) => row.clinicalReports?.length },
   ];
 
   return (
@@ -183,10 +183,10 @@ function DrugsTable({ efoId, selectedRow, selectRow }: DrugsTableProps) {
         getSelectedRows={(rowsInfo: Row<DrugRow>[]) => {
           if (!(rowsInfo?.length > 0)) return;
 
-          const selectedOriginalRows = rowsInfo.map(r => r.original).filter(Boolean);
+          const selectedOriginalRows = rowsInfo.map((r) => r.original).filter(Boolean);
           if (!selectedOriginalRows.length) return;
           const nextRow =
-            selectedOriginalRows.find(r => r.id !== selectedRow?.id) ?? selectedOriginalRows[0];
+            selectedOriginalRows.find((r) => r.id !== selectedRow?.id) ?? selectedOriginalRows[0];
 
           if (!nextRow?.id) return;
 
