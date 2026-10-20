@@ -1,15 +1,16 @@
+import { useQuery } from "@apollo/client";
+import type { SortingState } from "@tanstack/react-table";
 import { ReactElement } from "react";
 import {
   Link,
   SectionItem,
   Tooltip,
   PublicationsDrawer,
-  OtTable,
-  useBatchQuery,
+  OtTableServer,
   Box,
   Typography,
 } from "ui";
-import { naLabel, table5HChunkSize } from "@ot/constants";
+import { naLabel } from "@ot/constants";
 import { epmcUrl, getStudyCategory } from "@ot/utils";
 import Description from "./Description";
 
@@ -30,6 +31,7 @@ const columns = [
   {
     id: "traitFromSource",
     label: "Reported trait",
+    sortable: true,
   },
   {
     id: "nSamples",
@@ -37,7 +39,6 @@ const columns = [
     renderCell: ({ nSamples }: { nSamples: number }) => {
       return typeof nSamples === "number" ? nSamples.toLocaleString() : naLabel;
     },
-    comparator: (a, b) => a?.nSamples - b?.nSamples,
     sortable: true,
   },
   {
@@ -82,6 +83,7 @@ const columns = [
   {
     id: "publication",
     label: "Publication",
+    sortable: true,
     renderCell: ({ publicationFirstAuthor, publicationDate, pubmedId, projectId }: { publicationFirstAuthor: string; publicationDate: string; pubmedId: string; projectId: string } ) => {
       if (!publicationFirstAuthor) return naLabel;
       return (
@@ -105,10 +107,26 @@ const columns = [
     renderCell: ({ credibleSets }: { credibleSets: { count: number } }) => {
       return credibleSets?.count ?? naLabel;
     },
-    comparator: (a, b) => (a?.credibleSets?.count ?? 0) - (b?.credibleSets?.count ?? 0),
-    sortable: true,
   },
 ];
+
+// column id -> StudySortField of the API; columns not listed here are not sortable
+const SORT_FIELDS: Record<string, string> = {
+  traitFromSource: "TRAIT_FROM_SOURCE",
+  nSamples: "N_SAMPLES",
+  publication: "PUBLICATION_AUTHOR_DATE",
+};
+
+const DEFAULT_SORTING: SortingState = [{ id: "nSamples", desc: true }];
+
+export function getStudySortVariables(sorting: SortingState) {
+  const sort = sorting
+    .filter(({ id }) => SORT_FIELDS[id])
+    .map(({ id, desc }) => ({ key: SORT_FIELDS[id], direction: desc ? "DESCENDING" : "ASCENDING" }));
+  return { sort };
+}
+
+const PAGE_SIZE = 10;
 
 type BodyProps = {
   id: string;
@@ -116,39 +134,36 @@ type BodyProps = {
 };
 
 function Body({ id: efoId, label: diseaseName }: BodyProps): ReactElement {
-  const variables = {
-    diseaseIds: [efoId],
-    size: table5HChunkSize,
-    index: 0,
-  };
+  const variables = { diseaseIds: [efoId] };
 
-  const request = useBatchQuery({
-    query: GWAS_STUDIES_BODY_QUERY,
-    variables,
-    dataPath: "studies",
-    size: table5HChunkSize,
+  // first page only: drives the section loading/error state, the table fetches
+  // the same page from the Apollo cache and then paginates on its own
+  const request = useQuery(GWAS_STUDIES_BODY_QUERY, {
+    variables: { ...variables, index: 0, size: PAGE_SIZE, ...getStudySortVariables(DEFAULT_SORTING) },
   });
 
   return (
     <SectionItem
       definition={definition}
       entity="studies"
-      
       showContentLoading
       loadingMessage="Loading data. This may take some time..."
       request={request}
       renderDescription={() => <Description name={diseaseName} />}
       renderBody={() => (
-        <OtTable
+        <OtTableServer
           columns={columns}
-          rows={request.data?.studies.rows}
-          sortBy="nSamples"
+          query={GWAS_STUDIES_BODY_QUERY}
+          variables={variables}
+          dataPath="studies"
+          pageSize={PAGE_SIZE}
+          sortBy={DEFAULT_SORTING[0].id}
           order="desc"
+          getSortVariables={getStudySortVariables}
+          searchVariable="search"
+          globalFilterPlaceholderText="Search studies..."
           dataDownloader
           dataDownloaderFileStem={`${efoId}-gwas-studies`}
-          loading={request.loading}
-          query={GWAS_STUDIES_BODY_QUERY.loc.source.body}
-          variables={variables}
         />
       )}
     />
