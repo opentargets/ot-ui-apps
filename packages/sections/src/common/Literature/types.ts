@@ -59,7 +59,6 @@ export type SelectedEntityType = {
 
 export type LiteratureStateType = {
   id: string;
-  cursor: string | null;
   threshold?: number;
   size?: number;
   category: string[];

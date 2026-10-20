@@ -23,6 +23,7 @@ function EntitiesToSelect({ id }) {
       id: bibliographyId,
       category,
       globalEntity,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -46,6 +47,7 @@ function EntitiesToSelect({ id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -53,11 +55,10 @@ function EntitiesToSelect({ id }) {
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
+      entities: data.similarEntities?.rows ?? [],
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.filteredCount,
-      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
-      cursor: data.literatureOcurrences?.cursor,
+      litsCount: data.literatureOcurrences?.count,
+      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
       loadingEntities: false,
       page: 0,
     };
@@ -117,6 +118,7 @@ export default function Entities({ name, id }) {
       id: bibliographyId,
       category,
       globalEntity,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -131,6 +133,7 @@ export default function Entities({ name, id }) {
       id: bibliographyId,
       category,
       entities: newChips,
+      pageSize,
       endYear,
       endMonth,
       startYear,
@@ -138,11 +141,10 @@ export default function Entities({ name, id }) {
     });
     const data = request.data[globalEntity];
     const update = {
-      entities: data.similarEntities,
+      entities: data.similarEntities?.rows ?? [],
       litsIds: data.literatureOcurrences?.rows?.map(({ pmid }) => pmid),
-      litsCount: data.literatureOcurrences?.filteredCount,
-      earliestPubYear: data.literatureOcurrences?.earliestPubYear,
-      cursor: data.literatureOcurrences?.cursor,
+      litsCount: data.literatureOcurrences?.count,
+      earliestPubYear: data.literatureOcurrences?.stats?.earliestPubDate,
       loadingEntities: false,
       page: 0,
     };
