@@ -169,7 +169,14 @@ function RecordDetails({ recordId, recordDetailQuery = RECORD_DETAIL_QUERY }) {
 
   const sourceInfo = clinicalReportsSourcesInfo[source];
   const dedupedDiseases: any = dedupOnId(diseases, "disease");
-  const dedupedDrugs: any = dedupOnId(drugs, "drug");
+  // the API no longer resolves a drug entity on the report, only its source name
+  const dedupedDrugs: any = [
+    ...new Map(
+      (drugs || [])
+        .filter((d: any) => d.drugFromSource)
+        .map((d: any) => [d.drugFromSource, d])
+    ).values(),
+  ];
 
   return (
     <>
