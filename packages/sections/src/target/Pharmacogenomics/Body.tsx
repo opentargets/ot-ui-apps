@@ -308,7 +308,7 @@ function Body({ id: ensemblId, label: symbol, entity }: Props) {
           dataDownloaderFileStem={`${ensemblId}-pharmacogenomics-${entity}`}
           sortBy="evidenceLevel"
           columns={columns}
-          rows={request.data?.target.pharmacogenomics}
+          rows={request.data?.target.pharmacogenomics?.rows}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
