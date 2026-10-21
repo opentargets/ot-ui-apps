@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useQuery } from "@apollo/client";
 import {
   Link,
   SectionItem,
@@ -9,7 +9,7 @@ import {
   DirectionOfEffectIcon,
   DirectionOfEffectTooltip,
   DisplayVariantId,
-  OtTableSSP,
+  OtTableServer,
   Typography,
 } from "ui";
 import { epmcUrl, sentenceCase, identifiersOrgLink } from "@ot/utils";
@@ -288,9 +288,17 @@ function getColumns(label) {
 
 type Props = EvidenceBodyProps;
 
+const PAGE_SIZE = 10;
+
 function Body({ id, label, entity }: Props) {
   const { ensgId: ensemblId, efoId } = id;
-  const [request, setRequest] = useState({ loading: true, data: null, error: false });
+  const variables = { ensemblId, efoId };
+
+  // first page only: drives the section loading/error state, the table fetches
+  // the same page from the Apollo cache and then paginates on its own
+  const request = useQuery(CLINVAR_QUERY, {
+    variables: { ...variables, index: 0, size: PAGE_SIZE },
+  });
   const columns = getColumns(label);
 
   return (
@@ -301,22 +309,16 @@ function Body({ id, label, entity }: Props) {
       request={request}
       renderDescription={() => <Description symbol={label.symbol} name={label.name} />}
       renderBody={() => (
-        <OtTableSSP
+        <OtTableServer
           query={CLINVAR_QUERY}
           columns={columns}
           dataDownloader
           dataDownloaderColumns={exportColumns}
           dataDownloaderFileStem="eva-evidence"
-          entity={entity}
-          sectionName="eva"
+          dataPath="disease.eva"
+          pageSize={PAGE_SIZE}
           showGlobalFilter={false}
-          setInitialRequestData={req => {
-            setRequest(req);
-          }}
-          variables={{
-            ensemblId,
-            efoId,
-          }}
+          variables={variables}
         />
       )}
     />
