@@ -1,7 +1,7 @@
 query CredibleSetGenomicRegionQuery($studyLocusId: String!, $size: Int!, $index: Int!) {
   credibleSet(studyLocusId: $studyLocusId) {
     variant {
-      id
+      id: variantId
       chromosome
       position
       referenceAllele
@@ -14,7 +14,7 @@ query CredibleSetGenomicRegionQuery($studyLocusId: String!, $size: Int!, $index:
         logBF
         posteriorProbability
         variant {
-          id
+          id: variantId
           chromosome
           position
           referenceAllele
