@@ -35,7 +35,11 @@ const STUDY_PROFILE_QUERY = gql`
       ...StudyProfileSummaryFragment
     }
     # TODO: remove this once we have a proper shared trait studies section
-    sharedTraitStudies: studies(diseaseIds: $diseaseIds, page: { size: 2, index: 0 }) {
+    sharedTraitStudies: studies(
+      diseaseIds: $diseaseIds
+      sort: [{ key: N_SAMPLES, direction: DESCENDING }]
+      page: { size: 2, index: 0 }
+    ) {
       count
     }
   }
