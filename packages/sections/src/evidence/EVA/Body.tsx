@@ -153,13 +153,13 @@ function getColumns(label) {
       id: "variantConsequence",
       label: "Variant Consequence",
       renderCell: ({ variantFunctionalConsequence, variant }) => {
-        if (!variant) return naLabel;
+        if (!variantFunctionalConsequence) return naLabel;
         const {
           chromosome,
           position,
           referenceAllele,
           alternateAllele
-        } = variant;
+        } = variant ?? {};
         return (
           <div style={{ display: "flex", gap: "5px" }}>
             {variantFunctionalConsequence && (
@@ -170,8 +170,9 @@ function getColumns(label) {
                 to={identifiersOrgLink("SO", variantFunctionalConsequence.id.slice(3))}
               />
             )}
-            {(variantFunctionalConsequence.id === "SO:0001583" ||
-              variantFunctionalConsequence.id === "SO:0001587") && (
+            {variant &&
+              (variantFunctionalConsequence.id === "SO:0001583" ||
+                variantFunctionalConsequence.id === "SO:0001587") && (
               <LabelChip
                 label={variantConsequenceSource.ProtVar.label}
                 to={`https://www.ebi.ac.uk/ProtVar/query?chromosome=${chromosome}&genomic_position=${position}&reference_allele=${referenceAllele}&alternative_allele=${alternateAllele}`}
@@ -182,7 +183,7 @@ function getColumns(label) {
         );
       },
       filterValue: ({ variantFunctionalConsequence }) => (
-        sentenceCase(variantFunctionalConsequence.label)
+        sentenceCase(variantFunctionalConsequence?.label ?? "")
       ),
     },
     {
