@@ -14,9 +14,9 @@ import { Target } from "sections";
 
 import ProfileHeader from "./ProfileHeader";
 
-// Drugs is not in this map: the API no longer exposes drugAndClinicalCandidates on Target
+// Drugs and Genomic region are not in this map: the API no longer exposes
+// drugAndClinicalCandidates on Target, and has no region query
 const targetProfileWidgets = new Map<string, any>([
-  [Target.TargetGenomicRegion.definition.id, Target.TargetGenomicRegion],
   [Target.Tractability.definition.id, Target.Tractability],
   [Target.Safety.definition.id, Target.Safety],
   [Target.Pharmacogenomics.definition.id, Target.Pharmacogenomics],
