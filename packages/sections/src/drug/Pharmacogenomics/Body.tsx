@@ -299,7 +299,7 @@ function Body({ id: chemblId, label: name, entity }: Props) {
           dataDownloader
           dataDownloaderFileStem={`${chemblId}-pharmacogenomics`}
           columns={columns}
-          rows={request.data?.drug.pharmacogenomics}
+          rows={request.data?.drug.pharmacogenomics?.rows}
           query={PHARMACOGENOMICS_QUERY.loc.source.body}
           variables={variables}
           loading={request.loading}
