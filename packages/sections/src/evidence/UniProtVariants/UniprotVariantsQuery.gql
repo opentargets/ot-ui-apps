@@ -17,16 +17,6 @@ query UniprotVariantsQuery($ensemblId: String!, $efoId: String!, $size: Int!) {
         }
         diseaseFromSource
         targetFromSourceId
-        variant {
-          id
-          chromosome
-          position
-          referenceAllele
-          alternateAllele
-          transcriptConsequences {
-            aminoAcidChange
-          }
-        }
         variantRsId
         confidence
         literature
