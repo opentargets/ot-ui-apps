@@ -109,6 +109,7 @@ export { default as GenomicLocation } from "./components/GenomicLocation";
 export { default as GlobalSearch } from "./components/GlobalSearch/GlobalSearch";
 /* PROVIDERS */
 export * from "./components/GlobalSearch/SearchContext";
+export { getHitObject } from "./components/GlobalSearch/utils/searchUtils";
 export { default as Header } from "./components/Header";
 export * from "./components/HeatmapTable";
 export { default as Highlights } from "./components/Highlights";
