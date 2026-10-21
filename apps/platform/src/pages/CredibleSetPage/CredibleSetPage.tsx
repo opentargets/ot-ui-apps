@@ -25,7 +25,7 @@ function CredibleSetPage(): ReactElement {
   }
 
   const { id: studyId } = data?.credibleSet?.study || {};
-  const { id: variantId, referenceAllele, alternateAllele } = data?.credibleSet?.variant || {};
+  const { variantId, referenceAllele, alternateAllele } = data?.credibleSet?.variant || {};
   const headerMeta = buildHeaderMeta({
     variantId: variantId ?? "",
     referenceAllele: referenceAllele ?? "",

@@ -18,7 +18,7 @@ import type { IconProp } from "@fortawesome/fontawesome-svg-core";
 const CREDIBLE_SET = "credibleSet";
 
 const credibleSetProfileWidgets = new Map<string, Widget>([
-  [CredibleSet.CredibleSetGenomicRegion.definition.id, CredibleSet.CredibleSetGenomicRegion],
+  // [CredibleSet.CredibleSetGenomicRegion.definition.id, CredibleSet.CredibleSetGenomicRegion],
   [CredibleSet.Locus2Gene.definition.id, CredibleSet.Locus2Gene],
   [CredibleSet.EnhancerToGenePredictions.definition.id, CredibleSet.EnhancerToGenePredictions],
   [CredibleSet.GWASColoc.definition.id, CredibleSet.GWASColoc],
@@ -28,16 +28,16 @@ const credibleSetProfileWidgets = new Map<string, Widget>([
 const CREDIBLE_SET_WIDGETS = Array.from(credibleSetProfileWidgets.values());
 const CREDIBLE_SET_STICKY_WIDGETS = [CredibleSet.Variants, ...CREDIBLE_SET_WIDGETS];
 
-const credibleSetProfileWidgetsSummaries = Array.from(credibleSetProfileWidgets.values()).map(
-  widget => widget.Summary
-);
-
 type ProfileProps = {
   studyLocusId: string;
   variantId: string;
   Icon?: IconProp;
   externalLinks?: ReactNode;
 };
+
+const credibleSetProfileWidgetsSummaries = Array.from(credibleSetProfileWidgets.values()).map(
+  widget => widget.Summary
+);
 
 const CREDIBLE_SET_PROFILE_SUMMARY_FRAGMENT = summaryUtils.createSummaryFragment(
   credibleSetProfileWidgetsSummaries,
