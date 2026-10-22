@@ -180,7 +180,7 @@ export function Body({ id, entity }: BodyProps) {
       entity={entity}
       renderDescription={() => (
         <Description
-          variantId={request.data?.variant.id}
+          variantId={id}
           referenceAllele={request.data?.variant.referenceAllele}
           alternateAllele={request.data?.variant.alternateAllele}
         />
