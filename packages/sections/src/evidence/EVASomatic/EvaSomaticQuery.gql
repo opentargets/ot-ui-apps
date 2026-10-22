@@ -12,18 +12,9 @@ query EvaSomaticQuery($ensemblId: String!, $efoId: String!, $index: Int! = 0, $s
           id
           name
         }
-        variant {
-          hgvsId
-        }
         directionOnTarget
         directionOnTrait
         diseaseFromSource
-        variant {
-          id
-          hgvsId
-          referenceAllele
-          alternateAllele
-        }
         variantRsId
         studyId
         clinicalSignificances
