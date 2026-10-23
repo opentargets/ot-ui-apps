@@ -16,17 +16,26 @@ import Description from "./Description";
 import GWAS_CREDIBLE_SETS_TABLE_QUERY from "./GWASCredibleSetsTableQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
-import PheWasPlot from "./PheWasPlot";
+// import PheWasPlot from "./PheWasPlot";
 import { credsetConfidenceMap, naLabel } from "@ot/constants";
 import { useState } from "react";
-import GWAS_CREDIBLE_SETS_PLOT_QUERY from "./GWASCredibleSetsPlotQuery.gql";
-import { useQuery } from "@apollo/client";
+// import GWAS_CREDIBLE_SETS_PLOT_QUERY from "./GWASCredibleSetsPlotQuery.gql";
+// import { useQuery } from "@apollo/client";
 
 type getColumnsType = {
   id: string;
   referenceAllele: string;
   alternateAllele: string;
 };
+
+function getDiseases({ diseaseIds = [], diseaseNames = [] }) {
+  const count = Math.max(diseaseIds.length, diseaseNames.length);
+
+  return Array.from({ length: count }, (_, index) => ({
+    id: diseaseIds[index],
+    name: diseaseNames[index],
+  }));
+}
 
 function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
   return [
@@ -41,22 +50,26 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       id: "leadVariant",
       label: "Lead variant",
       enableHiding: false,
-      comparator: variantComparator(d => d?.variant),
+      comparator: variantComparator(d => ({
+        chromosome: d?.leadChromosome?.replace(/^chr/, ""),
+        position: d?.leadPosition,
+        referenceAllele: d?.leadReferenceAllele,
+        alternateAllele: d?.leadAlternateAllele,
+      })),
       sortable: true,
-      filterValue: ({ variant: v }) =>
-        `${v?.chromosome}_${v?.position}_${v?.referenceAllele}_${v?.alternateAllele}`,
-      renderCell: ({ variant }) => {
-        if (!variant) return naLabel;
-        const { variantId, referenceAllele, alternateAllele } = variant;
+      filterValue: ({ leadChromosome, leadPosition, leadReferenceAllele, leadAlternateAllele }) =>
+        `${leadChromosome?.replace(/^chr/, "")}_${leadPosition}_${leadReferenceAllele}_${leadAlternateAllele}`,
+      renderCell: ({ leadVariantId, leadReferenceAllele, leadAlternateAllele }) => {
+        if (!leadVariantId) return naLabel;
         const displayElement = (
           <DisplayVariantId
-            variantId={variantId}
-            referenceAllele={referenceAllele}
-            alternateAllele={alternateAllele}
+            variantId={leadVariantId}
+            referenceAllele={leadReferenceAllele}
+            alternateAllele={leadAlternateAllele}
             expand={false}
           />
         );
-        if (variantId === id) {
+        if (leadVariantId === id) {
           return (
             <Box display="flex" alignItems="center" gap={0.5}>
               {displayElement}
@@ -65,56 +78,61 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           );
         }
         return (
-          <Link asyncTooltip to={`/variant/${variantId}`}>
+          <Link asyncTooltip to={`/variant/${leadVariantId}`}>
             {displayElement}
           </Link>
         );
       },
-      exportValue: ({ variant }) => variant?.variantId,
+      exportValue: ({ leadVariantId }) => leadVariantId,
     },
     {
       id: "trait",
       label: "Reported trait",
-      filterValue: ({ study }) => study?.traitFromSource,
-      renderCell: ({ study }) => {
-        if (!study?.traitFromSource) return naLabel;
-        return study.traitFromSource;
+      filterValue: ({ traitFromSource }) => traitFromSource,
+      renderCell: ({ traitFromSource }) => {
+        if (!traitFromSource) return naLabel;
+        return traitFromSource;
       },
-      exportValue: ({ study }) => study?.traitFromSource,
+      exportValue: ({ traitFromSource }) => traitFromSource,
     },
     {
       id: "disease",
       label: "Disease/phenotype",
-      filterValue: ({ study }) => study?.diseases.map(d => d.name).join(", "),
-      renderCell: ({ study }) => {
-        if (!study?.diseases?.length) return naLabel;
+      filterValue: ({ diseaseNames }) => diseaseNames?.join(", "),
+      renderCell: row => {
+        const diseases = getDiseases(row);
+        if (!diseases.length) return naLabel;
         return (
           <>
-            {study.diseases.map((d, i) => (
-              <Fragment key={d.id}>
-                {i > 0 && ", "}
-                <Link asyncTooltip to={`../disease/${d.id}`}>
-                  {d.name}
-                </Link>
+            {diseases.map(({ id: diseaseId, name }, index) => (
+              <Fragment key={diseaseId || name}>
+                {index > 0 && ", "}
+                {diseaseId ? (
+                  <Link asyncTooltip to={`../disease/${diseaseId}`}>
+                    {name || diseaseId}
+                  </Link>
+                ) : (
+                  name || naLabel
+                )}
               </Fragment>
             ))}
           </>
         );
       },
-      exportValue: ({ study }) => study?.diseases?.map(d => d.name).join(", "),
+      exportValue: ({ diseaseNames }) => diseaseNames?.join(", "),
     },
     {
       id: "studyId",
       label: "Study",
-      renderCell: ({ study }) => {
-        if (!study) return naLabel;
+      renderCell: ({ studyId }) => {
+        if (!studyId) return naLabel;
         return (
-          <Link asyncTooltip to={`../study/${study.id}`}>
-            {study.id}
+          <Link asyncTooltip to={`../study/${studyId}`}>
+            {studyId}
           </Link>
         );
       },
-      exportValue: ({ study }) => study?.id,
+      exportValue: ({ studyId }) => studyId,
     },
     {
       id: "pValue",
@@ -168,16 +186,11 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           ) is causal.
         </>
       ),
-      comparator: (a, b) => {
-        return (
-          a?.locus?.rows?.[0]?.posteriorProbability - b?.locus?.rows?.[0]?.posteriorProbability
-        );
-      },
+      comparator: (a, b) => a?.posteriorProbability - b?.posteriorProbability,
       sortable: true,
-      renderCell: ({ locus }) =>
-        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability.toPrecision(3) : naLabel,
-      exportValue: ({ locus }) =>
-        locus.rows.length > 0 ? locus?.rows[0]?.posteriorProbability : naLabel,
+      renderCell: ({ posteriorProbability }) =>
+        typeof posteriorProbability === "number" ? posteriorProbability.toPrecision(3) : naLabel,
+      exportValue: ({ posteriorProbability }) => posteriorProbability,
     },
     {
       id: "finemappingMethod",
@@ -211,9 +224,9 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
       filterValue: ({ confidence }) => credsetConfidenceMap[confidence],
     },
     {
-      id: "l2Gpredictions",
+      id: "topL2G",
       label: "Top L2G",
-      filterValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target?.approvedSymbol,
+      filterValue: ({ topL2GApprovedSymbol }) => topL2GApprovedSymbol,
       tooltip: (
         <>
           Top gene prioritised by our locus-to-gene model. See{" "}
@@ -223,23 +236,22 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           for more information.
         </>
       ),
-      renderCell: ({ l2GPredictions }) => {
-        if (!l2GPredictions?.rows[0]?.target) return naLabel;
-        const { target } = l2GPredictions?.rows[0];
+      renderCell: ({ topL2GGeneId, topL2GApprovedSymbol }) => {
+        if (!topL2GGeneId || !topL2GApprovedSymbol) return naLabel;
         return (
-          <Link asyncTooltip to={`/target/${target.id}`}>
-            {target.approvedSymbol}
+          <Link asyncTooltip to={`/target/${topL2GGeneId}`}>
+            {topL2GApprovedSymbol}
           </Link>
         );
       },
-      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.target.approvedSymbol,
+      exportValue: ({ topL2GApprovedSymbol }) => topL2GApprovedSymbol,
     },
     {
       id: "l2gScore",
       label: "L2G score",
       comparator: nullishComparator(
         (a, b) => a - b,
-        row => row?.l2GPredictions?.rows[0]?.score,
+        row => row?.topL2GScore,
         false
       ),
       sortable: true,
@@ -253,26 +265,29 @@ function getColumns({ id, referenceAllele, alternateAllele }: getColumnsType) {
           for more information.
         </>
       ),
-      renderCell: ({ studyLocusId, l2GPredictions }) => {
-        if (!l2GPredictions || !l2GPredictions.rows.length) return naLabel;
-        const score = l2GPredictions?.rows[0]?.score;
-        if (!score) return naLabel;
-        const { target } = l2GPredictions?.rows[0];
-        return <L2GScoreIndicator score={score} studyLocusId={studyLocusId} targetId={target.id} />;
+      renderCell: ({ studyLocusId, topL2GGeneId, topL2GScore }) => {
+        if (!topL2GGeneId || typeof topL2GScore !== "number") return naLabel;
+        return (
+          <L2GScoreIndicator
+            score={topL2GScore}
+            studyLocusId={studyLocusId}
+            targetId={topL2GGeneId}
+          />
+        );
       },
-      exportValue: ({ l2GPredictions }) => l2GPredictions?.rows[0]?.score,
+      exportValue: ({ topL2GScore }) => topL2GScore,
     },
     {
       id: "credibleSetSize",
       label: "Credible set size",
-      comparator: (a, b) => a.locusSize?.count - b.locusSize?.count,
+      comparator: (a, b) => a?.locusSize - b?.locusSize,
       sortable: true,
       numeric: true,
       filterValue: false,
       renderCell: ({ locusSize }) => {
-        return typeof locusSize?.count === "number" ? locusSize.count.toLocaleString() : naLabel;
+        return typeof locusSize === "number" ? locusSize.toLocaleString() : naLabel;
       },
-      exportValue: ({ locusSize }) => locusSize?.count,
+      exportValue: ({ locusSize }) => locusSize,
     },
   ];
 }
@@ -293,18 +308,18 @@ function Body({ id, entity }: BodyProps) {
       request={request}
       renderDescription={() => (
         <Description
-          variantId={id}
+          variantId={request.data?.variant.variantId}
           referenceAllele={request.data?.variant.referenceAllele}
           alternateAllele={request.data?.variant.alternateAllele}
         />
       )}
-      renderChart={() => {
-        return (
-          <Box mb={1} ml={2}>
-            <Plot variantId={id} />
-          </Box>
-        );
-      }}
+      // renderChart={() => {
+      //   return (
+      //     <Box mb={1} ml={2}>
+      //       <Plot variantId={id} />
+      //     </Box>
+      //   );
+      // }}
       renderBody={() => {
         const columns = getColumns({
           id,
@@ -317,6 +332,7 @@ function Body({ id, entity }: BodyProps) {
             dataDownloaderFileStem={`${id}-gwas-credible-sets-variant`}
             entity="variant"
             sectionName="gwasCredibleSets"
+            dataPath="gwasCredibleSetsByVariant"
             setInitialRequestData={setRequest}
             columns={columns}
             query={GWAS_CREDIBLE_SETS_TABLE_QUERY}
@@ -328,20 +344,20 @@ function Body({ id, entity }: BodyProps) {
   );
 }
 
-function Plot({ variantId }: { variantId: string }) {
-  const { data, loading } = useQuery(GWAS_CREDIBLE_SETS_PLOT_QUERY, {
-    variables: { variantId },
-  });
-
-  return (
-    <PheWasPlot
-      loading={loading}
-      data={data?.variant?.gwasCredibleSets?.rows}
-      pageId={variantId}
-      pageReferenceAllele={data?.variant?.referenceAllele}
-      pageAlternateAllele={data?.variant?.alternateAllele}
-    />
-  );
-}
+// function Plot({ variantId }: { variantId: string }) {
+//   const { data, loading } = useQuery(GWAS_CREDIBLE_SETS_PLOT_QUERY, {
+//     variables: { variantId },
+//   });
+//
+//   return (
+//     <PheWasPlot
+//       loading={loading}
+//       data={data?.variant?.gwasCredibleSets?.rows}
+//       pageId={variantId}
+//       pageReferenceAllele={data?.variant?.referenceAllele}
+//       pageAlternateAllele={data?.variant?.alternateAllele}
+//     />
+//   );
+// }
 
 export default Body;
