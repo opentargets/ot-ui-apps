@@ -131,6 +131,7 @@ export { default as ObsPlot } from "./components/ObsPlot/ObsPlot";
 export { default as ObsTooltip } from "./components/ObsPlot/ObsTooltip";
 export { default as OtAsyncTooltip } from "./components/OtAsyncTooltip/OtAsyncTooltip";
 export { default as OtTable } from "./components/OtTable/OtTable";
+export { default as OtTableOffsetPagination } from "./components/OtTable/OtTableOffsetPagination";
 export { default as OtTableSSP } from "./components/OtTable/OtTableSSP";
 export { default as PageMeta } from "./components/PageMeta";
 export { default as PartnerLockIcon } from "./components/PartnerLockIcon";

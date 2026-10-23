@@ -1,8 +1,14 @@
-query GWASCredibleSetsQuery($variantId: String!, $size: Int!, $index: Int!) {
+query GWASCredibleSetsTableQuery($variantId: String!, $size: Int!, $index: Int!) {
   variant(variantId: $variantId) {
     variantId
     referenceAllele
     alternateAllele
+    gwasCredibleSets: credibleSets(
+      filter: { studyTypes: [gwas] }
+      page: { size: 1, index: 0 }
+    ) {
+      count
+    }
   }
   gwasCredibleSetsByVariant(
     variantId: $variantId

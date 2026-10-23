@@ -3,21 +3,26 @@ import {
   SectionItem,
   ScientificNotation,
   DisplayVariantId,
-  OtTable,
+  OtTableOffsetPagination,
   Tooltip,
   ClinvarStars,
   L2GScoreIndicator,
-  useBatchQuery,
   Navigate,
   Box,
   Chip,
+  useBatchQuery,
+  OtTable
 } from "ui";
 import { definition } from ".";
 import Description from "./Description";
-import GWAS_CREDIBLE_SETS_QUERY from "./GWASCredibleSetsQuery.gql";
+import GWAS_CREDIBLE_SETS_TABLE_QUERY from "./GWASCredibleSetsTableQuery.gql";
 import { Fragment } from "react/jsx-runtime";
 import { mantissaExponentComparator, variantComparator, nullishComparator } from "@ot/utils";
+import PheWasPlot from "./PheWasPlot";
 import { credsetConfidenceMap, naLabel, table5HChunkSize } from "@ot/constants";
+import { useState } from "react";
+import GWAS_CREDIBLE_SETS_PLOT_QUERY from "./GWASCredibleSetsPlotQuery.gql";
+import { useQuery } from "@apollo/client";
 
 type getColumnsType = {
   id: string;
@@ -302,7 +307,7 @@ function Body({ id, entity }: BodyProps) {
 
   const request = useBatchQuery({
     id,
-    query: GWAS_CREDIBLE_SETS_QUERY,
+    query: GWAS_CREDIBLE_SETS_TABLE_QUERY,
     variables,
     dataPath: "gwasCredibleSetsByVariant",
     size: table5HChunkSize,
@@ -313,8 +318,6 @@ function Body({ id, entity }: BodyProps) {
       definition={definition}
       entity={entity}
       request={request}
-      showContentLoading
-      loadingMessage="Loading data. This may take some time..."
       renderDescription={() => (
         <Description
           variantId={request.data?.variant.variantId}
@@ -339,12 +342,28 @@ function Body({ id, entity }: BodyProps) {
               columns={columns}
               rows={request.data?.gwasCredibleSetsByVariant.rows}
               loading={request.loading}
-              query={GWAS_CREDIBLE_SETS_QUERY.loc.source.body}
+              query={GWAS_CREDIBLE_SETS_TABLE_QUERY.loc.source.body}
               variables={variables}
             />
           </>
         );
       }}
+    />
+  );
+}
+
+function Plot({ variantId }: { variantId: string }) {
+  const { data, loading } = useQuery(GWAS_CREDIBLE_SETS_PLOT_QUERY, {
+    variables: { variantId },
+  });
+
+  return (
+    <PheWasPlot
+      loading={loading}
+      data={data?.variant?.gwasCredibleSets?.rows}
+      pageId={variantId}
+      pageReferenceAllele={data?.variant?.referenceAllele}
+      pageAlternateAllele={data?.variant?.alternateAllele}
     />
   );
 }
